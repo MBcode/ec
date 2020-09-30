@@ -38,7 +38,10 @@ def jsonLD2dataset(path):
     #url = d['identifier'][0]['url'] #iedadata
     idurl = d.get('identifier')
     if idurl:
-        url=idurl[0].get('url')
+        if isinstance(idurl,list):
+            url=idurl[0].get('url')
+        else:
+            url=idurl.get('url') 
     else: #if not url: #for most repos 
         url = d.get('url')
     #if not url: #should only run this if know in that repo
