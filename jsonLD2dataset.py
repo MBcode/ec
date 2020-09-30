@@ -81,13 +81,18 @@ def getLD(datasetID):
     r = requests.get(f'{clowder_host}/api/datasets/{datasetID}/metadata', headers={'X-API-Key' : clowder_key})
     print(json.dumps(r.json(), indent=2))
 
+def getjsonLD(datasetID):
+    "given clowder dataset id: return it's saved()jsonLD"
+    r = requests.get(f'{clowder_host}/api/datasets/{datasetID}/metadata.jsonld', headers={'X-API-Key' : clowder_key})
+    print(json.dumps(r.json(), indent=2))
+
 #have a fnc to ls all the jsonld in a dir, and map over that: 
 # started w/: list(map(jsonLD2dataset,os.listdir('ld')))
 # but path based now
 def run_all():
     import glob
     paths=glob.glob('./ld/*.jsonld') #this gives path, not fns so change above
-    list(map(jsonLD2dataset,paths))
+    return list(map(jsonLD2dataset,paths))
 
 # maybe returning a file w/the filename to datasetID mappings
 #jsonLD2dataset('ld/609656.jsonld')
