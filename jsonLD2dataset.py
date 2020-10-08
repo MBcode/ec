@@ -16,19 +16,13 @@ def stripjshtm(html):
     soup = BeautifulSoup(html)
     for script in soup(["script"]):
         script.extract()
-    text = soup.get_text()
+    text_wtags = soup.get_text()
+    text = BeautifulSoup(text_wtags, "lxml").text #rm more tags here
     return re.sub(r'(\n\s*)+\n+', '\n', text.strip())
 
-def jsonLD2dataset(path):
-    "create clowder dataset w/title,abstract,url and assert assoc jsonLD"
-    print(path)
-    with open(path) as f:
-        jsLD=f.read().encode("utf-8")
-    if jsLD:
-        d=json.loads(jsLD)
-    else:
-        return "jsLD is empty"
 
+def dict2dataset(d,url=None):
+    jsLD=json.dumps(d)
     name= d.get('name')
     if not name: #for neotomadb
         name = d['spatialCoverage']['name']
@@ -36,14 +30,17 @@ def jsonLD2dataset(path):
         name=stripjshtm(name)
     #so find a way2only run for it, maybe loading a schema based cfg for nonstandard location
     #url = d['identifier'][0]['url'] #iedadata
-    idurl = d.get('identifier')
-    if idurl:
-        if isinstance(idurl,list):
-            url=idurl[0].get('url')
-        else:
-            url=idurl.get('url') 
-    else: #if not url: #for most repos 
+#   idurl = d.get('identifier')
+#   if idurl:
+#       if isinstance(idurl,list):
+#           url=idurl[0].get('url')
+#       else:
+#           url=idurl.get('url') 
+#   else: #if not url: #for most repos 
+#       url = d.get('url')
+    if not url:
         url = d.get('url')
+
     #if not url: #should only run this if know in that repo
     #    fnb = fn.split('.')[0]
     #    url = "http://data.neotomadb.org/datasets/" + fnb
@@ -56,7 +53,8 @@ def jsonLD2dataset(path):
             du = name  + " " + url
         metadata3={'name': name, 'description': du, 'url': url, 'space': [clowder_space], 'access': 'PUBLIC'}
     else:
-        metadata3={'name': name, 'description': des} 
+        metadata3={'name': name, 'description': du, 'space': [clowder_space], 'access': 'PUBLIC'}
+        #metadata3={'name': name, 'description': des} 
     print(metadata3)
     headers3={'X-API-Key': clowder_key,'accept': '*/*', 'Content-Type': 'application/json'}
     print(headers3)
@@ -69,9 +67,45 @@ def jsonLD2dataset(path):
     print(URL)
     r=requests.post(URL,data=jsLD,headers=headers2)
     print(r.json())
-    #os.system(f"mv {path} ldone")
-    os.system(f"mv -i {path} ldone")
+    ##os.system(f"mv {path} ldone")
+    #os.system(f"mv -i {path} ldone")
+    print(datasetID)
     return datasetID
+
+def jsonLD2dataset(path):
+    "create clowder dataset w/title,abstract,url and assert assoc jsonLD"
+    print(path)
+    with open(path) as f:
+        jsLD=f.read().encode("utf-8")
+    if jsLD:
+        d=json.loads(jsLD)
+        datasetID=dict2dataset(d)
+    else:
+        return "jsLD is empty"
+    if datasetID:
+        os.system(f"mv -i {path} ldone")
+        return datasetID 
+
+#I'm not a big fan of having ~copies of the same code
+
+def jsLD2dataset(path):
+    "extruct has json-ld.."
+    print(path)
+    with open(path) as f:
+        jsLD=f.read().encode("utf-8")
+    if jsLD:
+        djs=json.loads(jsLD)
+        url=djs.get('url')
+        d=djs.get('json-ld')
+        if d:
+            datasetID=dict2dataset(d[0],url)
+        else:
+            return "djs is empty"
+    else:
+        return "jsLD is empty"
+    if datasetID:
+        os.system(f"mv -i {path} ldone")
+        return datasetID 
 
 #jsonLD2dataset('ld/310068.jsonld')
 
@@ -89,10 +123,15 @@ def getjsonLD(datasetID):
 #have a fnc to ls all the jsonld in a dir, and map over that: 
 # started w/: list(map(jsonLD2dataset,os.listdir('ld')))
 # but path based now
-def run_all():
+def run_all_ld():
     import glob
     paths=glob.glob('./ld/*.jsonld') #this gives path, not fns so change above
     return list(map(jsonLD2dataset,paths))
+
+def run_all_js():
+    import glob
+    paths=glob.glob('./js/*.js') #this gives path, not fns so change above
+    return list(map(jsLD2dataset,paths))
 
 # maybe returning a file w/the filename to datasetID mappings
 #jsonLD2dataset('ld/609656.jsonld')
