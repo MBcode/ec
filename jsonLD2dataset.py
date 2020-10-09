@@ -24,10 +24,12 @@ def stripjshtm(html):
 def dict2dataset(d,url=None):
     jsLD=json.dumps(d)
     name= d.get('name')
-    if not name: #for neotomadb
-        name = d['spatialCoverage']['name']
+#   if not name: #for neotomadb
+#       name = d['spatialCoverage']['name']
     if name:
         name=stripjshtm(name)
+    else:
+        name = " "
     #so find a way2only run for it, maybe loading a schema based cfg for nonstandard location
     #url = d['identifier'][0]['url'] #iedadata
 #   idurl = d.get('identifier')
@@ -131,7 +133,12 @@ def run_all_ld():
 def run_all_js():
     import glob
     paths=glob.glob('./js/*.js') #this gives path, not fns so change above
-    return list(map(jsLD2dataset,paths))
+    #return list(map(jsLD2dataset,paths))
+    rl= list(map(jsLD2dataset,paths))
+    with open('dsIDs.txt','w') as f:
+        for item in rl:
+            f.write("%s\n" % item)
+    return rl
 
 # maybe returning a file w/the filename to datasetID mappings
 #jsonLD2dataset('ld/609656.jsonld')
