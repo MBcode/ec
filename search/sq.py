@@ -9,13 +9,12 @@ import json
 from SPARQLWrapper import SPARQLWrapper, JSON
 endpoint = os.getenv('dev_endpoint')
 sparql = SPARQLWrapper(endpoint)
-q0 = """PREFIX schema: <http://schema.org/>
-select distinct ?s ?o where {
-    { ?s schema:description ?o .} UNION
-    { ?s schema:keywords ?o .} UNION
-    { ?s schema:name ?o .}
-    FILTER regex(?o, "nitrogen", "i").
-}"""
+#q0 = """PREFIX schema: <http://schema.org/>
+#select distinct ?s ?o where {
+#    { ?s schema:description ?o .} UNION
+#    { ?s schema:keywords ?o .} UNION
+#    { ?s schema:name ?o .}
+#    FILTER regex(?o, "nitrogen", "i").  }"""
 #qry_str = "carbon"
 if(len(sys.argv)>1):
     qry_str=sys.argv[1]
@@ -36,12 +35,9 @@ xml_qry=f'<query>{qry_str}</query>'
 print(cout,xml_qry)
 i=0
 for result in results["results"]["bindings"]:
-    #print("<document id=\"",i,"\">")
     print(f'<document id=\"{i}\">')
-    #print("<url>",result["s"]["value"],"</url>")
     url=result["s"]["value"]
     print(f'<url>{url}</url>')
-    #print("<snippet>",result["o"]["value"],"</snippet></document>")
     description=result["o"]["value"]
     print(f'<snippet>{description}</snippet></document>')
     i=i+1
