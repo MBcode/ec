@@ -1,0 +1,1 @@
+run.sh ss.py saarch-shim, so can qry.py and now r2.sh to start ss2sq.py which also uses sq.py SPARQL text-search 
