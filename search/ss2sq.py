@@ -1,9 +1,12 @@
-#Search main or backup closder or search3 sparql endpoint(&get all metadata at once)
+#Search main or backup clowder or search3 sparql endpoint(&get all metadata at once)
 #ss.py + dev4c.py,  then took sparql part out into sq.py, and call it from this: ss2sq.py
-#code below is from the colab NB that I shared awhile ago
+#code below is from the colab NoteBook that I shared awhile ago
 # can be more than a shim to get non-auth clowder search
 #since it's an API shim, will assume called from NB or other code,
-# for which I will give the qr.py example
+# for which I will give the qry.py example
+# which already falls over to sq.py sparql query, should do that here for /search
+#then make sure all output is close/useable for final html search results
+#&add something like /cluster to produce the carrot2 clustering results
 from flask import Flask
 from markupsafe import escape
 app = Flask(__name__)

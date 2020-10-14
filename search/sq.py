@@ -42,3 +42,9 @@ for result in results["results"]["bindings"]:
     print(f'<snippet>{description}</snippet></document>')
     i=i+1
 print("</searchresult>")
+#presently xml ready for carro2 clustering, but will make that an output format for /cluster route
+# and will get a uniform output as say geodex puts out, though final html is ok too
+
+#before fuseki & then this blazegraph instance I also had a cache of HDT files, so have code w/:
+#from hdt import HDTDocument ;which when worked up allows for same breadth & could take the per repo
+# checkbox info (w/o having to make subgraphs, or putting restriction in sparql query)for other stores
