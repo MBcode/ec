@@ -1,4 +1,4 @@
-share notebooks, now in colab because of secret keys/etc.
+share notebooks.., was in colab because of secret keys/etc, will share soon.
 Also metadata crawling and asserting to clowderframework for search
 Will soon be put in: https://github.com/earthcube/earthcube-utilities
-Also use of the search-API which will be expanded
+Also use of the search-API adaptor which will be expanded
