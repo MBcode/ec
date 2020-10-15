@@ -103,19 +103,18 @@ def dict2dataset(d,url=None):
     print(metadata3)
     headers3={'X-API-Key': clowder_key,'accept': '*/*', 'Content-Type': 'application/json'}
     print(headers3)
-#   rds=requests.post(f'{clowder_host}/api/datasets/createempty',headers=headers3, data=json.dumps(metadata3))
-#   print(rds.json()) #check for good return before running the rest 
-#   datasetID=rds.json()['id'] 
-#   print(datasetID)
+    rds=requests.post(f'{clowder_host}/api/datasets/createempty',headers=headers3, data=json.dumps(metadata3))
+    print(rds.json()) #check for good return before running the rest 
+    datasetID=rds.json()['id'] 
+    print(datasetID)
     headers2={'X-API-Key': clowder_key, 'Content-Type': 'application/json'}
-#   URL=f'{clowder_host}/api/datasets/{datasetID}/metadata'
-#   print(URL)
-#    r=requests.post(URL,data=jsLD,headers=headers2)
-#    print(r.json())
-#   print(datasetID)
-#   return datasetID
-    #return "test"
-    return metadata3
+    URL=f'{clowder_host}/api/datasets/{datasetID}/metadata'
+    print(URL)
+    r=requests.post(URL,data=jsLD,headers=headers2)
+    print(r.json())
+    print(datasetID)
+    #return metadata3
+    return datasetID
 
 def jsonLD2dataset(path):
     "create clowder dataset w/title,abstract,url and assert assoc jsonLD"
