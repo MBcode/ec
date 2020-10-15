@@ -30,7 +30,10 @@ pp = pprint.PrettyPrinter(indent=2)
 def url2metadata(url):
     r = requests.get(url)
     base_url_ = get_base_url(r.text, r.url)
-    data = extruct.extract(r.text, base_url=base_url_) #,syntaxes=['json-ld'] if was ok to throw others away
+    try:
+        data = extruct.extract(r.text, base_url=base_url_) #,syntaxes=['json-ld'] if was ok to throw others away
+    except:
+        data = None
     #pp.pprint(data)
     return data
 
@@ -42,21 +45,26 @@ def url2jsonld(url):
         ld ="" 
     return ld
 
-def fn2jsonld(fn):
+#def fn2jsonld(fn):
+def fn2jsonld(fn, base_url=None):
     "url=base_url+fn save to fn"
     import re
-    base_url = os.getenv('BASE_URL') 
+    if not base_url:
+        base_url = os.getenv('BASE_URL') 
     #print(base_url)
+    #print(fn)
     url= base_url + fn
+    #print(url)
     ld=url2jsonld(url)
-    print(len(ld))
+    #print(len(ld))
     cfn=re.sub(r'(\n\s*)+\n+', '\n', fn.strip())
     fn = cfn + ".jsonld"
-    print(fn)
-    with open(fn  ,'w') as f:
-        #pp.pprint(ld,f)
-        #f.write(pprint.pformat(ld[0]))
-        f.write(json.dumps(ld[0], indent= 2))
+    #print(fn)
+    if ld:
+        with open(fn  ,'w') as f:
+            #pp.pprint(ld,f)
+            #f.write(pprint.pformat(ld[0]))
+            f.write(json.dumps(ld[0], indent= 2))
     return ld
 
 def test(): #use a optional here
@@ -66,9 +74,42 @@ def t2(ns="101000"): #works
     fn2jsonld(ns)
 
 def run_IDs(fn='l1'):
+    "file of FNs to append to base_url"
     with open(fn) as f:
         IDs = f.readlines()
     return list(map(fn2jsonld,IDs))
+
+def site2buFNs(sitesfile = 'sitemap.xml'):
+    "sitemap-> base_url & FileNames"
+    import xmltodict
+    import json
+
+    with open(sitesfile) as f:
+        xml=f.read()
+    sites = xmltodict.parse(xml)
+    urls=sites['urlset']['url']
+    for url in urls:
+        loc=(url['loc'])
+    #generalize by finding last possible split char
+    splitchar = '='
+    url2pair = lambda url : url['loc'].split(splitchar)
+    base_url = url2pair(urls[0])[0] + splitchar
+    print(base_url) #return this
+    url2fn = lambda url : url2pair(url)[1]
+    #pairs = map(url2pair,urls)
+    FNs = map(url2fn,urls) #return this too
+    #for fn in FNs:
+    #    print(fn)
+    return base_url, FNs
+
+def run_site(fn='sitemap.xml'):
+    #import site2urls
+    base_url, FNs = site2buFNs(fn)
+    print(base_url)
+    for fn in FNs:
+        print(fn)
+        fn2jsonld(fn,base_url)
+    #return list(map(fn2jsonld,FNs,base_url))
 
 
 #considering if any of: 'microdata': [], 'microformat': [], 'opengraph': [], 'rdfa': []}
