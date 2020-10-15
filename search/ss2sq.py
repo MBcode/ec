@@ -23,7 +23,7 @@ def search(qry):
         clowder_host = "https://earthcube.clowderframework.org"
         clowder_key = os.getenv('eckey')
     print(clowder_host)
-    qry_str=escape(qry)
+    qry_str=escape(qry) 
     print(qry_str)
     #print(f'host:{clowder_host},qry:{qry_str}')
     r = requests.get(f"{clowder_host}/api/search?query={qry_str}", headers={'X-API-Key': clowder_key})
@@ -31,7 +31,18 @@ def search(qry):
 
 @app.route('/search3/<qry>')
 def search3(qry):
-    qry_str=escape(qry)
+    qry_str=escape(qry) 
     cs=f"python3 sq.py {qry_str}"
     s=os.popen(cs).read()
     return s
+
+@app.route('/ag/<qry>')
+def ag(qry):
+    qry_str=escape(qry) 
+    #cs=f"python3 ag.py {qry_str}"
+    #cs=f"python3 ag.py {qry_str} |sed -f ld.sed"
+    cs=f"python3 ag.py {qry_str} |sed '/^ld\//s//<p>/'"
+    s=os.popen(cs).read()
+    #return s
+    htm= '<html>' + s + '</html>'
+    return htm
