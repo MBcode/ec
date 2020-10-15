@@ -15,39 +15,75 @@ import requests
 import json
 import os
 
-@app.route('/search/<qry>')
-def search(qry):
-    "new site w/simple qry"
-    clowder_key = os.getenv('testkey')
-    clowder_host = os.getenv('clowder_host')
-    if not clowder_host:
-        clowder_host = "https://earthcube.clowderframework.org"
-        clowder_key = os.getenv('eckey')
-    print(clowder_host)
-    qry_str=escape(qry) 
-    print(qry_str)
-    #print(f'host:{clowder_host},qry:{qry_str}')
-    r = requests.get(f"{clowder_host}/api/search?query={qry_str}", headers={'X-API-Key': clowder_key})
-    return json.dumps(r.json()['results'])
-
-@app.route('/search3/<qry>')
-def search3(qry):
-    "sparql text search"
-    qry_str=escape(qry) 
-    cs=f"python3 sq.py {qry_str}"
-    s=os.popen(cs).read()
-    return s
-
 @app.route('/ag/<qry>')
 def ag(qry):
     "grep jsonld, get as html"
     qry_str=escape(qry) 
-    #cs=f"python3 ag.py {qry_str} |sed '/^ld\//s//<p>/'"
     cs=f"ag {qry_str} ld/* |sed '/^ld\//s//<p>/'"
     s=os.popen(cs).read()
     htm= '<html>' + s + '</html>'
     return htm
 
+def sq(qry_str):
+    #cs=f"python3 sq.py {qry_str}"
+    cs=f"python3 sq.py {qry_str}|sed '/^</s//<br></'"
+    s=os.popen(cs).read()
+    if len(s)<8:
+        print("<!--nothing from triplestore backup2grep-->")
+        ag(qry_str)
+    #return s 
+    htm= '<html>' + s + '</html>'
+    return htm
+
+@app.route('/search3/<qry>')
+def search3(qry):
+    "sparql text search"
+    qry_str=escape(qry) 
+    #cs=f"python3 sq.py {qry_str}"
+    #s=os.popen(cs).read()
+    #if len(s)<8:
+    #    print("<!--nothing from triplestore backup2grep-->")
+    #    ag(qry)
+    s = sq(qry)
+    return s 
+
+@app.route('/search/<qry>')
+def search(qry):
+    "text search of clowder then sparql if down"
+    #was setup to fallback from earthcube to ncsa clowder at one point
+    #clowder_key = os.getenv('testkey')
+    clowder_key = os.getenv('eckey')
+    clowder_host = os.getenv('clowder_host')
+    #if not clowder_host:
+    #    clowder_host = "https://earthcube.clowderframework.org"
+    #    clowder_key = os.getenv('testkey')
+    print(clowder_host)
+    qry_str=escape(qry) 
+    print(qry_str)
+    #print(f'host:{clowder_host},qry:{qry_str}')
+    ret=" " #shouldn't need to do this
+    try:
+        r = requests.get(f"{clowder_host}/api/search?query={qry_str}", headers={'X-API-Key': clowder_key})
+    except:
+        print("<!--exception so used backup-->")
+        #ret=search3(qry)
+        ret=sq(qry)
+    else:
+        sc=r.status_code
+        ret=f'<!--status-code:{sc}-->'
+        print(ret)
+        #if r:
+        #if(r.status_code == requests.codes.ok):
+        if(r.status_code == 200):
+            ret = json.dumps(r.json()['results'])
+            return ret
+        else:
+            ret=sq(qry)
+    return ret
+
 #qry.py falls over when clowder down to search3, I'd like that try/excpt..to happen here next
- #is is a cli that calls the /search route but then backes up to the /search3 route
+ #is is a cli that calls the /search route but then backs up to the /search3 route
   #but I could just have search that right here went clowder->sparql->grep
+
+#next get search json.. in html format, for now; 
+ #bc I can't get geodex api returns, to see what they are like to match them yet
