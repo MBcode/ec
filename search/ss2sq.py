@@ -38,11 +38,14 @@ def search3(qry):
 
 @app.route('/ag/<qry>')
 def ag(qry):
+    #import re
     qry_str=escape(qry) 
     #cs=f"python3 ag.py {qry_str}"
-    #cs=f"python3 ag.py {qry_str} |sed -f ld.sed"
-    cs=f"python3 ag.py {qry_str} |sed '/^ld\//s//<p>/'"
+    #cs=f"python3 ag.py {qry_str} |sed '/^ld\//s//<p>/'"
+    #cs=f"ag {qry_str} ld/*"
+    cs=f"ag {qry_str} ld/* |sed '/^ld\//s//<p>/'"
     s=os.popen(cs).read()
+    #s=re.sub(r'^ld\/',r'<p>',s1)
     #return s
     htm= '<html>' + s + '</html>'
     return htm
