@@ -2,7 +2,8 @@
 #ss.py + dev4c.py,  then took sparql part out into sq.py, and call it from this: ss2sq.py
 #code below is from the colab NoteBook that I shared awhile ago
 # can be more than a shim to get non-auth clowder search
-#since it's an API shim, will assume called from NB or other code,
+#since it's an API shim/augmentation, will assume called from NB or other code,
+ #but as I get html returns could just call it from a txt-box or directly
 # for which I will give the qry.py example
 # which already falls over to sq.py sparql query, should do that here for /search
 #then make sure all output is close/useable for final html search results
@@ -31,6 +32,7 @@ def search(qry):
 
 @app.route('/search3/<qry>')
 def search3(qry):
+    "sparql text search"
     qry_str=escape(qry) 
     cs=f"python3 sq.py {qry_str}"
     s=os.popen(cs).read()
@@ -38,14 +40,14 @@ def search3(qry):
 
 @app.route('/ag/<qry>')
 def ag(qry):
-    #import re
+    "grep jsonld, get as html"
     qry_str=escape(qry) 
-    #cs=f"python3 ag.py {qry_str}"
     #cs=f"python3 ag.py {qry_str} |sed '/^ld\//s//<p>/'"
-    #cs=f"ag {qry_str} ld/*"
     cs=f"ag {qry_str} ld/* |sed '/^ld\//s//<p>/'"
     s=os.popen(cs).read()
-    #s=re.sub(r'^ld\/',r'<p>',s1)
-    #return s
     htm= '<html>' + s + '</html>'
     return htm
+
+#qry.py falls over when clowder down to search3, I'd like that try/excpt..to happen here next
+ #is is a cli that calls the /search route but then backes up to the /search3 route
+  #but I could just have search that right here went clowder->sparql->grep
