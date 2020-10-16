@@ -14,6 +14,18 @@ app = Flask(__name__)
 import requests
 import json
 import os
+#./ld holds links to full LinkedData cache
+
+@app.route('/agrep/<qry>')
+def agrep(qry):
+    "agrep jsonld, get as html"
+    qry_str=escape(qry) #tre-agrep is preferred
+    #cs=f"agrep -d'^\{' {qry_str} ld/edi/* |sed '/^ld\//s//<p>/'"
+    cs=f"getLD.sh {qry_str} "
+    htm=os.popen(cs).read()
+    #s=os.popen(cs).read()
+    #htm= '<html>' + s + '</html>'
+    return htm
 
 @app.route('/ag/<qry>')
 def ag(qry):
