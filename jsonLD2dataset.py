@@ -3,7 +3,7 @@ import requests
 import json
 import os
 clowder_host = "https://earthcube.clowderframework.org"
-clowder_key = os.getenv('eckey')
+clowder_key = os.getenv('eckey') #only used for POST not GET anymore
 clowder_space = os.getenv('clowder_space') #change per repo
 print(clowder_space)
 #make sure the input fn's have been milled w/something like: #only iedadata, rest find w/encode utf-8
@@ -156,12 +156,14 @@ def jsLD2dataset(path):
 #Then to check it was uploaded, or when get search results, &want metadata, send an 'id' to this:
 def getLD(datasetID):
     "given clowder dataset id: return it's saved(altered)jsonLD"
-    r = requests.get(f'{clowder_host}/api/datasets/{datasetID}/metadata', headers={'X-API-Key' : clowder_key})
+    #r = requests.get(f'{clowder_host}/api/datasets/{datasetID}/metadata', headers={'X-API-Key' : clowder_key})
+    r = requests.get(f'{clowder_host}/api/datasets/{datasetID}/metadata')
     print(json.dumps(r.json(), indent=2))
 
 def getjsonLD(datasetID):
     "given clowder dataset id: return it's saved()jsonLD"
-    r = requests.get(f'{clowder_host}/api/datasets/{datasetID}/metadata.jsonld', headers={'X-API-Key' : clowder_key})
+    #r = requests.get(f'{clowder_host}/api/datasets/{datasetID}/metadata.jsonld', headers={'X-API-Key' : clowder_key})
+    r = requests.get(f'{clowder_host}/api/datasets/{datasetID}/metadata.jsonld')
     print(json.dumps(r.json(), indent=2))
 
 #logging
