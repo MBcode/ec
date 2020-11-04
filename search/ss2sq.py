@@ -64,7 +64,7 @@ def search(qry):
     "text search of clowder then sparql if down"
     #was setup to fallback from earthcube to ncsa clowder at one point
     #clowder_key = os.getenv('testkey')
-    clowder_key = os.getenv('eckey')
+    # clowder_key = os.getenv('eckey')
     clowder_host = os.getenv('clowder_host')
     #if not clowder_host:
     #    clowder_host = "https://earthcube.clowderframework.org"
@@ -75,7 +75,8 @@ def search(qry):
     #print(f'host:{clowder_host},qry:{qry_str}')
     ret=" " #shouldn't need to do this
     try:
-        r = requests.get(f"{clowder_host}/api/search?query={qry_str}", headers={'X-API-Key': clowder_key})
+        #r = requests.get(f"{clowder_host}/api/search?query={qry_str}", headers={'X-API-Key': clowder_key})
+        r = requests.get(f"{clowder_host}/api/search?query={qry_str}")
     except:
         print("<!--exception so used backup-->")
         #ret=search3(qry)
