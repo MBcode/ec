@@ -108,7 +108,8 @@ def dict2dataset(d,url=None):
     datasetID=rds.json()['id'] 
     print(datasetID)
     headers2={'X-API-Key': clowder_key, 'Content-Type': 'application/json'}
-    URL=f'{clowder_host}/api/datasets/{datasetID}/metadata'
+    #URL=f'{clowder_host}/api/datasets/{datasetID}/metadata' #depricated
+    URL=f'{clowder_host}/api/datasets/{datasetID}/metadata.jsonld'
     print(URL)
     r=requests.post(URL,data=jsLD,headers=headers2)
     print(r.json())
