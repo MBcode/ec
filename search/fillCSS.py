@@ -1,3 +1,4 @@
+#testing re-skinning of clowder search results, so it can be placed in UX group's new CSS
 import requests
 import json
 import sys
@@ -8,18 +9,25 @@ if(len(sys.argv)>1):
 else:
     qry_str = "carbon"
 
-#from assert code utils:
+#from assert code utils, now altered:
 def first(l):
+    from collections.abc import Iterable
     if isinstance(l,list):
         return l[0]
+    elif isinstance(l,Iterable):
+        return list(l)[0]
     else:
         return l
 
 def httpP(str):
-    str.startswith('http')
+    #str.startswith('http')
+    return str.startswith('http')
 
 def getURLs(l):
-    filter(httpP,l)
+    if isinstance(l,str):
+        l=l.split()
+    #filter(httpP,l)
+    return filter(httpP,l)
 #
 
 def cq(qry_str):
@@ -39,18 +47,21 @@ def cj2h(j):
         name=r['name']
         des=r['description']
         #will want to get url
-        url=httpP(des) #bool, need actual url
+        #url=httpP(des) #bool, need actual url
+        url=first(getURLs(des))
         rh=f'<div class="rescard"><div class="resheader"><a href="{url}">{name}</a></div>'
         rb=f'<div class="rescontiner"><a href="{url}><p>{des}</p></div>'
         #I do not see ec score from clowder  to put /\
         rs=rh+rb
         print(rs) #for now
 
+#I could do a getjsonLD and turn that into a jsonLD playground viz-tab url
+
 #if I ran carrot2 dcs clustering, could just add keyword like links to the clusters that each is in
  #could generate a page for each of these clusters, that is just a filtering of these returns w/in grp
 
 rj=cq(qry_str)
-print(rj)
+#print(rj)
 #ret = json.dumps(r.json()['results'], indent=2)
 print(json.dumps(rj, indent=2))
 cj2h(rj)
