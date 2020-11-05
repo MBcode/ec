@@ -1,4 +1,6 @@
 #testing re-skinning of clowder search results, so it can be placed in UX group's new CSS
+ #in action probably have a flask route that calls it&along w/creating the html, 
+ # might get some other metadata elts, that could be used for live filtering w/in the page
 import requests
 import json
 import sys
@@ -49,9 +51,11 @@ def cj2h(j):
         #will want to get url
         #url=httpP(des) #bool, need actual url
         url=first(getURLs(des))
+        url2= clowder_host + '/dataset/' + r['id'] #use metadata-tab for 'details'
         rh=f'<div class="rescard"><div class="resheader"><a href="{url}">{name}</a></div>'
-        rb=f'<div class="rescontiner"><a href="{url}><p>{des}</p></div>'
+        #rb=f'<div class="rescontiner"><a href="{url}><p>{des}</p></div>'
         #I do not see ec score from clowder  to put /\
+        rb=f'<div class="rescontiner"><a href="{url}><p>{des}</p><br><a href={url2}>details</a></div>'
         rs=rh+rb
         print(rs) #for now
 
