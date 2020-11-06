@@ -51,11 +51,11 @@ def cj2h(j):
         #will want to get url
         #url=httpP(des) #bool, need actual url
         url=first(getURLs(des))
-        url2= clowder_host + '/dataset/' + r['id'] #use metadata-tab for 'details'
+        url2= clowder_host + '/datasets/' + r['id'] #use metadata-tab for 'details'
         rh=f'<div class="rescard"><div class="resheader"><a href="{url}">{name}</a></div>'
         #rb=f'<div class="rescontiner"><a href="{url}><p>{des}</p></div>'
         #I do not see ec score from clowder  to put /\
-        rb=f'<div class="rescontiner"><a href="{url}><p>{des}</p><br><a href={url2}>details</a></div>'
+        rb=f'<div class="rescontiner"><a href="{url}><p>{des}</p><a href={url2}>details</a><p></div>'
         rs=rh+rb
         print(rs) #for now
 
@@ -64,8 +64,14 @@ def cj2h(j):
 #if I ran carrot2 dcs clustering, could just add keyword like links to the clusters that each is in
  #could generate a page for each of these clusters, that is just a filtering of these returns w/in grp
 
+#could call this externally from one of the flask routes, via: python3 fillCSS.py querystr 
 rj=cq(qry_str)
 #print(rj)
 #ret = json.dumps(r.json()['results'], indent=2)
+print("<html>")
+print("<script>")
 print(json.dumps(rj, indent=2))
+print("</script>")
+    #might need something around the table
 cj2h(rj)
+print("</html>")
