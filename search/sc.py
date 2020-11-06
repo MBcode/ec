@@ -1,26 +1,37 @@
+#return all the jsonLD for each of the search results
+
 #early example of augmenting search results
 #taken from the colab NB that I've shared
 import requests
 import json
+import sys 
 import os 
 clowder_host = "https://earthcube.clowderframework.org" 
-clowder_key = os.getenv('eckey') #I can use locally w/new instance till it is fixed 
+#clowder_key = os.getenv('eckey') #I can use locally w/new instance till it is fixed 
+ #no longer needed
 
 #To check it was uploaded, or when get search results, &want metadata, send an 'id' to this:
 def getLD(datasetID):
-    r = requests.get(f'{clowder_host}/api/datasets/{datasetID}/metadata', headers={'X-API-Key' : clowder_key})
+    #r = requests.get(f'{clowder_host}/api/datasets/{datasetID}/metadata', headers={'X-API-Key' : clowder_key})
+    r = requests.get(f'{clowder_host}/api/datasets/{datasetID}/metadata')
     #print(json.dumps(r.json(), indent=2)) 
     #print(r.json()) 
     return r.json() 
 
 def getjsonLD(datasetID):
     "given clowder dataset id: return it's saved()jsonLD"
-    r = requests.get(f'{clowder_host}/api/datasets/{datasetID}/metadata.jsonld', headers={'X-API-Key' : clowder_key})
+    #r = requests.get(f'{clowder_host}/api/datasets/{datasetID}/metadata.jsonld', headers={'X-API-Key' : clowder_key})
+    r = requests.get(f'{clowder_host}/api/datasets/{datasetID}/metadata.jsonld')
     print(json.dumps(r.json(), indent=2))
 
-qry_str = "multibeam sonar" 
+#qry_str = "multibeam sonar" 
+if len(sys.argv)>1:
+    qry_str=sys.argv[1]
+else:
+    qry_str="carbon"
 
-r = requests.get(f"{clowder_host}/api/search?query={qry_str}", headers={'X-API-Key': clowder_key}) 
+#r = requests.get(f"{clowder_host}/api/search?query={qry_str}", headers={'X-API-Key': clowder_key}) 
+r = requests.get(f"{clowder_host}/api/search?query={qry_str}") 
 print(json.dumps(r.json(), indent=2))
 
 #getLD the 'details' for each search result, and put (link?) back in search results
