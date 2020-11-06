@@ -37,6 +37,7 @@ def ag(qry):
     return htm
 
 def sq(qry_str):
+    "sparql query"
     #cs=f"python3 sq.py {qry_str}"
     cs=f"python3 sq.py {qry_str}|sed '/^</s//<br></'"
     s=os.popen(cs).read()
@@ -76,7 +77,13 @@ def search(qry):
     ret=" " #shouldn't need to do this
     try:
         #r = requests.get(f"{clowder_host}/api/search?query={qry_str}", headers={'X-API-Key': clowder_key})
-        r = requests.get(f"{clowder_host}/api/search?query={qry_str}")
+        cs=f"python3 fillCSS.py {qry_str}"
+        r=os.popen(cs).read()
+        if(not r):
+            r = requests.get(f"{clowder_host}/api/search?query={qry_str}")
+        else:
+            return r
+        #could either call fillCSS.py or it's fnc that turn the ret json just above into the final html
     except:
         print("<!--exception so used backup-->")
         #ret=search3(qry)
@@ -88,7 +95,7 @@ def search(qry):
         #if r:
         #if(r.status_code == requests.codes.ok):
         if(r.status_code == 200):
-            ret = json.dumps(r.json()['results'])
+            ret = json.dumps(r.json()['results'], indent=2)
             return ret
         else:
             ret=sq(qry)
