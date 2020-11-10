@@ -145,7 +145,8 @@ def search():
     ret=" " #shouldn't need to do this
     try:
         #r = requests.get(f"{clowder_host}/api/search?query={qry_str}", headers={'X-API-Key': clowder_key})
-        cs=f"python3 fillCSS.py {qry_str}"
+        #cs=f"python3 fillCSS.py {qry_str}"
+        cs=f"python3 fillSearch.py {qry_str}"
         r=os.popen(cs).read()
         if(not r):
             r = requests.get(f"{clowder_host}/api/search?query={qry_str}")
