@@ -1,4 +1,11 @@
-share notebooks.., was in colab because of secret keys/etc, will share soon.
-Also metadata crawling and asserting to clowderframework for search
-Will soon be put in: https://github.com/earthcube/earthcube-utilities
-Also use of the search-API adaptor which will be expanded
+** metadata-search of Dataset/resources
+*** started with:
+crawl of embedded metadata for each of their landing pages, and search in a triplestore
+*** this repo started to:
+share notebooks..(showing this off), had more dev in colab because of secret keys/etc, but open now
+*** Also 
+metadata crawling and asserting to clowderframework for search
+*** Use: 
+use of the search-API adaptor is being expanded in ./search
+*** Prep
+Parts will soon be put in: https://github.com/earthcube/earthcube-utilities
