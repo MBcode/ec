@@ -1,1 +1,2 @@
 run.sh ss.py search-shim, so can qry.py and now r2.sh to start ss2sq.py which also uses sq.py SPARQL text-search 
+Now run.sh sc2.py which calls out to fillSearch.py, search.htm has 1st form call to this service, which regenerates the page w/serch results
