@@ -59,7 +59,7 @@ def cj2h(j):
         rh=f'<div class="rescard"><div class="resheader"><a href="{url}">{name}</a></div>'
         #rb=f'<div class="rescontiner"><a href="{url}><p>{des}</p></div>'
         #I do not see ec score from clowder  to put /\
-        rb=f'<div class="rescontiner"><a href="{url}><p>{des}</p><a href={url2}>details</a><p></div>'
+        rb=f'<div class="rescontiner"><a href="{url}"><p>{des}</p><a href="{url2}">details</a><p></div></div>'
         rs=rh+rb
         print(rs) #for now
 
@@ -251,11 +251,12 @@ bottom="""
       <div class="row">
         <div class="col-12">
           <h6 style="color:grey">Work on this site is supported by NSF EarthCube</h6>
-          <h6 style="color:grey">prototype <a href=https://github.com/MBcode/ec/tree/master/search>code available</a></h6>
-          <h6 style="color:grey">Simple Grid by <a style="color:grey" href="http://zcole.me" target="_blank">Zach
-              Cole</a>
-            Open source under the <a style="color:grey" href="https://opensource.org/licenses/MIT" target="_blank">MIT
-              License</a>
+          <h6 style="color:grey">prototype <a href=https://github.com/MBcode/ec/tree/master/search>code available</a>
+            other search versions: 
+            <a href=https://geocodes.earthcube.org/>geocodes</a> 
+            <a href=https://geocodes.earthcube.org/geocodes/textSearch.html>text</a> 
+            <a href=https://earthcube.clowderframework.org/>clowder</a> 
+            <a href=https://search.dataone.org/portals/earthcubedemo/Data >dataone</a>
           </h6>
         </div>
       </div>
