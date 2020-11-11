@@ -75,7 +75,7 @@ search = """
    <div style="padding:0px;top:0px" class="container">
       <div class="row">
         <div class="col-12 center">
-          <img src="../img/search.svg" style="height:25px">
+          <img src="http://mbobak-ofc.ncsa.illinois.edu/img/search.svg" style="height:25px">
           <input style="font-size:120%" type="search" id="q" name="q" aria-label="Search for samples">
           <button style="color:black;border-color:black;border-style:solid" id="update">Search</button>
           <!--   <div class="img img-website-mock"></div>  -->
@@ -126,16 +126,20 @@ top= """
   <title>GeoDex: JS-SPARQL search</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="shortcut icon" href="/img/earthcubeicon.png">
+  <link rel="shortcut icon" href="http://mbobak-ofc.ncsa.illinois.edu/img/earthcubeicon.png">
 
   <!---
   <script type="module" src="/js/geodex.js"></script>
-  ---->
-
   <link rel="stylesheet" href="/css/reset.css">
   <link rel="stylesheet" href="/css/simple-grid.css">
   <link rel="stylesheet" href="/css/zc-grid.css">
   <link rel="stylesheet" href="/css/card.css">
+  ---->
+
+  <link rel="stylesheet" href="http://mbobak-ofc.ncsa.illinois.edu/css/reset.css">
+  <link rel="stylesheet" href="http://mbobak-ofc.ncsa.illinois.edu/css/simple-grid.css">
+  <link rel="stylesheet" href="http://mbobak-ofc.ncsa.illinois.edu/css/zc-grid.css">
+  <link rel="stylesheet" href="http://mbobak-ofc.ncsa.illinois.edu/css/card.css">
 
 </head>
 
@@ -144,7 +148,7 @@ top= """
     <div class="container">
       <div class="row">
         <div class="col-12 center">
-          <img src="/img/earthcubeicon.png">
+          <img src="http://mbobak-ofc.ncsa.illinois.edu/img/earthcubeicon.png">
 					<h3 style="margin:5px;color:white"><a href=https://geocodes.earthcube.org/>GeoCODES</a></h3>
           <h3 style="margin:5px;color:white" class="font-light">a schema.org/metadata backed Dataset/resource search</h3>
             <!-- 
@@ -161,9 +165,9 @@ top= """
       <div class="row">
         <div class="col-12 center">
           <p>
-            <a style="margin:5px;color:white "href="/index.html">home</a>
-            <a style="margin:5px;color:white "href="/search.htm">search</a>
-            <a style="margin:5px;color:white "href="/about.htm">about</a>
+            <a style="margin:5px;color:white "href="https://geocodes.earthcube.org/">home</a>
+            <a style="margin:5px;color:white "href="http://mbobak-ofc.ncsa.illinois.edu/search.htm">search</a>
+            <a style="margin:5px;color:white "href="http://mbobak-ofc.ncsa.illinois.edu/about.htm">about</a>
           </p>
         </div>
       </div>
@@ -208,7 +212,7 @@ top= """
     <div style="padding:0px;top:0px" class="container">
       <div class="row">
         <div class="col-12 center">
-          <img src="/img/search.svg" style="height:25px">
+          <img src="http://mbobak-ofc.ncsa.illinois.edu/img/search.svg" style="height:25px">
           <input style="font-size:120%" type="search" id="q" name="q" aria-label="Search for samples">
           <button style="color:black;border-color:black;border-style:solid" id="update">Search</button>
           <!--   <div class="img img-website-mock"></div>  -->
@@ -246,7 +250,8 @@ bottom="""
     <div class="container">
       <div class="row">
         <div class="col-12">
-          <h6 style="color:white">Work on this site is supported by NSF EarthCube</h6>
+          <h6 style="color:grey">Work on this site is supported by NSF EarthCube</h6>
+          <h6 style="color:grey">prototype <a href=https://github.com/MBcode/ec/tree/master/search>code available</a></h6>
           <h6 style="color:grey">Simple Grid by <a style="color:grey" href="http://zcole.me" target="_blank">Zach
               Cole</a>
             Open source under the <a style="color:grey" href="https://opensource.org/licenses/MIT" target="_blank">MIT
