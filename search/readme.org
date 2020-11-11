@@ -1,5 +1,7 @@
-** search a clowder store
+** search a [[https://clowderframework.org/][clowder]] store
 *** started with:
 run.sh ss.py search-shim, so can qry.py and now r2.sh to start ss2sq.py which also uses sq.py SPARQL text-search 
 *** now generating html vs json
 Now run.sh sc2.py which calls out to fillSearch.py, search.htm has 1st form call to this service, which regenerates the page w/serch results
+*** upcoming
+use the getjsonLD calls to get elts, to have a faceted/filtering search, maybe incl search-sub-topics from [[https://search.carrot2.org/#/search/web/site%3Ahttps%3A%2F%2Fwww.hydroshare.org%20carbon/treemap][carrot2]] clustering
