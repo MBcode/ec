@@ -74,39 +74,38 @@ def cj2h(j):
  #could generate a page for each of these clusters, that is just a filtering of these returns w/in grp
 
 #----this was 1st templating, but only using 'top' and 'bottom' below now
-#some styling from: geodexui> view geodex/website/search.html
-#contain = """ <div class="container"><vid class="row"><div class="col-12 center">  .."""
-body = """<body> <div class="body-content" style="padding:0px">"""
-search = """
-   <div style="padding:0px;top:0px" class="container">
-      <div class="row">
-        <div class="col-12 center">
-          <img src="http://mbobak-ofc.ncsa.illinois.edu/img/search.svg" style="height:25px">
-          <input style="font-size:120%" type="search" id="q" name="q" aria-label="Search for samples">
-          <button style="color:black;border-color:black;border-style:solid" id="update">Search</button>
-          <!--   <div class="img img-website-mock"></div>  -->
-          <input id="nn" type="number" min="5" max="200" step="5" value="20" />
-  <div id="container1"></div>
-
-        </div>
-      </div>
-    </div>
-"""
-contain2s = """
-    <div style="padding:0px;top:0px" class="container">
-      <div class="row">
-        <div class="col-12">
-          <div id="container2"></div>
-           <div style="margin:30px">
-           """
-contain2e = """
-           </div>
-        </div>
-      </div>
-    </div> 
-    """
+##some styling from: geodexui> view geodex/website/search.html
+##contain = """ <div class="container"><vid class="row"><div class="col-12 center">  .."""
+#body = """<body> <div class="body-content" style="padding:0px">"""
+#search = """
+#   <div style="padding:0px;top:0px" class="container">
+#      <div class="row">
+#        <div class="col-12 center">
+#          <img src="http://mbobak-ofc.ncsa.illinois.edu/img/search.svg" style="height:25px">
+#          <input style="font-size:120%" type="search" id="q" name="q" aria-label="Search for samples">
+#          <button style="color:black;border-color:black;border-style:solid" id="update">Search</button>
+#          <!--   <div class="img img-website-mock"></div>  -->
+#          <input id="nn" type="number" min="5" max="200" step="5" value="20" />
+#  <div id="container1"></div>
+#
+#        </div>
+#      </div>
+#    </div>
+#"""
+#contain2s = """
+#    <div style="padding:0px;top:0px" class="container">
+#      <div class="row">
+#        <div class="col-12">
+#          <div id="container2"></div>
+#           <div style="margin:30px">
+#           """
+#contain2e = """
+#           </div>
+#        </div>
+#      </div>
+#    </div> 
+#    """
 #--above unused now
-
 
 #could call this externally from one of the flask routes, via: python3 fillCSS.py querystr 
 rj=cq(qry_str) #converted to html at very bottom now
@@ -125,6 +124,7 @@ rj=cq(qry_str) #converted to html at very bottom now
 #print("</body>")
 #print("</html>")
 
+#-now just simple top&bottom template, that has it's table filled by taking clowder search json returns and turnign to html
 top= """
 <!DOCTYPE html>
 <html>
@@ -258,11 +258,11 @@ bottom="""
       <div class="row">
         <div class="col-12">
           <h6 style="color:grey">Work on this site is supported by NSF EarthCube</h6>
-          <h6 style="color:grey">prototype <a href=https://github.com/MBcode/ec/tree/master/search>code available</a>
+          <h6 style="color:grey">prototype <a href=https://github.com/MBcode/ec/tree/master/search>code available</a>,
             other search versions: 
-            <a href=https://geocodes.earthcube.org/>geocodes</a> 
-            <a href=https://geocodes.earthcube.org/geocodes/textSearch.html>text</a> 
-            <a href=https://earthcube.clowderframework.org/>clowder</a> 
+            <a href=https://geocodes.earthcube.org/>geocodes</a>, 
+            <a href=https://geocodes.earthcube.org/geocodes/textSearch.html>text</a>, 
+            <a href=https://earthcube.clowderframework.org/>clowder</a>, 
             <a href=https://search.dataone.org/portals/earthcubedemo/Data >dataone</a>
           </h6>
         </div>
@@ -274,6 +274,6 @@ bottom="""
 </html>
 """
 print(top)
-cj2h(rj)
+cj2h(rj) #table filled by taking clowder search json returns and turnign to html
 print(bottom)
 
