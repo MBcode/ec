@@ -1,3 +1,4 @@
+#fillSearch.py is a simple templated fill of search results
 #cat fillCSS.py search.htm >fillSearch.py
 #replaces fillCSS.py
 #start w/run.sh runs sc2.py which calls this now, from a form submission from a search.htm like below
@@ -64,10 +65,15 @@ def cj2h(j):
         print(rs) #for now
 
 #I could do a getjsonLD and turn that into a jsonLD playground viz-tab url
+ #right now this file:fillSearch.py is called from sc2.py which has those functions
+  #we are still getting the json back &now converting to html, so this is a  place we could call getjsonLD 
+  #then how much do we do here vs sending the array of jsonLD on the page to be filtered there
+  #I've seen some flask based faceted search so have hope that as much as possible can be done here
 
 #if I ran carrot2 dcs clustering, could just add keyword like links to the clusters that each is in
  #could generate a page for each of these clusters, that is just a filtering of these returns w/in grp
 
+#----this was 1st templating, but only using 'top' and 'bottom' below now
 #some styling from: geodexui> view geodex/website/search.html
 #contain = """ <div class="container"><vid class="row"><div class="col-12 center">  .."""
 body = """<body> <div class="body-content" style="padding:0px">"""
@@ -99,15 +105,16 @@ contain2e = """
       </div>
     </div> 
     """
+#--above unused now
 
 
 #could call this externally from one of the flask routes, via: python3 fillCSS.py querystr 
-rj=cq(qry_str)
+rj=cq(qry_str) #converted to html at very bottom now
 ##print(rj)
 ##ret = json.dumps(r.json()['results'], indent=2)
 #print("<html>")
 #print("<script>")
-#print(json.dumps(rj, indent=2))
+#print(json.dumps(rj, indent=2))   #this is where the jsonLD array could be put, but below now
 #print("</script>")
 #    #might need something around the table
 ##print("<body>")
@@ -148,7 +155,7 @@ top= """
     <div class="container">
       <div class="row">
         <div class="col-12 center">
-          <img src="http://mbobak-ofc.ncsa.illinois.edu/img/earthcubeicon.png">
+          <a href=http://earthcube.org/><img src="http://mbobak-ofc.ncsa.illinois.edu/img/earthcubeicon.png"></a>
 					<h3 style="margin:5px;color:white"><a href=https://geocodes.earthcube.org/>GeoCODES</a></h3>
           <h3 style="margin:5px;color:white" class="font-light">a schema.org/metadata backed Dataset/resource search</h3>
             <!-- 
