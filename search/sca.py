@@ -33,9 +33,6 @@ def getjsonLD(datasetID):
     "given clowder dataset id: return it's saved()jsonLD"
     #r = requests.get(f'{clowder_host}/api/datasets/{datasetID}/metadata.jsonld', headers={'X-API-Key' : clowder_key})
     r = requests.get(f'{clowder_host}/api/datasets/{datasetID}/metadata.jsonld')
-    #print(json.dumps(r.json(), indent=2))
-    #return json.dumps(r.json())
-    #return  r.json()
     return  first(r.json())
 
 #qry_str = "multibeam sonar" 
@@ -57,14 +54,15 @@ for result in r.json()["results"]:
   #print(result) #lets just see the record w/the new keys
 # print(json.dumps(result, indent=2)) #but w/formatting so easier to see
   #could turn into jsonl-ld playground viz tab url here
-  #ldict=first(LD)
-  #ldict=json.loads(LD)
-  #publ=ldict.get('publisher')
   LDc=LD.get("content")
   publ=LDc.get("publisher")
+  date=first(LDc.get("datePublished"))
+  if(date):
+      print("=======================")
+      print(date)
+      result['date']=date
   if(publ):
       print("=======================")
-      #print(publ)
       pub=first(publ)
       print(pub)
       result['publisher']=pub
@@ -72,8 +70,6 @@ for result in r.json()["results"]:
   else:
       print("=--==--==--==--==--==--")
       print(type(LD))
-      #print(type(ldict))
-      #print(ldict)
       #print(LD)
       for key in LD:
           print(key)
