@@ -11,11 +11,17 @@ clowder_host = "https://earthcube.clowderframework.org"
 #clowder_key = os.getenv('eckey') #I can use locally w/new instance till it is fixed 
  #no longer needed
 
+def full(l):
+    return (len(l) > 0)
 #from fillSearch.py but most of this will be going in there anyway
 def first(l):
     from collections.abc import Iterable
     if isinstance(l,list):
-        return l[0]
+        if(full (l)):
+            return l[0]
+        else: 
+            #return l
+            return None
     elif isinstance(l,Iterable):
         return list(l)[0]
     else:
@@ -45,15 +51,7 @@ else:
 r = requests.get(f"{clowder_host}/api/search?query={qry_str}") 
 #print(json.dumps(r.json(), indent=2))  #maybe not print here, and only print after the new keys are added
 
-#getLD the 'details' for each search result, and put (link?) back in search results
-for result in r.json()["results"]:
-  dataset=result['id']
-  #print(dataset) #only print after altering now
-  LD=getjsonLD(dataset)
-  #print(LD) #maybe not print it all(unless err)&just print new keys added
-  #print(result) #lets just see the record w/the new keys
-# print(json.dumps(result, indent=2)) #but w/formatting so easier to see
-  #could turn into jsonl-ld playground viz tab url here
+def LD2re(LD,result):
   LDc=LD.get("content")
   publ=LDc.get("publisher")
   date=first(LDc.get("datePublished"))
@@ -76,8 +74,28 @@ for result in r.json()["results"]:
       print(json.dumps(LD, indent=2))
       print("=--==--==--==--==--==--")
 # result['details']=LD  #not getting back to r.json
+  result['details']=LDc 
+  return result
+
+#getLD the 'details' for each search result, and put (link?) back in search results
+for result in r.json()["results"]:
+  dataset=result['id']
+  print(f'=========dataset:{dataset}====')
+  #print(dataset) #only print after altering now
+  LD=getjsonLD(dataset)
+  #print(LD) #maybe not print it all(unless err)&just print new keys added
+  #print(result) #lets just see the record w/the new keys
+# print(json.dumps(result, indent=2)) #but w/formatting so easier to see
+  #could turn into jsonl-ld playground viz tab url here
+  #-
+  if(LD):
+      re = LD2re(LD, result)
+  else:
+      re = result
+  #-
   #this won't be seen in print, unless moved down here
-  print(json.dumps(result, indent=2))
+  print(json.dumps(re, indent=2))
+  #if func: return result #&if print wasn't being scooped up
 
 #could just be txt-dumping this, since fillSearch is taking a qry, getting this json, this should be put there
  #and can have the html have other elts not seen, not necc RDFa, but whatever is easy to facet on the page
