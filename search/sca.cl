@@ -24,33 +24,68 @@
      (dex:get (strcat *clowder-host* "/api/search?query=" qry_str)))))
 
 (defun getLD (id)
+  (rest (first-lv
     (decode-json-from-str
-     (dex:get (strcat *clowder-host* "/api/datasets/" id "/metadata.jsonld"))))
+     (dex:get (strcat *clowder-host* "/api/datasets/" id "/metadata.jsonld"))))))
 
-(defun id (ds)
-  "get ID from dataset alst"
-  (assoc-v :ID ds))
+(defun LDelts (id el)
+  "elt-list from LD"
+  (let ((ld (getLD id)))
+    (mapcar #'(lambda (e) (assoc-v e ld)) el))) 
+
+(defun id (ds) "get ID from dataset alst" (assoc-v :ID ds))
+(defun ldc (ld) "get  CONTENT from LD alst" (rest-lv (assoc-v :CONTENT ld)))
+(defun pub (ld) "get publisher from LD alst" (assoc-v :ID ld))
+(defun url (ld) "get publisher from LD alst" (assoc-v :URL ld))
 
 (defun results (ds) (assoc-v :RESULTS ds))
 
 (defun phit (ds)
   "print just1of the search results"
-  (let ((id (id ds))
-        (ln (len ds))
-       ;(ln  ds)
-        )
-    (print (str-cat "id= " id ",len=" ln))))
+  (let* ((id (id ds))
+         (ld  (getLD id))
+         (ldc (ldc ld))
+         (ln (len ldc))
+         ;(pub (pub ld))
+         ;(url (url ld))
+         ;(url2 (url ldc))
+         ;(m3 (mapcar #'(lambda (e) (assoc-v e ld))  '(:NAME :PUBLISHER :URL)))
+         (m3 (mapcar #'(lambda (e) (cons e (assoc-v e ldc))) '(:NAME :PUBLISHER :URL)))
+         )
+    (print (str-cat "==================id= " id ",len=" ln ",url=" m3))
+    (print ld)
+    (print "------------------------------------------------------------------------------")
+    m3))
 
 (defun qry2 (str)
   (let* ((ql (qry str))
          (res (results ql)))
     (mapcar #'phit res)))
 
+;can more quickly play w/sca.py search return values, to construct the correct results
+; btw, might collect distict filter/facet values&get counts, for things like publishers..
 (defun tq ()
   "test qry"
   (qry2 "multibeam sonar"))
-;("id= 5f829e1fe4b0b81250e2e12d,len=8" "id= 5f8278e5e4b0b81250da8c9a,len=8"
-;"id= 5f82794be4b0b81250dab844,len=8" "id= 5f8294b9e4b0b81250e26dd2,len=8"
-;"id= 5f829fb1e4b0b81250e2f4af,len=8" "id= 5f829f48e4b0b81250e2ef95,len=8")
-;can more quickly play w/sca.py search return values, to construct the correct results
-; btw, might collect distict filter/facet values&get counts, for things like publishers..
+;(((:NAME . "NOAA TIFF Image - 50m Backscatter, Charleston Bump - Deep Coral Priority Areas - Nancy Foster - (2006), UTM 17N NAD83NOAA/NMFS/EDM")
+; (:PUBLISHER . "publisher not specified") (:URL))
+;((:NAME . "Gridded backscatter mosaic of Venere mud volcano (MV), based on AUV MARUM-SEAL data acquisition during POS499")
+; (:PUBLISHER
+;  ((:|| (:@TYPE . "Organization")
+;    (:NAME . "PANGAEA - Data Publisher for Earth & Environmental Science"))
+;   (:@TYPE . "Role") (:ROLE-NAME . "publisher")))
+; (:URL))
+;((:NAME . "AWI Bathymetric Chart of the Fram Strait (BCFS) (Scale 1:100,000)")
+; (:PUBLISHER
+;  ((:|| (:@TYPE . "Organization")
+;    (:NAME . "PANGAEA - Data Publisher for Earth & Environmental Science"))
+;   (:@TYPE . "Role") (:ROLE-NAME . "publisher")))
+; (:URL))
+;((:NAME . "NOAA TIFF Image - 4m Bathymetric Mean Depth of Red Snapper Research Areas in the South Atlantic Bight, 2010NOAA/NMFS/EDM")
+; (:PUBLISHER . "publisher not specified") (:URL))
+;((:NAME
+;  . "NOAA TIFF Image - 50m Multibeam Bathymetry, Charleston Bump - Deep Coral Priority Areas - Little Hales - (2003), UTM 17N NAD83NOAA/NMFS/EDM")
+; (:PUBLISHER . "publisher not specified") (:URL))
+;((:NAME
+;  . "NOAA TIFF Image - 10m Multibeam Bathymetry, South Atlantic Bight - Deep Coral Priority Areas - NOAA Ship Nancy Foster - (2009), UTM 17N NAD83NOAA/NMFS/EDM")
+; (:PUBLISHER . "publisher not specified") (:URL)))
