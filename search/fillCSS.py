@@ -43,6 +43,15 @@ def cq(qry_str):
         return r.status_code
 
 #-cq2 w/backups
+#@app.route('/ag/<qry>')
+def ag(qry):
+    "grep jsonld, get as html"
+    #qry_str=escape(qry)
+    qry_str=qry
+    cs=f"ag {qry_str} ld/* |sed '/^ld\//s//<p>/'"
+    s=os.popen(cs).read()
+    htm= '<html>' + s + '</html>'
+    return htm
 
 def sq(qry_str):
     "sparql query"
@@ -104,6 +113,8 @@ def cq2(qry_str):
 def cj2h(j):
     "clowder json ret to html"
     #if(len(j)>1)
+    if(isinstance(j,str)):  #then had to fallback to other searches, w/just txt output
+            return j
     for r in j:
         name=r['name']
         des=r['description']
