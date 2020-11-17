@@ -35,9 +35,15 @@
 
 (defun id (ds) "get ID from dataset alst" (assoc-v :ID ds))
 (defun ldc (ld) "get  CONTENT from LD alst" (rest-lv (assoc-v :CONTENT ld)))
-(defun pub (ld) "get publisher from LD alst" (assoc-v :ID ld))
 (defun url (ld) "get publisher from LD alst" (assoc-v :URL ld))
-
+(defun name (ld) "get publisher from LD alst" (assoc-v :NAME ld))
+(defun pub (ld) "get publisher from LD alst" (assoc-v :PUBLISHER ld))
+(defun get-pub (al)
+  "get publisher"
+  (let ((publ (assoc-v :PUBLISHER al)))
+    (if (listp publ) (assoc-v :NAME (rest-lv (first-lv (first-lv publ))))
+      publ)))
+;(trace get-pub) 
 (defun results (ds) (assoc-v :RESULTS ds))
 
 (defun phit (ds)
@@ -49,8 +55,9 @@
          ;(pub (pub ld))
          ;(url (url ld))
          ;(url2 (url ldc))
-         ;(m3 (mapcar #'(lambda (e) (assoc-v e ld))  '(:NAME :PUBLISHER :URL)))
-         (m3 (mapcar #'(lambda (e) (cons e (assoc-v e ldc))) '(:NAME :PUBLISHER :URL)))
+         ;;(m3 (mapcar #'(lambda (e) (assoc-v e ld))  '(:NAME :PUBLISHER :URL)))
+         ;(m3 (mapcar #'(lambda (e) (cons e (assoc-v e ldc))) '(:NAME :PUBLISHER :URL)))
+         (m3 (mapcar #'(lambda (ef) (cons e (funcall ef ldc))) '(#'name #'get-pub #'url)))
          )
     (print (str-cat "==================id= " id ",len=" ln ",url=" m3))
     (print ld)
@@ -89,3 +96,10 @@
 ;((:NAME
 ;  . "NOAA TIFF Image - 10m Multibeam Bathymetry, South Atlantic Bight - Deep Coral Priority Areas - NOAA Ship Nancy Foster - (2009), UTM 17N NAD83NOAA/NMFS/EDM")
 ; (:PUBLISHER . "publisher not specified") (:URL)))
+
+;cleans up the getting of publisher
+;(print (mapcar #'get-pub *ret*)) ;where *ret* is what is comments just above
+;("publisher not specified"
+ ;"PANGAEA - Data Publisher for Earth & Environmental Science"
+ ;"publisher not specified" "publisher not specified" "publisher not specified"
+ ;"PANGAEA - Data Publisher for Earth & Environmental Science")
