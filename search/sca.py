@@ -51,17 +51,39 @@ else:
 r = requests.get(f"{clowder_host}/api/search?query={qry_str}") 
 #print(json.dumps(r.json(), indent=2))  #maybe not print here, and only print after the new keys are added
 
+#https://gist.github.com/douglasmiranda/5127251
+def find(key, dictionary):
+    for k, v in dictionary.iteritems():
+        if k == key:
+            yield v
+        elif isinstance(v, dict):
+            for result in find(key, v):
+                yield result
+        elif isinstance(v, list):
+            for d in v:
+                for result in find(key, d):
+                    yield result
+
+#lots of bad DDS dates, ..
+
 def LD2re(LD,result):
   LDc=LD.get("content")
   publ=LDc.get("publisher")
+# publ=find("publisher",LDc)
   date=first(LDc.get("datePublished"))
+# date=find("datePublished", LDc)
   if(date):
-      print("=======================")
+      print("==================date:")
       print(date)
       result['date']=date
-  if(publ):
-      print("=======================")
-      pub=first(publ)
+  #if(publ):
+  #if(isinstance(publ, list)):
+  if(isinstance(publ, dict)):
+      print("===================pub:")
+      pub = publ.get("name")
+   #  pub = find("name", publ)
+      if(not pub): 
+          pub=first(publ)
       print(pub)
       result['publisher']=pub
       print("=======================")
