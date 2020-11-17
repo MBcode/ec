@@ -125,12 +125,14 @@ rj=cq(qry_str) #converted to html at very bottom now
 #print("</html>")
 
 #-now just simple top&bottom template, that has it's table filled by taking clowder search json returns and turnign to html
+#  <title>GeoDex: JS-SPARQL search</title>
+#now clowder backed, though sparql was what we had going in beginning and could still use
 top= """
 <!DOCTYPE html>
 <html>
 
 <head>
-  <title>GeoDex: JS-SPARQL search</title>
+  <title>GeoCODES: resource search</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="shortcut icon" href="http://mbobak-ofc.ncsa.illinois.edu/img/earthcubeicon.png">

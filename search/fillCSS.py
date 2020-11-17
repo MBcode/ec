@@ -42,6 +42,65 @@ def cq(qry_str):
     else:
         return r.status_code
 
+#-cq2 w/backups
+
+def sq(qry_str):
+    "sparql query"
+    #cs=f"python3 sq.py {qry_str}"
+    cs=f"python3 sq.py {qry_str}|sed '/^</s//<br></'"
+    s=os.popen(cs).read()
+    if len(s)<8:
+        print("<!--nothing from triplestore backup2grep-->")
+        ag(qry_str)
+    #return s
+    htm= '<html>' + s + '</html>'
+    return htm
+
+#take /search route from sc2.py as a more stable version
+#@app.route('/search')
+#def search():
+def cq2(qry_str):
+    "search query"
+    clowder_host = os.getenv('clowder_host')
+    #if not clowder_host:
+    #    clowder_host = "https://earthcube.clowderframework.org"
+    #    clowder_key = os.getenv('testkey')
+    print(clowder_host)
+#    qry_str=escape(qry)
+    qry=qry_str
+    from flask import request
+ #  qry_str = request.args.get("q")
+    print(qry_str)
+    #print(f'host:{clowder_host},qry:{qry_str}')
+    ret=" " #shouldn't need to do this
+    try:
+        #r = requests.get(f"{clowder_host}/api/search?query={qry_str}", headers={'X-API-Key': clowder_key})
+        #cs=f"python3 fillCSS.py {qry_str}"
+        cs=f"python3 fillSearch.py {qry_str}"
+        r=os.popen(cs).read()
+        if(not r):
+            r = requests.get(f"{clowder_host}/api/search?query={qry_str}")
+        else:
+            return r
+        #could either call fillCSS.py or it's fnc that turn the ret json just above into the final html
+    except:
+        print("<!--exception so used backup-->")
+        #ret=search3(qry)
+        ret=sq(qry)  #this isn't in proper format for cj2h yet =fix/finish
+    else:
+        sc=r.status_code
+        ret=f'<!--status-code:{sc}-->'
+        print(ret)
+        #if r:
+        #if(r.status_code == requests.codes.ok):
+        if(r.status_code == 200):
+            ret = json.dumps(r.json()['results'], indent=2)
+            return ret
+        else:
+            ret=sq(qry)
+    return ret
+
+
 def cj2h(j):
     "clowder json ret to html"
     #if(len(j)>1)
@@ -55,7 +114,8 @@ def cj2h(j):
         rh=f'<div class="rescard"><div class="resheader"><a href="{url}">{name}</a></div>'
         #rb=f'<div class="rescontiner"><a href="{url}><p>{des}</p></div>'
         #I do not see ec score from clowder  to put /\
-        rb=f'<div class="rescontiner"><a href="{url}><p>{des}</p><a href={url2}>details</a><p></div>'
+        #rb=f'<div class="rescontiner"><a href="{url}><p>{des}</p><a href={url2}>details</a><p></div>' #from fillSearch just below
+        rb=f'<div class="rescontiner"><a href="{url}"><p>{des}</p><a href="{url2}">details</a><p></div></div>'
         rs=rh+rb
         print(rs) #for now
 
@@ -98,7 +158,8 @@ contain2e = """
 
 
 #could call this externally from one of the flask routes, via: python3 fillCSS.py querystr 
-rj=cq(qry_str)
+#rj=cq(qry_str)
+rj=cq2(qry_str)
 #print(rj)
 #ret = json.dumps(r.json()['results'], indent=2)
 print("<html>")
