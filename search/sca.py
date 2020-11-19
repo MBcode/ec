@@ -45,7 +45,8 @@ def getjsonLD(datasetID):
 if len(sys.argv)>1:
     qry_str=sys.argv[1]
 else:
-    qry_str="carbon"
+    #qry_str="carbon" #2many4test
+    qry_str="multibeam sonar"
 
 #r = requests.get(f"{clowder_host}/api/search?query={qry_str}", headers={'X-API-Key': clowder_key}) 
 r = requests.get(f"{clowder_host}/api/search?query={qry_str}") 
@@ -67,33 +68,52 @@ def find(key, dictionary):
 #lots of bad DDS dates, ..
 
 def LD2re(LD,result):
-  LDc=LD.get("content")
+  LDc=LD.get("content") 
+  #LDc0=LD.get("content")
+  #LDc=LDc0.get("details")
+  LDd=LDc.get("details")
   publ=LDc.get("publisher")
 # publ=find("publisher",LDc)
   date=first(LDc.get("datePublished"))
+  #if not date:
+  if( not date or len(date)<2):
+      print("details")
+      details=first(LDc.get("details"))
+      print(details)
+      if details:
+          date=first(details.get("datePublished"))
+          print(date)
 # date=find("datePublished", LDc)
   if(date):
-      print("==================date:")
-      print(date)
+      print(f'==================date:{date}')
       result['date']=date
+  pub = LDc.get("publisher")
+  #print(f'===================pub:{pub}')
   #if(publ):
   #if(isinstance(publ, list)):
   if(isinstance(publ, dict)):
-      print("===================pub:")
+      #print("===================pub:")
       pub = publ.get("name")
    #  pub = find("name", publ)
       if(not pub): 
-          pub=first(publ)
-      print(pub)
+          #pub=first(publ)
+          publ=publ['']
+          pub = publ.get("name")
+      if(not pub): 
+          pub = LDd.get("publisher")
+      print(f'===================pub:{pub}')
       result['publisher']=pub
       print("=======================")
   else:
+      print(f'==========pub:{pub}')
       print("=--==--==--==--==--==--")
-      print(type(LD))
+      #print(type(LD))
       #print(LD)
-      for key in LD:
+      #for key in LD:
+      for key in LDc:
           print(key)
-      print(json.dumps(LD, indent=2))
+      ##print(json.dumps(LD, indent=2))
+      #print(json.dumps(LDc, indent=2))
       print("=--==--==--==--==--==--")
 # result['details']=LD  #not getting back to r.json
   result['details']=LDc 

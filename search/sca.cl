@@ -44,7 +44,32 @@
     (if (listp publ) (assoc-v :NAME (rest-lv (first-lv (first-lv publ))))
       publ)))
 ;(trace get-pub) 
+(defun des (ld) "get description from LD alst" (assoc-v :DESCRIPTION ld))
+(defun datePub (ld) "get date-published from LD alst" (assoc-v :DATE-PUBLISHED ld))
+(defun place (ld) "get place from LD alst" (assoc-v :SPATIAL-COVERAGE ld))
 (defun results (ds) (assoc-v :RESULTS ds))
+
+(defun alstp (al) ;check
+  (and (listp al) (assocp (first al))))
+(defun rfind-alstp (al)
+  (cond
+    ((null al) al)
+    ((and (listp al) (alstp (cdr al))) (rfind-alstp (rest al)))
+    ((and (listp al) (symbolp (car al)) (listp (cdr al))) (rfind-alstp (rest al)))
+    ((and (listp al) (listp (cdr al))) (rfind-alstp (first-lv al)))
+    (t nil)
+    ))
+(defun find-al-fnc (l fnc)
+  (let ((al (rfind-alstp l))) (when al (funcall fnc al)))
+ )
+(defun url-s (ld) "get urls from LD alst"
+  (collect-if #'(lambda (x) (find-al-fnc x #'url)) ld)
+  )
+(defun urls (ld) "get all urls from LD alst"
+ (let ((urls (or (url ld) (url-s ld)))) 
+   ;(if (listp urls) (url (rfind-alstp urls)) ;kludge/fix above
+     urls ;)
+  )) ;not getting returns expected from ld2.cl, but want to redo anyway
 
 (defun phit (ds)
   "print just1of the search results"
@@ -55,11 +80,17 @@
          ;(pub (pub ld))
          ;(url (url ld))
          ;(url2 (url ldc))
+         (place (place ldc))
+         (date (datePub ldc))
          ;;(m3 (mapcar #'(lambda (e) (assoc-v e ld))  '(:NAME :PUBLISHER :URL)))
-         ;(m3 (mapcar #'(lambda (e) (cons e (assoc-v e ldc))) '(:NAME :PUBLISHER :URL)))
-         (m3 (mapcar #'(lambda (ef) (cons e (funcall ef ldc))) '(#'name #'get-pub #'url)))
+         (m3 (mapcar #'(lambda (e) (cons e (assoc-v e ldc))) '(:NAME :PUBLISHER :URL)))
+         ;(m3 (mapcar #'(lambda (ef) (cons ef (funcall ef ldc))) '(#'name #'get-pub #'url)))
          )
-    (print (str-cat "==================id= " id ",len=" ln ",url=" m3))
+    (print (str-cat "==================id= " id ",len=" ln ",bad-m3=" m3))
+    (print (str-cat "urls:" (urls ldc)))
+    (print (str-cat "=pub:" (get-pub ldc)))
+    (print (str-cat "=place" (des place)))
+    (print (str-cat "=date" date))
     (print ld)
     (print "------------------------------------------------------------------------------")
     m3))
