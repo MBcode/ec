@@ -1,12 +1,41 @@
 #cp sc.py sca.py #leta see if we can getjsonLD and add a few keys from it  to each record returned
 #return all the jsonLD for each of the search results
 
+#I need a small break&to chat w/guys to sync, as I think there might be a better way to do this
+
 #early example of augmenting search results
 #taken from the colab NB that I've shared
 import requests
 import json
 import sys 
 import os 
+#https://stackoverflow.com/questions/14048948/how-to-find-a-particular-json-value-by-key 
+import json 
+def deep_search(needles, haystack):
+    found = {}
+    if type(needles) != type([]):
+        needles = [needles]
+
+    if type(haystack) == type(dict()):
+        for needle in needles:
+            if needle in haystack.keys():
+                found[needle] = haystack[needle]
+            elif len(haystack.keys()) > 0:
+                for key in haystack.keys():
+                    result = deep_search(needle, haystack[key])
+                    if result:
+                        for k, v in result.items():
+                            found[k] = v
+    elif type(haystack) == type([]):
+        for node in haystack:
+            result = deep_search(needles, node)
+            if result:
+                for k, v in result.items():
+                    found[k] = v
+    return found
+
+#print(deep_search(["P1", "P3"], json.loads(json_string)))
+#{'P1': 'ss', 'P3': [{'P1': 'aaa'}]}
 clowder_host = "https://earthcube.clowderframework.org" 
 #clowder_key = os.getenv('eckey') #I can use locally w/new instance till it is fixed 
  #no longer needed
@@ -26,6 +55,9 @@ def first(l):
         return list(l)[0]
     else:
         return l
+
+def rest(l):
+    return l[1:]
 
 #To check it was uploaded, or when get search results, &want metadata, send an 'id' to this:
 def getLD(datasetID):
@@ -67,11 +99,68 @@ def find(key, dictionary):
 
 #lots of bad DDS dates, ..
 
+#consider only sticking in elts of use to filters, vs full jsonld right now
+ #try quick rewrite and stick in fill code, to put in divs
+#def getif(d,k):
+def getif(dl,k):
+    d=first(dl) #
+    if isinstance(d, dict):
+        #return d.get(k)
+        ret= d.get(k)
+        if ret:
+            return ret
+        else: return d
+    else:
+        return d
+
+def getif1(d,k):
+    if isinstance(d, dict):
+        ret= d.get(k)
+        if ret:
+            return ret
+        else: return d
+    elif isinstance(d, list):
+        getif(first(d),k)
+    else:
+        return d
+
+def rgetif(d,kl):
+    print(f'd={d},kl={kl}')
+    ret= getif(d,first(kl)) 
+    #ret= getif1(d,first(kl)) 
+    print(f'=ret={ret}')
+    if isinstance(kl, list):
+        if len(kl)>1:
+            return rgetif(ret,rest(kl))
+        else:
+            return ret
+    else:
+        return ret
+
+def LDs2f(LD,result):
+  LDc=LD.get("content") 
+  #LDd=LDc.get("details")  #fill Publisher/Place/TimePeriod facets
+  m3=deep_search(["publisher", "spatialCoverage", "datePublished"], LDc) 
+  print(f'==========m3={m3}')
+  #pub=m3["publisher"]['']
+  pub1=getif(m3["publisher"],'')
+  #pub=rgetif(m3["publisher"],['','name'])
+  pub=getif1(pub1,'name')
+  print(f'==pub={pub}')
+  #plc=m3["spatialCoverage"]['description']
+  plc=m3["spatialCoverage"]['geo']
+  print(f'==plc={plc}')
+  datep=m3["datePublished"]
+  print(f'==datep={datep}')
+  return m3
+
 def LD2re(LD,result):
   LDc=LD.get("content") 
   #LDc0=LD.get("content")
   #LDc=LDc0.get("details")
-  LDd=LDc.get("details")
+  LDd=LDc.get("details")  #fill Publisher/Place/TimePeriod facets
+  m3=deep_search(["publisher", "spatialCoverage", "datePublished"], LDc) 
+  print(f'==========m3={m3}')
   publ=LDc.get("publisher")
 # publ=find("publisher",LDc)
   date=first(LDc.get("datePublished"))
@@ -131,7 +220,8 @@ for result in r.json()["results"]:
   #could turn into jsonl-ld playground viz tab url here
   #-
   if(LD):
-      re = LD2re(LD, result)
+      #re = LD2re(LD, result)
+      re = LDs2f(LD, result)
   else:
       re = result
   #-
