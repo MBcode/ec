@@ -14,7 +14,7 @@ else:
     qry_str = "organic"
 
 def qs2dcs(qry_str):
-    "query clowder to-dcs format"
+    "query sparql to-dcs format"
     from SPARQLWrapper import SPARQLWrapper, JSON
     endpoint = os.getenv('dev_endpoint')
     sparql = SPARQLWrapper(endpoint)
@@ -94,6 +94,8 @@ def cq(qry_str):
 def qc2dcs(qry_str):
     "query clowder to-dcs format"
     rj=cq(qry_str)
+    if isinstance(rj,int): #use sparql endpnt as a backup if clowder down
+        return qs2dcs(qry_str)
 
     cout = """<?xml version="1.0" encoding="UTF-8"?>
         <searchresult>"""
@@ -101,16 +103,20 @@ def qc2dcs(qry_str):
     print(cout,xml_qry)
     i=0
     for r in rj:
-        #name=r['name']
+        cid=r['id'] #clowder specific dataset-id
+        name=r['name']
         des=r['description']
         description=des.replace("<"," lt ")
         url=first(getURLs(description))
-        #url2= clowder_host + '/datasets/' + r['id']
-        print(f'<document id=\"{i}\">')
+        #url2= clowder_host + '/datasets/' + r['id']  #this along w/jsonLD can be gotton from cID
+        #print(f'<document id=\"{i}\">')
+        print(f'<document id=\"{cid}\">') #see if id is more flexible
         print(f'<url>{url}</url>')
-        print(f'<snippet>{description}</snippet></document>')
-        #print(f'<snippet>{name}')
-        #print(f'{description}</snippet></document>')
+        #print(f'<cid>{cid}</cid>')
+        #print(f'<name>{name}</name>')
+        #print(f'<snippet>{description}</snippet></document>')
+        print(f'<snippet>{name}')
+        print(f'{description}</snippet></document>')
         i=i+1
     print("</searchresult>")
 
@@ -118,3 +124,4 @@ def qc2dcs(qry_str):
 qc2dcs(qry_str)
 
 #would be cool if could call dcs clustering service from here, but sending via shell file is ok too
+#something like sc2.py could call csq.sh now, but will needed conversion to html&metadata elts added
