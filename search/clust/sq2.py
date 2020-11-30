@@ -1,4 +1,4 @@
-#text search of a SPARQL endpoint
+#text search of a SPARQL endpoint or clowder, starting w/the one w/more data for now &falling back2the other when needed
  #output ready for carrot2 clustering
 
  #can use via CLI or call service: @app.route('/search3/<qry>') in ss2sq.py
@@ -26,7 +26,10 @@ def qs2dcs(qry_str):
     #    FILTER regex(?o, "nitrogen", "i").  }"""
     #qry_str = "carbon"
     q1 = "PREFIX schema: <http://schema.org/> \nselect distinct ?s ?o where {\n"
-    q2 = "{ ?s schema:description ?o .} UNION \n { ?s schema:keywords ?o .} UNION  \n{ ?s schema:name ?o .} \n  FILTER regex(?o,\""
+#   q2 = "{ ?s schema:description ?o .} UNION \n { ?s schema:keywords ?o .} UNION  \n{ ?s schema:name ?o .} \n  FILTER regex(?o,\""
+    #we don't have to union them, can just: ?s schema:description|schema:keywords|schema:name ?o
+    q2 = "{ ?s schema:description|schema:keywords|schema:name schema:name ?o .}  FILTER regex(?o,\""
+    #used like this also should work as an optional, bc it's any of these relations that match, for the free-txt-search
     q4 = "\", \"i\"). \n }"
     q = q1 + q2 + qry_str + q4
     #print(q)
