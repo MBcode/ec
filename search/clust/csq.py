@@ -1,9 +1,11 @@
 #this supercedes csq.sh, but still uses sq2.py to do the search and cluster it
 #import xmltodict #prefer to have curl below dump in json format
 import collections
+import requests
 import json
 import sys
 import os
+clowder_host = os.getenv('clowder_host')
 if(len(sys.argv)>1):
     qry_str=sys.argv[1]
 else:
@@ -50,6 +52,28 @@ for c in cls:
             print(f'add clusters key to:{did}')
         #docs[id]['clusters'].append(phr)
 #print(s)
+#-
+def getjsonLD(datasetID):
+    "given clowder dataset id: return it's saved()jsonLD"
+    r = requests.get(f'{clowder_host}/api/datasets/{datasetID}/metadata.jsonld')
+    return  first(r.json())
+#-
+#i2dj ={}
+i2d ={}
+i2j ={}
+for h in docs:
+    id=h['id']
+    url=h['url']
+    nd=url.split("\n")   #check
+    #name=nd[0] 
+    #description=nd[1] 
+    #ld=len(description)
+    #print(f'{id}:{name}:ldes={ld}') #now turn into a dict, w/name,description&LD
+    i2d[id]=nd
+    ld=getjsonLD(id)
+    nld=len(ld)
+    print(f'{id}:{nd}:ldes={nld}') #now turn into a dict, w/name,description&LD
+    i2j[id]=ld
 
 #AttributeError: 'collections.defaultdict' object has no attribute 'append'
 
