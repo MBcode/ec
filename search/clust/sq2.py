@@ -104,7 +104,7 @@ def qc2dcs(qry_str):
     i=0
     for r in rj:
         cid=r['id'] #clowder specific dataset-id
-        name=r['name']
+        name=r['name'].replace("<"," lt ")
         des=r['description']
         description=des.replace("<"," lt ")
         url=first(getURLs(description))
