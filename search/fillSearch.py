@@ -276,6 +276,12 @@ bottom="""
 </html>
 """
 print(top)
-cj2h(rj) #table filled by taking clowder search json returns and turnign to html
+#
+#cj2h(rj) #table filled by taking clowder search json returns and turnign to html
+#
+cs=f"python3 csq2.py {qry_str}"
+r=os.popen(cs).read()
+print(r)
+#
 print(bottom)
 

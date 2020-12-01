@@ -140,14 +140,21 @@ def i2h(i):
     name=nd[0]
     des=nd[1]
     tags=i2t[i]
+    #ctags=','.join(tags)
     url=first(getURLs(des))
     url2= clowder_host + '/datasets/' + i #use metadata-tab for 'details'
     rh=f'<div class="rescard"><div class="resheader"><a href="{url}">{name}</a></div>'
     #rb=f'<div class="rescontiner"><a href="{url}"><p>{des}</p><a href="{url2}">details</a><p></div></div>'
-    rb=f'<div class="rescontiner"><a href="{url}"><p>{des}</p><a href="{url2}">details</a>'
-    rc=f'<a href="#clusters">subtopic:{tags}</a><p></div></div>' #might link to specific cluster and have those have links to all hits
+    rb=f'<div class="rescontiner"><a href="{url}"><p>{des}</p><a href="{url2}">details</a> '
+    #rc=f' subtopic:<a href="#clusters">{tags}</a><p></div></div>' #might link to specific cluster and have those have links to all hits
+    #rs=rh+rb+rc
     rs=rh+rb
     print(rs) #for now
+    if tags:
+        print(' subtopic:<a href="#clusters">')
+        print(tags, sep=", ")
+        print('</a><p>')
+    print('</div></div>')
 
 #get the fillSearch cj2h function to be running off this new json vs the direct clowder json returns
  #or could get something just like those rets w/the extra info
