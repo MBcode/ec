@@ -37,6 +37,7 @@
 (ql 'dexador) ;github.com/fukamachi/dexador
 (ql 'drakma)
 (defun getLD (id)
+  "get jsonLD from clowder for now" ;but could fallback to ~ld:repo/~doi cache on server
   (rest (first-lv
     (decode-json-from-str
      (dex:get (strcat *clowder-host* "/api/datasets/" id "/metadata.jsonld"))))))
@@ -67,6 +68,7 @@
 (format t "~%~a docs and ~a clusters~%" (len *d*) (len *c*))
 (defun d2id (d)
   (assoc-v :ID d))
+(defvar *id* (mapcar #'d2id *d*))
 (defun d2snip (d)
   (assoc-v :SNIPPET d))
 (defun d2nameDes (d)
@@ -79,3 +81,54 @@
   (let ((id (d2id d)))
     (cons id (getLD id))))
 (defvar *aj* (mapcar #'d2id_ld *d*))
+;next get sub-topic tags, also in a alst (or py dict); or ht,w/append-value
+ ;then create the div's to display the name,description, w/final&clowder/description URLs &tags
+;might end w/short set of normalized metadata instead-of/w/ the jsonLD
+(defun id2nd (id) 
+  "name+descritpion"
+  (assoc-v id *a*))
+
+(defun id2ld_ (id) 
+  "get jsonLD for id"
+  (assoc-v id *aj*))
+(defun id2ld (id) 
+  "get jsonLD content for id"
+  (assoc-v :CONTENT (id2ld_ id)))
+
+(defun id2jld (id) 
+  "get jsonLD string"
+  (encode-json2str (id2ld id)))
+
+(defun ld2id (ld)
+  (assoc-v :IDENTIFIER ld))
+(defun ld2dp (ld)
+  (assoc-v :DATE-PUBLISHED ld))
+;-
+(defun c2tp (c)
+  (assoc-v :PHRASES c))
+(defun c2dl (c)
+  (assoc-v :DOCUMENTS c))
+(defun add-dt (id tp)
+  "add tagphrase to doc" ;right now just print, put append tags2that or similar map
+  (let ((d (id2nd id)))
+    (format t  "~% ~a gets:~a" d tp)))
+(defun c2id_tp (c)
+  "cluster2 id2tag-phrases"
+  (let* ((tp (c2tp c))
+         (dl (c2dl c)))
+    (mapcar #'(lambda (d) (add-dt d tp)) dl)))
+
+(defvar *ct* (mapcar #'c2id_tp *c*)) ;this or a version or ret, used as tags to go below
+;-
+(defun id2md (id) 
+  "get few from ld"
+  (let* ((ld (id2ld id))
+         (ident (ld2id ld))
+         (idv (assoc-v :VALUE (first-lv ident)))
+         (dp (ld2dp ld))
+         )
+    (format nil "~% ~a date:~a"  (or idv ident) dp)))
+; (id2md "5f82862ee4b0b81250e016a8")
+;urn:doi10.1594/PANGAEA.126048 date:2003
+
+(defvar *f* (mapcar #'id2md *id*)) ;in the end this will dump all the html for search,in py
