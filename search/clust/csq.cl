@@ -36,6 +36,12 @@
 (defvar *clowder-host* "https://earthcube.clowderframework.org")
 (ql 'dexador) ;github.com/fukamachi/dexador
 (ql 'drakma)
+; csq calls sq2.py which also does this qry
+(defun qry (str)
+  (let ((qry_str (safe-url str)))
+    (decode-json-from-str
+     (dex:get (strcat *clowder-host* "/api/search?query=" qry_str)))))
+;
 (defun getLD (id)
   "get jsonLD from clowder for now" ;but could fallback to ~ld:repo/~doi cache on server
   (rest (first-lv
@@ -75,12 +81,12 @@
   (break2lines (d2snip d)))
 (defun d2id_nd (d)
   (cons (d2id d) (d2nameDes d)))
-(defvar *a* (mapcar #'d2id_nd *d*))
+(defvar *a* (mapcar #'d2id_nd *d*)) ;id2nd
 ;this works, now just the jsonLD in it, &probably redo quickly in csq.py
 (defun d2id_ld (d)
   (let ((id (d2id d)))
     (cons id (getLD id))))
-(defvar *aj* (mapcar #'d2id_ld *d*))
+(defvar *aj* (mapcar #'d2id_ld *d*)) ;id2ld
 ;next get sub-topic tags, also in a alst (or py dict); or ht,w/append-value
  ;then create the div's to display the name,description, w/final&clowder/description URLs &tags
 ;might end w/short set of normalized metadata instead-of/w/ the jsonLD
@@ -104,14 +110,25 @@
 (defun ld2dp (ld)
   (assoc-v :DATE-PUBLISHED ld))
 ;-
+(defvar *q* (qry "organic")) ;the part that kicks off making n.js(the clustered output of this qry)
+(defun get-id (h) (assoc-v :ID h))
+(defun get-name (h) (assoc-v :NAME h))
+(defun get-des (h) (assoc-v :DESCRIPTION h))
+;could go through&make a map from this,or just get cluster info tags stored/doc&print while htm
+;I like that this has the spaces, so could map to repo&..probably doi
+;-
 (defun c2tp (c)
   (assoc-v :PHRASES c))
 (defun c2dl (c)
   (assoc-v :DOCUMENTS c))
 (defun add-dt (id tp)
   "add tagphrase to doc" ;right now just print, put append tags2that or similar map
-  (let ((d (id2nd id)))
-    (format t  "~% ~a gets:~a" d tp)))
+  (let* ((nd (id2nd id)))
+    (format nil  "~% ~a gets:~a" (first-lv nd) tp)
+    ;if i was asserting it would be doi has-tag tag
+      ;see abt alst push value ;in this or the py version get value,append &reset,esp py dict
+       ;this is working in csq.py ;by putting in the docs dict,..
+    ))
 (defun c2id_tp (c)
   "cluster2 id2tag-phrases"
   (let* ((tp (c2tp c))
@@ -132,3 +149,7 @@
 ;urn:doi10.1594/PANGAEA.126048 date:2003
 
 (defvar *f* (mapcar #'id2md *id*)) ;in the end this will dump all the html for search,in py
+
+;if clowder specific could just take this last bit where we get the tags for each doc
+ ;then when iteract over original clowder json, to turn into html,   do the getjsonLD and dump that tags too
+;could go through *q* and lookup in *ct* the tags to put into the present html divs

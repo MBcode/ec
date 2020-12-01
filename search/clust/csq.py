@@ -45,11 +45,14 @@ for c in cls:
         #if sq2.py used i for id instead of cid, then this would work,now have2 lookup
         # difficult2init the dict2 = collections.defaultdict(list)   #consider just add while converting to html anyway
         did=docs[id]
-        #print(did)
-        dc=did.get("clusters")
+        #print(did) #should rename to tags
+        dc=did.get("clusters") #put phrases here
         if not dc:
-            did['clusters']= collections.defaultdict(list)
+            #did['clusters']= collections.defaultdict(list)
+            did['clusters']= [phr]
             print(f'add clusters key to:{did}')
+        else:
+            did['clusters']= dc.append(phr)
         #docs[id]['clusters'].append(phr)
 #print(s)
 #-
@@ -80,3 +83,6 @@ for h in docs:
 #get the fillSearch cj2h function to be running off this new json vs the direct clowder json returns
  #or could get something just like those rets w/the extra info
   #&/or keep more like sparql returns which is what we will be using for the most part
+#think cluster loop alters s, by putting the tags in each doc-hit
+#print(s)
+print(docs)
