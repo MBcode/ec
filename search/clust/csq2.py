@@ -117,6 +117,13 @@ def doc2dcts():
 #       print(f'{id}:{nd}:ldes={nld}') #now turn into a dict, w/name,description&LD
 #       i2j[id]=ld
 
+def i2name(id):
+    nd=i2d[id]
+    name=nd[0] 
+    return name
+
+#when a cluster has a set of IDs can map over and get set of names, &turn to a comma sep list of links to id-anchors
+
 #print("_doc2dcts")
 doc2dcts()
 #print("_cls2docs")
@@ -135,26 +142,50 @@ def cj1h(r):
     print(rs) #for now
 
 def i2h(i):
-    "cid to html for the hit"
+    "cid to html for the hit" #consider .get(i), &skip if not there
     nd=i2d[i]
     name=nd[0]
     des=nd[1]
-    tags=i2t[i]
-    #ctags=','.join(tags)
+    tags=i2t[i] #i2t.get(i)
+    #ctags=','.join(tags) #wanted commas in format v print, but that works below
     url=first(getURLs(des))
     url2= clowder_host + '/datasets/' + i #use metadata-tab for 'details'
     rh=f'<div class="rescard"><div class="resheader"><a href="{url}">{name}</a></div>'
     #rb=f'<div class="rescontiner"><a href="{url}"><p>{des}</p><a href="{url2}">details</a><p></div></div>'
-    rb=f'<div class="rescontiner"><a href="{url}"><p>{des}</p><a href="{url2}">details</a> '
+    #rb=f'<div class="rescontiner"><a href="{url}"><p>{des}</p><a href="{url2}">details</a> '
+    rb=f'<div class="rescontiner" id="{i}"><a href="{url}"><p>{des}</p><a href="{url2}">details</a> '
     #rc=f' subtopic:<a href="#clusters">{tags}</a><p></div></div>' #might link to specific cluster and have those have links to all hits
     #rs=rh+rb+rc
-    rs=rh+rb
+    rs=rh+rb   #above get an id= anchor in there so can jump to it from the cls2h/i2h_ links
     print(rs) #for now
     if tags:
-        print(' subtopic:<a href="#clusters">')
+        print(' in_subtopic:<a href="#clusters">')  #if had specific cluster id/anchor could link right to it, in a bit
         print(tags, sep=", ")
         print('</a><p>')
+    #next if: publisher, place, time-period
     print('</div></div>')
+
+def i2h_(i):
+    "short version of i2h for cluster links"
+    nd=i2d[i]
+    name=nd[0]
+    rn=f'<a href="#{i}">{name}</a><br>'
+    print(rn)
+#probable-todo:
+#will get a footer rescard, done w/look like in cls2docs, but for every doc-id get the name part of nd, so can display a list
+ #cluster-phrase, then the name-link2anchor-id list for all docs in the cluster
+ #might be best to have a rescard per cluster then
+def cls2h():
+    print(f'<a id="clusters">')
+    for c in cls:
+        phr=first(c['phrases'])
+        ds=c['documents']
+        rh=f'<div class="rescard"><div class="resheader">{phr}</a></div>'
+        rb=f'<div class="rescontiner">'
+        print(rh+rb)
+        for d in ds:
+            i2h_(d)
+        print('</div></div></div>')
 
 #get the fillSearch cj2h function to be running off this new json vs the direct clowder json returns
  #or could get something just like those rets w/the extra info
@@ -176,3 +207,4 @@ for i in ids:
 #    print(i2d[i])
 #    tags=i2t[i]
 #    print(f'tags:{tags}')
+cls2h() #get a few more rescards w/the cluster info, and links back up
