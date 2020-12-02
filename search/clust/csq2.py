@@ -20,6 +20,23 @@ def first(l):
     else:
         return l
 
+def first_(l):
+    from collections.abc import Iterable
+    if isinstance(l,list):
+        #return l[0]
+        if len(l)>0:
+            return list(l)[0]
+        else:
+            return l
+    elif isinstance(l,Iterable):
+        #return list(l)[0]
+        if len(l)>0:
+            return list(l)[0]
+        else:
+            return l
+    else:
+        return l
+
 def httpP(str):
     #str.startswith('http')
     return str.startswith('http')
@@ -104,10 +121,21 @@ def rgetif(d,kl): #not used here now
     else:
         return ret
 
-def getjsonLD(datasetID):
+def get_jsonLD(datasetID):
     "given clowder dataset id: return it's saved()jsonLD"
     r = requests.get(f'{clowder_host}/api/datasets/{datasetID}/metadata.jsonld')
-    return  first(r.json())
+    return  first_(r.json())
+
+def getjsonLD(datasetID):
+    "given clowder dataset id: return it's saved()jsonLD"
+    try: 
+        r = requests.get(f'{clowder_host}/api/datasets/{datasetID}/metadata.jsonld')
+    except:
+        r=None
+    if r:
+        return  first_(r.json())
+    else:
+        return None
 
 def pLDs2f(LD):
     "print more terse version of LDs2f" #use instead of pLD
@@ -128,7 +156,7 @@ def pLDs2f(LD):
     datep=m3["datePublished"]
     if datep:
         m3s += f'date:{datep}'
-    print(m3s)
+    #print(m3s)
     return m3s
 
 #I will also just be going from ID to LD, w/getjsonLD
@@ -142,7 +170,10 @@ def i2f(id):
     "clowderID to facets2filter on"
     LD=getjsonLD(id)
     #pLD(LD, None)
-    pLDs2f(LD)
+    if LD:
+        return pLDs2f(LD)
+    else:
+        return ""
 #-
 #i2f("5f827886e4b0b81250da6018")
 #publisher:PANGAEA - Data Publisher for Earth & Environmental Science,place:-7.8801, 60.9205 -7.8787, 60.9249,date:2014
@@ -205,10 +236,11 @@ def cls2docs():
             #docs[id]['clusters'].append(phr)
 #print(s)
 #-
-def getjsonLD(datasetID):
+#def getjsonLD(datasetID):
+def getjson_LD(datasetID):
     "given clowder dataset id: return it's saved()jsonLD"
     r = requests.get(f'{clowder_host}/api/datasets/{datasetID}/metadata.jsonld')
-    return  first(r.json())
+    return  first_(r.json())
 #-
 ids=[]
 #w/sq1 vs sq2 which has cID,  not sure if the clowder lookup (c)id is being stored anywhere
