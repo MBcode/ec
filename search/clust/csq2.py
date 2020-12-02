@@ -146,7 +146,9 @@ def pLDs2f(LD):
     pub=getif1(pub1,'name')
     if pub:
         m3s += f'publisher:{pub},'
-    plc=m3["spatialCoverage"]['geo']
+    #plc=m3["spatialCoverage"]['geo']
+    sc=m3["spatialCoverage"]
+    plc=sc.get('geo')
     if plc:
         box=plc.get('box')
         if box:
