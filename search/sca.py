@@ -137,7 +137,8 @@ def rgetif(d,kl):
     else:
         return ret
 
-def LDs2f(LD,result):
+#def LDs2f(LD,result):
+def LDs2f(LD):
   LDc=LD.get("content") 
   #LDd=LDc.get("details")  #fill Publisher/Place/TimePeriod facets
   m3=deep_search(["publisher", "spatialCoverage", "datePublished"], LDc) 
@@ -154,7 +155,8 @@ def LDs2f(LD,result):
   print(f'==datep={datep}')
   return m3
 
-def LD2re(LD,result):
+#def LD2re(LD,result):
+def LD2re(LD):
   LDc=LD.get("content") 
   #LDc0=LD.get("content")
   #LDc=LDc0.get("details")
@@ -208,26 +210,66 @@ def LD2re(LD,result):
   result['details']=LDc 
   return result
 
-#getLD the 'details' for each search result, and put (link?) back in search results
-for result in r.json()["results"]:
-  dataset=result['id']
-  print(f'=========dataset:{dataset}====')
-  #print(dataset) #only print after altering now
-  LD=getjsonLD(dataset)
-  #print(LD) #maybe not print it all(unless err)&just print new keys added
-  #print(result) #lets just see the record w/the new keys
-# print(json.dumps(result, indent=2)) #but w/formatting so easier to see
-  #could turn into jsonl-ld playground viz tab url here
-  #-
-  if(LD):
-      #re = LD2re(LD, result)
-      re = LDs2f(LD, result)
-  else:
-      re = result
-  #-
-  #this won't be seen in print, unless moved down here
-  print(json.dumps(re, indent=2))
-  #if func: return result #&if print wasn't being scooped up
+def r2LD(result):
+    "LD for one result-hit"
+    dataset=result['id']
+    print(f'=========dataset:{dataset}====')
+    LD=getjsonLD(dataset)
+    return LD
+
+#I will also just be going from ID to LD, w/getjsonLD
+ #in csq2/fillSearch, will have ID, and would like to get rest w/o needing result, so rewrite above to handle that
+  #result wasn't needed/used, so removed
+   #pLD is just filler right now to look at it, will be returning something going to html/filter-widgets soon
+
+def i2f(id):
+    "clowderID to facets2filter on"
+    LD=getjsonLD(id)
+    pLD(LD, None)
+
+def pLD(LD, result):
+    "print annotated result"
+    if(LD):
+        re = LDs2f(LD)
+    else:
+        re = result
+    print(json.dumps(re, indent=2))
+
+def r2f(result):
+    "one result-hit (to LD) to elts to facet on"
+    LD = r2LD(result)
+    pLD(LD, result)
+    #if(LD):
+    #    re = LDs2f(LD)
+    #else:
+    #    re = result
+    #print(json.dumps(re, indent=2))
+
+def allFacets(r):
+    for result in r.json()["results"]:
+        r2f(result)
+
+allFacets(r)
+##getLD the 'details' for each search result, and put (link?) back in search results
+#for result in r.json()["results"]:
+#  dataset=result['id']
+#  print(f'=========dataset:{dataset}====')
+#  #print(dataset) #only print after altering now
+#  LD=getjsonLD(dataset)
+#  #print(LD) #maybe not print it all(unless err)&just print new keys added
+#  #print(result) #lets just see the record w/the new keys
+## print(json.dumps(result, indent=2)) #but w/formatting so easier to see
+#  #could turn into jsonl-ld playground viz tab url here
+#  #-
+#  if(LD):
+#      #re = LD2re(LD, result)
+#      re = LDs2f(LD, result)
+#  else:
+#      re = result
+#  #-
+#  #this won't be seen in print, unless moved down here
+#  print(json.dumps(re, indent=2))
+#  #if func: return result #&if print wasn't being scooped up
 
 #could just be txt-dumping this, since fillSearch is taking a qry, getting this json, this should be put there
  #and can have the html have other elts not seen, not necc RDFa, but whatever is easy to facet on the page
