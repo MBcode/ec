@@ -124,6 +124,8 @@ rj=cq(qry_str) #converted to html at very bottom now
 #print("</body>")
 #print("</html>")
 
+#clean up, and look into changing CSS, bc w/clusters think it is going longer than expected
+
 #-now just simple top&bottom template, that has it's table filled by taking clowder search json returns and turnign to html
 #  <title>GeoDex: JS-SPARQL search</title>
 #now clowder backed, though sparql was what we had going in beginning and could still use
@@ -157,7 +159,7 @@ top= """
     <div class="container">
       <div class="row">
         <div class="col-12 center">
-          <a href=http://earthcube.org/><img src="http://mbobak-ofc.ncsa.illinois.edu/img/earthcubeicon.png"></a>
+          <a href=http://earthcube.org/><img src="http://mbobak-ofc.ncsa.illinois.edu/img/EarthCube-Blue-Long-Tagline.png" width=440></a>
 					<h3 style="margin:5px;color:white"><a href=https://geocodes.earthcube.org/>GeoCODES</a></h3>
           <h3 style="margin:5px;color:white" class="font-light">a schema.org/metadata backed Dataset/resource search</h3>
             <!-- 
