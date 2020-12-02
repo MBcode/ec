@@ -29,7 +29,124 @@ def getURLs(l):
         l=l.split()
     #filter(httpP,l)
     return filter(httpP,l)
+#----------------------
+#-from sca2.py for csq2.py
+import requests
+clowder_host = "https://earthcube.clowderframework.org" 
 
+#https://stackoverflow.com/questions/14048948/how-to-find-a-particular-json-value-by-key 
+import json 
+def deep_search(needles, haystack):
+    found = {}
+    if type(needles) != type([]):
+        needles = [needles]
+
+    if type(haystack) == type(dict()):
+        for needle in needles:
+            if needle in haystack.keys():
+                found[needle] = haystack[needle]
+            elif len(haystack.keys()) > 0:
+                for key in haystack.keys():
+                    result = deep_search(needle, haystack[key])
+                    if result:
+                        for k, v in result.items():
+                            found[k] = v
+    elif type(haystack) == type([]):
+        for node in haystack:
+            result = deep_search(needles, node)
+            if result:
+                for k, v in result.items():
+                    found[k] = v
+    return found
+
+#print(deep_search(["P1", "P3"], json.loads(json_string)))
+#{'P1': 'ss', 'P3': [{'P1': 'aaa'}]}
+clowder_host = "https://earthcube.clowderframework.org" 
+#clowder_key = os.getenv('eckey') #I can use locally w/new instance till it is fixed 
+ #no longer needed
+
+def full(l): #not used here now
+    return (len(l) > 0)
+#from fillSearch.py but most of this will be going in there anyway
+
+def getif(dl,k):
+    d=first(dl) #
+    if isinstance(d, dict):
+        #return d.get(k)
+        ret= d.get(k)
+        if ret:
+            return ret
+        else: return d
+    else:
+        return d
+
+def getif1(d,k):
+    if isinstance(d, dict):
+        ret= d.get(k)
+        if ret:
+            return ret
+        else: return d
+    elif isinstance(d, list):
+        getif(first(d),k)
+    else:
+        return d
+
+def rgetif(d,kl): #not used here now
+    print(f'd={d},kl={kl}')
+    ret= getif(d,first(kl)) 
+    #ret= getif1(d,first(kl)) 
+    print(f'=ret={ret}')
+    if isinstance(kl, list):
+        if len(kl)>1:
+            return rgetif(ret,rest(kl))
+        else:
+            return ret
+    else:
+        return ret
+
+def getjsonLD(datasetID):
+    "given clowder dataset id: return it's saved()jsonLD"
+    r = requests.get(f'{clowder_host}/api/datasets/{datasetID}/metadata.jsonld')
+    return  first(r.json())
+
+def pLDs2f(LD):
+    "print more terse version of LDs2f" #use instead of pLD
+    LDc=LD.get("content") 
+    m3=deep_search(["publisher", "spatialCoverage", "datePublished"], LDc) 
+    pub1=getif(m3["publisher"],'')
+    m3s=""
+    pub=getif1(pub1,'name')
+    if pub:
+        m3s += f'publisher:{pub},'
+    plc=m3["spatialCoverage"]['geo']
+    if plc:
+        box=plc.get('box')
+        if box:
+            plc=box
+    if plc:
+        m3s += f'place:{plc},'
+    datep=m3["datePublished"]
+    if datep:
+        m3s += f'date:{datep}'
+    print(m3s)
+    return m3s
+
+#I will also just be going from ID to LD, w/getjsonLD
+ #in csq2/fillSearch, will have ID, and would like to get rest w/o needing result, so rewrite above to handle that
+  #result wasn't needed/used, so removed
+   #pLD is just filler right now to look at it, will be returning something going to html/filter-widgets soon
+    #instead of pLD, might actually need varient of LDs2f, to get the format to get back to rescard/divs/etc
+    #get just that, &pull out that handfull of fncs, in one file, and have either fillSearh|csq2 using it,load&call as needed
+
+def i2f(id):
+    "clowderID to facets2filter on"
+    LD=getjsonLD(id)
+    #pLD(LD, None)
+    pLDs2f(LD)
+#-
+#i2f("5f827886e4b0b81250da6018")
+#publisher:PANGAEA - Data Publisher for Earth & Environmental Science,place:-7.8801, 60.9205 -7.8787, 60.9249,date:2014
+#----------------------
 #csq2.py go back to the clowder ID's so don't have to change html gen much right now
 cs=f'/usr/bin/python3 sq2.py {qry_str}|curl $dcs_url -F "dcs.output.format=JSON" -F "dcs.c2stream=@-"'
 #cs=f'/usr/bin/python3 sq1.py {qry_str}|curl $dcs_url -F "dcs.output.format=JSON" -F "dcs.c2stream=@-"'
@@ -172,6 +289,9 @@ def i2h(i):
         #print(' in_subtopic:<a href="#clusters">')  
         print(tags, sep=", ")
         print('</a><p>')
+    f=i2f(i)
+    if f:
+        print(f'<small>{f}</small>')
     #next if: publisher, place, time-period
     print('</div></div>')
 
