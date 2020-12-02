@@ -137,7 +137,8 @@ def rgetif(d,kl):
     else:
         return ret
 
-def LDs2f(LD,result):
+#def LDs2f(LD,result):
+def LDs2f(LD):
   LDc=LD.get("content") 
   #LDd=LDc.get("details")  #fill Publisher/Place/TimePeriod facets
   m3=deep_search(["publisher", "spatialCoverage", "datePublished"], LDc) 
@@ -154,7 +155,8 @@ def LDs2f(LD,result):
   print(f'==datep={datep}')
   return m3
 
-def LD2re(LD,result):
+#def LD2re(LD,result):
+def LD2re(LD):
   LDc=LD.get("content") 
   #LDc0=LD.get("content")
   #LDc=LDc0.get("details")
@@ -215,14 +217,33 @@ def r2LD(result):
     LD=getjsonLD(dataset)
     return LD
 
-def r2f(result):
-    "one result-hit (to LD) to elts to facet on"
-    LD = r2LD(result)
+#I will also just be going from ID to LD, w/getjsonLD
+ #in csq2/fillSearch, will have ID, and would like to get rest w/o needing result, so rewrite above to handle that
+  #result wasn't needed/used, so removed
+   #pLD is just filler right now to look at it, will be returning something going to html/filter-widgets soon
+
+def i2f(id):
+    "clowderID to facets2filter on"
+    LD=getjsonLD(id)
+    pLD(LD, None)
+
+def pLD(LD, result):
+    "print annotated result"
     if(LD):
-        re = LDs2f(LD, result)
+        re = LDs2f(LD)
     else:
         re = result
     print(json.dumps(re, indent=2))
+
+def r2f(result):
+    "one result-hit (to LD) to elts to facet on"
+    LD = r2LD(result)
+    pLD(LD, result)
+    #if(LD):
+    #    re = LDs2f(LD)
+    #else:
+    #    re = result
+    #print(json.dumps(re, indent=2))
 
 def allFacets(r):
     for result in r.json()["results"]:
