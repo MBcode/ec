@@ -51,6 +51,7 @@ nc=len(cls)
 i2d ={} #id to doc info,  docs already looks good, but want like original js but w/tags in it
 i2j ={} #ld
 i2t ={} #tags
+i2tn ={} #tag(cluster)number
 
 #def cls2docs(cls)
 def cls2docs():
@@ -58,6 +59,7 @@ def cls2docs():
         phr=first(c['phrases'])
         ds=c['documents']
         ncd=len(ds)
+        tn=c['id'] #tagnum,so can get cluster# later
     #   print(f'{ncd} docs for:{phr}')
         for d in ds:
 #           print(f'{d}')
@@ -67,12 +69,14 @@ def cls2docs():
             # difficult2init the dict2 = collections.defaultdict(list)   #consider just add while converting to html anyway
      #      did=docs[id]
             #oldprh=i2t[d]
+            #I would expect to get more doubles at least, not all single tags, so check ;maybe not take 1st as well
             oldphr=i2t.get(d)
             if oldphr:
                 oldphr=[oldphr]
                 i2t[d]=oldphr.append(phr)
             else:
                 i2t[d]=phr
+                i2tn[d]=tn
             #print(did) #should rename to tags
     #       dc=did.get("clusters") #put phrases here
     #       if not dc:
@@ -147,6 +151,7 @@ def i2h(i):
     name=nd[0]
     des=nd[1]
     tags=i2t[i] #i2t.get(i)
+    tn=i2tn[i]
     #ctags=','.join(tags) #wanted commas in format v print, but that works below
     url=first(getURLs(des))
     url2= clowder_host + '/datasets/' + i #use metadata-tab for 'details'
@@ -158,8 +163,12 @@ def i2h(i):
     #rs=rh+rb+rc
     rs=rh+rb   #above get an id= anchor in there so can jump to it from the cls2h/i2h_ links
     print(rs) #for now
-    if tags:
-        print(' in_subtopic:<a href="#clusters">')  #if had specific cluster id/anchor could link right to it, in a bit
+    if tags: #if could have cluster# w/tags, then could ref2it directly
+        if tn: #if had specific cluster id/anchor could link right to it, in a bit
+            print(f' in_subtopic:<a href="#cluster{tn}">') 
+        else:
+            print(f' in_subtopic:<a href="#clusters">')  
+        #print(' in_subtopic:<a href="#clusters">')  
         print(tags, sep=", ")
         print('</a><p>')
     #next if: publisher, place, time-period
@@ -178,9 +187,11 @@ def i2h_(i):
 def cls2h():
     print(f'<a id="clusters">')
     for c in cls:
+        i=c['id']
+        ci='cluster'+str(i)
         phr=first(c['phrases'])
         ds=c['documents']
-        rh=f'<div class="rescard"><div class="resheader">{phr}</a></div>'
+        rh=f'<div class="rescard" id="{ci}"><div class="resheader">{phr}</a></div>'
         rb=f'<div class="rescontiner">'
         print(rh+rb)
         for d in ds:
