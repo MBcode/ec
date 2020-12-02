@@ -208,26 +208,47 @@ def LD2re(LD,result):
   result['details']=LDc 
   return result
 
-#getLD the 'details' for each search result, and put (link?) back in search results
-for result in r.json()["results"]:
-  dataset=result['id']
-  print(f'=========dataset:{dataset}====')
-  #print(dataset) #only print after altering now
-  LD=getjsonLD(dataset)
-  #print(LD) #maybe not print it all(unless err)&just print new keys added
-  #print(result) #lets just see the record w/the new keys
-# print(json.dumps(result, indent=2)) #but w/formatting so easier to see
-  #could turn into jsonl-ld playground viz tab url here
-  #-
-  if(LD):
-      #re = LD2re(LD, result)
-      re = LDs2f(LD, result)
-  else:
-      re = result
-  #-
-  #this won't be seen in print, unless moved down here
-  print(json.dumps(re, indent=2))
-  #if func: return result #&if print wasn't being scooped up
+def r2LD(result):
+    "LD for one result-hit"
+    dataset=result['id']
+    print(f'=========dataset:{dataset}====')
+    LD=getjsonLD(dataset)
+    return LD
+
+def r2f(result):
+    "one result-hit (to LD) to elts to facet on"
+    LD = r2LD(result)
+    if(LD):
+        re = LDs2f(LD, result)
+    else:
+        re = result
+    print(json.dumps(re, indent=2))
+
+def allFacets(r):
+    for result in r.json()["results"]:
+        r2f(result)
+
+allFacets(r)
+##getLD the 'details' for each search result, and put (link?) back in search results
+#for result in r.json()["results"]:
+#  dataset=result['id']
+#  print(f'=========dataset:{dataset}====')
+#  #print(dataset) #only print after altering now
+#  LD=getjsonLD(dataset)
+#  #print(LD) #maybe not print it all(unless err)&just print new keys added
+#  #print(result) #lets just see the record w/the new keys
+## print(json.dumps(result, indent=2)) #but w/formatting so easier to see
+#  #could turn into jsonl-ld playground viz tab url here
+#  #-
+#  if(LD):
+#      #re = LD2re(LD, result)
+#      re = LDs2f(LD, result)
+#  else:
+#      re = result
+#  #-
+#  #this won't be seen in print, unless moved down here
+#  print(json.dumps(re, indent=2))
+#  #if func: return result #&if print wasn't being scooped up
 
 #could just be txt-dumping this, since fillSearch is taking a qry, getting this json, this should be put there
  #and can have the html have other elts not seen, not necc RDFa, but whatever is easy to facet on the page
