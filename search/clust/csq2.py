@@ -155,10 +155,11 @@ def i2h(i):
     #ctags=','.join(tags) #wanted commas in format v print, but that works below
     url=first(getURLs(des))
     url2= clowder_host + '/datasets/' + i #use metadata-tab for 'details'
-    rh=f'<div class="rescard"><div class="resheader"><a href="{url}">{name}</a></div>'
-    #rb=f'<div class="rescontiner"><a href="{url}"><p>{des}</p><a href="{url2}">details</a><p></div></div>'
-    #rb=f'<div class="rescontiner"><a href="{url}"><p>{des}</p><a href="{url2}">details</a> '
-    rb=f'<div class="rescontiner" id="{i}"><a href="{url}"><p>{des}</p><a href="{url2}">details</a> '
+    #rh=f'<div class="rescard"><div class="resheader"><a href="{url}">{name}</a></div>' #mved id to top of record
+    rh=f'<div class="rescard" id="{i}"><div class="resheader"><a href="{url}">{name}</a></div>'
+    ##rb=f'<div class="rescontiner"><a href="{url}"><p>{des}</p><a href="{url2}">details</a><p></div></div>'
+    rb=f'<div class="rescontiner"><a href="{url}"><p>{des}</p><a href="{url2}">details</a> '
+    #rb=f'<div class="rescontiner" id="{i}"><a href="{url}"><p>{des}</p><a href="{url2}">details</a> '
     #rc=f' subtopic:<a href="#clusters">{tags}</a><p></div></div>' #might link to specific cluster and have those have links to all hits
     #rs=rh+rb+rc
     rs=rh+rb   #above get an id= anchor in there so can jump to it from the cls2h/i2h_ links
@@ -191,7 +192,10 @@ def cls2h():
         ci='cluster'+str(i)
         phr=first(c['phrases'])
         ds=c['documents']
-        rh=f'<div class="rescard" id="{ci}"><div class="resheader">{phr}</a></div>'
+        sc=int(c['score'])
+        #rh=f'<div class="rescard" id="{ci}"><div class="resheader">{phr}</a></div>'
+        #rh=f'<div class="rescard" id="{ci}"><div class="resheader">{phr}  score:{sc}</a></div>'
+        rh=f'<div class="rescard" id="{ci}"><div class="resheader">{phr}</a>  <i><small>score:{sc}</small></i></div>'
         rb=f'<div class="rescontiner">'
         print(rh+rb)
         for d in ds:
