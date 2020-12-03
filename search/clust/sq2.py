@@ -126,6 +126,7 @@ def qc2dcs(qry_str):
     print(cout,xml_qry)
     i=0
     for r in rj:
+        cid=r['id'] #clowder specific dataset-id
         #name=r['name']
         name=r['name'].replace("&","_and_").replace("<"," _lt_ ")
         #description=r['description']
@@ -137,7 +138,8 @@ def qc2dcs(qry_str):
             #print(f'dbg:{description}')
             url=""
         #url2= clowder_host + '/datasets/' + r['id']
-        print(f'<document id=\"{i}\">')
+        #print(f'<document id=\"{i}\">')
+        print(f'<document id=\"{cid}\">')
         print(f'<url>{url}</url>')
         #print(f'<snippet>{description}</snippet></document>')
         print(f'<snippet>{name}')
