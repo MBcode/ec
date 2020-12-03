@@ -11,12 +11,26 @@ if(len(sys.argv)>1):
 else:
     qry_str = "organic"
 
-def first(l):
+def first__(l):
     from collections.abc import Iterable
     if isinstance(l,list):
         return l[0]
     elif isinstance(l,Iterable):
         return list(l)[0]
+    else:
+        return l
+
+def first(l):
+    from collections.abc import Iterable
+    if isinstance(l,list):
+        #return l[0]
+        if len(l)>0:
+            #return list(l)[0]
+            return l[0]
+        else:
+            return l
+#   elif isinstance(l,Iterable):
+#       return list(l)[0]
     else:
         return l
 
@@ -189,7 +203,10 @@ cs=f'/usr/bin/python3 sq2.py {qry_str}|curl $dcs_url -F "dcs.output.format=JSON"
 s=os.popen(cs).read()
 #d=xmltodict.parse(s)
 #print(s) #origninal
-dct=json.loads(s)
+try:
+    dct=json.loads(s)
+except:
+    print(f'error w/json.loads:{s}')
 docs=dct['documents']
 nd=len(docs)
 #print(f'got {nd} hits')
@@ -250,7 +267,10 @@ ids=[]
 def doc2dcts():
     for h in docs:
         id=h['id']
-        url=h['url']
+        #url=h['url']
+        url=h.get('url')
+        if not url:
+            url=""
         snip=h['snippet']
         #nd=url.split("\n")   #check
         nd=snip.split("\n")   #check
