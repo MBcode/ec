@@ -154,21 +154,33 @@ def getjsonLD(datasetID):
 def pLDs2f(LD):
     "print more terse version of LDs2f" #use instead of pLD
     LDc=LD.get("content") 
-    m3=deep_search(["publisher", "spatialCoverage", "datePublished"], LDc) 
+    #m3=deep_search(["publisher", "spatialCoverage", "datePublished"], LDc) 
+    #m3=deep_search(["publisher", "spatialCoverage", "Place", "datePublished"], LDc) 
+    m3=deep_search(["publisher", "spatialCoverage", "geo", "datePublished"], LDc) 
     pub1=getif(m3["publisher"],'')
     m3s=""
     pub=getif1(pub1,'name')
     if pub:
-        m3s += f'publisher:{pub},'
+        m3s += f'publisher:{pub}, '
     #plc=m3["spatialCoverage"]['geo']
-    sc=m3["spatialCoverage"]
-    plc=sc.get('geo')
-    if plc:
+    #sc=m3["spatialCoverage"]
+    #sc=m3.get("spatialCoverage")
+    sc=first(m3.get("spatialCoverage"))
+    if not sc:
+        #sc=m3.get("geo")
+        sc=first(m3.get("geo"))
+    if isinstance(sc,dict):
+        #plc=sc.get('geo')
+        plc=first(sc.get('geo'))
+    else:
+        plc=sc
+    #if plc:
+    if isinstance(plc,dict):
         box=plc.get('box')
         if box:
             plc=box
     if plc:
-        m3s += f'place:{plc},'
+        m3s += f'place:{plc}, '
     datep=m3["datePublished"]
     if datep:
         m3s += f'date:{datep}'
