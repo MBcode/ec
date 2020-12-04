@@ -157,11 +157,17 @@ def pLDs2f(LD):
     #m3=deep_search(["publisher", "spatialCoverage", "datePublished"], LDc) 
     #m3=deep_search(["publisher", "spatialCoverage", "Place", "datePublished"], LDc) 
     m3=deep_search(["publisher", "spatialCoverage", "geo", "datePublished"], LDc) 
-    pub1=getif(m3["publisher"],'')
+    #pub1=getif(m3["publisher"],'')
+    m3p=m3.get("publisher")
+    #if m3p:
+    if isinstance(m3p,dict):
+        pub1=getif(m3p,'')
+        pub=getif1(pub1,'name')
+    else:
+        pub=None
     m3s=""
-    pub=getif1(pub1,'name')
     if pub:
-        m3s += f'publisher:{pub}, '
+        m3s += f'publisher:{pub},'
     #plc=m3["spatialCoverage"]['geo']
     #sc=m3["spatialCoverage"]
     #sc=m3.get("spatialCoverage")
@@ -180,8 +186,13 @@ def pLDs2f(LD):
         if box:
             plc=box
     if plc:
-        m3s += f'place:{plc}, '
-    datep=m3["datePublished"]
+        m3s += f'place:{plc},'
+    #datep=m3["datePublished"]
+    m3d=m3.get("datePublished")
+    if m3d:
+        datep=m3d
+    else:
+        datep = None
     if datep:
         m3s += f'date:{datep}'
     #print(m3s)
