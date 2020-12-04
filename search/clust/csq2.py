@@ -168,6 +168,8 @@ def pLDs2f(LD):
     m3s=""
     if pub:
         m3s += f'publisher:{pub},'
+        #pub_tc[pub]+=1
+        incrKeyCount(pub,pub_tc)
     #plc=m3["spatialCoverage"]['geo']
     #sc=m3["spatialCoverage"]
     #sc=m3.get("spatialCoverage")
@@ -195,6 +197,8 @@ def pLDs2f(LD):
         datep = None
     if datep:
         m3s += f'date:{datep}'
+        #date_tc[date]+=1
+        incrKeyCount(datep,date_tc)
     #print(m3s)
     return m3s
 
@@ -241,7 +245,15 @@ nc=len(cls)
 i2d ={} #id to doc info,  docs already looks good, but want like original js but w/tags in it
 i2j ={} #ld
 i2t ={} #tags
-i2tn ={} #tag(cluster)number
+i2tn ={} #tag(cluster)number, or better break out, index by tag-txt &get counts sort later
+pub_tc = {}  
+date_tc = {}  
+ #only problem is it should default to 0
+def incrKeyCount(key,d):
+    v=d.get(key)
+    if not v:
+        d[key] = 0
+    d[key] += 1
 
 #def cls2docs(cls)
 def cls2docs():
