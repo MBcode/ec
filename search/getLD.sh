@@ -1,4 +1,16 @@
 echo "<html>"
-#tre-agrep -d"^\{" $1 ld/*/* |sed '/^ld\//s//<p>/'
-agrep -d"^\{" $1 ld/*/* |sed '/^ld\//s//<p>/'
+tre-agrep -d"^\{"  $1 ld/balto/* |sed '/^ld\//s//<p>/'
+tre-agrep -d"^\{"  $1 ld/bco-dmo/* |sed '/^ld\//s//<p>/'
+tre-agrep -d"^\{"  $1 ld/edi/* |sed '/^ld\//s//<p>/'
+tre-agrep -d"^\{"  $1 ld/hydroshare/* |sed '/^ld\//s//<p>/'
+tre-agrep -d"^\{"  $1 ld/iedadata/* |sed '/^ld\//s//<p>/'
+tre-agrep -d"^\{"  $1 ld/iris/* |sed '/^ld\//s//<p>/'
+tre-agrep -d"^\{"  $1 ld/magic/* |sed '/^ld\//s//<p>/'
+tre-agrep -d"^\{"  $1 ld/neotomadb/* |sed '/^ld\//s//<p>/'
+tre-agrep -d"^\{"  $1 ld/opencoredata/* |sed '/^ld\//s//<p>/'
+tre-agrep -d"^\{"  $1 ld/opentopography/* |sed '/^ld\//s//<p>/'
+tre-agrep -d"^\{"  $1 ld/rr/* |sed '/^ld\//s//<p>/'
+tre-agrep -d"^\{"  $1 ld/ssdb.iodp/* |sed '/^ld\//s//<p>/'
+tre-agrep -d"^\{"  $1 ld/ucar/* |sed '/^ld\//s//<p>/'
+tre-agrep -d"^\{"  $1 ld/unavco/* |sed '/^ld\//s//<p>/'
 echo "</html>"
