@@ -8,12 +8,66 @@ import os
 import sys
 import json
 import requests
+from SPARQLWrapper import SPARQLWrapper, JSON
 
 if(len(sys.argv)>1):
     qry_str=sys.argv[1]
 else:
     qry_str = "organic"
-
+#-
+gqs = """ prefix schema: <http://schema.org/> \
+SELECT ?subj ?disurl ?score  ?name ?description \
+ WHERE { \
+   ?lit bds:search \"${q}\" . \
+   ?lit bds:matchAllTerms "false" . \
+   ?lit bds:relevance ?score . \
+   ?subj ?p ?lit . \
+   BIND (?subj as ?s) \
+      {  \
+         SELECT  ?s (MIN(?url) as ?disurl) { \
+             ?s a schema:Dataset . \
+             ?s schema:distribution ?dis . \
+            ?dis schema:url ?url . \
+         } GROUP BY ?s \
+   } \
+   ?s schema:name ?name . \
+   ?s schema:description ?description .  \
+ } \
+ORDER BY DESC(?score)""" 
+def gq(qry_str):
+    "geodex blazegraph"
+    endpoint = "https://graph.geodex.org/blazegraph/namespace/cdf/sparql"
+    sparql = SPARQLWrapper(endpoint)
+    sparql.setQuery(gqs)
+    sparql.setReturnFormat(JSON)
+    results = sparql.query().convert()
+    #print(gqs)
+    #print(results) 
+#   print(json.dumps(results, indent=2))
+    cout = """<?xml version="1.0" encoding="UTF-8"?>
+        <searchresult>"""
+    xml_qry=f'<query>{qry_str}</query>'
+    print(cout,xml_qry)
+    i=0
+    for result in results["results"]["bindings"]:
+        print(f'<document id=\"{i}\">')
+        #url=result["s"]["value"]
+        #url=result["disurl"]["value"]
+        url=result["subj"]["value"]
+        print(f'<url>{url}</url>')
+        #description=result["o"]["value"]
+       # description=result["name"]["value"]
+        description=result["description"]["value"]
+        #description=r['description'].replace("&","_and_").replace("<"," _lt_ ")
+        description=description.replace("&","_and_").replace("<"," _lt_ ")
+     #  print(f'<snippet>{description}</snippet></document>')
+        print(f'<snippet>{description}')
+        print(f' </snippet></document>')
+        #print(f'<snippet>{name}')
+        #print(f'{description}</snippet></document>')
+        i=i+1
+    print("</searchresult>")
+#-
 def qs2dcs(qry_str):
     "query clowder to-dcs format"
     from SPARQLWrapper import SPARQLWrapper, JSON
@@ -119,6 +173,8 @@ def cq(qry_str):
 def qc2dcs(qry_str):
     "query clowder to-dcs format"
     rj=cq(qry_str)
+    if not isinstance(rj, dict): #clowder down too much, &should focus on sparql
+        return gq(qry_str)
 
     cout = """<?xml version="1.0" encoding="UTF-8"?>
         <searchresult>"""
