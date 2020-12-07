@@ -42,7 +42,7 @@ def gq(qry_str):
     results = sparql.query().convert()
     #print(gqs)
     #print(results) 
-    print(json.dumps(results, indent=2))
+#   print(json.dumps(results, indent=2))
     cout = """<?xml version="1.0" encoding="UTF-8"?>
         <searchresult>"""
     xml_qry=f'<query>{qry_str}</query>'
@@ -57,6 +57,7 @@ def gq(qry_str):
         #description=result["o"]["value"]
        # description=result["name"]["value"]
         description=result["description"]["value"]
+        description=description.replace("&","_and_").replace("<"," _lt_ ")
         print(f'<snippet>{description}</snippet></document>')
         #print(f'<snippet>{name}')
         #print(f'{description}</snippet></document>')
