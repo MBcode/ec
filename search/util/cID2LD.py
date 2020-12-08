@@ -47,19 +47,37 @@ def get_jsonfile(fn):
     t=get_txtfile(fn)
     return json.loads(t)
 
+def getContent(ld):
+    if isinstance(ld,dict):
+        LDc= ld.get("content")
+        #lldc=len(LDc)
+        #print(f'content:{lldc}') #dbg
+        return LDc
+    else:
+        return ld
 
 def cID2LD(cID):
     ccf = "cc/" + cID + ".jsonld"
-    if os.path.exists(ccf):
+    if os.path.exists(ccf) and os.stat(ccf).st_size >0:
         #with open(ccf, "r") as rf:
         #    d=json.loads(rf)
-        d=get_jsonfile(ccf)
+        LD=get_jsonfile(ccf)
+        LD=getContent(LD)
+        return LD
     else:
-        d = getjsonLD(ccf)
-        if d:
-            with open(ccf, "w") as of:
-                of.write(d)
-    return d
+        LD = getjsonLD(cID)
+        if LD:
+            LD=getContent(LD)
+            #should try, bc more important to ret than aave
+            try:
+                with open(ccf, "w") as of:
+                    of.write(json.dumps(LD))
+            except:
+                raise Warning(f'can not write:{ccf}')
+            return LD
+        else:
+            raise Warning(f'no LD for:{ccf}')
+            return None
 
 def gd(id):
     print(cID2LD(id))
