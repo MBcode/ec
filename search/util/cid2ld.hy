@@ -2,6 +2,8 @@
 (print (first ["hi" "there"]))
 (import requests)
 (import json)
+(import [json [dumps]]) ;probably can list out together
+(import [json [loads]])
 (import [pprint [pprint]])
 (require [hy.contrib.walk [let]])
 (import os)
@@ -16,25 +18,30 @@
       ))
 
 (defn save-txt2file [txt fn]
-      (with [f (open fn)] (.write f txt)))
+      (with [f (open fn "w")] (.write f txt)))
 
 (defn get-txtfile [fn]
-      (with [f (open fn)] (.read f)))
+      (with [f (open fn "r")] (.read f)))
 
 ;(defn get-jsonfile [fn]
 ;      (with [f (open fn)] (json.loads f)))
 (defn get-jsonfile [fn]
-      (json.loads (get-txtfile fn)))
+      ;json.loads 
+      (loads 
+        (get-txtfile fn)))
 
 (defn cid2ld_ [cID]
       (let [ccf (+ "cc/" cID ".jsonld")]
         (if (os.path.exists ccf)  (get-jsonfile ccf)
           (let [nd (cid2ld cID)]
-            (save-txt2file nd ccf)
+            ;(save-txt2file nd ccf)
+            (save-txt2file 
+              (dumps nd) 
+              ccf)
             nd))))
 
 (defn gd [id]
       (cid2ld_ id))
 (defn td []
       (pprint (gd "5f82911ae4b0b81250e2419d")))
-;(td)
+(td)
