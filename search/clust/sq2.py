@@ -173,8 +173,8 @@ def cq(qry_str):
 def qc2dcs(qry_str):
     "query clowder to-dcs format"
     rj=cq(qry_str)
-    if not isinstance(rj, dict): #clowder down too much, &should focus on sparql
-        return gq(qry_str)
+#   if not isinstance(rj, dict): #clowder down too much, &should focus on sparql
+#       return gq(qry_str)
 
     cout = """<?xml version="1.0" encoding="UTF-8"?>
         <searchresult>"""
