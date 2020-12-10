@@ -7,6 +7,7 @@ import sys
 import os
 clowder_host = os.getenv('clowder_host')
 
+#sq.py
 def first_(l):
     from collections.abc import Iterable
     if isinstance(l,list):
@@ -23,6 +24,22 @@ def first_(l):
             return l
     else:
         return l
+
+def httpP(str):
+    #str.startswith('http')
+    return str.startswith('http')
+
+def getURLs(l):
+    if isinstance(l,str):
+        l=l.split()
+    #filter(httpP,l)
+    #return filter(httpP,l)
+    #return list(filter(httpP,l))
+    ret= list(filter(httpP,l))
+    if len(ret)<1:
+        return ""
+    else:
+        return ret
 
 def get_jsonLD(datasetID):
     "given clowder dataset id: return it's saved()jsonLD"
@@ -281,5 +298,5 @@ def cq2js(qry_str):
     dl=cq2dl(qry_str)
     js=json.dumps(dl, indent=2)
     print(js)
-    #return js
-    return dl
+    ##return js
+    #return dl
