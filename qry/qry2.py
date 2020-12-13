@@ -8,7 +8,8 @@ from SPARQLWrapper import SPARQLWrapper, JSON
 if(len(sys.argv)>1):
     qry_str=sys.argv[1]
 else:
-    qry_str = "sea ice"
+    qry_str = "Seymour Island"
+    #qry_str = "sea ice"
     #qry_str = "organic"
 #-
 gqs = """ prefix schema: <http://schema.org/> \
@@ -34,7 +35,8 @@ def sq2b(qry_str):
     "free-text(sparql)query of blazegraph endpoint, bindings" 
     endpoint = "https://graph.geodex.org/blazegraph/namespace/cdf/sparql"
     sparql = SPARQLWrapper(endpoint)
-    sparql.setQuery(gqs)
+    q=gqs.replace('${q}',qry_str)
+    sparql.setQuery(q)
     sparql.setReturnFormat(JSON)
     results = sparql.query().convert()
     return results["results"]["bindings"]
