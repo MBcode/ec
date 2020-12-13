@@ -62,7 +62,10 @@ def sq2b(qry_str):
     sparql.setQuery(q)
     sparql.setReturnFormat(JSON)
     results = sparql.query().convert()
-    return results["results"]["bindings"]
+    #print(f'sq2b:{results}')
+    bindings= results["results"]["bindings"]
+    print(f'ret:{bindings}')
+    return bindings
 
 #here can focus on bindings dict, bs the clowder search dict, which was limited; 
  #should have at least returned the url I sent in, as promoted data, if not more
@@ -108,25 +111,32 @@ def b2xs(b):
     for result in b:
         #if isinstance(result,dict):
         #    rs+= b1xs(result)
-        print(f'result={result}')
+        #print(f'result={result}')
         rs+= b1xs(result)
     rs += "</searchresult>"
     return rs 
 #dicts are off
 
-def xs2c(b):
-    "dcs-xml(str-cache-file)call to get clusters only in json" 
+def b2xs_(b):
+    "cache around bindings2xml-str"
     ccf = "cc/" + qry_str.replace(" ", "_")  + ".xml" #from global
     if os.path.exists(ccf) and os.stat(ccf).st_size >199:
-        #x=get_txtfile(ccf) #actually need to read as file for now
+        x=get_txtfile(ccf) #actually need to read as file for now
         print(f'already have file:{ccf}')
     else:
         x=b2xs(b)
+        print(f'xml:{x}') #dbg, not as full as returned below
         xl=len(x)
         print(f'writing xml of len{xl}')
         #write, then use
         with open(ccf, "w") as of:
             of.write(x)
+    return x
+
+def xs2c(x):
+    "dcs-xml(str-cache-file)call to get clusters only in json" 
+    #just needs b2xs_ check/setting the xml file to load, till can send via requests
+    ccf = "cc/" + qry_str.replace(" ", "_")  + ".xml" #from global
     cs= f'curl $dcs_url -F "dcs.clusters.only=true" -F "dcs.output.format=JSON" -F "dcs.c2stream=@{ccf}"'
     s=os.popen(cs).read()
     #try:
@@ -134,7 +144,7 @@ def xs2c(b):
     #except:
     #    print(s) 
     dct=json.loads(s) #not getting right xml2dcs service, bc not saved well, would work around if used this
-    docs=dct['documents']
+    #docs=dct['documents'] #this fnc just abt clusters, but still make sure  original binidngs, make2html2
     cls=dct['clusters']
     nc=len(cls)
     print(f'got {nc} clusters') #dbg
@@ -147,8 +157,8 @@ def sq2(qry_str):
     b=sq2b(qry_str)
     jb=json.dumps(b, indent=2)
 #   print(f'bindings:{jb}') #dbg
-    x=b2xs(b)
-    print(f'xml:{x}') #dbg
+    x=b2xs_(b)
+ #  print(f'xml:{x}') #dbg #writes full xml
     c=xs2c(x)
     print(f'clusters:{c}') #dbg
 
