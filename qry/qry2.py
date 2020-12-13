@@ -150,17 +150,63 @@ def xs2c(x):
     print(f'got {nc} clusters') #dbg
     return cls 
 
+#only for referenc for now
+def cj2h(j): #from fillSearch.py, but want a new one that is sparql-1st,&possibly only(eg.stop being slowed down by it)
+    "clowder json ret to html"  #btw mapping could probably get2details, or my cache, but blaze explore links from DOIs work2:
+    #if(len(j)>1)                #eg. https://graph.geodex.org/blazegraph/#explore:cdf:%3CDOI:10.15784/601173%3E
+    for r in j:
+        name=r['name']
+        des=r['description']
+        #will want to get url
+        #url=httpP(des) #bool, need actual url
+        url=first(getURLs(des))
+        url2= clowder_host + '/datasets/' + r['id'] #use metadata-tab for 'details'
+        rh=f'<div class="rescard"><div class="resheader"><a href="{url}">{name}</a></div>'
+        #rb=f'<div class="rescontiner"><a href="{url}><p>{des}</p></div>'
+        #I do not see ec score from clowder  to put /\
+        rb=f'<div class="rescontiner"><a href="{url}"><p>{des}</p><a href="{url2}">details</a><p></div></div>'
+        rs=rh+rb
+        print(rs) #for now
+
+#when I was making the xml4dcs in b2xs.. I could have made a more compact dict, that was all ready for the binding2html
+ #but can get it again for now
+
+def doiDetails(doi):
+    return f'https://graph.geodex.org/blazegraph/#explore:cdf:%3C{doi}3%3E'
+
+#def b1hs(b1):
+def b1hs(result):
+    "bindings to html for(one)rescard"
+    doi=result["subj"]["value"]
+    url=result["disurl"]["value"]
+    name=result["name"]["value"]
+    #description=result["description"]["value"]
+    des=result["description"]["value"]
+    url2=doiDetails(doi)
+    rh=f'<div class="rescard"><div class="resheader"><a href="{url}">{name}</a></div>'
+    rb=f'<div class="rescontiner"><a href="{url}"><p>{des}</p><a href="{url2}">details</a><p></div></div>'
+    rs=rh+rb
+    print(rs) #for now
+
+def b2hs(b):
+    "bindings to html for(all)rescards"
+    for result in b:
+        b1hs(result)
+
 def sq2(qry_str): 
     "sq running from a cache"
     #will use dict to make html later, but for now make sure can make re clusters 1st
     #sq2b.py|tee  (b2htm.py )   b2xs.py| xs2c    
     b=sq2b(qry_str)
-    jb=json.dumps(b, indent=2)
-#   print(f'bindings:{jb}') #dbg
-    x=b2xs_(b)
- #  print(f'xml:{x}') #dbg #writes full xml
-    c=xs2c(x)
+    #jb=json.dumps(b, indent=2)
+    x=b2xs_(b) #binding to dcs-xml
+    c=xs2c(x) #dcs-xml(file)to clusters
     print(f'clusters:{c}') #dbg
+    #if c, then can put in the html
+    h=b2hs(b) #binding to html
+    print(f'html:{h}') #dbg
+    # at end, had rescards w/cluster info, incl links back2id's in html
+      #this is from csq2's cls2h, ..
 
 sq2(qry_str)
 #the xml from the print can be run by the sh file and does give back the js cluster,..still check/&clean out most of this
