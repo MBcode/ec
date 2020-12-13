@@ -8,7 +8,7 @@ from SPARQLWrapper import SPARQLWrapper, JSON
 if(len(sys.argv)>1):
     qry_str=sys.argv[1]
 else:
-    qry_str = "Seymour Island"
+    qry_str = "Tectonophysics Seymour Island"
     #qry_str = "sea ice"
     #qry_str = "organic"
 #-
@@ -29,13 +29,36 @@ SELECT ?subj ?disurl ?score  ?name ?description \
    } \
    ?s schema:name ?name . \
    ?s schema:description ?description .  \
+   filter(?score > 0.4). \
  } \
 ORDER BY DESC(?score)""" 
+#might start w/filter, &allow for geting more, but then no clustering by defualt bc more noise
+q1 = """prefix schema: <http://schema.org/>
+ SELECT ?subj ?disurl ?score  ?name ?description
+  WHERE { """
+#   ?lit bds:search "carbon" .                                       
+qs=f'?lit bds:search "{qry_str}" . '                                        
+q2 = """  ?lit bds:matchAllTerms "false" .
+    ?lit bds:relevance ?score .
+    ?subj ?p ?lit .
+    BIND (?subj as ?s)
+       {
+          SELECT  ?s (MIN(?url) as ?disurl) {
+              ?s a schema:Dataset .
+              ?s schema:distribution ?dis .
+             ?dis schema:url ?url .
+          } GROUP BY ?s
+    }
+    ?s schema:name ?name .
+    ?s schema:description ?description .
+    filter( ?score > 0.4).
+  }"""
 def sq2b(qry_str):
     "free-text(sparql)query of blazegraph endpoint, bindings" 
     endpoint = "https://graph.geodex.org/blazegraph/namespace/cdf/sparql"
     sparql = SPARQLWrapper(endpoint)
-    q=gqs.replace('${q}',qry_str)
+    #q=gqs.replace('${q}',qry_str)
+    q=q1+qs+q2
     sparql.setQuery(q)
     sparql.setReturnFormat(JSON)
     results = sparql.query().convert()
@@ -53,6 +76,12 @@ def get_jsonfile(fn):
 
 def b1xs(result):
     "one binding to xml str"
+    rl=len(result)
+    #print(f'b1xs,result:{result}') #dbg
+    #print(f'{result}') #dbg
+    if rl<2:
+        #print(f'b1xs,result-len:{rl}') #dbg
+        return ""
     rs=""
     doi=result["subj"]["value"]
     ds=f'\n<document id=\"{doi}\">'
@@ -77,10 +106,13 @@ def b2xs(b):
     print(xml_qry) #dbg
     rs += xml_qry
     for result in b:
-        if isinstance(result,dict):
-            rs+= b1xs(result)
+        #if isinstance(result,dict):
+        #    rs+= b1xs(result)
+        print(f'result={result}')
+        rs+= b1xs(result)
     rs += "</searchresult>"
     return rs 
+#dicts are off
 
 def xs2c(b):
     "dcs-xml(str-cache-file)call to get clusters only in json" 
@@ -90,6 +122,8 @@ def xs2c(b):
         print(f'already have file:{ccf}')
     else:
         x=b2xs(b)
+        xl=len(x)
+        print(f'writing xml of len{xl}')
         #write, then use
         with open(ccf, "w") as of:
             of.write(x)
