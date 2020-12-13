@@ -64,7 +64,7 @@ def sq2b(qry_str):
     results = sparql.query().convert()
     #print(f'sq2b:{results}')
     bindings= results["results"]["bindings"]
-    print(f'ret:{bindings}')
+ #  print(f'ret:{bindings}')
     return bindings
 
 #here can focus on bindings dict, bs the clowder search dict, which was limited; 
@@ -201,13 +201,22 @@ def sq2(qry_str):
     #jb=json.dumps(b, indent=2)
     x=b2xs_(b) #binding to dcs-xml
     c=xs2c(x) #dcs-xml(file)to clusters
-    print(f'clusters:{c}') #dbg
+ #  print(f'clusters:{c}') #dbg
     #if c, then can put in the html
     h=b2hs(b) #binding to html
     print(f'html:{h}') #dbg
     # at end, had rescards w/cluster info, incl links back2id's in html
+    print(f'clusters:{c}') #dbg
       #this is from csq2's cls2h, ..
 
 sq2(qry_str)
-#the xml from the print can be run by the sh file and does give back the js cluster,..still check/&clean out most of this
- #would rework a bit anyway, ..
+#the xml from the print can be run by the sh file and does give back the js cluster, working via this cache file
+ #would rework a bit anyway, ..  ;incl direct requests.get to dcs  &:
+
+# will try a new verion of qry2 called qry3 where all the connections can be made not by looping but by local
+# graph asserts, which might not only be cleaner, but have many other potential near term benefits
+#;if not new, just finish off the rest of the linking w/this small local graph
+#I had thought of using owlready2 before, but even easier probably is the lib I saw used when saw the pipy flask rdf: python3-flask-rdf
+# which when I 1st saw just though would do the nice LD deciding wether to give you person or machine version of a resource page
+# but allows for creating a small graph, like owlready2, so both cluster&/or sortable metadata could go into this store right away
+# &obviate most of the present code that makes all those links, &the start of the facet-aggregate/counts; on if needed thought
