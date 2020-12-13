@@ -8,7 +8,8 @@ from SPARQLWrapper import SPARQLWrapper, JSON
 if(len(sys.argv)>1):
     qry_str=sys.argv[1]
 else:
-    qry_str = "organic"
+    qry_str = "sea ice"
+    #qry_str = "organic"
 #-
 gqs = """ prefix schema: <http://schema.org/> \
 SELECT ?subj ?disurl ?score  ?name ?description \
@@ -52,11 +53,11 @@ def b1xs(result):
     "one binding to xml str"
     rs=""
     doi=result["subj"]["value"]
-    ds=f'<document id=\"{doi}\">'
+    ds=f'\n<document id=\"{doi}\">'
 #   print(ds) #dbg
     rs+=ds
     url=result["disurl"]["value"]
-    us=f'<url>{url}</url>'
+    us=f'<url>{url}</url>\n'
 #   print(us) #dbg
     rs+=us
     description=result["description"]["value"]
@@ -69,8 +70,9 @@ def b1xs(result):
 def b2xs(b):
     "var bindings2xml(str)4 clowder2 dcs service"
     rs = """<?xml version="1.0" encoding="UTF-8"?>
-        <searchresult>"""
-    xml_qry=f'<query>{qry_str}</query>'  #gotten from global
+        <searchresult>"""   #when in file only gets up to here
+    xml_qry=f'<query>{qry_str}</query>\n'  #gotten from global
+    print(xml_qry) #dbg
     rs += xml_qry
     for result in b:
         if isinstance(result,dict):
@@ -80,8 +82,8 @@ def b2xs(b):
 
 def xs2c(b):
     "dcs-xml(str-cache-file)call to get clusters only in json" 
-    ccf = "cc/" + qry_str  + ".xml" #from global
-    if os.path.exists(ccf) and os.stat(ccf).st_size >0:
+    ccf = "cc/" + qry_str.replace(" ", "_")  + ".xml" #from global
+    if os.path.exists(ccf) and os.stat(ccf).st_size >199:
         #x=get_txtfile(ccf) #actually need to read as file for now
         print(f'already have file:{ccf}')
     else:
@@ -89,12 +91,13 @@ def xs2c(b):
         #write, then use
         with open(ccf, "w") as of:
             of.write(x)
-    cs= f'curl $dcs_url -F "dcs.clusters.only=true" -F "dcs.output.format=JSON" -F "dcs.c2stream=@{ccf}'
+    cs= f'curl $dcs_url -F "dcs.clusters.only=true" -F "dcs.output.format=JSON" -F "dcs.c2stream=@{ccf}"'
     s=os.popen(cs).read()
-    try:
-        dct=json.loads(s)
-    except:
-        print(s) 
+    #try:
+    #    dct=json.loads(s)
+    #except:
+    #    print(s) 
+    dct=json.loads(s) #not getting right xml2dcs service, bc not saved well, would work around if used this
     docs=dct['documents']
     cls=dct['clusters']
     nc=len(cls)
@@ -104,6 +107,7 @@ def xs2c(b):
 def sq2(qry_str): 
     "sq running from a cache"
     #will use dict to make html later, but for now make sure can make re clusters 1st
+    #sq2b.py|tee  (b2htm.py )   b2xs.py| xs2c    
     b=sq2b(qry_str)
     jb=json.dumps(b, indent=2)
 #   print(f'bindings:{jb}') #dbg
@@ -114,3 +118,4 @@ def sq2(qry_str):
 
 sq2(qry_str)
 #the xml from the print can be run by the sh file and does give back the js cluster,..still check/&clean out most of this
+ #would rework a bit anyway, ..
