@@ -53,6 +53,17 @@ q2 = """  ?lit bds:matchAllTerms "false" .
     ?s schema:description ?description .
     filter( ?score > 0.4).
   }"""
+#--pick a qry to use/try new one w/optionals to get the metadata-facets to filter on
+#maybe actually do call w/sparql-dataframe to get aggregation math right away
+#don't have to put in links like did w/clusters, just counts, &can requery this time
+#--
+def sq2df(qry_str):
+    "sparql to df"
+    import sparql_dataframe
+    endpoint = "https://graph.geodex.org/blazegraph/namespace/cdf/sparql"
+    q=q1+qs+q2
+    df = sparql_dataframe.get(endpoint, q)
+#--
 def sq2b(qry_str):
     "free-text(sparql)query of blazegraph endpoint, bindings" 
     endpoint = "https://graph.geodex.org/blazegraph/namespace/cdf/sparql"
@@ -76,6 +87,8 @@ def get_txtfile(fn):
 
 def get_jsonfile(fn):
     t=get_txtfile(fn)
+
+#--below/next functions are for clustering in_subtopic facet
 
 def b1xs(result):
     "one binding to xml str"
@@ -150,6 +163,7 @@ def xs2c(x):
     print(f'got {nc} clusters') #dbg
     return cls 
 
+#--cut out:
 #only for referenc for now
 def cj2h(j): #from fillSearch.py, but want a new one that is sparql-1st,&possibly only(eg.stop being slowed down by it)
     "clowder json ret to html"  #btw mapping could probably get2details, or my cache, but blaze explore links from DOIs work2:
@@ -167,10 +181,10 @@ def cj2h(j): #from fillSearch.py, but want a new one that is sparql-1st,&possibl
         rb=f'<div class="rescontiner"><a href="{url}"><p>{des}</p><a href="{url2}">details</a><p></div></div>'
         rs=rh+rb
         print(rs) #for now
-
+#--
 #when I was making the xml4dcs in b2xs.. I could have made a more compact dict, that was all ready for the binding2html
  #but can get it again for now
-
+#----html-gen fncs: 
 def doiDetails(doi):
     return f'https://graph.geodex.org/blazegraph/#explore:cdf:%3C{doi}3%3E'
 
@@ -192,19 +206,22 @@ def b2hs(b):
     "bindings to html for(all)rescards"
     for result in b:
         b1hs(result)
-
+#---qry+fill middle of search page
 def sq2(qry_str): 
     "sq running from a cache"
     #will use dict to make html later, but for now make sure can make re clusters 1st
     #sq2b.py|tee  (b2htm.py )   b2xs.py| xs2c    
-    b=sq2b(qry_str)
+    b=sq2b(qry_str)   #get the filter-facet metadata through optional lines in sparql qry
     #jb=json.dumps(b, indent=2)
+    h=b2hs(b) #binding to html
+    print(f'html:{h}') #dbg
+    #-can skip below if don't need clusters, but still need other metadata-put in
     x=b2xs_(b) #binding to dcs-xml
     c=xs2c(x) #dcs-xml(file)to clusters
  #  print(f'clusters:{c}') #dbg
     #if c, then can put in the html
-    h=b2hs(b) #binding to html
-    print(f'html:{h}') #dbg
+    #h=b2hs(b) #binding to html
+    #print(f'html:{h}') #dbg  #would print down here if putting cluters as part of metadata
     # at end, had rescards w/cluster info, incl links back2id's in html
     print(f'clusters:{c}') #dbg
       #this is from csq2's cls2h, ..
@@ -220,3 +237,7 @@ sq2(qry_str)
 # which when I 1st saw just though would do the nice LD deciding wether to give you person or machine version of a resource page
 # but allows for creating a small graph, like owlready2, so both cluster&/or sortable metadata could go into this store right away
 # &obviate most of the present code that makes all those links, &the start of the facet-aggregate/counts; on if needed thought
+
+#have other files w/sparql-dataframe, might be nice bc could do facet-aggregation math quickly
+def tdf(): #install is trickier than sparqlwrapper alone, so maybe cound w/in the qry
+    sq2df(qry_str)
