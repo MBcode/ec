@@ -11,7 +11,7 @@ else:
     qry_str = "Tectonophysics Seymour Island"
     #qry_str = "sea ice"
     #qry_str = "organic"
-#-
+#-do not use this top one, that q set in js
 gqs = """ prefix schema: <http://schema.org/> \
 SELECT ?subj ?disurl ?score  ?name ?description \
  WHERE { \
@@ -32,9 +32,10 @@ SELECT ?subj ?disurl ?score  ?name ?description \
    filter(?score > 0.4). \
  } \
 ORDER BY DESC(?score)""" 
+#use the one below in py:
 #might start w/filter, &allow for geting more, but then no clustering by defualt bc more noise
 q1 = """prefix schema: <http://schema.org/>
- SELECT ?subj ?disurl ?score  ?name ?description
+ SELECT ?subj ?pub ?datep ?disurl ?score  ?name ?description
   WHERE { """
 #   ?lit bds:search "carbon" .                                       
 qs=f'?lit bds:search "{qry_str}" . '                                        
@@ -52,7 +53,11 @@ q2 = """  ?lit bds:matchAllTerms "false" .
     ?s schema:name ?name .
     ?s schema:description ?description .
     filter( ?score > 0.4).
-  }"""
+    OPTIONAL {?s schema:datePublished ?datep .}
+      OPTIONAL {?s schema:publisher ?pub .}
+  }
+  ORDER BY DESC(?score)"""
+ #but might use more of t2.qry &run in js in end ;for now use2get optional's in for md-elts
 #--pick a qry to use/try new one w/optionals to get the metadata-facets to filter on
 #maybe actually do call w/sparql-dataframe to get aggregation math right away
 #don't have to put in links like did w/clusters, just counts, &can requery this time
@@ -89,6 +94,10 @@ def get_jsonfile(fn):
     t=get_txtfile(fn)
 
 #--below/next functions are for clustering in_subtopic facet
+ #will probably break out into a separate d2c.py file soon
+  #and could send the sq bindings-dict as js2it similarly
+   #b2hs fnc will get bindings as-is w/all optionals in
+    #so nothing extra to to there, except on the html-gen side
 
 def b1xs(result):
     "one binding to xml str"
@@ -206,6 +215,11 @@ def b2hs(b):
     "bindings to html for(all)rescards"
     for result in b:
         b1hs(result)
+
+#bindings will have the optional filterable md-elts now, but have2see how used by filter widgets
+ #sounds like it just needs the range of values w/counts, ;which can get from sparql-qry too
+  #along w/more optional to normalize the publisher, which varies, so will look into that
+
 #---qry+fill middle of search page
 def sq2(qry_str): 
     "sq running from a cache"
