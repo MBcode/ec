@@ -198,7 +198,8 @@ def pLDs2f(LD):
     if datep:
         m3s += f'date:{datep}'
         #date_tc[date]+=1
-        incrKeyCount(datep,date_tc)
+        datepy=datep.split('-')[0]
+        incrKeyCount(datepy,date_tc)
     #print(m3s)
     return m3s
 
@@ -230,10 +231,14 @@ cs=f'/usr/bin/python3 sq2.py {qry_str}|curl $dcs_url -F "dcs.output.format=JSON"
 s=os.popen(cs).read()
 #d=xmltodict.parse(s)
 #print(s) #origninal
-try:
-    dct=json.loads(s)
-except:
-    print(f'error w/json.loads:{s}')
+
+#try:
+#    dct=json.loads(s)
+#except:
+#    print(f'error w/json.loads:{s}')
+
+dct=json.loads(s)
+
 docs=dct['documents']
 nd=len(docs)
 #print(f'got {nd} hits')
@@ -248,6 +253,17 @@ i2t ={} #tags
 i2tn ={} #tag(cluster)number, or better break out, index by tag-txt &get counts sort later
 pub_tc = {}  
 date_tc = {}  
+#---
+def d2htm(d):
+    print(f'<TABLE border="1" style="border: 1px solid #000000; border-collapse: collapse;" cellpadding="4">')
+    for k, v in d.items():
+        print(f'<tr><td>{k}</td><td>{v}</td></tr>')
+    print("</table>")
+
+def printFacetCounts2htm(): #new
+    d2htm(pub_tc)
+    d2htm(date_tc)
+#---
  #only problem is it should default to 0
 def incrKeyCount(key,d):
     v=d.get(key)
@@ -431,4 +447,5 @@ for i in ids:
 #    print(i2d[i])
 #    tags=i2t[i]
 #    print(f'tags:{tags}')
+printFacetCounts2htm() #new, might have to try here to start bc calc when html generated
 cls2h() #get a few more rescards w/the cluster info, and links back up
