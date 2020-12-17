@@ -253,6 +253,7 @@ i2t ={} #tags
 i2tn ={} #tag(cluster)number, or better break out, index by tag-txt &get counts sort later
 pub_tc = {}  
 date_tc = {}  
+plc_tc = {}  
 #---
 def d2htm(d):
     print(f'<TABLE border="1" style="border: 1px solid #000000; border-collapse: collapse;" cellpadding="4">')
@@ -260,9 +261,15 @@ def d2htm(d):
         print(f'<tr><td>{k}</td><td>{v}</td></tr>')
     print("</table>")
 
+def d2html(d,title):
+    dl=len(d)
+    print(f'{title}:{dl}')
+    d2htm(d)
+
 def printFacetCounts2htm(): #new
-    d2htm(pub_tc)
-    d2htm(date_tc)
+    d2html(pub_tc,"Publications")
+    d2html(date_tc,"DatePublished")
+    d2html(plc_tc,"Place")
 #---
  #only problem is it should default to 0
 def incrKeyCount(key,d):
