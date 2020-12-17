@@ -1,0 +1,1 @@
+qry2.py is a SPARQL centric version of ../search; Now split out to qry.py and b2c.py: bindings-to-clusters 
