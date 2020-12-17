@@ -114,15 +114,15 @@ def sq2b_(qry_str):
     ccf = "cc/" + qry_str.replace(" ", "_")  + ".js" #from global
     if os.path.exists(ccf) and os.stat(ccf).st_size >199:
         b_=get_txtfile(ccf) #actually need to read as file for now
-        print(f'already have file:{ccf}')
+        #print(f'already have file:{ccf}')
         b=json.loads(b_)
         bl=len(b)
-        print(f'got bindings of len{bl}')
+        #print(f'got bindings of len{bl}')
     else:
         b=sq2b(qry_str)
-        print(f'bindings:{b}') #dbg, not as full as returned below
+        #print(f'bindings:{b}') #dbg, not as full as returned below
         bl=len(b)
-        print(f'writing bindings of len{bl}')
+        #print(f'writing bindings of len{bl}')
         b_=json.dumps(b, indent=2)
         #write, then use
         with open(ccf, "w") as of:
@@ -146,12 +146,22 @@ def printFacetCounts(): #new
     #getting different values out from pub_tc after change, 
     #but not if on other machine/check, but it was in cc/ diff
 
+# <TR>
+#  <TD>2</TD>
+def d2htm(d):
+    print(f'<TABLE border="1" style="border: 1px solid #000000; border-collapse: collapse;" cellpadding="4">')
+    for k, v in d.items():
+        print(f'<tr><td>{k}</td><td>{v}</td></tr>')
+    print("</table>")
+
 def printFacetCounts2htm(): #new
     #https://www.decalage.info/files/HTML.py-0.04.zip for now
     #https://www.decalage.info/python/html#attachments
-    import HTML
-    print(HTML.table(pub_tc))
-    print(HTML.table(date_tc))
+    #import HTML
+    #print(HTML.table(pub_tc))
+    #print(HTML.table(date_tc))
+    d2htm(pub_tc)
+    d2htm(date_tc)
 
 #works but might try: https://flask-table.readthedocs.io/en/stable/ for portability
 
@@ -193,9 +203,9 @@ def b1hs(result):
     rh=f'<div class="rescard"><div class="resheader"><a href="{url}">{name}</a></div>'
     rb=f'<div class="rescontiner"><a href="{url}"><p>{des}</p><a href="{url2}">details</a><p></div></div>'
     rs=rh+rb
-    print(rs) #for now
+    #print(rs) #for now
     m3s=b1fc(result)
-    print(f'md-elts:{m3s}') #dbg
+    #print(f'md-elts:{m3s}') #dbg
     return rs
 
 def b2hs(b):
@@ -218,12 +228,13 @@ def sq2(qry_str):
     #b=sq2b(qry_str)   
     b=sq2b_(qry_str)   
     bl=len(b)
-    print(f'sq2b_ bindings of len{bl}')
+    #print(f'sq2b_ bindings of len{bl}')
     h=b2hs(b) #binding to html
-    print(f'html:{h}') #dbg
+    #print(f'html:{h}') #dbg
+    print(h) 
     #-can skip below if don't need clusters, but still need other metadata-put in
-    print("printFacetCounts")  #dbg
-    printFacetCounts() #new
+    #print("printFacetCounts")  #dbg
+    #printFacetCounts() #new
     #now how to get this out as a re-query w/the new constraint of what was picked
      #would like to have the facets build up, so will need to update the ?q etc terms
       #but would much prefer ths faster in page demo/ideas, which are also friendlir to In_sub_topic/s
