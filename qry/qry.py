@@ -1,5 +1,6 @@
 #qry.py is just the SPARQL part of qry2.py, while the clustering has been spun out to b2c.py
-#all the code in ../assert & ../search as clowder at least as a backup, this finally breaks free&be small like these early queris I wante to finish
+#all the code in ../assert & ../search as clowder at least as a backup, 
+#this finally breaks free&be small like these early querys I wanted to finish
 import os
 import sys
 import json
@@ -69,6 +70,9 @@ q2 = """  ?lit bds:matchAllTerms "false" .
     OPTIONAL {?s schema:datePublished ?datep .}
     OPTIONAL {?s schema:publisher ?pub .
                ?pub schema:name ?pubname .}
+    OPTIONAL {?s schema:spatialCoverage ?space .
+               ?space schema:geo ?geo .}
+    OPTIONAL { ?geo schema:geo ?box .}
   }
   ORDER BY DESC(?score)"""
  #but might use more of t2.qry &run in js in end ;for now use2get optional's in for md-elts
@@ -140,9 +144,11 @@ def doiDetails(doi):
 #use code from csq2.py where I got these elts from the jsonLD
 pub_tc = {}
 date_tc = {}
+plc_tc = {}
 def printFacetCounts(): #new
     print(json.dumps(date_tc, indent=2))
     print(json.dumps(pub_tc, indent=2))
+    print(json.dumps(plc_tc, indent=2))
     #getting different values out from pub_tc after change, 
     #but not if on other machine/check, but it was in cc/ diff
 
@@ -155,13 +161,19 @@ def d2htm(d):
     print("</table>")
 
 def printFacetCounts2htm(): #new
-    #https://www.decalage.info/files/HTML.py-0.04.zip for now
-    #https://www.decalage.info/python/html#attachments
-    #import HTML
-    #print(HTML.table(pub_tc))
-    #print(HTML.table(date_tc))
     d2htm(pub_tc)
     d2htm(date_tc)
+    d2htm(plc_tc)
+
+def d2html(d,title):
+    dl=len(d) #check
+    print(f'{title}:{dl}')
+    d2htm(d)
+
+def printFacetCounts2htm(): #new
+    d2html(pub_tc,"Publications")
+    d2html(date_tc,"DatePublished")
+    d2html(plc_tc,"Place")
 
 #works but might try: https://flask-table.readthedocs.io/en/stable/ for portability
 
