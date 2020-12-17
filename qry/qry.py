@@ -1,8 +1,9 @@
+#qry.py is just the SPARQL part of qry2.py, while the clustering has been spun out to b2c.py
 #all the code in ../assert & ../search as clowder at least as a backup, this finally breaks free&be small like these early queris I wante to finish
 import os
 import sys
 import json
-import requests
+#import requests #could use later
 from SPARQLWrapper import SPARQLWrapper, JSON
 
 if(len(sys.argv)>1):
@@ -19,20 +20,23 @@ SELECT ?subj ?disurl ?score  ?name ?description \
    ?lit bds:matchAllTerms "false" . \
    ?lit bds:relevance ?score . \
    ?subj ?p ?lit . \
-   BIND (?subj as ?s) \
-      {  \
+   BIND (?subj as ?s) {  \
          SELECT  ?s (MIN(?url) as ?disurl) { \
              ?s a schema:Dataset . \
              ?s schema:distribution ?dis . \
             ?dis schema:url ?url . \
-         } GROUP BY ?s \
-   } \
+         } GROUP BY ?s  } \
    ?s schema:name ?name . \
    ?s schema:description ?description .  \
-   filter(?score > 0.4). \
+   filter(?score > 0.1). \
+    OPTIONAL {?s schema:datePublished ?datep .} \
+    OPTIONAL {?s schema:publisher ?pub . \
+               ?pub schema:name ?pubname .} \
  } \
 ORDER BY DESC(?score)""" 
-#-
+#not use js qry above; condiser using t2.qry
+# that would do all the aggr-counts w/o d16.js
+#----
 q1s= """PREFIX schema: <http://schema.org/>
 select distinct ?s ?o where {
     { ?s schema:description|schema:keywords|schema:name ?o .}"""
@@ -63,7 +67,7 @@ q2 = """  ?lit bds:matchAllTerms "false" .
     ?s schema:description ?description .
     filter( ?score > 0.4).
     OPTIONAL {?s schema:datePublished ?datep .}
-      OPTIONAL {?s schema:publisher ?pub .
+    OPTIONAL {?s schema:publisher ?pub .
                ?pub schema:name ?pubname .}
   }
   ORDER BY DESC(?score)"""
@@ -131,17 +135,25 @@ def sq2b_(qry_str):
 def doiDetails(doi):
     return f'https://graph.geodex.org/blazegraph/#explore:cdf:%3C{doi}3%3E'
 
-#pubdate ={}
-#pubname ={}
-  # if datep:
-  #     #pubdate[datep]
-  #     incrKeyCount
+#sparql describe could give out similar info
+
 #use code from csq2.py where I got these elts from the jsonLD
 pub_tc = {}
 date_tc = {}
 def printFacetCounts(): #new
     print(json.dumps(date_tc, indent=2))
     print(json.dumps(pub_tc, indent=2))
+    #getting different values out from pub_tc after change, 
+    #but not if on other machine/check, but it was in cc/ diff
+
+def printFacetCounts2htm(): #new
+    #https://www.decalage.info/files/HTML.py-0.04.zip for now
+    #https://www.decalage.info/python/html#attachments
+    import HTML
+    print(HTML.table(pub_tc))
+    print(HTML.table(date_tc))
+
+#works but might try: https://flask-table.readthedocs.io/en/stable/ for portability
 
  #only problem is it should default to 0
 def incrKeyCount(key,d):
@@ -158,16 +170,14 @@ def b1fc(r):
     if datep:
         datep=datep['value']
         m3s += f'date:{datep}'
-        ##date_tc[date]+=1
-        #print(m3s)
+        #print(m3s) #dbg
         incrKeyCount(datep,date_tc)
     #pub=r.get('publisher')
     pub=r.get('pubname')
     if pub:
         pub=pub['value']
         m3s += f'publisher:{pub},'
-        ##pub_tc[pub]+=1
-        #print(m3s)
+        #print(m3s) #dbg
         incrKeyCount(pub,pub_tc)
     return m3s
 
@@ -185,7 +195,7 @@ def b1hs(result):
     rs=rh+rb
     print(rs) #for now
     m3s=b1fc(result)
-    print(f'md-elts:{m3s}')
+    print(f'md-elts:{m3s}') #dbg
     return rs
 
 def b2hs(b):
@@ -209,15 +219,24 @@ def sq2(qry_str):
     b=sq2b_(qry_str)   
     bl=len(b)
     print(f'sq2b_ bindings of len{bl}')
-    #jb=json.dumps(b, indent=2)
     h=b2hs(b) #binding to html
     print(f'html:{h}') #dbg
     #-can skip below if don't need clusters, but still need other metadata-put in
-    print("printFacetCounts") 
+    print("printFacetCounts")  #dbg
     printFacetCounts() #new
+    #now how to get this out as a re-query w/the new constraint of what was picked
+     #would like to have the facets build up, so will need to update the ?q etc terms
+      #but would much prefer ths faster in page demo/ideas, which are also friendlir to In_sub_topic/s
+ #could use the tree part of 2nd demo to show the counts, but then still need the <form>links
+    printFacetCounts2htm() #new
 
 sq2(qry_str)
 
 #have other files w/sparql-dataframe, might be nice bc could do facet-aggregation math quickly
 def tdf(): #install is trickier than sparqlwrapper alone, so maybe cound w/in the qry
     sq2df(qry_str)
+#probably take out dateframe&unused qry on top next
+#just need to make a flask route for this, or might just swap out the fillSearch.py external call for this
+ #so the rough template can be put in; though probably go to something w/the new simpler top you see in
+ # http://mbobak-ofc.ncsa.illinois.edu/search1.htm &but if could use the fast in page filter w/counts at
+ # http://mbobak-ofc.ncsa.illinois.edu/facetedsearch/
