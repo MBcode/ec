@@ -44,7 +44,7 @@ q2s="}"  #but could add optional here
 #SELECT ?subj ?pub ?datep ?disurl ?score  ?name ?description
             #even w/the 'distinct' got one duplicate, which clustering doesn't like, &is good to know about
 q1 = """prefix schema: <http://schema.org/>
- SELECT distinct ?subj ?pub ?datep ?disurl ?score  ?name ?description
+ SELECT distinct ?subj ?pubname ?datep ?disurl ?score  ?name ?description
   WHERE { """
 #   ?lit bds:search "carbon" .                                       
 qs=f'?lit bds:search "{qry_str}" . '                                        
@@ -63,7 +63,8 @@ q2 = """  ?lit bds:matchAllTerms "false" .
     ?s schema:description ?description .
     filter( ?score > 0.4).
     OPTIONAL {?s schema:datePublished ?datep .}
-      OPTIONAL {?s schema:publisher ?pub .}
+      OPTIONAL {?s schema:publisher ?pub .
+               ?pub schema:name ?pubname .}
   }
   ORDER BY DESC(?score)"""
  #but might use more of t2.qry &run in js in end ;for now use2get optional's in for md-elts
@@ -130,6 +131,46 @@ def sq2b_(qry_str):
 def doiDetails(doi):
     return f'https://graph.geodex.org/blazegraph/#explore:cdf:%3C{doi}3%3E'
 
+#pubdate ={}
+#pubname ={}
+  # if datep:
+  #     #pubdate[datep]
+  #     incrKeyCount
+#use code from csq2.py where I got these elts from the jsonLD
+pub_tc = {}
+date_tc = {}
+def printFacetCounts(): #new
+    print(json.dumps(date_tc, indent=2))
+    print(json.dumps(pub_tc, indent=2))
+
+ #only problem is it should default to 0
+def incrKeyCount(key,d):
+    v=d.get(key)
+    if not v:
+        d[key] = 0
+    d[key] += 1
+
+def b1fc(r):
+    "one hit's binding to incr facet-count"
+    m3s=""
+    #datep=r.get('datePublished')
+    datep=r.get('datep')
+    if datep:
+        datep=datep['value']
+        m3s += f'date:{datep}'
+        ##date_tc[date]+=1
+        #print(m3s)
+        incrKeyCount(datep,date_tc)
+    #pub=r.get('publisher')
+    pub=r.get('pubname')
+    if pub:
+        pub=pub['value']
+        m3s += f'publisher:{pub},'
+        ##pub_tc[pub]+=1
+        #print(m3s)
+        incrKeyCount(pub,pub_tc)
+    return m3s
+
 #def b1hs(b1):
 def b1hs(result):
     "bindings to html for(one)rescard"
@@ -143,6 +184,8 @@ def b1hs(result):
     rb=f'<div class="rescontiner"><a href="{url}"><p>{des}</p><a href="{url2}">details</a><p></div></div>'
     rs=rh+rb
     print(rs) #for now
+    m3s=b1fc(result)
+    print(f'md-elts:{m3s}')
     return rs
 
 def b2hs(b):
@@ -170,6 +213,8 @@ def sq2(qry_str):
     h=b2hs(b) #binding to html
     print(f'html:{h}') #dbg
     #-can skip below if don't need clusters, but still need other metadata-put in
+    print("printFacetCounts") 
+    printFacetCounts() #new
 
 sq2(qry_str)
 
