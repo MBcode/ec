@@ -115,7 +115,8 @@ def get_jsonfile(fn):
 #--
 def sq2b_(qry_str):
     "cache around sparql-qry2binding"
-    ccf = "cc/" + qry_str.replace(" ", "_")  + ".js" #from global
+    #ccf = "cc/" + qry_str.replace(" ", "_")  + ".js" #from global
+    ccf = "cc/" + qry_str.replace(" ", "_")  + ".jsonld" #from global
     if os.path.exists(ccf) and os.stat(ccf).st_size >199:
         b_=get_txtfile(ccf) #actually need to read as file for now
         #print(f'already have file:{ccf}')
@@ -140,6 +141,27 @@ def doiDetails(doi):
     return f'https://graph.geodex.org/blazegraph/#explore:cdf:%3C{doi}3%3E'
 
 #sparql describe could give out similar info
+
+def add2dict(key,v,d):
+    #d.add(k,v) #more internal to class
+    d[key]=v
+
+def ld1js(d):  #thought abt mapping, but could append2new dict like I do w/incrKeyCount
+    "jsonld to just js, for one search hit"
+    tmp={}
+    for k, v in d.items():
+        v2 = v['value']
+        #add k,v2  to the .js version of this hit, just below/finsh
+        add2dict(k,v2,tmp)
+    return tmp
+
+def ld2js(d):
+    "jsonld to just js"
+    tmpa=[]
+    for hit in d:
+        d=ld1js(hit)
+        tmpa.append(d)
+    return tmpa
 
 #use code from csq2.py where I got these elts from the jsonLD
 pub_tc = {}

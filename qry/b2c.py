@@ -14,6 +14,7 @@ else:
 
 def get_txtfile(fn):
     with open(fn, "r") as f:
+        #return f.read().encode("utf-8").replace("�","_")
         return f.read().encode("utf-8")
 
 #--below/next functions are for clustering in_subtopic facet
@@ -22,7 +23,7 @@ def get_txtfile(fn):
    #b2hs fnc will get bindings as-is w/all optionals in
     #so nothing extra to to there, except on the html-gen side
 
-def b1xs(result):
+def b1xs_(result): #original version
     "one binding to xml str"
     rl=len(result)
     #print(f'b1xs,result:{result}') #dbg
@@ -40,6 +41,33 @@ def b1xs(result):
 #   print(us) #dbg
     rs+=us
     description=result["description"]["value"]
+    description=description.replace("&","_and_").replace("<"," _lt_ ")
+    ss=f'<snippet>{description}</snippet></document>'
+#   print(ss) #dbg
+    rs+=ss
+    return rs
+
+def b1xs(result): #use changed dict, 2compress keys together
+    "one binding to xml str"
+    rl=len(result)
+    #print(f'b1xs,result:{result}') #dbg
+    #print(f'{result}') #dbg
+    if rl<2:
+        #print(f'b1xs,result-len:{rl}') #dbg
+        return ""
+    rs=""
+    #doi=result["subj"]["value"]
+    doi=result["subj"]
+    ds=f'\n<document id=\"{doi}\">'
+#   print(ds) #dbg
+    rs+=ds
+    #url=result["disurl"]["value"]
+    url=result["disurl"]
+    us=f'<url>{url}</url>\n'
+#   print(us) #dbg
+    rs+=us
+    #description=result["description"]["value"]
+    description=result["description"]
     description=description.replace("&","_and_").replace("<"," _lt_ ")
     ss=f'<snippet>{description}</snippet></document>'
 #   print(ss) #dbg
@@ -66,8 +94,10 @@ def b2xs_(b):
     "cache around bindings2xml-str"
     ccf = "cc/" + qry_str.replace(" ", "_")  + ".xml" #from global
     if os.path.exists(ccf) and os.stat(ccf).st_size >199:
-        x=get_txtfile(ccf) #actually need to read as file for now
         print(f'already have file:{ccf}')
+        x=get_txtfile(ccf) #actually need to read as file for now
+        lx=len(x)
+        print(f'len:{lx}')
     else:
         x=b2xs(b)
         print(f'xml:{x}') #dbg, not as full as returned below
@@ -77,13 +107,15 @@ def b2xs_(b):
         with open(ccf, "w") as of:
             of.write(x)
     return x
-#-or:
+#-or: now using
 def q2xs_(qry_str):
     "cache around bindings2xml-str"
     ccf = "cc/" + qry_str.replace(" ", "_")  + ".xml" #from global
     if os.path.exists(ccf) and os.stat(ccf).st_size >199:
-        x=get_txtfile(ccf) #actually need to read as file for now
         print(f'already have file:{ccf}')
+        x=get_txtfile(ccf) #actually need to read as file for now
+        lx=len(x)
+        print(f'len:{lx}')
     else:
         b=q2b(qry_str)   
         x=b2xs(b)
@@ -95,12 +127,17 @@ def q2xs_(qry_str):
             of.write(x)
     return x
 
-def xs2c(x):
+#getting: java.lang.IllegalArgumentException  Identifiers must be unique, duplicated identifier: DOI:10.15784/601208 [existing: [DOI:10.15784/601208]]
+#before sending the xml, consider looking at dict/fixing, or before saving;rigth from sparql
+#distinct should have kept this from happening
+def xs2c(x):  
     "dcs-xml(str-cache-file)call to get clusters only in json" 
     #just needs b2xs_ check/setting the xml file to load, till can send via requests
     ccf = "cc/" + qry_str.replace(" ", "_")  + ".xml" #from global
     cs= f'curl $dcs_url -F "dcs.clusters.only=true" -F "dcs.output.format=JSON" -F "dcs.c2stream=@{ccf}"'
     s=os.popen(cs).read().encode("utf-8")
+    sl=len(s)
+    print(f'curl dcs w/:{ccf},has-ret-len:{sl}')
     try:
         dct=json.loads(s)
     except:
@@ -113,6 +150,8 @@ def xs2c(x):
     cls=dct['clusters']
     nc=len(cls)
     print(f'got {nc} clusters') #dbg
+    if nc<1:
+        print(f'nc=0 for cls={cls}')
     return cls 
 
 
@@ -120,15 +159,40 @@ def xs2c(x):
  #sounds like it just needs the range of values w/counts, ;which can get from sparql-qry too
   #along w/more optional to normalize the publisher, which varies, so will look into that
 #--
+
+def add2dict(key,v,d):
+    #d.add(k,v) #more internal to class
+    d[key]=v
+
+def ld1js(d):  #thought abt mapping, but could append2new dict like I do w/incrKeyCount
+    "jsonld to just js, for one search hit"
+    tmp={}
+    for k, v in d.items():
+        v2 = v['value']
+        #add k,v2  to the .js version of this hit, just below/finsh
+        add2dict(k,v2,tmp)
+    return tmp
+
+def ld2js(d):
+    "jsonld to just js"
+    tmpa=[]
+    for hit in d:
+        d=ld1js(hit)
+        tmpa.append(d)
+    return tmpa
+#--
 #def sq2b_(qry_str): "cache around sparql-qry2binding"
 #def b2b(qry_str):
 def q2b(qry_str):
     "read in binding cache"
-    ccf = "cc/" + qry_str.replace(" ", "_")  + ".js" #from global
+    #ccf = "cc/" + qry_str.replace(" ", "_")  + ".js" #from global
+    ccf = "cc/" + qry_str.replace(" ", "_")  + ".jsonld" #from global
+    #ccf = "cc/" + qry_str.replace(" ", "_")  + ".jsonld" #from global
     if os.path.exists(ccf) and os.stat(ccf).st_size >199:
         b_=get_txtfile(ccf) #actually need to read as file for now
         print(f'already have file:{ccf}')
         b=json.loads(b_)
+        b=ld2js(b) #new #hopefully collapses dup key as well
         return b
     else:
         print("called out of order") #could call qry.py here though if need be
