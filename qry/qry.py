@@ -49,7 +49,7 @@ q2s="}"  #but could add optional here
 #SELECT ?subj ?pub ?datep ?disurl ?score  ?name ?description
             #even w/the 'distinct' got one duplicate, which clustering doesn't like, &is good to know about
 q1 = """prefix schema: <http://schema.org/>
- SELECT distinct ?subj ?pubname ?datep ?disurl ?score  ?name ?description
+ SELECT distinct ?subj ?pubname ?datep ?geo ?disurl ?score  ?name ?description
   WHERE { """
 #   ?lit bds:search "carbon" .                                       
 qs=f'?lit bds:search "{qry_str}" . '                                        
@@ -71,10 +71,12 @@ q2 = """  ?lit bds:matchAllTerms "false" .
     OPTIONAL {?s schema:publisher ?pub .
                ?pub schema:name ?pubname .}
     OPTIONAL {?s schema:spatialCoverage ?space .
-               ?space schema:geo ?geo .}
-    OPTIONAL { ?geo schema:geo ?box .}
+               ?space schema:geo ?geo .
+                 }
   }
   ORDER BY DESC(?score)"""
+                #?geo schema:box ?box .
+                #though these are blank-nodes
  #but might use more of t2.qry &run in js in end ;for now use2get optional's in for md-elts
 #--pick a qry to use/try new one w/optionals to get the metadata-facets to filter on
 #maybe actually do call w/sparql-dataframe to get aggregation math right away
@@ -109,24 +111,59 @@ def get_txtfile(fn):
     with open(fn, "r") as f:
         return f.read()
 
+def get_txtfile_(fn):
+    if os.path.exists(fn) and os.stat(fn).st_size >199:
+            return get_txtfile(fn)
+    else:
+        return None
+
 def get_jsonfile(fn):
-    t=get_txtfile(fn)
+    #s=get_txtfile_(fn)
+    s=get_txtfile(fn)
+    d=json.loads(s)
+    return d
+
+def get_jsonfile_(fn):
+    if os.path.exists(fn) and os.stat(fn).st_size >199:
+        return get_jsonfile(fn)
+    else:
+        return None
+
+def put_txtfile(fn,s):
+    with open(fn, "w") as f:
+        return f.write(s)
+
+def put_jsonfile(fn,d):
+    s=json.dumps(d, indent=2)
+    with open(fn, "w") as of:
+        of.write(s)
 
 #--
 def sq2b_(qry_str):
+    ccf = "cc/" + qry_str.replace(" ", "_")  + ".jsonld" #from global
+    ccf_ = "cc/" + qry_str.replace(" ", "_")  + ".js" #from global
+    b=get_jsonfile_(ccf)
+    if not b:
+        b=sq2b(qry_str)
+        put_jsonfile(ccf,b)
+        d=ld2js(b)
+        put_jsonfile(ccf_,d)
+    return b
+#--
+def sq2b__(qry_str): #rewrite above, more compace, then also .js
     "cache around sparql-qry2binding"
-    #ccf = "cc/" + qry_str.replace(" ", "_")  + ".js" #from global
+    #ccf- = "cc/" + qry_str.replace(" ", "_")  + ".js" #from global
     ccf = "cc/" + qry_str.replace(" ", "_")  + ".jsonld" #from global
     if os.path.exists(ccf) and os.stat(ccf).st_size >199:
         b_=get_txtfile(ccf) #actually need to read as file for now
         #print(f'already have file:{ccf}')
         b=json.loads(b_)
-        bl=len(b)
+        #bl=len(b)
         #print(f'got bindings of len{bl}')
     else:
         b=sq2b(qry_str)
         #print(f'bindings:{b}') #dbg, not as full as returned below
-        bl=len(b)
+        #bl=len(b)
         #print(f'writing bindings of len{bl}')
         b_=json.dumps(b, indent=2)
         #write, then use
@@ -224,15 +261,33 @@ def b1fc(r):
         #print(m3s) #dbg
         incrKeyCount(pub,pub_tc)
     return m3s
+#get rest of  cache2facet.py geo analog in here, should be easy but.might need some logic
 
 #def b1hs(b1):
-def b1hs(result):
+def b1hs(result): #original using bindings
     "bindings to html for(one)rescard"
     doi=result["subj"]["value"]
     url=result["disurl"]["value"]
     name=result["name"]["value"]
     #description=result["description"]["value"]
     des=result["description"]["value"]
+    url2=doiDetails(doi)
+    rh=f'<div class="rescard"><div class="resheader"><a href="{url}">{name}</a></div>'
+    rb=f'<div class="rescontiner"><a href="{url}"><p>{des}</p><a href="{url2}">details</a><p></div></div>'
+    rs=rh+rb
+    #print(rs) #for now
+    m3s=b1fc(result)
+    #print(f'md-elts:{m3s}') #dbg
+    return rs
+
+#haven't switched over w/these yet
+
+def b1hs_(result): #new altered using flat dict, ready for facetedsearch 
+    "bindings to html for(one)rescard"
+    doi=result["subj"]
+    url=result["disurl"]
+    name=result["name"]
+    des=result["description"]
     url2=doiDetails(doi)
     rh=f'<div class="rescard"><div class="resheader"><a href="{url}">{name}</a></div>'
     rb=f'<div class="rescontiner"><a href="{url}"><p>{des}</p><a href="{url2}">details</a><p></div></div>'
