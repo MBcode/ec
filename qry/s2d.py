@@ -1,3 +1,4 @@
+#s2d.py is a version of qry.py that relies on sparql &/or the js in facetedsearch to do the rest
 #qry.py is just the SPARQL part of qry2.py, while the clustering has been spun out to b2c.py
 #all the code in ../assert & ../search as clowder at least as a backup, 
 #this finally breaks free&be small like these early querys I wanted to finish
@@ -105,6 +106,7 @@ def ld2js(d):
     return tmpa
 #----
 subj_tc = {}
+subj_geo = {}
 #was for facetCounts, but can reuse:
 def incrKeyCount(key,d):
     v=d.get(key)
@@ -112,6 +114,15 @@ def incrKeyCount(key,d):
         d[key] = 0
     d[key] += 1
     return d[key] #new
+#----
+def incrKeyConcat(key,d,v2):
+    v=d.get(key)
+    if not v:
+        d[key] = v2
+    v2c = "," + v2 
+    d[key] += v2c
+    return d[key] 
+#next part, is also a partial hack, of saving up the concat field for the main-hit-key(subj)
 #----
 def ld1js1(d):
     "jsonld to just 1subj js for one search hit"
@@ -122,13 +133,20 @@ def ld2js1(d):
     tmpa=[]
     for hit in d:
         subj=hit['subj']['value']
+        geo=hit['geo']['value']
+        if geo.startswith("t"): #should use regexp w/ t[0-9]
+            print(f'blank-node:{geo}') #dbg see if works,for now
+            geo=""
+        cg=incrKeyConcat(subj,subj_geo,geo) #could put ret value in this dict now or later
+        #hit['geo']['value'] = cg  #would not work, bc only gets set once, then skipped, need in dict
         cc=incrKeyCount(subj,subj_tc)
-        print(f'sub:{subj},w/count:{cc}') #dbg
+        print(f'sub:{subj},w/count:{cc},cg:{cg}') #dbg
         if cc<2:
             d=ld1js(hit) #might reuse old1first, &just not add2array if have seen subj, then concat next
             tmpa.append(d)
     return tmpa 
 #----
+#can see cg getting the group_concat of geo, just not in the final array of dicts, yet
 
 def s2d(qry_str):
     "just sparql to json/dict for facetedsearch"
