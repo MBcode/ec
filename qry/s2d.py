@@ -13,30 +13,6 @@ else:
     qry_str = "Tectonophysics Seymour Island"
     #qry_str = "sea ice"
     #qry_str = "organic"
-#-do not use this top one, that q set in js
-gqs = """ prefix schema: <http://schema.org/> \
-SELECT ?subj ?disurl ?score  ?name ?description \
- WHERE { \
-   ?lit bds:search \"${q}\" . \
-   ?lit bds:matchAllTerms "false" . \
-   ?lit bds:relevance ?score . \
-   ?subj ?p ?lit . \
-   BIND (?subj as ?s) {  \
-         SELECT  ?s (MIN(?url) as ?disurl) { \
-             ?s a schema:Dataset . \
-             ?s schema:distribution ?dis . \
-            ?dis schema:url ?url . \
-         } GROUP BY ?s  } \
-   ?s schema:name ?name . \
-   ?s schema:description ?description .  \
-   filter(?score > 0.1). \
-    OPTIONAL {?s schema:datePublished ?datep .} \
-    OPTIONAL {?s schema:publisher ?pub . \
-               ?pub schema:name ?pubname .} \
- } \
-ORDER BY DESC(?score)""" 
-#not use js qry above; condiser using t2.qry
-# that would do all the aggr-counts w/o d16.js
 #----
 q1s= """PREFIX schema: <http://schema.org/>
 select distinct ?s ?o where {
@@ -68,8 +44,7 @@ q2 = """  ?lit bds:matchAllTerms "false" .
     ?s schema:description ?description .
     filter( ?score > 0.4).
     OPTIONAL {?s schema:datePublished ?datep .}
-    OPTIONAL {?s schema:publisher ?pub .
-               ?pub schema:name ?pubname .}
+    OPTIONAL {?s schema:publisher/schema:name ?pubname .}
 OPTIONAL {?s 
     schema:spatialCoverage/schema:name|schema:spatialCoverage/schema:geo ?geo}
   }
@@ -99,10 +74,16 @@ def sq2b(qry_str):
  #  print(f'ret:{bindings}')
     return bindings
 
+#----
+def doiDetails(doi):
+    return f'https://graph.geodex.org/blazegraph/#explore:cdf:%3C{doi}3%3E'
+    #w/repo & what I'd call file-base could ret http to my jsonLD cache too
+#sparql describe could give out similar info #had in htm but could put in these js:flat-bindings
+#want a group_concat on geo, so only one subj/hit, so if get same subj/doi again, concat geo key
+ #have a dict key-ed on doi could be useful for putting clustering in later as well as making sure only1
+ # but if I did that I'd still have to map over it, to ret the flat array of hit-binding for facetedsearch
 
-#sparql describe could give out similar info
-
-def add2dict(key,v,d):
+def add2dict(key,v,d): #was considering being able to append w/in this fnc
     #d.add(k,v) #more internal to class
     d[key]=v
 
@@ -112,7 +93,7 @@ def ld1js(d):  #thought abt mapping, but could append2new dict like I do w/incrK
     for k, v in d.items():
         v2 = v['value']
         #add k,v2  to the .js version of this hit, just below/finsh
-        add2dict(k,v2,tmp)
+        add2dict(k,v2,tmp) #tmp[k]=v2
     return tmp
 
 def ld2js(d):
@@ -122,20 +103,43 @@ def ld2js(d):
         d=ld1js(hit)
         tmpa.append(d)
     return tmpa
-
+#----
+subj_tc = {}
+#was for facetCounts, but can reuse:
+def incrKeyCount(key,d):
+    v=d.get(key)
+    if not v:
+        d[key] = 0
+    d[key] += 1
+    return d[key] #new
+#----
+def ld1js1(d):
+    "jsonld to just 1subj js for one search hit"
+#getting 1subj/hit w/o concat yet
+def ld2js1(d):
+    "jsonld to just 1subj js/hit"
+    #tmpd={} #will do by key, but start w/
+    tmpa=[]
+    for hit in d:
+        subj=hit['subj']['value']
+        cc=incrKeyCount(subj,subj_tc)
+        print(f'sub:{subj},w/count:{cc}') #dbg
+        if cc<2:
+            d=ld1js(hit) #might reuse old1first, &just not add2array if have seen subj, then concat next
+            tmpa.append(d)
+    return tmpa 
+#----
 
 def s2d(qry_str):
     "just sparql to json/dict for facetedsearch"
     b=sq2b(qry_str)   
-    d=ld2js(b)
+    #d=ld2js(b)
+    d=ld2js1(b)
     s=json.dumps(d, indent=2)
-    print(f'ld2js:{s}') 
+    print(f'ld2js1:{s}') 
 
 s2d(qry_str)
 #sq2(qry_str) #only in qry.py now
-
-#have other files w/sparql-dataframe, might be nice bc could do facet-aggregation math quickly
-#probably take out dateframe&unused qry on top next
 #just need to make a flask route for this, or might just swap out the fillSearch.py external call for this
  #so the rough template can be put in; though probably go to something w/the new simpler top you see in
  # http://mbobak-ofc.ncsa.illinois.edu/search1.htm &but if could use the fast in page filter w/counts at
