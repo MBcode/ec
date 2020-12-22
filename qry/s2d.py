@@ -1,7 +1,8 @@
 #s2d.py is a version of qry.py that relies on sparql &/or the js in facetedsearch to do the rest
-#qry.py is just the SPARQL part of qry2.py, while the clustering has been spun out to b2c.py
-#all the code in ../assert & ../search as clowder at least as a backup, 
-#this finally breaks free&be small like these early querys I wanted to finish
+# qry.py is just the SPARQL part of qry2.py, while the clustering has been spun out to b2c.py
+# started restructing, this in in ./qry, most other things are in ./clowder & ./search not there yet
+# bc has some sparql backup, though had2be mostly clowder, also worked on cache, so needed mapping
+#-whole pprj has been redoing work to keep up w/changes, but mostly ok,except being away from sparql
 import os
 import sys
 import json
@@ -130,7 +131,7 @@ def incrKeyConcat(key,d,v2):
     v2c = "," + v2 
     d[key] += v2c
     return d[key] 
-#next part, is also a partial hack, of saving up the concat field for the main-hit-key(subj)
+#next part, saving up the concat field for the main-hit-key(subj)
 #----
 def ld1js1(d):
     "jsonld to just 1subj js for one search hit"
@@ -143,12 +144,12 @@ def ld2js1(d):
         subj=hit['subj']['value']
         geo=hit['geo']['value']
         if geo.startswith("t"): #should use regexp w/ t[0-9]
-            print(f'blank-node:{geo}') #dbg see if works,for now
+            #print(f'blank-node:{geo}') #dbg see if works,for now
             geo=""
         cg=incrKeyConcat(subj,subj_geo,geo) #could put ret value in this dict now or later
         #hit['geo']['value'] = cg  #would not work, bc only gets set once, then skipped, need in dict
         cc=incrKeyCount(subj,subj_tc)
-        print(f'sub:{subj},w/count:{cc},cg:{cg}') #dbg
+        #print(f'sub:{subj},w/count:{cc},cg:{cg}') #dbg
         if cc<2:
             d=ld1js(hit) #might reuse old1first, &just not add2array if have seen subj, then concat next
             subj_d[subj]=d #so can look up and alter w/concat field/s
@@ -158,7 +159,9 @@ def ld2js1(d):
     #tmpa=subj_d  #try2dbg then d2a this
     return tmpa 
 #----
-#can see cg getting the group_concat of geo, just not in the final array of dicts, yet
+#the ,,'s in geo are bc, had some blank-nodes, that go in as "", will keep that way to remind me, that we might want more from those
+#bc, we'll probably want some for of the bounding boxes soon
+#probably where we geit min/max and save that, but rouding a bit will usually do the same thing, if the dataset taken in one area
 
 def s2d(qry_str):
     "just sparql to json/dict for facetedsearch"
@@ -166,11 +169,13 @@ def s2d(qry_str):
     #d=ld2js(b)
     d=ld2js1(b)
     s=json.dumps(d, indent=2)
-    print(f'ld2js1:{s}') 
+    #print(f'ld2js1:{s}') 
+    print(f'{s}') 
+    return d
 
 s2d(qry_str)
 #sq2(qry_str) #only in qry.py now
 #just need to make a flask route for this, or might just swap out the fillSearch.py external call for this
  #so the rough template can be put in; though probably go to something w/the new simpler top you see in
  # http://mbobak-ofc.ncsa.illinois.edu/search1.htm &but if could use the fast in page filter w/counts at
- # http://mbobak-ofc.ncsa.illinois.edu/facetedsearch/
+ # http://mbobak-ofc.ncsa.illinois.edu/facetedsearch/ now also in geocodes_boostrap branch of earthcube/geodexui
