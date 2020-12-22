@@ -128,9 +128,13 @@ def incrKeyConcat(key,d,v2):
     v=d.get(key)
     if not v:
         d[key] = v2
-    v2c = "," + v2 
+    if len(v2) >0:
+        v2c = "," + v2 
+    else:
+        v2c=""
     d[key] += v2c
     return d[key] 
+  #got rid of ,,,'s will need to break apart of facetedsearch side for even better aggrgation
 #next part, saving up the concat field for the main-hit-key(subj)
 #----
 def ld1js1(d):
