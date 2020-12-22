@@ -83,18 +83,25 @@ def doiDetails(doi):
 #want a group_concat on geo, so only one subj/hit, so if get same subj/doi again, concat geo key
  #have a dict key-ed on doi could be useful for putting clustering in later as well as making sure only1
  # but if I did that I'd still have to map over it, to ret the flat array of hit-binding for facetedsearch
-
+#-
+def d2a(d):
+    "dict to array of it's values"
+    tmpa=[]
+    for k, v in d.items():
+            tmpa.append(v)     
+    return tmpa 
+#-
 def add2dict(key,v,d): #was considering being able to append w/in this fnc
-    #d.add(k,v) #more internal to class
     d[key]=v
-
+#-
 def ld1js(d):  #thought abt mapping, but could append2new dict like I do w/incrKeyCount
     "jsonld to just js, for one search hit"
     tmp={}
     for k, v in d.items():
         v2 = v['value']
         #add k,v2  to the .js version of this hit, just below/finsh
-        add2dict(k,v2,tmp) #tmp[k]=v2
+        #add2dict(k,v2,tmp) #tmp[k]=v2
+        tmp[k]=v2 #add2dict(k,v2,tmp) 
     return tmp
 
 def ld2js(d):
@@ -105,8 +112,9 @@ def ld2js(d):
         tmpa.append(d)
     return tmpa
 #----
-subj_tc = {}
-subj_geo = {}
+subj_tc = {} #counts of each subj
+subj_geo = {} #concat of geo for each subj
+subj_d = {} #dict for each subj ;try
 #was for facetCounts, but can reuse:
 def incrKeyCount(key,d):
     v=d.get(key)
@@ -129,8 +137,8 @@ def ld1js1(d):
 #getting 1subj/hit w/o concat yet
 def ld2js1(d):
     "jsonld to just 1subj js/hit"
-    #tmpd={} #will do by key, but start w/
-    tmpa=[]
+    #tmpd={} #will do by key, but start w/  #turned into subj_d
+    #tmpa=[]
     for hit in d:
         subj=hit['subj']['value']
         geo=hit['geo']['value']
@@ -143,7 +151,11 @@ def ld2js1(d):
         print(f'sub:{subj},w/count:{cc},cg:{cg}') #dbg
         if cc<2:
             d=ld1js(hit) #might reuse old1first, &just not add2array if have seen subj, then concat next
-            tmpa.append(d)
+            subj_d[subj]=d #so can look up and alter w/concat field/s
+            #tmpa.append(d)     #then can skip this, after turn d2a
+        subj_d[subj]['geo'] = cg #try
+    tmpa=d2a(subj_d)
+    #tmpa=subj_d  #try2dbg then d2a this
     return tmpa 
 #----
 #can see cg getting the group_concat of geo, just not in the final array of dicts, yet
