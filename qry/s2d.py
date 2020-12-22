@@ -142,7 +142,12 @@ def ld2js1(d):
     #tmpa=[]
     for hit in d:
         subj=hit['subj']['value']
-        geo=hit['geo']['value']
+        #geo=hit['geo']['value']
+        gh=hit.get('geo')
+        if gh:
+            geo=gh['value']
+        else:
+            geo=""
         if geo.startswith("t"): #should use regexp w/ t[0-9]
             #print(f'blank-node:{geo}') #dbg see if works,for now
             geo=""
