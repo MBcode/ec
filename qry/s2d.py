@@ -27,7 +27,7 @@ q2s="}"  #but could add optional here
 #SELECT ?subj ?pub ?datep ?disurl ?score  ?name ?description
             #even w/the 'distinct' got one duplicate, which clustering doesn't like, &is good to know about
 q1 = """prefix schema: <http://schema.org/>
- SELECT distinct ?subj ?pubname ?datep ?geo ?disurl ?score  ?name ?description
+ SELECT distinct ?subj ?pubname ?datep ?geo ?key ?disurl ?score  ?name ?description
   WHERE { """
 #   ?lit bds:search "carbon" .                                       
 qs=f'?lit bds:search "{qry_str}" . '                                        
@@ -49,8 +49,12 @@ q2 = """  ?lit bds:matchAllTerms "false" .
     OPTIONAL {?s schema:publisher/schema:name ?pubname .}
 OPTIONAL {?s 
     schema:spatialCoverage/schema:name|schema:spatialCoverage/schema:geo ?geo}
+    OPTIONAL {?s schema:keywords ?key .}
   }
   ORDER BY DESC(?score)"""
+#
+#    schema:spatialCoverage/schema:name|schema:spatialCoverage/schema:geo ?geo}
+#    schema:spatialCoverage/schema:name ?geo} ;then something for getting coords for bounding-box queries
  #  OPTIONAL {?s schema:spatialCoverage ?space .
  #             ?space schema:geo ?geo .  }
                 #?geo schema:box ?box .
@@ -168,9 +172,13 @@ def ld2js1(d):
     #tmpa=subj_d  #try2dbg then d2a this
     return tmpa 
 #----
-#the ,,'s in geo are bc, had some blank-nodes, that go in as "", will keep that way to remind me, that we might want more from those
+#the ,,'s in geo are bc, had some blank-nodes, that go in as "", 
+# would keep that way to remind me, that we might want more from those
+#[but got rid of, &on the facetesearch counting side csv needs2be split up to be counted correctly]
 #bc, we'll probably want some for of the bounding boxes soon
-#probably where we geit min/max and save that, but rouding a bit will usually do the same thing, if the dataset taken in one area
+#probably where we geit min/max and save that, 
+# but rouding a bit will usually do the same thing, if the dataset taken in one area
+#  get& maybe assert that as an annotation
 
 def s2d(qry_str):
     "just sparql to json/dict for facetedsearch"
