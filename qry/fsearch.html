@@ -1,104 +1,34 @@
 <!DOCTYPE html>
 <html>
-
 <head>
     <style>
-
       /* First come the styles which are used in the demo */
-
-      .facetsearch {
-        display: inline-block;
-        width: 200px;
-        vertical-align: top;
-      }
+      .facetsearch { display: inline-block; width: 200px; vertical-align: top; }
       .activeorderby,
-      .activefacet {
-        color: red;
-      }
-      .bottomline {
-        padding: 10px 0 10px 0;
-        font-weight: bold;
-      }
+      .activefacet { color: red; }
+      .bottomline { padding: 10px 0 10px 0; font-weight: bold; }
       .bottomline .orderby,
-      .bottomline .facettotalcount {
-        display: inline-block;
-      }
+      .bottomline .facettotalcount { display: inline-block; }
       .bottomline .orderby ul,
-      .bottomline .orderby li {
-        display: inline;
-        padding: 0;
+      .bottomline .orderby li { display: inline; padding: 0; }
+      .bottomline .orderby-title { margin: 0 0 0 10px; }
+      .bottomline .deselectstartover { float: right;
       }
-      .bottomline .orderby-title {
-        margin: 0 0 0 10px;
-      }
-      .bottomline .deselectstartover {
-        float: right;
-      }
-      #language {
-        width: 400px;
-      }
-      #language .facetlist{
-        column-count: 2;
-        -webkit-column-count: 2;
-        -moz-column-count: 2;
-        -o-column-count: 2;
-      }
-      .item {
-        width: 150px;
-        height: 250px;
-        margin: 0 10px 10px 0;
-        display: inline-block;
-        vertical-align: top;
-      }
-      .item h4 {
-        font-size: 1.2em;
-      }
-      .item .tags {
-        font-weight: bold;
-        color: gray;
-      }
-      #showmorebutton {
-        border: 1px solid #AAA;
-        border-radius: 15px;
-        background-color: #DDD;
-        margin: 0 0 10px 0;
-        padding: 10px;
-        width: 100%;
-        display: block;
-        text-align: center;
-        cursor: pointer;
-      }
-
-      /* These styles are just general purpose styles to make the page look a little less aweful */
-
-      * {
-        margin: 0;
-        padding: 0;
-      }
-      body {
-        padding: 20px;
-        font-family: sans-serif;
-        font-size: 14px;
-      }
-      #wrapper, #documentation {
-        margin: 0 auto;
-        width: 800px;
-      }
-      p {
-        padding-bottom: 1em;
-        line-height: 1.3em;
-      }
-      h1, h2, h3{
-        margin: 0 0 1em 0;
-      }
-      tt {
-        background-color: #EEE;
-        border: 1px solid #CCC;
-      }
-    </style>
-
-
-
+      #language { width: 400px; }
+      #language .facetlist{ column-count: 2; -webkit-column-count: 2; -moz-column-count: 2; -o-column-count: 2; }
+      .item { width: 150px; height: 250px; margin: 0 10px 10px 0; display: inline-block; vertical-align: top; }
+      .item h4 { font-size: 1.2em; }
+      .item .tags { font-weight: bold; color: gray; }
+      #showmorebutton { border: 1px solid #AAA; border-radius: 15px; background-color: #DDD; margin: 0 0 10px 0;
+        padding: 10px; width: 100%; display: block; text-align: center; cursor: pointer; } 
+      /* These styles are just general purpose styles to make the page look a little less aweful */ 
+      * { margin: 0; padding: 0; }
+      body { padding: 20px; font-family: sans-serif; font-size: 14px; }
+      #wrapper, #documentation { margin: 0 auto; width: 800px; }
+      p { padding-bottom: 1em; line-height: 1.3em; }
+      h1, h2, h3{ margin: 0 0 1em 0; }
+      tt { background-color: #EEE; border: 1px solid #CCC; }
+    </style> 
     <link href="https://fonts.googleapis.com/css?family=Noto+Sans&display=swap" rel="stylesheet"/>
 
     <title>Earthcube</title>
@@ -112,8 +42,7 @@
             crossorigin="anonymous"></script>
 
     <script src="https://cdn.jsdelivr.net/npm/underscore@1.12.0/underscore-min.js"></script>
-    <script src="js/facetedsearch.js"></script>
-
+    <script src="js/facetedsearch.js"></script> 
 </head>
 
 <body>
@@ -128,13 +57,22 @@
                 aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
-        <form class="input-group form-inline  w-50 ">
+        <form class="input-group form-inline  w-50 "
+																											action="http://mbobak-ofc.ncsa.illinois.edu/fs_live.html" method="GET">
+						<!--
+																											action="#" method="GET">
             <input id="q" class="form-control w-25 ml-sm-2" type="search" placeholder="Search" aria-label="Search">
+						<input style="font-size:120%" type="search" id="q" name="q" aria-label="Search for samples">
+						-->
+						<input style="font-size:120%" type="search" id="searchBtn" name="q" aria-label="Search for samples">
+						<button style="color:black;border-color:black;border-style:solid" id="update">Search</button>
+										<!-- 
             <div class="input-group-append">
                 <a href="#" class="btn btn-default" id="searchBtn">
                     <img src="./img/search.svg" alt="" width="32" height="32" title="Search">
-										<div class="v292_56"></div>
+											<div class="v292_56"></div> 
                 </a>
+										-->
             </div>
             <input style="visibility: hidden" id="nn" type="number" min="5" max="200" step="5" value="20"/>
         </form>
@@ -150,9 +88,6 @@
         </div>
     </nav>
 
-
-
-
     <div id="wrapper row">
       <div id="description">
         <h3>Faceted Search of EarthCube resources</h3>
@@ -164,8 +99,7 @@
             <div class="row col-3 align-items-start">
                 <div id="filters" class="row col-12">
                  <div id="facets"></div>
-                </div>
-
+                </div> 
 
             </div>
             <div class="row col-8 ">
@@ -173,58 +107,45 @@
                  <div id="results" class="row row-cols-1"></div>
             </div>
         </div>
-    </div>
-
+    </div> 
 
     <script>
         async function getItemsFromSparql(q, n=1000, o=0) {
             console.log("Get Blaze full text");
-            console.log(n);
-
-
+            console.log(n); 
 
                 var url = new URL("https://graph.geodex.org/blazegraph/namespace/cdf/sparql"),
 
                     // var url = new URL("http://192.168.2.89:8080/blazegraph/sparql"),
                     // params = { query: "SELECT * { ?s ?p ?o  } LIMIT 11" }
-
 // 			params = {
 // 				query: ` prefix schema: <http://schema.org/> \
 // SELECT ?total ?subj ?disurl ?score  ?name ?description \
-//  WHERE {\
-//   { \
+//  WHERE {  { \
 //    ?lit bds:search \"${q}\" . \
 //    ?lit bds:matchAllTerms "false" . \
 //    ?lit bds:relevance ?score . \
 //    ?subj ?p ?lit . \
-//    BIND (?subj as ?s) \
-//       {  \
+//    BIND (?subj as ?s)      {  \
 //    		SELECT  ?s (MIN(?url) as ?disurl) { \
 //              ?s a schema:Dataset . \
 //              ?s schema:distribution ?dis . \
 //    			?dis schema:url ?url . \
-//    	  	} GROUP BY ?s \
-//    } \
+//    	  	} GROUP BY ?s    } \
 //    ?s schema:name ?name . \
-//    ?s schema:description ?description .  \
-//  } \
+//    ?s schema:description ?description .   } \
 //  { SELECT  (COUNT(?s) AS ?total) \
 //       WHERE { \
 //          SERVICE <http://www.bigdata.com/rdf/search#search> { \
 //               ?matchedValue \
 //                         bds:search        \"${q}\" ; \
 //                         bds:relevance     ?score ; \
-//                         bds:rank          ?rank . \
-//           } \
+//                         bds:rank          ?rank .    } \
 //           ?s        ?matchedProperty  ?matchedValue \
-//           FILTER ( ! isBlank(?s) ) \
-//         } \
-// } \
-//  }\
+//           FILTER ( ! isBlank(?s) )    }  }   }\
 // ORDER BY DESC(?score)
 // LIMIT ${n}
-// OFFSET ${o}
-// ` }
+// OFFSET ${o}  ` }
                     params = {
                         query: `PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 			PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -285,9 +206,7 @@
                 // const el = document.querySelector('#resultsRecords');
                 // const s1 = document.querySelector('#filters');
                 // render(showresults(content), el);
-                // // render(projresults(content), s1);
-
-
+                // // render(projresults(content), s1); 
         };
 
       $( function() {
