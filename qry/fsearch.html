@@ -43,6 +43,7 @@
 
     <script src="https://cdn.jsdelivr.net/npm/underscore@1.12.0/underscore-min.js"></script>
     <script src="js/facetedsearch.js"></script> 
+		<!-- <script src="js/gup.js"></script>  -->
 </head>
 
 <body>
@@ -57,6 +58,10 @@
                 aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
+						<!--
+            <input id="q" class="form-control w-25 ml-sm-2" type="search" placeholder="Search" aria-label="Search"
+																											action="http://mbobak-ofc.ncsa.illinois.edu/fs_live.html" method="GET">
+						-->
         <form class="input-group form-inline  w-50 "
 																											action="http://mbobak-ofc.ncsa.illinois.edu/fs_live.html" method="GET">
 						<!--
@@ -64,8 +69,8 @@
             <input id="q" class="form-control w-25 ml-sm-2" type="search" placeholder="Search" aria-label="Search">
 						<input style="font-size:120%" type="search" id="q" name="q" aria-label="Search for samples">
 						-->
-						<input style="font-size:120%" type="search" id="searchBtn" name="q" aria-label="Search for samples">
-						<button style="color:black;border-color:black;border-style:solid" id="update">Search</button>
+						<input style="font-size:120%" type="search" id="searchBtn" name="q" aria-label="Search for data/resources">
+						<button style="color:black;border-color:black;border-style:solid" id="searchBtn">Search</button>
 										<!-- 
             <div class="input-group-append">
                 <a href="#" class="btn btn-default" id="searchBtn">
@@ -76,22 +81,18 @@
             </div>
             <input style="visibility: hidden" id="nn" type="number" min="5" max="200" step="5" value="20"/>
         </form>
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-
-            <ul class="navbar-nav mr-auto">
-
+        <div class="collapse navbar-collapse" id="navbarSupportedContent"> 
+            <ul class="navbar-nav mr-auto"> 
                 <li class="nav-item">
                     <a class="nav-link" href="#">Help</a>
                 </li>
-            </ul>
-
+            </ul> 
         </div>
     </nav>
 
     <div id="wrapper row">
       <div id="description">
-        <h3>Faceted Search of EarthCube resources</h3>
-
+        <h3>Faceted Search of EarthCube resources</h3> 
       </div>
     </div>
       <!-- Here comes the demo, if you want to copy and paste, start here -->
@@ -100,7 +101,6 @@
                 <div id="filters" class="row col-12">
                  <div id="facets"></div>
                 </div> 
-
             </div>
             <div class="row col-8 ">
                 <!-- future page  header here -->
@@ -113,9 +113,11 @@
         async function getItemsFromSparql(q, n=1000, o=0) {
             console.log("Get Blaze full text");
             console.log(n); 
-
-                var url = new URL("https://graph.geodex.org/blazegraph/namespace/cdf/sparql"),
-
+						//var qup = getAllURlParam().q; //gup.js
+						var qup = window.location.search;
+						//if (q == null) { q=qup; }
+            console.log(qup); 
+                var url = new URL("https://graph.geodex.org/blazegraph/namespace/cdf/sparql"), 
                     // var url = new URL("http://192.168.2.89:8080/blazegraph/sparql"),
                     // params = { query: "SELECT * { ?s ?p ?o  } LIMIT 11" }
 // 			params = {
@@ -152,7 +154,7 @@
 			prefix schema: <http://schema.org/>
 			SELECT distinct ?subj ?pubname ?geo ?kw ?datep  ?disurl ?score  ?name ?description
 	WHERE {
-			?lit bds:search \"${q}\" .
+			?lit bds:search \"${qup}\" .
 		?lit bds:matchAllTerms "false" .
 		?lit bds:relevance ?score .
 		?subj ?p ?lit .
@@ -218,21 +220,18 @@
                 </div>
                 <div class="tags card-body overflow-auto">
                     <div class="card-text">
-                     <% if (obj.description) {  %><%= obj.description %><% } %>
-
+                     <% if (obj.description) {  %><%= obj.description %><% } %> 
                     </div>
                 </div>
                 <div class="card-footer">
                         <div class="card-link"><%= obj.disurl %></div>
-                 </div>
-
+                 </div> 
             </div>`;
 
           // const facetContainer = `<div class=facetsearch id=<%= id %> ></div>`
             const facetContainer = `<div class="accordion col-12 facetsearch" id="<%= id %>accordian">
                 <div class="card" id="<%= id %>">
-                    <!-- title -->
-
+                    <!-- title --> 
                 <!-- list -->
                 </div>
             </div>`;
@@ -241,30 +240,26 @@
                 <button class="btn btn-link btn-block text-left" type="button" data-toggle="collapse"
                         data-target="#collapse<%= id %>" aria-expanded="true" aria-controls="collapse<%= id %>">
                     <%= title %><i class="fa fa-plus  float-right"></i>
-                </button>
-
+                </button> 
             </h2>
             </div>`;
 
           const facetListContainer = `<div id="collapse<%= id %>" class="collapse show" aria-labelledby="heading<%= id %>" data-parent="#<%= id %>accordian">
             <div class="card-body">
-                <div class="list-group pl-3 facetlist">
-
-
-            </div>
-
+                <div class="list-group pl-3 facetlist"> 
+            </div> 
             </div>
        </div>`;
-            const listItemTemplate= `<div class="list-group-item  facetitem">
-
+            const listItemTemplate= `<div class="list-group-item  facetitem"> 
                         <input type="radio" id="item<%= id %>" name="customRadioInline1"
-                               aria-label="Checkbox for following text input" />
-
+                               aria-label="Checkbox for following text input" /> 
                         <label class="p-2" for="item<%= id %>"> <%= name %>  </label>
                         <span  class="badge badge-secondary float-right"><%= count %></span>
                     </div>`;
 
 
+          //getItemsFromSparql(q)
+					//ignore input and get from url
           getItemsFromSparql('carbon')
               .then(function (results) {
                   settings = {
@@ -308,8 +303,7 @@
             var example_items = await getItemsFromSparql(q);
             $.facetUpdate();
         });
-    }
-
+    } 
 </script>
 </div>
     <a href="http://github.com/eikes/facetedsearch">Fork me on GitHub</a>
