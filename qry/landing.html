@@ -55,16 +55,24 @@
 
     </div>
 
-    <form>
+    <form
+					action="http://mbobak-ofc.ncsa.illinois.edu:5000/search" method="GET">
         <div class="row">
             <div class="col-2"></div>
             <div class="input-group mb-3 col-6 d-flex justify-content-center">
-                <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+                <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search"
+						id="q" name="q" 
+								>
+						<!--
+						<input style="font-size:120%" type="search" 
+						id="q" name="q" 
+						aria-label="Search for samples">
                 <div class="input-group-append">
                     <a href="#" class="btn btn-default col-2">
-												<img src="img/search.svg" alt="search" 
-																			 height="32" title="Search"></span></a>
+												<img src="images/sqButton.png" alt="search" height="32" title="Search"></span></a>
                 </div>
+						-->
+						<button style="color:black;border-color:black;border-style:solid" id="update">Search</button>
             </div>
         </div>
         <div class="row">
@@ -84,7 +92,7 @@
                 </div>
             </div>
         </div>
-        <div class="v292_111"></div>
+				<!-- <div class="v292_111"></div> -->
     </form>
 </div>
 </body>
