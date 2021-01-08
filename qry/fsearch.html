@@ -285,12 +285,18 @@
                       //listItemTemplate   : listItemTemplate,
                       resultTemplate: item_template,
                       paginationCount: 50,
+											//bottomContainer    : '<div class=bottomline></div>', //topline?
+								orderByTemplate: 
+											'<br><div class=orderby><span class="orderby-title">Sort by: </span><ul><% _.each(options, function(value, key) { %>'+
+											'<li class=orderbyitem id=orderby_<%= key %>>'+
+                       '<%= value %> </li> <% }); %></ul></div>', 
                       orderByOptions: {
-                          'name': 'Name',
-                          'pubname': 'Publisher',
-                          'date': 'Date',
+													'score': 'Score<br>',
+													'name': 'Name<br>',
+													'date': 'Date<br>',
+                          'pubname': 'Publisher'
                          // 'subj': 'Subject',
-                          'RANDOM': 'Random'
+                        //'RANDOM': 'Random'
                       },
                       facetSortOption: {'continent': ["North America", "South America"]}
                   };
