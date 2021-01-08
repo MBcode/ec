@@ -42,7 +42,8 @@
             crossorigin="anonymous"></script>
 
     <script src="https://cdn.jsdelivr.net/npm/underscore@1.12.0/underscore-min.js"></script>
-    <script src="js/facetedsearch_git.js"></script> 
+		<!-- https://github.com/earthcube/geodexui/blob/geocodes_boostrap/alpha/website/js/facetedsearch.js w/small mods, had to revert html -->
+    <script src="js/faceted_search.js"></script> 
 		<!-- <script src="js/gup.js"></script>  -->
 </head>
 
@@ -93,6 +94,8 @@
     <div id="wrapper row">
       <div id="description">
         <h3>Faceted Search of EarthCube resources</h3> 
+				<h6>click on facet-widgets to toggle collapsing them</h6>
+				<h7>click on any number of filter values</h7>
       </div>
     </div>
       <!-- Here comes the demo, if you want to copy and paste, start here -->
@@ -173,8 +176,7 @@
 								?s schema:description ?description .
 								filter( ?score > 0.04).
 								OPTIONAL {?s schema:datePublished ?datep .}
-								OPTIONAL {?s schema:publisher ?pub .
-								?pub schema:name ?pubname .}
+								OPTIONAL {?s schema:publisher/schema:name ?pubname .}
 									OPTIONAL {?s schema:spatialCoverage/schema:name ?geo .}
 									OPTIONAL {?subj schema:keywords ?kw .}
 							}
@@ -269,11 +271,11 @@
                       items: results,
                       facets: {
                          // 'subj': 'Science Domain',
-                          'kw': 'Science Domain',
+                          'kw': '+ Science Domain',
                          // 'name': 'Place',
-                            'geo': 'Place',
-                          'pubname': 'Publisher/Repo',
-                          'datep': 'Date'
+                            'geo': '+ Place',
+                          'pubname': '+Publisher/Repo',
+                          'datep': '+ Date'
                       },
                       resultSelector: '#results',
                       facetSelector: '#facets',
@@ -309,6 +311,23 @@
     } 
 </script>
 </div>
-    <a href="http://github.com/eikes/facetedsearch">Fork me on GitHub</a>
+		<footer style="padding-bottom:5px;background-image: linear-gradient(#7391ff, #625354);">
+    <div class="container">
+      <div class="row">
+        <div class="col-12">
+          <h6 style="color:white">Work on this site is supported by NSF EarthCube</h6>
+          <h6 style="color:grey">prototype <a href=https://github.com/MBcode/ec/tree/master/qry>code available</a><a href=https://orcid.org/0000-0003-2357-5918>,</a>
+              other search versions:
+              <a href=https://geocodes.earthcube.org/>geocodes</a>,
+              <a href=https://geocodes.earthcube.org/geocodes/textSearch.html>text</a>,
+              <a href=https://earthcube.clowderframework.org/>clowder</a>,
+              <a href=https://search.dataone.org/portals/earthcubedemo/Data >dataone</a>
+              <a href=search1.htm>alpha's</a>
+								<a href="http://github.com/eikes/facetedsearch">js-lib used</a>
+							</div>
+      </div>
+    </div>
+  </footer>
+
   </body>
 </html>
