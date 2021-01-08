@@ -12,3 +12,5 @@ sq.py sparql -xml-> dcs ;
 sq2.py clowder|sparql -xml-> dcs ;
 csq2.py calls sq2.py+dcs -middle-htm ;
 &now that is the 1st choice call from fillSearch.py
+*** started mapping of sparql to clowder jsonLD store 
+but we abandoned that, and back to sparql only in ../qry
