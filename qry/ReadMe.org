@@ -3,4 +3,4 @@ qry2.py is a SPARQL centric version of ../search; Now split out to qry.py and b2
 *** but can still use old templating:
 The ../search/fillSearch.py can easily call this(instead of csq2.py)and get much faster results
 *** Now using the js in fsearch.html
-So do not have to use the py code now
+So do not have to use the py code now, but s2d.py is a version of qry.py that post-processes the sparql
