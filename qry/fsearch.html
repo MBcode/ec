@@ -158,7 +158,7 @@
 																		query: `PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 									PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 									prefix schema: <http://schema.org/>
-									SELECT distinct ?subj ?pubname ?geo ?kw ?datep  ?disurl ?score  ?name ?description
+									SELECT distinct ?subj ?pubname (GROUP_CONCAT(DISTINCT ?geo; SEPARATOR=", ") AS ?places) ?kw ?datep  ?disurl ?score  ?name ?description
 							WHERE {
 									?lit bds:search \"${qup}\" .
 								?lit bds:matchAllTerms "false" .
@@ -273,7 +273,8 @@
                          // 'subj': 'Science Domain',
                           'kw': '+ Science Domain',
                          // 'name': 'Place',
-                            'geo': '+ Place',
+                         // 'geo': '+ Place',
+                            'places': '+ Place',
                           'pubname': '+Publisher/Repo',
                           'datep': '+ Date'
                       },
