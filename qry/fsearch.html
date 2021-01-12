@@ -305,7 +305,11 @@
                       facetSortOption: {'continent': ["North America", "South America"]}
                   };
               $.facetelize(settings);
-              }
+							//$.facetelize($.facetsettings); //gets stuck on loading.. before async
+									 //so not collapsed like yet, like in:
+									// https://alpha.geocodes.earthcube.org/facetedsearch_live.html
+              $('.facetsearch').on('show.bs.collapse', _handleCollapse);
+							$('.facetsearch').on('hide.bs.collapse', _handleExpand);}
       )
       });
     </script>
@@ -319,6 +323,22 @@
             $.facetUpdate();
         });
     } 
+
+   function _handleCollapse(e) {
+        console.log("collapse");
+
+        // Toggle plus minus icon on show hide of collapse element
+        $(this).find(".fa").removeClass("fa-plus").addClass("fa-minus")
+
+
+    };
+
+    function _handleExpand(e) {
+        console.log("expand");
+
+        // Toggle plus minus icon on show hide of collapse element
+      $(this).find(".fa").removeClass("fa-minus").addClass("fa-plus");
+    };
 </script>
 </div>
 		<footer style="padding-bottom:5px;background-image: linear-gradient(#7391ff, #625354);">
