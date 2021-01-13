@@ -157,26 +157,26 @@
 				// ORDER BY DESC(?score)
 				// LIMIT ${n}
 				// OFFSET ${o}  ` }
-						params = {
+				params = {
 				query: `PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 					PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 					prefix schema: <http://schema.org/>
 					SELECT distinct ?subj ?pubname (GROUP_CONCAT(DISTINCT ?geo; SEPARATOR=", ") AS ?places) 
-																						(GROUP_CONCAT(DISTINCT ?kwu; SEPARATOR=", ") AS ?kw)
-																						?datep  ?disurl ?score  ?name ?description ?resourceType
+								(GROUP_CONCAT(DISTINCT ?kwu; SEPARATOR=", ") AS ?kw)
+								?datep  ?disurl ?score  ?name ?description ?resourceType
 					WHERE {
 							?lit bds:search \"${qup}\" .
 						?lit bds:matchAllTerms "false" .
 						?lit bds:relevance ?score .
 						?subj ?p ?lit .
 						BIND (?subj as ?s)
-					{
-						SELECT  ?s (MIN(?url) as ?disurl) {
-						?s a schema:Dataset .
-						?s schema:distribution ?dis .
-						?dis schema:url ?url .
-					} GROUP BY ?s
-					}
+						{
+								SELECT  ?s (MIN(?url) as ?disurl) {
+								?s a schema:Dataset .
+								?s schema:distribution ?dis .
+								?dis schema:url ?url .
+							} GROUP BY ?s
+						}
 						?subj schema:name ?name .
 						?subj schema:description ?description .
 						filter( ?score > 0.04).  
@@ -361,13 +361,15 @@
     };
 </script>
 </div>
+<!-- no longer going to track changes to https://alpha.geocodes.earthcube.org/, just refer to it
+		as of jan13, we have this landing w/link to a page that looks pretty good, just needs ResourceType ported over -->
 		<footer style="padding-bottom:5px;background-image: linear-gradient(#7391ff, #625354);">
     <div class="container">
       <div class="row">
         <div class="col-12">
           <h6 style="color:white">Work on this site is supported by NSF EarthCube</h6>
           <h6 style="color:grey">prototype <a href=https://github.com/MBcode/ec/tree/master/qry>code available</a><a href=https://orcid.org/0000-0003-2357-5918>,</a>
-              other search versions:
+							<a href=https://alpha.geocodes.earthcube.org/>other</a> search versions:
               <a href=https://geocodes.earthcube.org/>geocodes</a>,
               <a href=https://geocodes.earthcube.org/geocodes/textSearch.html>text</a>,
               <a href=https://earthcube.clowderframework.org/>clowder</a>,
