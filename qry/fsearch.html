@@ -116,6 +116,38 @@
     </div> 
 
     <script>
+		async function getItemsFromSparql2(q, n=1000, o=0) {
+				console.log("Get Blaze full text for tools");
+				console.log(n); 
+				var qup = window.location.search;
+				if (qup == "") return ""
+				if (qup == "*") return ""
+				console.log(qup); 
+				var url = new URL("http://mbobak-ofc.ncsa.illinois.edu:9999/bigdata/sparql"), 
+				params = {
+						query: `PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+										PREFIX schema: <http://schema.org/>
+						select DISTINCT ?subj ?datep ?pubname ?name ?description  ('tool' AS ?resourceType)
+						where {
+								?subj schema:name ?name .
+								?subj schema:description ?description .
+								?subj schema:description|schema:name ?lex .
+								FILTER regex(?lex, \"${qup}\", "i").
+								OPTIONAL {?subj schema:additionalProperty/schema:datePublished ?datep .}
+								OPTIONAL {?subj schema:publisher/schema:name ?pubname .}
+
+						}
+						group by ?subj ?datep ?pubname ?name ?description
+					`}
+						Object.keys(params).forEach(key => url.searchParams.append(key, params[key])) 
+						console.log(params["query"]); 
+						const rawResponse = await fetch(url, {
+								method: 'GET',
+								headers: { 'Accept': 'application/sparql-results+json',
+										'Content-Type': 'application/json' }
+						});
+		};
+
 		async function getItemsFromSparql(q, n=1000, o=0) {
 				//clean up, not using q, getting from url right now
 				console.log("Get Blaze full text");
