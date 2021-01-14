@@ -201,10 +201,10 @@
 						?lit bds:matchAllTerms "false" .
 						?lit bds:relevance ?score .
 						?subj ?p ?lit .
+						?s a ?type .
 						BIND (?subj as ?s)
 						{
 								SELECT  ?s (MIN(?url) as ?disurl) {
-								?s a schema:Dataset .
 								?s schema:distribution ?dis .
 								?dis schema:url ?url .
 							} GROUP BY ?s
@@ -212,7 +212,7 @@
 						?subj schema:name ?name .
 						?subj schema:description ?description .
 						filter( ?score > 0.04).  
-						BIND('data' AS ?resourceType)
+					  BIND ( IF ( ?type = schema:Dataset, "data", IF ( ?type != schema:Dataset, "tool", '' ) ) AS ?resourceType ) 
 						OPTIONAL {?subj schema:datePublished ?datep .}
 						OPTIONAL {?subj schema:publisher/schema:name ?pubname .}
 							OPTIONAL {?subj schema:spatialCoverage/schema:name ?geo .}
