@@ -193,32 +193,26 @@
 				query: `PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 					PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 					prefix schema: <http://schema.org/>
-					SELECT distinct ?subj ?pubname (GROUP_CONCAT(DISTINCT ?geo; SEPARATOR=", ") AS ?places) 
+					SELECT distinct ?subj ?pubname (GROUP_CONCAT(DISTINCT ?geo; SEPARATOR=", ") AS ?places)
 								(GROUP_CONCAT(DISTINCT ?kwu; SEPARATOR=", ") AS ?kw)
-								?datep  ?disurl ?score  ?name ?description ?resourceType
+								?datep  (MIN(?url) as ?disurl) ?score  ?name ?description ?resourceType
 					WHERE {
 							?lit bds:search \"${qup}\" .
 						?lit bds:matchAllTerms "false" .
 						?lit bds:relevance ?score .
 						?subj ?p ?lit .
 						?subj a ?type .
-						BIND (?subj as ?s)
-						{
-								SELECT  ?s (MIN(?url) as ?disurl) {
-								?s schema:distribution ?dis .
-								?dis schema:url ?url .
-							} GROUP BY ?s
-						}
+						optional {?subj schema:distribution/schema:url ?url .}
+						BIND ( IF ( exists { ?subj a schema:Dataset .}, "data", "tool")  AS ?resourceType ).
 						?subj schema:name ?name .
 						?subj schema:description ?description .
 						filter( ?score > 0.04).  
-					  BIND ( IF ( ?type = schema:Dataset, "data", IF ( ?type != schema:Dataset, "tool", '' ) ) AS ?resourceType ) 
 						OPTIONAL {?subj schema:datePublished ?datep .}
 						OPTIONAL {?subj schema:publisher/schema:name ?pubname .}
-							OPTIONAL {?subj schema:spatialCoverage/schema:name ?geo .}
-							OPTIONAL {?subj schema:keywords ?kwu .}
+						OPTIONAL {?subj schema:spatialCoverage/schema:name ?geo .}
+						OPTIONAL {?subj schema:keywords ?kwu .}
 					}
-					GROUP BY ?subj ?datep ?pubname ?name ?description ?disurl ?score ?resourceType
+					GROUP BY ?subj ?datep ?pubname ?name ?description ?url ?score ?resourceType
 					ORDER BY DESC(?score)
 					 LIMIT ${n}
 						 OFFSET ${o}
