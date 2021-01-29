@@ -9,3 +9,5 @@ metadata crawling and asserting to clowderframework for search
 use of the search-API adaptor is being expanded in ./search
 *** Prep
 Parts will soon be put in: https://github.com/earthcube/earthcube-utilities
+*** Latest work going right into alpha production site
+https://github.com/earthcube/geodexui/
