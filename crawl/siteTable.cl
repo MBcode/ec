@@ -1,6 +1,6 @@
 ;Also have w/py pandas, &could be more fine grain, but this was quick sites2~table script
-;df=pd.read_table('cdf_cndls.tsv')
-;print(df[0:18].to_html())
+;df=pd.read_table('cdf_cndls.tsv') print(df[0:18].to_html()) ;mbobak@illinois.edu
+;The formatting will change, incl maybe going into a real table, in an about.html page
 (defvar *is* " style=\"max-width: 80px; max-height: 40px\" ")
 (ql 'cl-csv)
 (defvar *csv* (cl-csv:read-csv #P"CDF_Sites.csv"))
