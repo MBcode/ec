@@ -6,15 +6,22 @@
 (defvar *csv* (cl-csv:read-csv #P"CDF_Sites.csv"))
 (defvar *c1* (first *csv*))
 (defvar *cf* (rest *csv*))
-(defvar *c* (subseq *cf* 0 17))
-(defun ldns (l)
+(defvar *c* (subseq *cf* 0 18)) ;was 17
+(defun ldns (l &optional (hover t))
   "format:logo domain-name summary"
   (let ((logo (nth 11 l))
         (domain (nth 9 l))
         (name (nth 8 l))
         (summary (nth 13 l)))
-    (format nil "~%<br><img ~a src=~a><a href=~a>~a</a>,~a" *is* logo
-            domain name summary)))
+    ;   (format nil "~%<br><div title=\"~a\"><img ~a src=~a></div><a href=~a>~a</a>" 
+    ;           summary *is* logo domain name )
+    (if hover
+        ;format nil "~%<div title=\"~a\"><a href=~a><img ~a src=~a></div>~a</a>," 
+       (format nil "~%<td><div title=\"~a\"><a href=~a><img ~a src=~a></div>~a</a></td>" 
+                summary domain *is* logo name )
+        (format nil "~%<br><img ~a src=~a><a href=~a>~a</a>,~a" *is* logo
+                domain name summary)
+    )))
 
 (defun pt (lol)
   "print table"
@@ -24,5 +31,6 @@
   "test print"
   (pt lol))
 
-(defun stc (&optional (fn "c.htm"))
+(defun stc (&optional (fn "ch.htm"))
+  "save(test)table"
   (save-lines (tp) fn))
