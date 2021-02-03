@@ -21,8 +21,8 @@
     (if hover
         ;format nil "~%<div title=\"~a\"><a href=~a><img ~a src=~a></div>~a</a>," 
        (format nil 
-       "~%<td><div title=\"~a, ~a records\"><a href=~a><img ~a src=~a></div>~a</a></td>" 
-                summary num_datasets domain *is* logo (or name repo) )
+       "~%<td width=33%><div title=\"~a [~a records]\"><a href=~a><img ~a src=~a></div>~a</a>[~a records]</td>" 
+                summary num_datasets domain *is* logo (or name repo) num_datasets)
         (format nil "~%<br><img ~a src=~a><a href=~a>~a</a>,~a" *is* logo
                 domain name summary)
     )))
@@ -35,6 +35,6 @@
   "test print"
   (pt lol))
 
-(defun stc (&optional (fn "cc.htm"))
+(defun stc (&optional (fn "c3.htm"))
   "save(test)table"
   (save-lines (tp) fn))
