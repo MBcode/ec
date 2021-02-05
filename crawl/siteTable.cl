@@ -1,3 +1,7 @@
+;was siteTable, but want2start kicking out start of: 
+;  https://github.com/ESIPFed/science-on-schema.org/blob/master/guides/DataRepository.md
+;should redo this in py soon, anyway
+
 ;Also have w/py pandas, &could be more fine grain, but this was quick sites2~table script
 ;df=pd.read_table('cdf_cndls.tsv') print(df[0:18].to_html()) ;mbobak@illinois.edu
 ;The formatting will change, incl maybe going into a real table, in an about.html page
@@ -26,7 +30,36 @@
         (format nil "~%<br><img ~a src=~a><a href=~a>~a</a>,~a" *is* logo
                 domain name summary)
     )))
+;f_repo = """ f'{
+; "@context": {
+;   "@vocab": "https://schema.org/"
+; },
+; "@type": ["Service", "ResearchProject"],
+; "legalName": "{name}",
+; "name": "{index}",
+; "url": "{domain}",
+; "description": "{description}.",
+; "sameAs": "{re3}"
+; }' """
+(defun rld (l)
+  "repo jsonLD line"
+  (let ((index (nth 0 l))
+        (name (nth 6 l))
+        (domain (nth 7 l))
+        (summary (nth 14 l))
+        (re3 (nth 13 l))
+        )
+    (list 
+    (format nil "~%~%{  \"@context\": {   \"@vocab\": \"https://schema.org/\"; }, ")
+    (format nil "~% \"@type\": [\"Service\", \"ResearchProject\"],")
+    (format nil "~% \"legalName\": \"{~a}\"," name)
+    (format nil "~% \"name\": \"{~a}\"," index)
+    (format nil "~% \"url\": \"{~a}\"," domain)
+    (format nil "~% \"description\": \"{~a}\"," summary)
+    (format nil "~% \"sameAs\": \"{~a}\"}" re3)
+    )))
 
+;-
 (defun pt (lol)
   "print table"
   (mapcar #'ldns lol))
@@ -38,3 +71,16 @@
 (defun stc (&optional (fn "c3.htm"))
   "save(test)table"
   (save-lines (tp) fn))
+
+;-
+(defun pr (lol)
+  "print repo"
+  (mapcar #'rld lol))
+
+(defun tr (&optional (lol *c*))
+  "test print repo"
+  (pr lol))
+
+(defun str (&optional (fn "repo.jsonld"))
+  "save(test)repo"
+  (save-lines (flatten1 (tr)) fn))
