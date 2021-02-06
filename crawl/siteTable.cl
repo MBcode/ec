@@ -41,7 +41,7 @@
 ; "description": "{description}.",
 ; "sameAs": "{re3}"
 ; }' """
-(defun rld (l)
+(defun rld (l &optional (perRepo nil)) 
   "repo jsonLD line"
   (let ((index (nth 0 l))
         (name (nth 6 l))
@@ -49,15 +49,27 @@
         (summary (nth 14 l))
         (re3 (nth 13 l))
         )
-    (list 
-    (format nil "~%~%{  \"@context\": {   \"@vocab\": \"https://schema.org/\"; }, ")
-    (format nil "~% \"@type\": [\"Service\", \"ResearchProject\"],")
-    (format nil "~% \"legalName\": \"{~a}\"," name)
-    (format nil "~% \"name\": \"{~a}\"," index)
-    (format nil "~% \"url\": \"{~a}\"," domain)
-    (format nil "~% \"description\": \"{~a}\"," summary)
-    (format nil "~% \"sameAs\": \"{~a}\"}" re3)
-    )))
+    (let ((rl (list 
+        (format nil "~%~%{  \"@context\": {   \"@vocab\": \"https://schema.org/\"; }, ")
+        (format nil "~% \"@type\": [\"Service\", \"ResearchProject\"],")
+        (format nil "~% \"legalName\": \"~a\"," name)
+        (format nil "~% \"name\": \"~a\"," index)
+        (format nil "~% \"url\": \"~a\"," domain)
+        (format nil "~% \"description\": \"~a\"," summary)
+        (format nil "~% \"sameAs\": \"~a\"}" re3)
+        )))
+      (if perRepo (cons index rl)
+        rl)))) 
+
+(defun repo-ld (l)
+  (let* ((idx-ld (rld l t)) 
+         (idx (first idx-ld))
+         (ld (rest idx-ld))
+         (fnt (str-cat "ld/" idx "/repo.nt"))
+         (fn (str-cat "ld/" idx "/repo.jsonld")))
+  (save-lines ld fn)
+  (tsh (str-cat "riot " fn " |cat> " fnt))
+  ))
 
 ;-
 (defun pt (lol)
@@ -75,7 +87,7 @@
 ;-
 (defun pr (lol)
   "print repo"
-  (mapcar #'rld lol))
+  (mapcar #'rld lol)) 
 
 (defun tr (&optional (lol *c*))
   "test print repo"
@@ -84,3 +96,7 @@
 (defun str (&optional (fn "repo.jsonld"))
   "save(test)repo"
   (save-lines (flatten1 (tr)) fn))
+
+(defun ld-repo (&optional (lol *c*))
+  (mapcar #'repo-ld lol))
+
