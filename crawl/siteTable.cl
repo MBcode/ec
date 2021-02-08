@@ -59,7 +59,7 @@
         (format nil " \"url\": \"~a\"," domain)
         (format nil " \"description\": \"~a\"," summary)
         (format nil " \"logo\": { \"@type\": \"ImageObject\", \"url\": \"~a\" }," logo)
-        (format nil " \"sameAs\": \"~a\"} }" re3)
+        (format nil " \"identifier\": \"~a\"}" re3)
         )))
       (if perRepo (cons index rl)
         rl)))) 
