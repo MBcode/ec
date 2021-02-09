@@ -24,8 +24,8 @@
     ;           summary *is* logo domain name )
     (if hover
         ;format nil "~%<div title=\"~a\"><a href=~a><img ~a src=~a></div>~a</a>," 
-       (format nil 
-       "~%<td width=33%><div title=\"~a [~a records]\"><a href=~a><img ~a src=~a></div>~a</a>[~a records]</td>" 
+       (format nil  ;check divs in final
+       "~%<td width=33%><div title=\"~a [~a records]\"><a href=~a><img ~a src=~a></div>~a</a><small>[~a records]</small></td>" 
                 summary num_datasets domain *is* logo (or name repo) num_datasets)
         (format nil "~%<br><img ~a src=~a><a href=~a>~a</a>,~a" *is* logo
                 domain name summary)
@@ -48,7 +48,7 @@
         (domain (nth 7 l))
         (summary (nth 13 l))
         (re3 (nth 12 l))
-        (logo (nth 11 l))
+       ;(logo (nth 11 l)) ;will use local version of each, to avoid x http/s problems
         );SoS has logo, get contactPoint&funder too 
     ;https://github.com/ESIPFed/science-on-schema.org/blob/master/examples/data-repository/minimal.jsonld
     (let ((rl (list 
@@ -58,8 +58,9 @@
         (format nil " \"name\": \"~a\"," index)
         (format nil " \"url\": \"~a\"," domain)
         (format nil " \"description\": \"~a\"," summary)
-        (format nil " \"logo\": { \"@type\": \"ImageObject\", \"url\": \"~a\" }," logo)
-        (format nil " \"identifier\": \"~a\"}" re3)
+       ;(format nil " \"logo\": { \"@type\": \"ImageObject\", \"url\": \"~a\" }," logo) ;go local:
+        (format nil " \"logo\": { \"@type\": \"ImageObject\", \"url\": \"images/repo/~a.png\" }," index)
+        (format nil " \"identifier\": \"~a\"}" re3) ;was sameAs
         )))
       (if perRepo (cons index rl)
         rl)))) 
