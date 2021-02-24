@@ -7,10 +7,12 @@ share notebooks..(showing this off), had more dev in colab because of secret key
 metadata crawling and asserting to clowderframework for search
 *** Use: 
 use of the search-API adaptor is being expanded in ./search
+*** Qry:
+SPARQL/etc as we transition back to triplestore and what we can do w/it
 *** Prep
 Parts will soon be put in: https://github.com/earthcube/earthcube-utilities
-*** Latest work going right into alpha production site
-https://github.com/earthcube/geodexui/
 *** [[http://mbobak-ofc.ncsa.illinois.edu/about.htm][diagram]]:
 w/[[links.txt][links]] embedded in it
 [[ec.svg]]
+*** Latest work going right into alpha production site
+https://github.com/earthcube/geodexui/
