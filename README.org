@@ -12,5 +12,5 @@ Parts will soon be put in: https://github.com/earthcube/earthcube-utilities
 *** Latest work going right into alpha production site
 https://github.com/earthcube/geodexui/
 *** diagram:
-w/links embedded in it
+w/[[links.txt][links]] embedded in it
 [[ec.svg]]
