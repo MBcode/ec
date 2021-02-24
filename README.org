@@ -14,5 +14,5 @@ Parts will soon be put in: https://github.com/earthcube/earthcube-utilities
 *** [[http://mbobak-ofc.ncsa.illinois.edu/about.htm][diagram]]:
 w/[[links.txt][links]] embedded in it
 [[ec.svg]]
-*** Latest work going right into alpha production site
+*** Latest work going right into alpha production [[https://alpha.geocodes.earthcube.org/][site]]
 https://github.com/earthcube/geodexui/
