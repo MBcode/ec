@@ -23,6 +23,9 @@ https://graph.geodex.org/blazegraph/#query  is the 'triplestore' (SPARQL)link on
 https://www.w3.org/TR/sparql11-overview/   SPARQL overview, graph query
 https://github.com/MBcode/ec/blob/master/crawl/CDF_Sites.csv list of sitemaps
 -rw-rw-r--  1 bobak  10K Feb 23 19:48 cc2.svg  Now the about.htm diagram has these links w/in it
+https://eikes.github.io/facetedsearch/ is the library the new interace uses
+http://mbobak-ofc.ncsa.illinois.edu/ld/ where the jsonLD is cached vs minio; LinkedData should be http accessible
+http://isda.ncsa.uiuc.edu/~mbobak/sd/ a talk on this work, that has extra-slides touching on some of this
 
 As soon as clowder gets back a triplestore, that syncs w/it's jsonLD store,
   it should be able to just use our old&new triple-backed search front-ends.
