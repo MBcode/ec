@@ -1,0 +1,28 @@
+~Glossary links:
+I could take snippets from all these pages, but keeping it terse.
+Should be enough to explain much of my 1st help page:
+http://mbobak-ofc.ncsa.illinois.edu/about.htm  page w/diagram w/these links in it
+https://alpha.geocodes.earthcube.org/                 search
+https://alpha.geocodes.earthcube.org/about.html       real version of this page
+https://www.earthcube.org/geocodes link at top of about, shoing what it includes
+https://www.earthcube.org/council-of-data-facilities  CDF
+https://alpha.geocodes.earthcube.org/tech.html        p418 follow on description
+https://github.com/scrapinghub/extruct                metadata scraper
+https://github.com/ESIPFed/science-on-schema.org  Tools section also mentions exstruct along w/gleaner
+https://stedolan.github.io/jq/      json minipulation, though extruct can go right to jsonLD if you don't mind skipping other formats
+https://json-ld.org/playground/     json-ld info; playground incl visualized tab
+https://earthcube.clowderframework.org/  where crawled data is asserted for search
+http://mbobak-ofc.ncsa.illinois.edu/search.htm  making clowder look more like present search, incl
+https://search.carrot2.org/#/search/web/site%3Ahttps%3A%2F%2Fwww.hydroshare.org%20carbon/treemap clustering 
+https://github.com/MBcode/ec/blob/master/clowder/jsonLD2dataset.py  code to assert
+https://any23.apache.org/getting-started.html   'rover' conversion, to:
+https://jena.apache.org/documentation/io/rdf-output.html 'riot'
+https://www.w3.org/TR/n-triples/ ready for easy import to triplestore
+https://en.wikipedia.org/wiki/Turtle_(syntax)   TTL format, used in
+https://graph.geodex.org/blazegraph/#query  is the 'triplestore' (SPARQL)link on landing.html
+https://www.w3.org/TR/sparql11-overview/   SPARQL overview, graph query
+https://github.com/MBcode/ec/blob/master/crawl/CDF_Sites.csv list of sitemaps
+-rw-rw-r--  1 bobak  10K Feb 23 19:48 cc2.svg  Now the about.htm diagram has these links w/in it
+
+As soon as clowder gets back a triplestore, that syncs w/it's jsonLD store,
+  it should be able to just use our old&new triple-backed search front-ends.
