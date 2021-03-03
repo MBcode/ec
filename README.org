@@ -16,3 +16,4 @@ w/[[links.txt][links]] embedded in it
 [[ec.svg]]
 *** Latest work going right into alpha production [[https://alpha.geocodes.earthcube.org/][site]]
 https://github.com/earthcube/geodexui/
+*** Recent [[http://isda.ncsa.uiuc.edu/~mbobak/sd/][talk]] about the work
