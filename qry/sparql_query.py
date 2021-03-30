@@ -22,8 +22,7 @@ base_fn = "m29q.rq"
 
 def get_txtfile(fn):
     with open(fn, "r") as f:
-        return f.read()
-
+        return f.read() 
 
 def put_txtfile(fn,s):
     with open(fn, "w") as f:
@@ -47,6 +46,20 @@ def put_json_file(fnb,d):
     fn=fnb.replace(' ','+')
     put_jsonfile(fn,d)
 
+def incrKeyCount(key,d):
+    v=d.get(key)
+    if not v:
+        d[key] = 0
+    d[key] += 1
+    return d[key] #new
+#----
+#def incrKeyConcat(key,d,v2):
+
+subj_tc = {}
+def incrSubjCount(d):
+    subj=d['subj']['value']
+    #print(f's:{subj}') 
+    incrKeyCount(subj,subj_tc)
 
 def qs2b(qry_str):
     "qry_str to bindings"
@@ -60,9 +73,15 @@ def qs2b(qry_str):
     results = sparql.query().convert()
     #print(f'sq2b:{results}')
     bindings= results["results"]["bindings"]
+    #subj=bindings[]['subj']['value']
+    #incrKeyCount(subj,subj_tc)
+    #subj_tc = {}
+    list(map(incrSubjCount,bindings))
     lb=len(bindings)
-    print(f'ret:{lb}')
-    print(f'ret:{bindings}')
+    ls=len(subj_tc)
+    #print(f'ret:{lb},w/subj:{ls}')
+    print(f'q={qry_str},ret:{lb},w/subj:{ls}')
+    #print(f'ret:{bindings}')
     return bindings
 
 def qs2bf(qry_str):
@@ -70,6 +89,10 @@ def qs2bf(qry_str):
     put_json_file(qry_str + ".json", b)
 
 def tq():
-    #qs2b("Norway")
+    qs2b("Norway")
     #ret:107
-    qs2bf("Norway")
+    #qs2bf("Norway")
+    #creates file
+
+def ta():
+    list(map(qs2b,ql))
