@@ -18,7 +18,8 @@ ql = [ 'norway',
        'corelyzer archive',
        '2019 northridge earthquake']
 
-base_fn = "m29q.rq"
+#base_fn = "m29q.rq"
+base_fn = "main4.rq"
 
 def get_txtfile(fn):
     with open(fn, "r") as f:
@@ -67,9 +68,9 @@ def qs2b(qry_str):
  #  endpoint = os.getenv('dev_endpoint')
     sparql = SPARQLWrapper(endpoint)
     gqs=get_txtfile(base_fn)
-    q=gqs.replace('{?q}',qry_str) 
-    #print(f'q:{q}')
-    #print(f'qs:{qry_str}')
+    q=gqs.replace('norway',qry_str) 
+    #q=gqs.replace('${q}',qry_str) 
+    print(f'q:{q}')
     sparql.setQuery(q)
     sparql.setReturnFormat(JSON)
     results = sparql.query().convert()
@@ -98,3 +99,26 @@ def tq():
 
 def ta():
     list(map(qs2b,ql))
+
+#==from qry.py
+#maybe actually do call w/sparql-dataframe to get aggregation math right away
+#don't have to put in links like did w/clusters, just counts, &can requery this time
+#--
+def sq2df(qry_str):
+    "sparql to df"
+    #import sparql_dataframe
+    import sparqldataframe
+    endpoint = "https://graph.geodex.org/blazegraph/namespace/cdf/sparql"
+    #q=q1+qs+q2
+    gqs=get_txtfile(base_fn)
+    q=gqs.replace('norway',qry_str) 
+    print(f'q:{q}')
+    #df = sparql_dataframe.get(endpoint, q)
+    df = sparqldataframe.query(endpoint, q)
+    df.describe()
+    return df
+#have other files w/sparql-dataframe, might be nice bc could do facet-aggregation math quickly
+def tdf(): #install is trickier than sparqlwrapper alone, so maybe cound w/in the qry
+    qry_str="Norway"
+    df=sq2df(qry_str)
+    return df
