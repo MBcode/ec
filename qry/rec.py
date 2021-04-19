@@ -1,5 +1,6 @@
 #simple recommender demo
 # sparql qry that when you pick one result you can get an ordered list or related ones
+#there is a colab NoteBook version as well
 import sys
 if(len(sys.argv)>1):
     qry_str=sys.argv[1]
@@ -19,6 +20,7 @@ def get_index_from_subj(subj):
 	return df[df.subj == subj]["index"].values[0]
 ##################################################
 base_fn = "main4.rq"
+# ?lit bds:search "${q}" . #has norway instead right now
 
 def get_txtfile(fn):
     with open(fn, "r") as f:
@@ -27,7 +29,7 @@ def get_txtfile(fn):
 def sq2df(qry_str):
     "sparql to df"
     import sparqldataframe
-    endpoint = "https://graph.geodex.org/blazegraph/namespace/cdf/sparql"
+    endpoint = "https://graph.geodex.org/blazegraph/namespace/nabu/sparql"
     gqs=get_txtfile(base_fn)
     q=gqs.replace('norway',qry_str)
     #print(f'q:{q}')
