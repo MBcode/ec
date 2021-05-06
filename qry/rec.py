@@ -76,18 +76,22 @@ count_matrix = cv.fit_transform(df["combined_features"])
 cosine_sim = cosine_similarity(count_matrix) 
 #movie_user_likes = "Avatar"
 #should pick one of the ones from the df randomly, or can do them all
-movie_user_likes = "https://www.bco-dmo.org/dataset/752737"
+#movie_user_likes = "https://www.bco-dmo.org/dataset/752737"
+movie_user_likes = df['subj'][0]
+#print(f'look for {movie_user_likes}')
 
 def get_related(likes):
     dataset_index = get_index_from_subj(likes)
     similar_datasets =  list(enumerate(cosine_sim[dataset_index]))
     sorted_similar_datasets = sorted(similar_datasets,key=lambda x:x[1],reverse=True)
     i=0
+    print(f'look for related to: {likes}')
     for element in sorted_similar_datasets:
                     print(get_subj_from_index(element[0]))
                     i=i+1
                     if i>50:
                             break
+    #could also stop when relatedness falls beyond a threshold
 ### Step 6: Get index of this movie from its subj
 #movie_index = get_index_from_subj(movie_user_likes)
 #
@@ -103,4 +107,7 @@ def get_related(likes):
 #		i=i+1
 #		if i>50:
 #			break
-get_related(movie_user_likes)
+
+#get_related(movie_user_likes)
+for ds in df['subj']:
+    get_related(ds)
