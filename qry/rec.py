@@ -19,7 +19,8 @@ def get_subj_from_index(index):
 def get_index_from_subj(subj):
 	return df[df.subj == subj]["index"].values[0]
 ##################################################
-base_fn = "main4.rq"
+#base_fn = "main4.rq"
+base_fn = "../qry/main4.rq"
 # ?lit bds:search "${q}" . #has norway instead right now
 
 def get_txtfile(fn):
@@ -77,18 +78,29 @@ cosine_sim = cosine_similarity(count_matrix)
 #should pick one of the ones from the df randomly, or can do them all
 movie_user_likes = "https://www.bco-dmo.org/dataset/752737"
 
-## Step 6: Get index of this movie from its subj
-movie_index = get_index_from_subj(movie_user_likes)
-
-similar_movies =  list(enumerate(cosine_sim[movie_index]))
-
-## Step 7: Get a list of similar movies in descending order of similarity score
-sorted_similar_movies = sorted(similar_movies,key=lambda x:x[1],reverse=True)
-
-## Step 8: Print subjs of first 50 movies
-i=0
-for element in sorted_similar_movies:
-		print(get_subj_from_index(element[0]))
-		i=i+1
-		if i>50:
-			break
+def get_related(likes):
+    dataset_index = get_index_from_subj(likes)
+    similar_datasets =  list(enumerate(cosine_sim[dataset_index]))
+    sorted_similar_datasets = sorted(similar_datasets,key=lambda x:x[1],reverse=True)
+    i=0
+    for element in sorted_similar_datasets:
+                    print(get_subj_from_index(element[0]))
+                    i=i+1
+                    if i>50:
+                            break
+### Step 6: Get index of this movie from its subj
+#movie_index = get_index_from_subj(movie_user_likes)
+#
+#similar_movies =  list(enumerate(cosine_sim[movie_index]))
+#
+### Step 7: Get a list of similar movies in descending order of similarity score
+#sorted_similar_movies = sorted(similar_movies,key=lambda x:x[1],reverse=True)
+#
+### Step 8: Print subjs of first 50 movies
+#i=0
+#for element in sorted_similar_movies:
+#		print(get_subj_from_index(element[0]))
+#		i=i+1
+#		if i>50:
+#			break
+get_related(movie_user_likes)
