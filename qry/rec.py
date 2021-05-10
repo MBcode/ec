@@ -85,7 +85,7 @@ def get_related(likes):
     similar_datasets =  list(enumerate(cosine_sim[dataset_index]))
     sorted_similar_datasets = sorted(similar_datasets,key=lambda x:x[1],reverse=True)
     i=0
-    print(f'look for related to: {likes}')
+    print(f'============look for related to: {likes}')
     for element in sorted_similar_datasets:
                     print(get_subj_from_index(element[0]))
                     i=i+1
@@ -111,3 +111,35 @@ def get_related(likes):
 #get_related(movie_user_likes)
 for ds in df['subj']:
     get_related(ds)
+
+def first(l):
+    from collections.abc import Iterable
+    if isinstance(l,list):
+        return l[0]
+    elif isinstance(l,Iterable):
+        return list(l)[0]
+    else:
+        return l
+
+def get_related_indices(like_index):
+  similar_indices =  list(enumerate(cosine_sim[like_index]))
+  sorted_similar = sorted(similar_indices,key=lambda x:x[1],reverse=True)
+  #return sorted_similar
+  return list(map(first,sorted_similar))
+
+#def set_related_at(like_index,df):
+#  "takes the DF's index &puts list to that positon in 'related' column"
+#  l = get_related_indices(like_index)
+#  df['related'][like_index] = l
+
+def set_related_col(df):
+  "create 'related' col and fill with ranking for that row, w/the others"
+  #for i in range(len(df)):
+  #  set_related_at(i,df)
+  lol = list(map(get_related_indices,range(len(df))))
+  df.insert(1,'related',lol)
+  return df
+
+#set_related_col(df)
+#print(df['related'])
+#also: Have had main qry return 'rank' instead of score; could have a related_rank_for col that gets reset depending on which you like, and then could sort all returned by this
