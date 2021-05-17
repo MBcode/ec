@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Search Component</title>
+
+
+
+    <link rel="stylesheet" href="./css/spacelab/bootstrap.css"/>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+            integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+            crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx"
+            crossorigin="anonymous"></script>
+
+    <script type="module" src="js/lit-html.js"></script>
+    <script type="module" src="js/components/lit-element.js"></script>
+
+    <script type="module" src="js/components/geocodes_filters.js"></script>
+    <script type="module" src="js/components/geocodes_filters_publisher.js"></script>
+    <script const yaml = require('js-yaml'); src="js/components/geocodes_filters_searchtypes.js"></script>
+</head>
+<body>
+<div class="accordion col-12" id="accordionExample">
+    <div class="card">
+        <div class="card-header" id="headingOne">
+            <h2 class="ml-6">
+                <button class="btn btn-link btn-block text-left" type="button" data-toggle="collapse"
+                        data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                    ${title} <i class="fa fa-plus  float-right"></i>
+                </button>
+
+            </h2>
+        </div>
+
+        <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordionExample">
+            <div class="card-body">
+                <div class="list-group pl-3">
+                    <div class="list-group-item">
+                        <div class="input-group">
+
+                            <input type="text" class="form-control" aria-label="Text input with checkbox"
+                                   placeholder="Search in XXXX">
+                            </input>
+                        </div>
+                    </div>
+                    <div class="list-group-item  ">
+
+                        <input type="radio" id="itemOne_one" name="customRadioInline1"
+                               aria-label="Checkbox for following text input"/>
+
+                        <label class="p-2" for="itemOne_one">Item One </label> <span
+                            class="badge badge-secondary float-right">200</span>
+                    </div>
+                    <div class="list-group-item ">
+
+                        <input type="radio" id="itemOne_two" name="customRadioInline1"
+                               aria-label="Checkbox for following text input"/>
+
+                        <label class="p-2" for="itemOne_two">Item two </label><span
+                            class="badge badge-secondary   float-right">100</span>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<search-component shown="true" title="example" field="fulltext" id="all">
+
+</search-component>
+<search-component-publisher shown="true" title="Publisher" field="fulltext" id="publisher">
+
+</search-component-publisher>
+<search-component-searchtype shown="true" title="Search Type" field="fulltext" id="searchtype">
+
+</search-component-searchtype>
+</body>
+'
+</html>

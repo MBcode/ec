@@ -1,0 +1,2 @@
+Get cp -a of most active part of https://github.com/earthcube/geodexui before it is superceded by facetedsearch.
+It gives me a place to more easily try things out, w/o effecting the code there in the future

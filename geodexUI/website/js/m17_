@@ -1,0 +1,137 @@
+μ<87 m17bobak: /js/dataset2> gitdiff
+diff --git a/alpha/website/dataset.html b/alpha/website/dataset.html
+index 507f131..7963434 100644
+--- a/alpha/website/dataset.html
++++ b/alpha/website/dataset.html
+@@ -31,7 +31,7 @@
+     <script src="https://unpkg.com/@webcomponents/webcomponentsjs@next/webcomponents-loader.js"></script>
+     <script type="module" src="./js/dataset2/obj-exchange.js"></script>
+     <!-- <script type="module" src="/js/components/demo-tp.js"></script> -->
+-    <script type="module" src="./js/dataset2/eco-sparql.js?v=123"></script>
++    <script type="module" src="./js/dataset2/eco-sparql.js?v=125"></script>
+     <script type="module" src="./js/dataset2/eco-urltemplate.js?v=123"></script>
+     <script type="application/javascript" src="./js/dataset2/map.js"></script>
+     <link rel="stylesheet" href="./css/main.css"/>
+diff --git a/alpha/website/js/dataset/eco-sparql.js b/alpha/website/js/dataset/eco-sparql.js
+index c044d82..7d3ff13 100644
+--- a/alpha/website/js/dataset/eco-sparql.js
++++ b/alpha/website/js/dataset/eco-sparql.js
+@@ -79,7 +79,9 @@ import {
+                                       ?df schema:encodingFormat  ?label ;
+                                           schema:position "input".     
+                                       ?rrs schema:name ?name. 
+-                                       ?rrs schema:subjectOf/schema:url ?landingPage     
++                                       ?rrs schema:subjectOf/schema:url ?landingPage .    
++                                      ?rrs schema:description ?desc. 
++                                      FILTER NOT EXISTS contains(?desc, "eb app")
+                                }                 
+                            }               
+                         }`
+diff --git a/alpha/website/js/dataset2/eco-sparql.js b/alpha/website/js/dataset2/eco-sparql.js
+index 921381d..9dab948 100644
+--- a/alpha/website/js/dataset2/eco-sparql.js
++++ b/alpha/website/js/dataset2/eco-sparql.js
+@@ -50,7 +50,7 @@ import {
+                     //     ` }
+ 
+ 
+-
++                  //sparql_gettools_download.txt
+ 
+ 
+                     params = {
+@@ -72,14 +72,15 @@ import {
+                                   }
+                              }
+                              BIND (str(?type) as ?label)                                                                                                        
+-                             SERVICE <http://132.249.238.169:8080/fuseki/ecrr/query> {     
++                             SERVICE <http://141.142.218.86:3030/ld/query> {     
+                               GRAPH <http://earthcube.org/gleaner-summoned>             
+                                {   
++                                  ?rrs a schema:SoftwareApplication .
+                                   ?rrs schema:supportingData ?df.
+                                       ?df schema:encodingFormat  ?label ;
+                                           schema:position "input".     
+-                                      ?rrs schema:name ?name. 
+-                                       ?rrs schema:subjectOf/schema:url ?landingPage     
++                                  ?rrs schema:name ?name. 
++                                  ?rrs schema:subjectOf/schema:url ?landingPage .
+                                }                 
+                            }               
+                         }`
+diff --git a/alpha/website/js/dataset2/eco-urltemplate.js b/alpha/website/js/dataset2/eco-urltemplate.js
+index 2f5d808..8817f64 100644
+--- a/alpha/website/js/dataset2/eco-urltemplate.js
++++ b/alpha/website/js/dataset2/eco-urltemplate.js
+@@ -48,6 +48,8 @@ import {
+                     //       <https://n2t.net/ark:/23942/g2600006> schema:codeRepository ?repo . \
+                     //     }\
+                     //     ` }
++                      
++                    //sparql_gettools_webservice.txt
+ 
+                     params = {
+                         query: `prefix sdos: <https://schema.org/>
+@@ -62,12 +64,12 @@ import {
+                                          OPTIONAL {?dist sdos:contentUrl ?durl }.
+                                  }
+                                  BIND (str(?type) as ?label)
+-                                SERVICE <http://132.249.238.169:8080/fuseki/ecrr/query> {
++                                SERVICE <http://141.142.218.86:3030/ld/query> {
+                                   GRAPH <http://earthcube.org/gleaner-summoned>
+ 
+                                         {
+ 
+-                                          ?rrs a sdos:SoftwareApplication ;
++                                          ?rrs a sdos:WebApplication ;
+                                                sdos:name ?appname ;
+                                                sdos:supportingData ?df.
+                                                        ?df sdos:encodingFormat ?label ;
+μ<88 m17bobak: /js/dataset2> gba
+* (HEAD detached at origin/dedup_related)
+  geocodes_boostrap
+  master
+  recommended
+  remotes/origin/HEAD -> origin/master
+  remotes/origin/counts_descriptions
+  remotes/origin/datasetlandingpage2
+  remotes/origin/dedup_related
+  remotes/origin/dedupe_results
+  remotes/origin/disurl_agg
+  remotes/origin/facet_as_module
+  remotes/origin/filter_resourceType
+  remotes/origin/fixNavbar_Tools
+  remotes/origin/geocodes_boostrap
+  remotes/origin/master
+  remotes/origin/recommended
+  remotes/origin/searchTypes_radiobutton
+  remotes/origin/update_bootstrap_theme
+μ<89 m17bobak: /js/dataset2> gitcom software OR web application
+[detached HEAD 1b986d6] software OR web application
+ 4 files changed, 13 insertions(+), 8 deletions(-)
+μ<90 m17bobak: /js/dataset2> git push
+fatal: You are not currently on a branch.
+To push the history leading to the current (detached HEAD)
+state now, use
+
+    git push origin HEAD:<name-of-remote-branch>
+
+μ<91 m17bobak: /js/dataset2> git push origin HEAD:origin/dedup_related
+Username for 'https://github.com': MBcode
+Password for 'https://MBcode@github.com': 
+warning: redirecting to https://github.com/earthcube/geodexui.git/
+error: The destination you provided is not a full refname (i.e.,
+starting with "refs/"). We tried to guess what you meant by:
+
+- Looking for a ref that matches 'origin/dedup_related' on the remote side.
+- Checking if the <src> being pushed ('HEAD')
+  is a ref in "refs/{heads,tags}/". If so we add a corresponding
+  refs/{heads,tags}/ prefix on the remote side.
+
+Neither worked, so we gave up. You must fully qualify the ref.
+hint: The <src> part of the refspec is a commit object.
+hint: Did you mean to create a new branch by pushing to
+hint: 'HEAD:refs/heads/origin/dedup_related'?
+error: failed to push some refs to 'http://github.com/earthcube/geodexui.git'
+μ<92 m17bobak: /js/dataset2> 
+ 
