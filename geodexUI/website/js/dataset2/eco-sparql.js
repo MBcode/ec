@@ -51,6 +51,7 @@ import {
 
 
                     //sparql_gettools_download.txt
+                    //need to get quads in that endpnt or be able to edit old one
 
                     params = {
                         query: `PREFIX schema:  <https://schema.org/>    
@@ -71,7 +72,6 @@ import {
                                   }
                              }
                              BIND (str(?type) as ?label)                                                                                                        
-                             //SERVICE <http://132.249.238.169:8080/fuseki/ecrr/query> 
                              SERVICE <http://141.142.218.86:3030/ld/query>  {
                               GRAPH <http://earthcube.org/gleaner-summoned>             
                                {   
@@ -80,7 +80,9 @@ import {
                                       ?df schema:encodingFormat  ?label ;
                                           schema:position "input".	
                                   ?rrs schema:name ?name. 
-                                  ?rrs schema:subjectOf/schema:url ?landingPage     
+                                  ?rrs schema:subjectOf/schema:url ?landingURL .     
+                                  ?rrs schema:subjectOf/schema:name ?landingName  .    
+                                  BIND(CONCAT(STR( ?landingURL ),":",STR(?landingName)) AS ?landing).
                                }                 
                            }               
                         }`

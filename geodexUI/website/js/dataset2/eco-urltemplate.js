@@ -64,7 +64,6 @@ import {
                                          OPTIONAL {?dist sdos:contentUrl ?durl }.
                                  }
                                  BIND (str(?type) as ?label)
-                                 //SERVICE <http://132.249.238.169:8080/fuseki/ecrr/query> 
                                  SERVICE <http://141.142.218.86:3030/ld/query> {
                                   GRAPH <http://earthcube.org/gleaner-summoned>
 
