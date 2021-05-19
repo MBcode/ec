@@ -50,8 +50,7 @@ import {
                     //     ` }
 
 
-
-
+                    //sparql_gettools_download.txt
 
                     params = {
                         query: `PREFIX schema:  <https://schema.org/>    
@@ -72,14 +71,16 @@ import {
                                   }
                              }
                              BIND (str(?type) as ?label)                                                                                                        
-                             SERVICE <http://132.249.238.169:8080/fuseki/ecrr/query> {     
+                             //SERVICE <http://132.249.238.169:8080/fuseki/ecrr/query> 
+                             SERVICE <http://141.142.218.86:3030/ld/query>  {
                               GRAPH <http://earthcube.org/gleaner-summoned>             
                                {   
+                                  ?rrs a schema:SoftwareApplication .
                                   ?rrs schema:supportingData ?df.
                                       ?df schema:encodingFormat  ?label ;
                                           schema:position "input".	
-                                      ?rrs schema:name ?name. 
-                                       ?rrs schema:subjectOf/schema:url ?landingPage     
+                                  ?rrs schema:name ?name. 
+                                  ?rrs schema:subjectOf/schema:url ?landingPage     
                                }                 
                            }               
                         }`
