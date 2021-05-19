@@ -69,7 +69,6 @@ import {
 
                                         {
 
-                                          //?rrs a sdos:SoftwareApplication ;
                                           ?rrs a sdos:WebApplication ;
                                                sdos:name ?appname ;
                                                sdos:supportingData ?df.
