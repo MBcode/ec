@@ -2,7 +2,7 @@
 *** started with:
 crawl of embedded metadata for each of their landing pages, and search in a triplestore
 *** this repo started to:
-share notebooks..(showing this off), had more dev in colab because of secret keys/etc, but open now
+share NotebBooks..(showing this off), had more dev in colab because of secret keys/etc, but open now
 *** Also 
 metadata crawling and asserting to clowderframework for search
 *** Use: 
