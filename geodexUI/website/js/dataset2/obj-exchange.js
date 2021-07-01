@@ -58,7 +58,7 @@ class ObjExchange extends LitElement {
 
     }
 
-
+   //const base_url = "http://141.142.218.86:8081/notebooks/jup-nb-arg-in-url.ipynb?kernel_name=python3&dwn1="
 
     async firstUpdated(_changedProperties) {
         super.firstUpdated(_changedProperties);
@@ -423,6 +423,10 @@ this.raw_json = j;
                            aria-controls="web" aria-selected="true">Web Links</a>
                     </li>
                     <li class="nav-item">
+                        <a class="nav-link " id="nb-tab" data-toggle="tab" href="#nb" role="tab"
+                           aria-controls="nb" aria-selected="true">NoteBook Links</a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link " id="citation-tab" data-toggle="tab" href="#cite" role="tab"
                            aria-controls="cite" aria-selected="true" 
                             ?hidden="${hide_citation_tab}">Citation</a>
@@ -484,6 +488,28 @@ ${s_publisher}</span>
                           <div class="row">
                               <span class="col-4 ">${i.name}</span>
                               <a class="col-8" target="_blank" href="${i.contentUrl}">${i.contentUrl}</a>
+                          </div> `)}
+
+
+                    </div>
+                    <div class="tab-pane fade" id="nb" role="tabpanel" aria-labelledby="nb-tab">
+                        <div class="row">
+
+                            <span class="col-4 font-weight-bold">Name</span>
+                            <span class="col-8 font-weight-bold">link </span>
+
+                        </div>
+                        ${ has_s_url ? html`<div class="row" >
+
+                            <span class="col-4">Object URL</span>
+                            <a class="col-8" href="${s_url}" target="_blank"> ${s_url} </a>
+
+                        </div>` : "" }
+                        
+                        ${this.s_downloads.map(i => html`
+                          <div class="row">
+                              <span class="col-4 ">${i.name}</span>
+                              <a class="col-8" target="_blank" href="${'http://141.142.218.86:8081/notebooks/jup-nb-arg-in-url.ipynb?kernel_name=python3&dwn1=' + i.contentUrl}">${i.contentUrl}</a>
                           </div> `)}
 
 
