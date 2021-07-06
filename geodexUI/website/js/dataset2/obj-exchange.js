@@ -389,6 +389,19 @@ this.raw_json = j;
         })
 
     }
+//=for colab copy button
+//  const onClick = evt => {
+//  const link = document.querySelector('a');
+//  const range = document.createRange();
+//  range.selectNode(link);
+//  const selection = window.getSelection();
+//  selection.removeAllRanges();
+//  selection.addRange(range);
+
+//  const successful = document.execCommand('copy');
+//};
+//document.querySelector('button').addEventListener('click', onClick);
+//==
 
     render() {
         let s_name = this.s_name;
@@ -425,6 +438,10 @@ this.raw_json = j;
                     <li class="nav-item">
                         <a class="nav-link " id="nb-tab" data-toggle="tab" href="#nb" role="tab"
                            aria-controls="nb" aria-selected="true">NoteBook Links</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link " id="cnb-tab" data-toggle="tab" href="#cnb" role="tab"
+                           aria-controls="cnb" aria-selected="true">colab NoteBook Links</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link " id="citation-tab" data-toggle="tab" href="#cite" role="tab"
@@ -530,6 +547,45 @@ ${s_publisher}</span>
                             <pre>${raw_json}</pre>
                         </div>
                     </div>
+                    <div class="tab-pane fade" id="cnb" role="tabpanel" aria-labelledby="cnb-tab">
+                        <div class="row">
+
+                            <span class="col-4 font-weight-bold">Name</span>
+                            <span class="col-8 font-weight-bold">link </span>
+
+                        </div>
+                        ${ has_s_url ? html`<div class="row" >
+
+                            <span class="col-4">Object URL</span>
+                            <a class="col-8" href="${s_url}" target="_blank"> ${s_url} </a>
+
+                        </div>` : "" }
+                        
+                        ${this.s_downloads.map(i => html`
+                          <div class="row">
+                              <span class="col-4 ">${i.name}</span>
+                              <a class="col-8" target="_blank" href="${'https://colab.research.google.com/github/MBcode/ec/blob/master/NoteBook/colab_paste2read.ipynb'}">${i.contentUrl}</a>
+                          </div> `)}
+
+
+                    </div>
+                    <div class="tab-pane fade" id="cite" role="tabpanel" aria-labelledby="cite-tab">
+                        <div class="row">
+
+                            <span class="col-4 font-weight-bold">Citation</span>
+
+                            <a class="col-8" href="${s_citation}" target="_blank">${s_citation}</a>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="json" role="tabpanel" aria-labelledby="json-tab">
+                        <div class="row">
+
+                            <span class="col-4 font-weight-bold">JSON</span>
+
+                            <pre>${raw_json}</pre>
+                        </div>
+                    </div>
+                </div>
                 </div>
             </div>
             </div>
