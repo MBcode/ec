@@ -441,7 +441,7 @@ this.raw_json = j;
                     </li>
                     <li class="nav-item">
                         <a class="nav-link " id="cnb-tab" data-toggle="tab" href="#cnb" role="tab"
-                           aria-controls="cnb" aria-selected="true">colab NoteBook Links</a>
+                           aria-controls="cnb" aria-selected="true">colab-NB Links</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link " id="citation-tab" data-toggle="tab" href="#cite" role="tab"
