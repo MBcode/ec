@@ -60,14 +60,30 @@ def tpg(fn="https/darchive.mblwhoilibrary.org_bitstream_1912_26532_1_dataset-752
 #works in tp2.py
 #pm2(dwnurl, fn)
 
+def mknb(dwnurl_str):
+    if(dwnurl_str and dwnurl_str.startswith("http")):
+        fn = dwnurl_str.replace("/","_").replace(":__","/",1) + ".ipynb"
+        r=pm(dwnurl_str, fn)
+    else:
+        r=f'bad-url:{dwnurl_str}'
+    return r
+
 from flask import Flask
 from markupsafe import escape
 app = Flask(__name__)
 
 @app.route('/mknb/<dwnurl>')
-def mknb(qry):
+def mk_nb(dwnurl):
     "grep jsonld, get as html"
     dwnurl_str=escape(dwnurl)
-    fn = dwnurl_str.replace("/","_").replace(":__","/",1) + ".ipynb"  #dwnloadURL2filePath it's saved in, ;almost as sep fnc, 
-    r=pm(dwnurl_str, fn)                                                #then could call from pm-fncs &only take 1arg
+    #fn = dwnurl_str.replace("/","_").replace(":__","/",1) + ".ipynb"  #dwnloadURL2filePath it's saved in, ;almost as sep fnc, 
+    #r=pm(dwnurl_str, fn)                                                #then could call from pm-fncs &only take 1arg
+    r= mknb(dwnurl_str)
     return r
+
+if __name__ == '__main__':
+    import sys
+    if(len(sys.argv)>1):
+        dwnurl_str = sys.argv[1]
+        r=mknb(dwnurl_str)
+        print(r)
