@@ -176,14 +176,17 @@ app = Flask(__name__)
 from flask import request
 
 #@app.route('/mknb/<dwnurl>')
+#def mk_nb(dwnurl):
 @app.route('/mknb')
-def mk_nb(dwnurl):
+def mk_nb():
     "make a NoteBook"
     #dwnurl_str=escape(dwnurl)
     #fn = dwnurl_str.replace("/","_").replace(":__","/",1) + ".ipynb"  #dwnloadURL2filePath it's saved in, ;almost as sep fnc, 
     #r=pm(dwnurl_str, fn)                                                #then could call from pm-fncs &only take 1arg
     dwnurl_str = request.args.get('url',  type = str)
+    print(f'url={dwnurl_str}')
     ext = reques.args.get('ext', default = 'None',   type = str)
+    print(f'ext={ext}')
     r= mknb(dwnurl_str,ext)
     return r
 
@@ -197,6 +200,6 @@ if __name__ == '__main__':
             ext=None
         r=mknb(dwnurl_str, ext) #or trf.py test, that will be in ipynb template soon
         print(r)
-#this works, but check pm cache, &then test flask too
+#this works, incl pm&gist caches, &now test flask too
 
 #remember diff btw dwnurl_str, filename-path, &filename alone, &what gets compared to find_gist
