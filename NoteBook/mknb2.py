@@ -48,7 +48,7 @@ def pm_nb2(dwnurl, ext=None):
 # will also need to be able to find this gist given the dwnlink, to not reimpliment, so might have2do a gist search,
 # but exmpl already gives a listing of all of them, so look for the fn part&cmp
 #via, some setup then:
-def post_gist(fn):
+def post_gist1(fn):
     import requests
     import json
     import os
@@ -88,6 +88,7 @@ gist_api = gistyc.GISTyc(auth_token=AUTH_TOKEN)
 def post_gist(fn):
     fcu = find_gist(fn)
     if fcu:
+        print(f'found saved gist:{fn}')
         return fcu
     else:
         return gist_api.create_gist(file_name=fn)
@@ -102,6 +103,11 @@ g=gist_list #could get this in each fnc that needs it, or leave it global
 def file_ext(fn):
     st=os.path.splitext(fn)
     return st[-1]
+
+def path_leaf(path):
+    import ntpath
+    head, tail = ntpath.split(path)
+    return tail or ntpath.basename(head)
 
 def gist_fn(gj):
     return list(gj['files'].keys())[0]
@@ -128,7 +134,9 @@ def print_nb_gists(g):
 
 ffn = 'darchive.mblwhoilibrary.org_bitstream_1912_23805_1_dataset-753388_hhq-chlorophyll__v1.tsv.ipynb'
 #be able to find a fn w/in the list: g
-def find_gist(ffn):
+#def find_gist(ffn):
+def find_gist(ffnp):
+    ffn=path_leaf(ffnp)
     for gn in range(len(g)):
         fn=gist_fn(g[gn])
         if(ffn == fn):
