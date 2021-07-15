@@ -29,7 +29,7 @@ def pm_nb(dwnurl, ext=None):
     pm.execute_notebook(
        'mybinder-read-pre-gist.ipynb', #path/to/input.ipynb',
        fn,  #'path/to/output.ipynb',
-       parameters = dict(url=dwnurl)
+       parameters = dict(url=dwnurl, ext=ext)
     )
     return base_url + fn
 
@@ -38,7 +38,7 @@ def pm_nb(dwnurl, ext=None):
 def pm_nb2(dwnurl, ext=None):
     import os
     fn=dwnurl2fn(dwnurl)
-    cs=f'papermill mybinder-read-pre-gist.ipynb {fn} -p url {dwnurl}'
+    cs=f'papermill mybinder-read-pre-gist.ipynb {fn} -p url ext {dwnurl}'
     print(cs)
     os.system(cs)
     return base_url + fn
