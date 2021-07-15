@@ -21,27 +21,7 @@ def dwnurl2fn(dwnurl):
 
 #base_url = "http://141.142.218.86:8081/notebooks/"
 #make the papermill fncs take
-
-#def pm(dwnurl, fn):
-def pm_nb(dwnurl, ext=None):
-    import papermill as pm
-    fn=dwnurl2fn(dwnurl)
-    pm.execute_notebook(
-       'mybinder-read-pre-gist.ipynb', #path/to/input.ipynb',
-       fn,  #'path/to/output.ipynb',
-       parameters = dict(url=dwnurl, ext=ext)
-    )
-    return base_url + fn
-
-    #above had problems(on1machine), so have cli backup in case:
-#def pm2(dwnurl, fn):
-def pm_nb2(dwnurl, ext=None):
-    import os
-    fn=dwnurl2fn(dwnurl)
-    cs=f'papermill mybinder-read-pre-gist.ipynb {fn} -p url ext {dwnurl}'
-    print(cs)
-    os.system(cs)
-    return base_url + fn
+#will mv them below post_gist so they can call that and return the colab-nb vs the testing/jupyterhub one
 
 #=original gist code:
 #once service below working, also add mk the gist w/: req_create_gist.py but make sure the url w/it's hash gets returned
@@ -153,11 +133,35 @@ def find_gist(ffnp):
 #works in tp2.py
 #pm2(dwnurl, fn)
 
-def mknb(dwnurl_str):
+#def pm(dwnurl, fn):
+def pm_nb(dwnurl, ext=None):
+    import papermill as pm
+    fn=dwnurl2fn(dwnurl)
+    pm.execute_notebook(
+       'mybinder-read-pre-gist.ipynb', #path/to/input.ipynb',
+       fn,  #'path/to/output.ipynb',
+       parameters = dict(url=dwnurl, ext=ext)
+    )
+    #return base_url + fn
+    return post_gist(fn)
+
+    #above had problems(on1machine), so have cli backup in case:
+#def pm2(dwnurl, fn):
+def pm_nb2(dwnurl, ext=None):
+    import os
+    fn=dwnurl2fn(dwnurl)
+    cs=f'papermill mybinder-read-pre-gist.ipynb {fn} -p url ext {dwnurl}'
+    print(cs)
+    os.system(cs)
+    #return base_url + fn
+    return post_gist(fn)
+
+def mknb(dwnurl_str,ext=None):
+    "url2 pm2gist/colab nb"
     if(dwnurl_str and dwnurl_str.startswith("http")):
         #fn = dwnurl_str.replace("/","_").replace(":__","/",1) + ".ipynb"
         fn=dwnurl2fn(dwnurl_str)
-        r=pm(dwnurl_str, fn)
+        r=pm_nb(dwnurl_str, ext)
     else:
         r=f'bad-url:{dwnurl_str}'
     return r
@@ -165,19 +169,30 @@ def mknb(dwnurl_str):
 from flask import Flask
 from markupsafe import escape
 app = Flask(__name__)
+from flask import request
 
-@app.route('/mknb/<dwnurl>')
+#@app.route('/mknb/<dwnurl>')
+@app.route('/mknb')
 def mk_nb(dwnurl):
-    "grep jsonld, get as html"
-    dwnurl_str=escape(dwnurl)
+    "make a NoteBook"
+    #dwnurl_str=escape(dwnurl)
     #fn = dwnurl_str.replace("/","_").replace(":__","/",1) + ".ipynb"  #dwnloadURL2filePath it's saved in, ;almost as sep fnc, 
     #r=pm(dwnurl_str, fn)                                                #then could call from pm-fncs &only take 1arg
-    r= mknb(dwnurl_str)
+    dwnurl_str = request.args.get('url',  type = str)
+    ext = reques.args.get('ext', default = 'None',   type = str)
+    r= mknb(dwnurl_str,ext)
     return r
 
 if __name__ == '__main__':
     import sys
     if(len(sys.argv)>1):
         dwnurl_str = sys.argv[1]
+        if(len(sys.argv)>2):
+            ext=sys.argv[2]
+        else:
+            ext=None
         r=mknb(dwnurl_str) #or trf.py test, that will be in ipynb template soon
         print(r)
+#this works, but check pm cache, &then test flask too
+
+#remember diff btw dwnurl_str, filename-path, &filename alone, &what gets compared to find_gist
