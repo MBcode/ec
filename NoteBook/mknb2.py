@@ -136,12 +136,16 @@ def find_gist(ffnp):
 #def pm(dwnurl, fn):
 def pm_nb(dwnurl, ext=None):
     import papermill as pm
+    from os import path
     fn=dwnurl2fn(dwnurl)
-    pm.execute_notebook(
-       'mybinder-read-pre-gist.ipynb', #path/to/input.ipynb',
-       fn,  #'path/to/output.ipynb',
-       parameters = dict(url=dwnurl, ext=ext)
-    )
+    if path.exists(fn):
+        print(f'reuse:{fn}')
+    else:
+        pm.execute_notebook(
+           'mybinder-read-pre-gist.ipynb', #path/to/input.ipynb',
+           fn,  #'path/to/output.ipynb',
+           parameters = dict(url=dwnurl, ext=ext)
+        )
     #return base_url + fn
     return post_gist(fn)
 
@@ -191,7 +195,7 @@ if __name__ == '__main__':
             ext=sys.argv[2]
         else:
             ext=None
-        r=mknb(dwnurl_str) #or trf.py test, that will be in ipynb template soon
+        r=mknb(dwnurl_str, ext) #or trf.py test, that will be in ipynb template soon
         print(r)
 #this works, but check pm cache, &then test flask too
 
