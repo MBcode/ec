@@ -185,7 +185,7 @@ def mk_nb():
     #r=pm(dwnurl_str, fn)                                                #then could call from pm-fncs &only take 1arg
     dwnurl_str = request.args.get('url',  type = str)
     print(f'url={dwnurl_str}')
-    ext = reques.args.get('ext', default = 'None',   type = str)
+    ext = request.args.get('ext', default = 'None',   type = str)
     print(f'ext={ext}')
     r= mknb(dwnurl_str,ext)
     return r
@@ -200,6 +200,6 @@ if __name__ == '__main__':
             ext=None
         r=mknb(dwnurl_str, ext) #or trf.py test, that will be in ipynb template soon
         print(r)
-#this works, incl pm&gist caches, &now test flask too
+#this works, incl pm&gist caches, &now flask works too
 
 #remember diff btw dwnurl_str, filename-path, &filename alone, &what gets compared to find_gist
