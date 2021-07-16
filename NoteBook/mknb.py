@@ -73,6 +73,9 @@ def gist_fn(gj):
 def colab_url(gist_id,fn):
     return 'https://colab.research.google.com/gist/MBcode/' + gist_id + "/" + fn
 
+def htm_url(url):
+    return f'<html><a href={url}>notebook to view your data</a></html>'
+
 def print_nb_gists(g): #was used before writing find_gist
     for gn in range(len(g)):
         fn=gist_fn(g[gn])
@@ -100,7 +103,8 @@ def find_gist(ffnp):
         if(ffn == fn):
             gist_id = (g[gn]['id'])
             cu = colab_url(gist_id,fn)
-            return cu
+            hcu=htm_url(cu)
+            return hcu
     return Non #don't want2end w/o a ret
 
 #fcu = find_gist(ffn)
