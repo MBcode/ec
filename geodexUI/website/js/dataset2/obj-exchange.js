@@ -564,7 +564,7 @@ ${s_publisher}</span>
                         ${this.s_downloads.map(i => html`
                           <div class="row">
                               <span class="col-4 ">${i.name}</span>
-                              <a class="col-8" target="_blank" href="${'https://colab.research.google.com/github/MBcode/ec/blob/master/NoteBook/colab_paste2read.ipynb'}">${i.contentUrl}</a>
+                              <a class="col-8" target="_blank" href="${'http://10.0.0.135:8004/mknb/?url=' + i.contentUrl}">${i.contentUrl}</a>
                           </div> `)}
 
 
