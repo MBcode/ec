@@ -19,7 +19,7 @@
 #probably better to use: https://github.com/nteract/papermill to inject the url, but maybe not, bc want above naming
 # though this could probably execute the whole nb, &the script here could move output to that fn
 
-#base_url = "http://141.142.218.86:8081/notebooks/"
+#base_url = "http://141.142.218.86:8081/notebooks/"  #was when I tested a jupyterhub intemediate;maybe binder friendly too
 #make the papermill fncs take
 #will mv them below post_gist so they can call that and return the colab-nb vs the testing/jupyterhub one
 
@@ -89,8 +89,8 @@ def print_nb_gists(g): #was used before writing find_gist
             print(f'it was of type:{ft}')
 
 #print_nb_gists(g)
-
 #ffn = 'darchive.mblwhoilibrary.org_bitstream_1912_23805_1_dataset-753388_hhq-chlorophyll__v1.tsv.ipynb'
+
 #be able to find a fn w/in the list: g
 #def find_gist(ffn):
 def find_gist(ffnp):
@@ -101,6 +101,7 @@ def find_gist(ffnp):
             gist_id = (g[gn]['id'])
             cu = colab_url(gist_id,fn)
             return cu
+    return Non #don't want2end w/o a ret
 
 #fcu = find_gist(ffn)
 #print(f'fn has a nb:{fcu}')
@@ -112,9 +113,7 @@ def dwnurl2fn(dwnurl):
     fn = dwnurl.replace("/","_").replace(":__","/",1) + ".ipynb"
     return fn
 
-#works in tp2.py
-#pm2(dwnurl, fn)
-
+#pagemill insert param&run the NB
 #def pm(dwnurl, fn):
 def pm_nb(dwnurl, ext=None):
     import papermill as pm
@@ -145,19 +144,17 @@ def pm_nb2(dwnurl, ext=None):
 def mknb(dwnurl_str,ext=None):
     "url2 pm2gist/colab nb"
     if(dwnurl_str and dwnurl_str.startswith("http")):
-        #fn = dwnurl_str.replace("/","_").replace(":__","/",1) + ".ipynb"
-        fn=dwnurl2fn(dwnurl_str)
+        #fn=dwnurl2fn(dwnurl_str) #already done in pm_nb
         r=pm_nb(dwnurl_str, ext)
     else:
         r=f'bad-url:{dwnurl_str}'
     return r
 
 from flask import Flask
-from markupsafe import escape
 app = Flask(__name__)
 from flask import request
 
-@app.route('/mknb/') #works
+@app.route('/mknb/') #works, but still some errs in j16-
 def mk_nb():
     "make a NoteBook"
     dwnurl_str = request.args.get('url',  type = str)
