@@ -177,7 +177,7 @@ from flask import request
 
 #@app.route('/mknb/<dwnurl>')
 #def mk_nb(dwnurl):
-@app.route('/mknb')
+@app.route('/mknb/') #getting 500 & j15- error
 def mk_nb():
     "make a NoteBook"
     #dwnurl_str=escape(dwnurl)
