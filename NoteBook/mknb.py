@@ -1,5 +1,4 @@
-#mknb2.py adds all the gist/colab w/caching, and working service,  clean&hook up soon
- #cleaning up as mknb.py,  tread 2 as a tag, that I'll rm
+#mknb.py has all the gist/colab w/caching, and working service,  clean&hook up soon
 
 #1st cut at a version of mknb.py that can handle sending in(differing)ext info to the new template
  #&right now, just incl the tgy.py gist-mgt which should not only to the post but look up cached gists,returing colab urls
@@ -7,20 +6,15 @@
 #start to prototype the code to create a NB, that will become a gist; that uses a template but inserts the url to open
 # then the UI will open the url for this file, and it won't have to be taken from the nb-url in the nb
 # and if it is a gist, can be opened in colab directly; rob liked a rendered gist after suggesting nbpreview
-##url = "http://example.com/file.csv"
 #dwnurl  = "https://darchive.mblwhoilibrary.org/bitstream/1912/23805/1/dataset-753388_hhq-chlorophyll__v1.tsv"
 #dwnurl="https://darchive.mblwhoilibrary.org/bitstream/1912/26532/1/dataset-752737_bergen-mesohux-2017-dissolved-nutrients__v1.tsv"
     #now turn this into a flask service that take the dwnurl
 
 #plan is to inject the url into a template and write it to fn, so a direct link2it can come from the search gui
-#print(f'open:{fn}')
-#could check then open the NB if there, but might change template4a bit, so wait till settles
 
-#probably better to use: https://github.com/nteract/papermill to inject the url, but maybe not, bc want above naming
-# though this could probably execute the whole nb, &the script here could move output to that fn
+#used: https://github.com/nteract/papermill to inject the url, &can run it too
 
 #base_url = "http://141.142.218.86:8081/notebooks/"  #was when I tested a jupyterhub intemediate;maybe binder friendly too
-#make the papermill fncs take
 #will mv them below post_gist so they can call that and return the colab-nb vs the testing/jupyterhub one
 
 #=original gist code: ;now only testing, rm-soon
@@ -105,7 +99,7 @@ def find_gist(ffnp):
             cu = colab_url(gist_id,fn)
             hcu=htm_url(cu)
             return hcu
-    return Non #don't want2end w/o a ret
+    return None #don't want2end w/o a ret
 
 #fcu = find_gist(ffn)
 #print(f'fn has a nb:{fcu}')
