@@ -1,3 +1,5 @@
+#mknb2.py adds all the gist/colab w/caching, and working service,  clean&hook up soon
+
 #1st cut at a version of mknb.py that can handle sending in(differing)ext info to the new template
  #&right now, just incl the tgy.py gist-mgt which should not only to the post but look up cached gists,returing colab urls
 
@@ -28,7 +30,7 @@ def dwnurl2fn(dwnurl):
 # will also need to be able to find this gist given the dwnlink, to not reimpliment, so might have2do a gist search,
 # but exmpl already gives a listing of all of them, so look for the fn part&cmp
 #via, some setup then:
-def post_gist1(fn):
+def post_gist1(fn):  #remove this soon
     import requests
     import json
     import os
@@ -112,7 +114,7 @@ def print_nb_gists(g):
 
 #print_nb_gists(g)
 
-ffn = 'darchive.mblwhoilibrary.org_bitstream_1912_23805_1_dataset-753388_hhq-chlorophyll__v1.tsv.ipynb'
+#ffn = 'darchive.mblwhoilibrary.org_bitstream_1912_23805_1_dataset-753388_hhq-chlorophyll__v1.tsv.ipynb'
 #be able to find a fn w/in the list: g
 #def find_gist(ffn):
 def find_gist(ffnp):
@@ -177,12 +179,9 @@ from flask import request
 
 #@app.route('/mknb/<dwnurl>')
 #def mk_nb(dwnurl):
-@app.route('/mknb/') #getting 500 & j15- error
+@app.route('/mknb/') #works
 def mk_nb():
     "make a NoteBook"
-    #dwnurl_str=escape(dwnurl)
-    #fn = dwnurl_str.replace("/","_").replace(":__","/",1) + ".ipynb"  #dwnloadURL2filePath it's saved in, ;almost as sep fnc, 
-    #r=pm(dwnurl_str, fn)                                                #then could call from pm-fncs &only take 1arg
     dwnurl_str = request.args.get('url',  type = str)
     print(f'url={dwnurl_str}')
     ext = request.args.get('ext', default = 'None',   type = str)
@@ -200,6 +199,5 @@ if __name__ == '__main__':
             ext=None
         r=mknb(dwnurl_str, ext) #or trf.py test, that will be in ipynb template soon
         print(r)
-#this works, incl pm&gist caches, &now flask works too
-
+#this works, incl pm&gist caches, &now flask works too 
 #remember diff btw dwnurl_str, filename-path, &filename alone, &what gets compared to find_gist
