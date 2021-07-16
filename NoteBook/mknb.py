@@ -11,9 +11,6 @@
 #dwnurl  = "https://darchive.mblwhoilibrary.org/bitstream/1912/23805/1/dataset-753388_hhq-chlorophyll__v1.tsv"
 #dwnurl="https://darchive.mblwhoilibrary.org/bitstream/1912/26532/1/dataset-752737_bergen-mesohux-2017-dissolved-nutrients__v1.tsv"
     #now turn this into a flask service that take the dwnurl
-def dwnurl2fn(dwnurl):
-    fn = dwnurl.replace("/","_").replace(":__","/",1) + ".ipynb"
-    return fn
 
 #plan is to inject the url into a template and write it to fn, so a direct link2it can come from the search gui
 #print(f'open:{fn}')
@@ -26,38 +23,12 @@ def dwnurl2fn(dwnurl):
 #make the papermill fncs take
 #will mv them below post_gist so they can call that and return the colab-nb vs the testing/jupyterhub one
 
-#=original gist code:
-#once service below working, also add mk the gist w/: req_create_gist.py but make sure the url w/it's hash gets returned
-# will also need to be able to find this gist given the dwnlink, to not reimpliment, so might have2do a gist search,
-# but exmpl already gives a listing of all of them, so look for the fn part&cmp
-#via, some setup then:
-def post_gist1(fn):  #remove this soon
-    import requests
-    import json
-    import os
-    from pathlib import Path
-    GITHUB_API="https://api.github.com"
-    API_TOKEN=os.getenv('gist_token')
-    url=GITHUB_API+"/gists"
-    headers={'Authorization':'token %s'%API_TOKEN}
-    params={'scope':'gist'}
-    txt = Path(fn).read_text()  #should incl full output of papermil run w/dwnload url param
-    fn_=fn.replace("https/","") #filepath2filename only  #also4 http only  #might change description 
-    payload={"description":"GIST created by py code","public":True,"files":{fn_:{"content":txt}}}
-    res=requests.post(url,headers=headers,params=params,data=json.dumps(payload))
-    #also a way2go through present gists, if had2find if it already exists
-    g_url = res.url
-    #return res #might want to(instead)ret&save gist url
-    return g_url #might want to(instead)ret&save gist url
-
+#=original gist code: ;now only testing, rm-soon
 def tpg(fn="https/darchive.mblwhoilibrary.org_bitstream_1912_26532_1_dataset-752737_bergen-mesohux-2017-dissolved-nutrients__v1.tsv.ipynb"): #test
     r=post_gist(fn)
     print(r)
 #==will replace this w/tgy.py code, that includes finding a fn in the gitsts, vs remaking it
-#getting better lookup of gist's by filename; now returning colab-url
-#will add to mknb.py soon
 import os
-#API_TOKEN=os.getenv('gist_token')
 AUTH_TOKEN=os.getenv('gist_token')
 
 #https://github.com/ThomasAlbin/gistyc
@@ -74,9 +45,13 @@ def post_gist(fn):
         print(f'found saved gist:{fn}')
         return fcu
     else:
-        return gist_api.create_gist(file_name=fn)
+        #return gist_api.create_gist(file_name=fn)
+        gist_api.create_gist(file_name=fn)
+        #could look up url, but find should do it, also makes sure it's there/in a way
+        fcu = find_gist(fn)
+        return fcu
 
-def update_gist(fn):
+def update_gist(fn): #might come into play later
     return gist_api.update_gist(file_name=fn)
 
 # Get a list of GISTs
@@ -98,7 +73,7 @@ def gist_fn(gj):
 def colab_url(gist_id,fn):
     return 'https://colab.research.google.com/gist/MBcode/' + gist_id + "/" + fn
 
-def print_nb_gists(g):
+def print_nb_gists(g): #was used before writing find_gist
     for gn in range(len(g)):
         fn=gist_fn(g[gn])
         ft=file_ext(fn)
@@ -132,6 +107,10 @@ def find_gist(ffnp):
 
 #will need to find a way to post to 'earthcube' gists
 #==
+#change dwnurl to path for the nb that pagemill makes, so if we see it again, it can just reuse cached version
+def dwnurl2fn(dwnurl):
+    fn = dwnurl.replace("/","_").replace(":__","/",1) + ".ipynb"
+    return fn
 
 #works in tp2.py
 #pm2(dwnurl, fn)
@@ -178,8 +157,6 @@ from markupsafe import escape
 app = Flask(__name__)
 from flask import request
 
-#@app.route('/mknb/<dwnurl>')
-#def mk_nb(dwnurl):
 @app.route('/mknb/') #works
 def mk_nb():
     "make a NoteBook"
