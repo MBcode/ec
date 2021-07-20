@@ -564,7 +564,7 @@ ${s_publisher}</span>
                         ${this.s_downloads.map(i => html`
                           <div class="row">
                               <span class="col-4 ">${i.name}</span>
-                              <a class="col-8" target="_blank" href="${'http://10.0.0.135:8004/mknb/?url=' + i.contentUrl}">${i.contentUrl}</a>
+                              <a class="col-8" target="_blank" href="${'http://mbobak-ofc.ncsa.illinois.edu:8004/mknb/?url=' + i.contentUrl + '&ext=' + i.name}">${i.contentUrl}</a>
                           </div> `)}
 
 
