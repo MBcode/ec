@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 #mknb.py has all the gist/colab w/caching, and working service,  clean&hook up soon
 
 #1st cut at a version of mknb.py that can handle sending in(differing)ext info to the new template
@@ -43,7 +44,7 @@ def post_gist(fn):
         gist_api.create_gist(file_name=fn)
         #could look up url, but find should do it, also makes sure it's there/in a way
         fcu = find_gist(fn)
-        print(f'found-made-gist:{fn}')
+        print(f'found-made-gist:{fcu}')
         return fcu
 
 def update_gist(fn): #might come into play later
@@ -121,11 +122,12 @@ def pm_nb(dwnurl, ext=None):
     if path.exists(fn):
         print(f'reuse:{fn}')
     else:
-        pm.execute_notebook(
+        e = pm.execute_notebook(
            'mybinder-read-pre-gist.ipynb', #path/to/input.ipynb',
            fn,  #'path/to/output.ipynb',
            parameters = dict(url=dwnurl, ext=ext)
         )
+        print(f'pm:{e}') #might have to catch this exception
     #return base_url + fn
     return post_gist(fn)
 
@@ -173,5 +175,7 @@ if __name__ == '__main__':
             ext=None
         r=mknb(dwnurl_str, ext) #or trf.py test, that will be in ipynb template soon
         print(r)
+    else: #w/o args, just to run a service:
+        app.run(host='0.0.0.0', port=8004, debug=True)
 #this works, incl pm&gist caches, &now flask works too 
 #remember diff btw dwnurl_str, filename-path, &filename alone, &what gets compared to find_gist
