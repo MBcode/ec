@@ -11,6 +11,8 @@ def read_file(fn, ext=None):
         df=pd.read_csv(fn, sep='\t')
     elif ft=='.csv':
         df=pd.read_csv(fn)
+    elif ft=='.txt':
+        df=pd.read_csv(fn, sep='\n')
     else:
         df="no reader, can !wget the file"
     return df
