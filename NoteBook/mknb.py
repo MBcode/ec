@@ -113,7 +113,8 @@ def find_gist(ffnp):
 #==
 #change dwnurl to path for the nb that pagemill makes, so if we see it again, it can just reuse cached version
 def dwnurl2fn(dwnurl):
-    fn = dwnurl.replace("/","_").replace(":__","/",1) + ".ipynb"
+    #fn = dwnurl.replace("/","_").replace(":__","/",1) + ".ipynb"
+    fn = dwnurl.replace("/","_").replace(":__","/",1).replace("?","") + ".ipynb"
     return fn
 
 #pagemill insert param&run the NB
@@ -158,7 +159,7 @@ from flask import Flask
 app = Flask(__name__)
 from flask import request
 
-@app.route('/mknb/') #works, but still some errs on occasion
+@app.route('/mknb/') #works, but often have2rerun the clicked link2get rid of errors
 def mk_nb():
     "make a NoteBook"
     dwnurl_str = request.args.get('url',  type = str)
