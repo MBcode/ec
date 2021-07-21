@@ -53,6 +53,8 @@ def update_gist(fn): #might come into play later
 # Get a list of GISTs
 gist_list = gist_api.get_gists()
 g=gist_list #could get this in each fnc that needs it, or leave it global
+#g=None, just reset in flask app before calling mknb fnc
+ #might need to update in other places, maybe even w/in find_gist
 
 def file_ext(fn):
     st=os.path.splitext(fn)
@@ -94,6 +96,7 @@ def print_nb_gists(g): #was used before writing find_gist
 #def find_gist(ffn):
 def find_gist(ffnp):
     ffn=path_leaf(ffnp)
+    g = gist_api.get_gists() #was in global but refresh here
     for gn in range(len(g)):
         fn=gist_fn(g[gn])
         if(ffn == fn):
@@ -110,7 +113,8 @@ def find_gist(ffnp):
 #==
 #change dwnurl to path for the nb that pagemill makes, so if we see it again, it can just reuse cached version
 def dwnurl2fn(dwnurl):
-    fn = dwnurl.replace("/","_").replace(":__","/",1) + ".ipynb"
+    #fn = dwnurl.replace("/","_").replace(":__","/",1) + ".ipynb"
+    fn = dwnurl.replace("/","_").replace(":__","/",1).replace("?","") + ".ipynb"
     return fn
 
 #pagemill insert param&run the NB
@@ -121,15 +125,15 @@ def pm_nb(dwnurl, ext=None):
     fn=dwnurl2fn(dwnurl)
     if path.exists(fn):
         print(f'reuse:{fn}')
-    else:
+    else: #could use the template.ipynb w/o cached data, if the 1st try w/'mybinder-read-pre-gist.ipynb' fails
         e = pm.execute_notebook(
-           'mybinder-read-pre-gist.ipynb', #path/to/input.ipynb',
+           'template.ipynb', #path/to/input.ipynb',
            fn,  #'path/to/output.ipynb',
            parameters = dict(url=dwnurl, ext=ext)
         )
         print(f'pm:{e}') #might have to catch this exception
     #return base_url + fn
-    return post_gist(fn)
+    return post_gist(fn) #htm w/link to colab of the gist
 
     #above had problems(on1machine), so have cli backup in case:
 #def pm2(dwnurl, fn):
@@ -155,7 +159,7 @@ from flask import Flask
 app = Flask(__name__)
 from flask import request
 
-@app.route('/mknb/') #works, but still some errs on occasion
+@app.route('/mknb/') #works, but often have2rerun the clicked link2get rid of errors
 def mk_nb():
     "make a NoteBook"
     dwnurl_str = request.args.get('url',  type = str)
@@ -173,6 +177,7 @@ if __name__ == '__main__':
             ext=sys.argv[2]
         else:
             ext=None
+        g = gist_api.get_gists() #set the global w/fresh value
         r=mknb(dwnurl_str, ext) #or trf.py test, that will be in ipynb template soon
         print(r)
     else: #w/o args, just to run a service:
