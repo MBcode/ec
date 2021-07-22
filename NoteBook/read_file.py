@@ -17,3 +17,9 @@ def read_file(fn, ext=None):
     else:
         df="no reader, can !wget $url"
     return df
+
+#start adding more utils, can use to: fn=read_file.path_leaf(url) then: !head fn
+def path_leaf(path):
+    import ntpath
+    head, tail = ntpath.split(path)
+    return tail or ntpath.basename(head)
