@@ -126,11 +126,14 @@ def pm_nb(dwnurl, ext=None):
     if path.exists(fn):
         print(f'reuse:{fn}')
     else: #could use the template.ipynb w/o cached data, if the 1st try w/'mybinder-read-pre-gist.ipynb' fails
-        e = pm.execute_notebook(
-           'template.ipynb', #path/to/input.ipynb',
-           fn,  #'path/to/output.ipynb',
-           parameters = dict(url=dwnurl, ext=ext)
-        )
+        try:
+            e = pm.execute_notebook(
+               'template.ipynb', #path/to/input.ipynb',
+               fn,  #'path/to/output.ipynb',
+               parameters = dict(url=dwnurl, ext=ext)
+            )
+        except:
+            print(f'except:{e}') #might have to catch this exception
         print(f'pm:{e}') #might have to catch this exception
     #return base_url + fn
     return post_gist(fn) #htm w/link to colab of the gist
@@ -139,10 +142,18 @@ def pm_nb(dwnurl, ext=None):
 #def pm2(dwnurl, fn):
 def pm_nb2(dwnurl, ext=None):
     import os
+    from os import path
     fn=dwnurl2fn(dwnurl)
-    cs=f'papermill mybinder-read-pre-gist.ipynb {fn} -p url ext {dwnurl}'
-    print(cs)
-    os.system(cs)
+    if path.exists(fn):
+        print(f'reuse:{fn}')
+    else:
+        #cs=f'papermill  mybinder-read-pre-gist.ipynb {fn} -p url ext {dwnurl}'
+        if ext:
+            cs=f'papermill --prepare-only  template.ipynb {fn} -p url {dwnurl} -p ext {ext}'
+        else:
+            cs=f'papermill --prepare-only  template.ipynb {fn} -p url {dwnurl}'
+        print(cs)
+        os.system(cs)
     #return base_url + fn
     return post_gist(fn)
 
@@ -150,7 +161,8 @@ def mknb(dwnurl_str,ext=None):
     "url2 pm2gist/colab nb"
     if(dwnurl_str and dwnurl_str.startswith("http")):
         #fn=dwnurl2fn(dwnurl_str) #already done in pm_nb
-        r=pm_nb(dwnurl_str, ext)
+        #r=pm_nb(dwnurl_str, ext)
+        r=pm_nb2(dwnurl_str, ext)
     else:
         r=f'bad-url:{dwnurl_str}'
     return r
