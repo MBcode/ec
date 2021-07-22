@@ -12,9 +12,8 @@ def read_file(fn, ext=None):
         df=pd.read_csv(fn, sep='\t')
     elif ft=='.csv' or re.search('csv',ext):
         df=pd.read_csv(fn)
-    #elif ft=='.txt' or ext=='text/plain':
     elif ft=='.txt' or re.search('text',ext):
         df=pd.read_csv(fn, sep='\n')
     else:
-        df="no reader, can !wget the file"
+        df="no reader, can !wget $url"
     return df
