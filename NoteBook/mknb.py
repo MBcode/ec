@@ -140,9 +140,10 @@ def pm_nb(dwnurl, ext=None):
 
     #above had problems(on1machine), so have cli backup in case:
 #def pm2(dwnurl, fn):
-def pm_nb2(dwnurl, ext=None):
+def pm_nb2(dwn_url, ext=None):
     import os
     from os import path
+    dwnurl=dwn_url.strip('/')
     fn=dwnurl2fn(dwnurl)
     if path.exists(fn):
         print(f'reuse:{fn}')

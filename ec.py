@@ -1,5 +1,3 @@
-url = None
-
 def read_file(fnp, ext=None):
     "can be a url, will call pd read_.. for the ext type"
     import pandas as pd
@@ -21,7 +19,7 @@ def read_file(fnp, ext=None):
 #   elif ft=='.zip' or re.search('zip',ext,re.IGNORECASE):
 #       df=pd.read_csv(fn, sep='\n')
     else:
-        df="no reader, can !wget $ec.url"
+        df="no reader, can !wget $url"
     return df
 
 #start adding more utils, can use to: fn=read_file.path_leaf(url) then: !head fn
