@@ -1,8 +1,9 @@
-def read_file(fn, ext=None):
+def read_file(fnp, ext=None):
     "can be a url, will call pd read_.. for the ext type"
     import pandas as pd
     import os
     import re
+    fn=fnp.strip('/')
     if(ext!=None):
         ft="." + ext
     else:
@@ -14,6 +15,8 @@ def read_file(fn, ext=None):
         df=pd.read_csv(fn)
     elif ft=='.txt' or re.search('text',ext,re.IGNORECASE):
         df=pd.read_csv(fn, sep='\n')
+#   elif ft=='.zip' or re.search('zip',ext,re.IGNORECASE):
+#       df=pd.read_csv(fn, sep='\n')
     else:
         df="no reader, can !wget $url"
     return df
