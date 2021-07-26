@@ -10,7 +10,7 @@ def read_file(fnp, ext=None):
     else:
         st=os.path.splitext(fn)
         ft=st[-1]
-    if ft=='.tsv' or re.search('.tsv',ext,re.IGNORECASE):
+    if ft=='.tsv' or re.search('tsv',ext,re.IGNORECASE) or re.search('tab-sep',ext,re.IGNORECASE):
         df=pd.read_csv(fn, sep='\t')
     elif ft=='.csv' or re.search('csv',ext,re.IGNORECASE):
         df=pd.read_csv(fn)
