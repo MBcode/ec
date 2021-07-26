@@ -150,7 +150,7 @@ def pm_nb2(dwn_url, ext=None):
     else:
         #cs=f'papermill  mybinder-read-pre-gist.ipynb {fn} -p url ext {dwnurl}'
         if ext:
-            sext=ext.replace(" ","_") #make this safer
+            sext=ext.replace(" ","_").replace("(","_").replace(")","_") #make this safer
             cs=f'papermill --prepare-only  template.ipynb {fn} -p url {dwnurl} -p ext {sext}'
         else:
             cs=f'papermill --prepare-only  template.ipynb {fn} -p url {dwnurl}'
