@@ -183,6 +183,18 @@ def mk_nb():
     r= mknb(dwnurl_str,ext)
     return r
 
+@app.route('/logbad/') 
+def log_bad():
+    dwnurl_str = request.args.get('url',  type = str)
+    lbs= f'log_bad:url={dwnurl_str}'
+    print(lbs) #just in the log for now
+    err = request.args.get('error', default = 'None',   type = str)
+    if err:
+        print(f'error:{err}')
+    else:
+        err=""
+    return r+err
+
 if __name__ == '__main__':
     import sys
     if(len(sys.argv)>1):

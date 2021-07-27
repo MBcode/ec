@@ -106,6 +106,7 @@ import {
                 console.log(r);
                 console.log(r.length);
 
+                //really don't need the qry above yet, more just what is availbe in obj-excahnge.js
 
 
                 r.forEach(element => {
