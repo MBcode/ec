@@ -1,0 +1,1 @@
+dev was 1st NB, now all in colab; more around mknb service to launch template as a colab/gist and loading a version of read_file now called ../ec.py
