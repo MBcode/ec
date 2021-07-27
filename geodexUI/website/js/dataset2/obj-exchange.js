@@ -423,6 +423,10 @@ this.raw_json = j;
                            aria-controls="web" aria-selected="true">Web Links</a>
                     </li>
                     <li class="nav-item">
+                        <a class="nav-link " id="cnb-tab" data-toggle="tab" href="#cnb" role="tab"
+                           aria-controls="cnb" aria-selected="true">colab-NB Links</a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link " id="citation-tab" data-toggle="tab" href="#cite" role="tab"
                            aria-controls="cite" aria-selected="true" 
                             ?hidden="${hide_citation_tab}">Citation</a>
@@ -484,6 +488,28 @@ ${s_publisher}</span>
                           <div class="row">
                               <span class="col-4 ">${i.name}</span>
                               <a class="col-8" target="_blank" href="${i.contentUrl}">${i.contentUrl}</a>
+                          </div> `)}
+
+                    </div>
+
+                    <div class="tab-pane fade" id="cnb" role="tabpanel" aria-labelledby="cnb-tab">
+                        <div class="row">
+
+                            <span class="col-4 font-weight-bold">Name</span>
+                            <span class="col-8 font-weight-bold">link </span>
+
+                        </div>
+                        ${ has_s_url ? html`<div class="row" >
+
+                            <span class="col-4">Object URL</span>
+                            <a class="col-8" href="${s_url}" target="_blank"> ${s_url} </a>
+
+                        </div>` : "" }
+                        
+                        ${this.s_downloads.map(i => html`
+                          <div class="row">
+                              <span class="col-4 ">${i.name}</span>
+                              <a class="col-8" target="_blank" href="${'http://mbobak-ofc.ncsa.illinois.edu:8004/mknb/?url=' + i.contentUrl + '&ext=' + i.name}">${i.contentUrl}</a>
                           </div> `)}
 
 
