@@ -118,8 +118,9 @@ import {
                     var turl =  element.turl.value
                     var eu = turl.replace("{contentURL}", element.durl.value);
 
-                    detailsTemplate.push(html`<div class="col-6 " >
-                    <a target="_blank" href="${eu}">LiPD Playground</a></div>`);
+                  //detailsTemplate.push(html`<div class="col-6 " >
+                  //<a target="_blank" href="${eu}">LiPD Playground</a></div>`);
+                    detailsTemplate.push(html`<a class="col-8" target="_blank" href="${'http://mbobak-ofc.ncsa.illinois.edu:8004/mknb/?url=' + i.contentUrl + '&ext=' + i.name}">${i.contentUrl}</a>`);
                 }
                 );
 
@@ -145,13 +146,9 @@ import {
                     // shadow root needs a container
                     var h = html`
                         <div class="container">
-                              <div class="col-4">webapps:</div>
+                              <div class="col-4">notebooks:</div>
                         
                               ${detailsTemplate}
-                        </div> 
-                        <div class="container">
-                              <div class="col-4">notebooks:</div>
-                              <br>See <b>colab-NoteBook_Links</b> <a href=#cnb>tab</a> above, for now
 
                         </div>`
                     render(h, this.shadowRoot);
