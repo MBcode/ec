@@ -11,13 +11,13 @@ def read_file(fnp, ext=None):
         st=os.path.splitext(fn)
         ft=st[-1]
     if ft=='.tsv' or re.search('tsv',ext,re.IGNORECASE) or re.search('tab-sep',ext,re.IGNORECASE):
-        df=pd.read_csv(fn, sep='\t')
+        df=pd.read_csv(fn, sep='\t',comment='#')
     elif ft=='.csv' or re.search('csv',ext,re.IGNORECASE):
         df=pd.read_csv(fn)
     elif ft=='.txt' or re.search('text',ext,re.IGNORECASE):
-        df=pd.read_csv(fn, sep='\n')
+        df=pd.read_csv(fn, sep='\n',comment='#')
 #   elif ft=='.zip' or re.search('zip',ext,re.IGNORECASE):
-#       df=pd.read_csv(fn, sep='\n')
+#       df=pd.read_csv(fn, sep='\t',comment='#')
     else:
         df="no reader, can !wget $url"
     return df
