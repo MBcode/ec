@@ -50,42 +50,39 @@ import {
                     //     ` }
 
 
-                    //sparql_gettools_download.txt
-                    //need to get quads in that endpnt or be able to edit old one
+
+
 
                     params = {
-                        query: 
-  `PREFIX schema:  <https://schema.org/>
-   PREFIX schemaold:  <http://schema.org/>
-   select DISTINCT ?rrs ?name2 ?curl ?landingPage
-    WHERE                    {
-      graph <urn:gleaner:milled:lipdverse:509e465d0793506b237cea8069c3cb2d276fe9c2>
-      {
-        {
-          ?s schemaold:distribution|schema:distribution ?dist .
-          ?dist  schemaold:encodingFormat|schema:encodingFormat ?type .
-          ?dist schemaold:contentUrl|schema:contentUrl|schema:url|schemaold:url ?curl
-        }
-        UNION {
-          VALUES (?dataset) { ( schema:Dataset ) ( schemaold:Dataset ) }
-          ?s a ?dataset .
-          ?s  schemaold:encodingFormat|schema:encodingFormat ?type .
-          }
-      }
-     BIND (str(?type) as ?label)
-     SERVICE <http://141.142.218.86:3030/ld/query>  {
-       {
-          ?rrs a schema:SoftwareApplication .
-          ?rrs schema:supportingData ?df.
-              ?df schema:encodingFormat  ?label ;
-                  schema:position "input".
-          ?rrs schema:name ?name.
-          ?rrs schema:subjectOf/schema:url ?landingPage .
-          ?rrs schema:subjectOf/schema:name ?landingName  .
-          BIND(CONCAT(STR( ?name ),":",STR(?landingName)) AS ?name2).
-       }
-     }
-   }`
+                        query: `PREFIX schema:  <https://schema.org/>    
+                        PREFIX schemaold:  <http://schema.org/>       
+                        select DISTINCT ?rrs ?name ?curl ?landingPage
+                        WHERE                    {                    
+                            graph <urn:gleaner:milled${op}> 
+                              {
+                                {     
+                                  ?s schemaold:distribution|schema:distribution ?dist .    
+                                  ?dist  schemaold:encodingFormat|schema:encodingFormat ?type .  
+                                  ?dist schemaold:contentUrl|schema:contentUrl|schema:url|schemaold:url ?curl 
+                                } 
+                                UNION {
+                                  VALUES (?dataset) { ( schema:Dataset ) ( schemaold:Dataset ) }
+                                  ?s a ?dataset .  
+                                  ?s  schemaold:encodingFormat|schema:encodingFormat ?type . 
+                                  }
+                             }
+                             BIND (str(?type) as ?label)                                                                                                        
+                             SERVICE <http://132.249.238.169:8080/fuseki/ecrr/query> {     
+                              GRAPH <http://earthcube.org/gleaner-summoned>             
+                               {   
+                                  ?rrs schema:supportingData ?df.
+                                      ?df schema:encodingFormat  ?label ;
+                                          schema:position "input".	
+                                      ?rrs schema:name ?name. 
+                                       ?rrs schema:subjectOf/schema:url ?landingPage     
+                               }                 
+                           }               
+                        }`
                     };
 
 

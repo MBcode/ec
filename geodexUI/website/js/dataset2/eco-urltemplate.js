@@ -49,8 +49,6 @@ import {
                     //     }\
                     //     ` }
 
-                    //sparql_gettools_webservice.txt
-                      
                     params = {
                         query: `prefix sdos: <https://schema.org/>
                                PREFIX schemaold: <http://schema.org/>
@@ -64,12 +62,12 @@ import {
                                          OPTIONAL {?dist sdos:contentUrl ?durl }.
                                  }
                                  BIND (str(?type) as ?label)
-                                 SERVICE <http://141.142.218.86:3030/ld/query> {
+                                SERVICE <http://132.249.238.169:8080/fuseki/ecrr/query> {
                                   GRAPH <http://earthcube.org/gleaner-summoned>
 
                                         {
 
-                                          ?rrs a sdos:WebApplication ;
+                                          ?rrs a sdos:SoftwareApplication ;
                                                sdos:name ?appname ;
                                                sdos:supportingData ?df.
                                			?df sdos:encodingFormat ?label ;
