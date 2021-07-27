@@ -148,6 +148,10 @@ import {
                               <div class="col-4">webapps:</div>
                         
                               ${detailsTemplate}
+                        </div> 
+                        <div class="container">
+                              <div class="col-4">notebooks:</div>
+                              <br>See colab-NoteBook_Links tab above, for now
 
                         </div>`
                     render(h, this.shadowRoot);
