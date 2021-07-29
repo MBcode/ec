@@ -71,6 +71,10 @@ def gist_fn(gj):
 def colab_url(gist_id,fn):
     return 'https://colab.research.google.com/gist/MBcode/' + gist_id + "/" + fn
 
+
+def htm_url_(url): #tried forwarding but didn't work yet
+    return f"""<html><head><meta http-equiv = "refresh" content = "1; url={url}/></head><body><p>colab NoteBook to open the data</p></body></html>"""
+
 def htm_url(url):
     return f'<html><a href={url}>notebook to view your data</a></html>'
 
