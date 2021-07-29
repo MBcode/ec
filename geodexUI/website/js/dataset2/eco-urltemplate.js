@@ -152,7 +152,7 @@ import {
                            <p>
                         <div class="container">
                               <div class="col-4">notebooks:</div>
-                              <br>See <b>colab-NoteBook_Links</b> <a href=#cnb>tab</a> above, for now
+                              <br>See <b>colab-NoteBook_Links</b> <a href=#cnb>tab</a> above, or icon by download buttons,  for now
 
                         </div>`
                     render(h, this.shadowRoot);
