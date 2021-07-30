@@ -52,8 +52,10 @@ def read_file(fnp, ext=None):
         ft='.zip'
         wget_ft(fn,ft)
 #       df=pd.read_csv(fn, sep='\t',comment='#')
+        df="can't read zip w/o knowing what is in it, doing:[!wget $url ],to see:[ !ls -l ]"
     else:
         wget_ft(fn,ft)
         #df="no reader, can !wget $url"
         df="no reader, doing:[!wget $url ],to see:[ !ls -l ]"
+#look into bagit next
     return df
