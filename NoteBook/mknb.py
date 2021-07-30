@@ -25,6 +25,7 @@ def tpg(fn="https/darchive.mblwhoilibrary.org_bitstream_1912_26532_1_dataset-752
 #==will replace this w/tgy.py code, that includes finding a fn in the gitsts, vs remaking it
 import os
 AUTH_TOKEN=os.getenv('gist_token')
+#AUTH_TOKEN=os.getenv('ec_gist_token') #for when post to earthcube gists
 
 #https://github.com/ThomasAlbin/gistyc
 import gistyc
@@ -118,7 +119,8 @@ def find_gist(ffnp):
 #change dwnurl to path for the nb that pagemill makes, so if we see it again, it can just reuse cached version
 def dwnurl2fn(dwnurl):
     #fn = dwnurl.replace("/","_").replace(":__","/",1) + ".ipynb"
-    fn = dwnurl.replace("/","_").replace(":__","/",1).replace("?","") + ".ipynb"
+    #fn = dwnurl.replace("/","_").replace(":__","/",1).replace("?","") + ".ipynb"
+    fn = dwnurl.replace("/","_").replace(":__","/",1).replace("?","").replace("#","_") + ".ipynb"
     return fn
 
 #pagemill insert param&run the NB
@@ -167,24 +169,7 @@ def pm_nb3(dwn_url, ext=None, urn=None):
     return post_gist(fn)
 
 #def pm2(dwnurl, fn):
-def pm_nb2(dwn_url, ext=None):
-    import os
-    from os import path
-    dwnurl=dwn_url.strip('/')
-    fn=dwnurl2fn(dwnurl)
-    if path.exists(fn):
-        print(f'reuse:{fn}')
-    else:
-        #cs=f'papermill  mybinder-read-pre-gist.ipynb {fn} -p url ext {dwnurl}'
-        if ext:
-            sext=ext.replace(" ","_").replace("(","_").replace(")","_") #make this safer
-            cs=f'papermill --prepare-only  template.ipynb {fn} -p url {dwnurl} -p ext {sext}'
-        else:
-            cs=f'papermill --prepare-only  template.ipynb {fn} -p url {dwnurl}'
-        print(cs)
-        os.system(cs)
-    #return base_url + fn
-    return post_gist(fn)
+#def pm_nb2(dwn_url, ext=None):
 
 def mknb(dwnurl_str,ext=None,urn=None):
     "url2 pm2gist/colab nb"
