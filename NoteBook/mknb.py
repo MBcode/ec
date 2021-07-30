@@ -163,7 +163,8 @@ def pm_nb3(dwn_url, ext=None, urn=None):
             urn_arg=f' -p urn {urn} '
         else:
             urn_arg=""
-        cs=f'papermill --prepare-only template.ipynb {fn} -p contenturl {dwnurl} {ext_arg} {urn_arg}'
+        #cs=f'papermill --prepare-only template.ipynb {fn} -p contenturl {dwnurl} {ext_arg} {urn_arg}'
+        cs=f'papermill --prepare-only template.ipynb {fn} -p url {dwnurl} {ext_arg} {urn_arg}'
         print(cs)
         os.system(cs)
     return post_gist(fn)
