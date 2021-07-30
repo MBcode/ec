@@ -143,6 +143,29 @@ def pm_nb(dwnurl, ext=None):
     return post_gist(fn) #htm w/link to colab of the gist
 
     #above had problems(on1machine), so have cli backup in case:
+
+def pm_nb3(dwn_url, ext=None, urn=None):
+    import os
+    from os import path
+    dwnurl=dwn_url.strip('/')
+    fn=dwnurl2fn(dwnurl)
+    if path.exists(fn):
+        print(f'reuse:{fn}')
+    else:
+        if ext:
+            sext=ext.replace(" ","_").replace("(","_").replace(")","_") #make this safer
+            ext_arg=f' -p ext {sext} '
+        else:
+            ext_arg=""
+        if urn:
+            urn_arg=f' -p urn {urn} '
+        else:
+            urn_arg=""
+        cs=f'papermill --prepare-only template.ipynb {fn} -p contenturl {dwnurl} {ext_arg} {urn_arg}'
+        print(cs)
+        os.system(cs)
+    return post_gist(fn)
+
 #def pm2(dwnurl, fn):
 def pm_nb2(dwn_url, ext=None):
     import os
@@ -163,12 +186,13 @@ def pm_nb2(dwn_url, ext=None):
     #return base_url + fn
     return post_gist(fn)
 
-def mknb(dwnurl_str,ext=None):
+def mknb(dwnurl_str,ext=None,urn=None):
     "url2 pm2gist/colab nb"
     if(dwnurl_str and dwnurl_str.startswith("http")):
         #fn=dwnurl2fn(dwnurl_str) #already done in pm_nb
         #r=pm_nb(dwnurl_str, ext)
-        r=pm_nb2(dwnurl_str, ext)
+        #r=pm_nb2(dwnurl_str, ext)
+        r=pm_nb3(dwnurl_str, ext, urn)
     else:
         r=f'bad-url:{dwnurl_str}'
     return r
@@ -184,7 +208,9 @@ def mk_nb():
     print(f'url={dwnurl_str}')
     ext = request.args.get('ext', default = 'None',   type = str)
     print(f'ext={ext}')
-    r= mknb(dwnurl_str,ext)
+    urn = request.args.get('urn', default = 'None',   type = str)
+    print(f'urn={urn}')
+    r= mknb(dwnurl_str,ext,urn)
     return r
 
 @app.route('/logbad/') 
