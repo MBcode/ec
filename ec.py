@@ -68,7 +68,7 @@ def read_file(fnp, ext=None):
         wget_ft(fn,ft)
         #df="no reader, can !wget $url"
         df="no reader, doing:[!wget $url ],to see:[ !ls -l ]"
-#look into bagit next
-    if(urn!=None): #put here for now
-        wget_rdf(urn)
+    #look into bagit next/maybe
+    #if(urn!=None): #put here for now
+    #    wget_rdf(urn)
     return df
