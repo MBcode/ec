@@ -14,7 +14,7 @@ def file_ext(fn):
     return st[-1]
 
 def wget(fn):
-    cs= f'wget {fn}' 
+    cs= f'wget -a log {fn}' 
     os.system(cs)
 
 def add_ext(fn,ft):
@@ -32,14 +32,17 @@ def wget_ft(fn,ft):
 def wget_rdf(urn):
     if(urn.startswith('urn:')):
         url=urn.replace(":","/").replace("urn","https://oss.geodex.org",1)
-        urlroot=path_leaf(url)
         url += ".rdf"
-        cs= f'wget {url}' 
+        cs= f'wget -a log {url}' 
         os.system(cs)
-        url1 = urlroot + ".rdf"
-        url2 = urlroot + ".nt" #more specificially, what is really in it
-        cs= f'mv {url1} {url2}' 
+        urlroot=path_leaf(url)
+        fn1 = urlroot + ".rdf"
+        fn2 = urlroot + ".nt" #more specificially, what is really in it
+        cs= f'mv {fn1} {fn2}' #makes easier to load into rdflib..eg: 
         os.system(cs)
+        #from rdflib import Graph
+        #g = Graph()
+        #g.parse(fn2)
     else:
         return f'bad-urn:{urn}'
 
