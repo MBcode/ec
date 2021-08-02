@@ -32,10 +32,10 @@ def wget_ft(fn,ft):
 def wget_rdf(urn):
     if(urn.startswith('urn:')):
         url=urn.replace(":","/").replace("urn","https://oss.geodex.org",1)
+        urlroot=path_leaf(url) #root before ext added
         url += ".rdf"
         cs= f'wget -a log {url}' 
         os.system(cs)
-        urlroot=path_leaf(url)
         fn1 = urlroot + ".rdf"
         fn2 = urlroot + ".nt" #more specificially, what is really in it
         cs= f'mv {fn1} {fn2}' #makes easier to load into rdflib..eg: 
