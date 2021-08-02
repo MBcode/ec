@@ -32,10 +32,12 @@ def wget_ft(fn,ft):
 def wget_rdf(urn):
     if(urn.startswith('urn:')):
         url=urn.replace(":","/").replace("urn","https://oss.geodex.org",1)
-        url1 = url + ".rdf"
-        url2 = url + ".nt" #more specificially, what is really in it
-        cs= f'wget {url1}' 
+        urlroot=path_leaf(url)
+        url += ".rdf"
+        cs= f'wget {url}' 
         os.system(cs)
+        url1 = urlroot + ".rdf"
+        url2 = urlroot + ".nt" #more specificially, what is really in it
         cs= f'mv {url1} {url2}' 
         os.system(cs)
     else:
