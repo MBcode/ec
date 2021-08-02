@@ -29,6 +29,17 @@ def wget_ft(fn,ft):
     wget(fn)
     add_ext(fn,ft)
 
+def wget_rdf(urn):
+    if(urn.startswith('urn:')):
+        url=urn.replace(":","/").replace("urn","https://oss.geodex.org",1)
+        url += ".rdf"
+        cs= f'wget {url}' 
+        os.system(cs)
+    else:
+        return f'bad-urn:{urn}'
+
+#should change os version of wget to request so can more easily log the return code
+
 def read_file(fnp, ext=None):
     "can be a url, will call pd read_.. for the ext type"
     import pandas as pd
@@ -58,4 +69,6 @@ def read_file(fnp, ext=None):
         #df="no reader, can !wget $url"
         df="no reader, doing:[!wget $url ],to see:[ !ls -l ]"
 #look into bagit next
+    if(urn!=None): #put here for now
+        wget_rdf(urn)
     return df
