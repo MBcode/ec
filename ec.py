@@ -32,13 +32,18 @@ def wget_ft(fn,ft):
 def wget_rdf(urn):
     if(urn.startswith('urn:')):
         url=urn.replace(":","/").replace("urn","https://oss.geodex.org",1)
-        url += ".rdf"
-        cs= f'wget {url}' 
+        url1 = url + ".rdf"
+        url2 = url + ".nt" #more specificially, what is really in it
+        cs= f'wget {url1}' 
+        os.system(cs)
+        cs= f'mv {url1} {url2}' 
         os.system(cs)
     else:
         return f'bad-urn:{urn}'
 
 #should change os version of wget to request so can more easily log the return code
+ #maybe, but this is easiest way to get the file locally to have to use
+  #though if we use a kblab/sublib or other that puts right to graph, could dump from that too
 
 def read_file(fnp, ext=None):
     "can be a url, will call pd read_.. for the ext type"
@@ -68,7 +73,7 @@ def read_file(fnp, ext=None):
         wget_ft(fn,ft)
         #df="no reader, can !wget $url"
         df="no reader, doing:[!wget $url ],to see:[ !ls -l ]"
-    #look into bagit next/maybe
+    #look into bagit next/maybe, also log get errors, see if metadata lets us know when we need auth2get data
     #if(urn!=None): #put here for now
     #    wget_rdf(urn)
     return df
