@@ -66,12 +66,7 @@ def read_file(fnp, ext=None):
         ft="." + ext
     else: #use ext from fn
         ft=str(fext)
-        #if(isinstance(fext, str)): #if(fext!=None):
-        #    ft=fext
-        #else:
-        #    ft=str(fext) #ft=""
     df=""
-    print(f'ft={ft}')
     if ext==None and len(ft)<1:
         wget(fn)
         df="no fileType info, doing:[!wget $url ],to see:[ !ls -l ]"
