@@ -47,6 +47,23 @@ def wget_rdf(urn):
     else:
         return f'bad-urn:{urn}'
 
+def init_rdf():
+  cs='apt-get install raptor2-utils graphviz'
+  os.system(cs)
+
+def nt2svg(fn):
+  cs= f'rapper -i ntriples -o dot {fn}.nt|cat>{fn}.dot'
+  os.system(cs)
+  cs= f'dot -Tsvg {fn}.dot |cat> {fn}.svg'
+  os.system(cs)
+
+def display_svg(fn):
+  display(SVG(fn))
+
+def nt_viz(fn):
+    nt2svg(fn)
+    display_svg(fn)
+
 #should change os version of wget to request so can more easily log the return code
  #maybe, but this is easiest way to get the file locally to have to use
   #though if we use a kglab/sublib or other that puts right to graph, could dump from that too
