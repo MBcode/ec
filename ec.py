@@ -48,7 +48,10 @@ def wget_rdf(urn):
 
 #should change os version of wget to request so can more easily log the return code
  #maybe, but this is easiest way to get the file locally to have to use
-  #though if we use a kblab/sublib or other that puts right to graph, could dump from that too
+  #though if we use a kglab/sublib or other that puts right to graph, could dump from that too
+
+#add 'rty'/error handling, which will incl sending bad-download links back to mknp.py
+ #log in the except sections, below
 
 def read_file(fnp, ext=None):
     "can be a url, will call pd read_.. for the ext type"
@@ -64,11 +67,20 @@ def read_file(fnp, ext=None):
         ft=fext
     df=""
     if ft=='.tsv' or re.search('tsv',ext,re.IGNORECASE) or re.search('tab-sep',ext,re.IGNORECASE):
-        df=pd.read_csv(fn, sep='\t',comment='#')
+        try:
+            df=pd.read_csv(fn, sep='\t',comment='#')
+        except as df:
+            pass
     elif ft=='.csv' or re.search('csv',ext,re.IGNORECASE):
-        df=pd.read_csv(fn)
+        try:
+            df=pd.read_csv(fn)
+        except as df:
+            pass
     elif ft=='.txt' or re.search('text',ext,re.IGNORECASE):
-        df=pd.read_csv(fn, sep='\n',comment='#')
+        try:
+            df=pd.read_csv(fn, sep='\n',comment='#')
+        except as df:
+            pass
     elif ft=='.zip' or re.search('zip',ext,re.IGNORECASE):
         ft='.zip'
         wget_ft(fn,ft)
