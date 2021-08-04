@@ -72,13 +72,13 @@ def read_file(fnp, ext=None):
         df="no fileType info, doing:[!wget $url ],to see:[ !ls -l ]"
     elif ft=='.tsv' or re.search('tsv',ext,re.IGNORECASE) or re.search('tab-sep',ext,re.IGNORECASE):
         try:
-            df=pd.read_csv(fn, sep='\t',comment='#')
+            df=pd.read_csv(fn, sep='\t',comment='#',warn_bad_lines=True, error_bad_lines=False)
         except:
             df = str(sys.exc_info()[0])
             pass
     elif ft=='.csv' or re.search('csv',ext,re.IGNORECASE):
         try:
-            df=pd.read_csv(fn)
+            df=pd.read_csv(fn,comment="#",warn_bad_lines=True, error_bad_lines=False)
         except:
             df = str(sys.exc_info()[0])
             pass
