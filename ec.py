@@ -65,9 +65,17 @@ def read_file(fnp, ext=None):
     if(ext!=None):
         ft="." + ext
     else: #use ext from fn
-        ft=fext
+        ft=str(fext)
+        #if(isinstance(fext, str)): #if(fext!=None):
+        #    ft=fext
+        #else:
+        #    ft=str(fext) #ft=""
     df=""
-    if ft=='.tsv' or re.search('tsv',ext,re.IGNORECASE) or re.search('tab-sep',ext,re.IGNORECASE):
+    print(f'ft={ft}')
+    if ext==None and len(ft)<1:
+        wget(fn)
+        df="no fileType info, doing:[!wget $url ],to see:[ !ls -l ]"
+    elif ft=='.tsv' or re.search('tsv',ext,re.IGNORECASE) or re.search('tab-sep',ext,re.IGNORECASE):
         try:
             df=pd.read_csv(fn, sep='\t',comment='#')
         except:
