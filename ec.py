@@ -69,17 +69,20 @@ def read_file(fnp, ext=None):
     if ft=='.tsv' or re.search('tsv',ext,re.IGNORECASE) or re.search('tab-sep',ext,re.IGNORECASE):
         try:
             df=pd.read_csv(fn, sep='\t',comment='#')
-        except as df:
+        except:
+            df = sys.exc_info()[0]
             pass
     elif ft=='.csv' or re.search('csv',ext,re.IGNORECASE):
         try:
             df=pd.read_csv(fn)
-        except as df:
+        except:
+            df = sys.exc_info()[0]
             pass
     elif ft=='.txt' or re.search('text',ext,re.IGNORECASE):
         try:
             df=pd.read_csv(fn, sep='\n',comment='#')
-        except as df:
+        except:
+            df = sys.exc_info()[0]
             pass
     elif ft=='.zip' or re.search('zip',ext,re.IGNORECASE):
         ft='.zip'
