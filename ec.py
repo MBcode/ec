@@ -2,6 +2,7 @@
 #with httpimport.github_repo('MBcode', 'ec'):
 #  import ec
 import os
+import sys
 
 #start adding more utils, can use to: fn=read_file.path_leaf(url) then: !head fn
 def path_leaf(path):
@@ -70,19 +71,19 @@ def read_file(fnp, ext=None):
         try:
             df=pd.read_csv(fn, sep='\t',comment='#')
         except:
-            df = sys.exc_info()[0]
+            df = str(sys.exc_info()[0])
             pass
     elif ft=='.csv' or re.search('csv',ext,re.IGNORECASE):
         try:
             df=pd.read_csv(fn)
         except:
-            df = sys.exc_info()[0]
+            df = str(sys.exc_info()[0])
             pass
     elif ft=='.txt' or re.search('text',ext,re.IGNORECASE):
         try:
             df=pd.read_csv(fn, sep='\n',comment='#')
         except:
-            df = sys.exc_info()[0]
+            df = str(sys.exc_info()[0])
             pass
     elif ft=='.zip' or re.search('zip',ext,re.IGNORECASE):
         ft='.zip'
