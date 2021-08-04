@@ -25,7 +25,7 @@ def tpg(fn="https/darchive.mblwhoilibrary.org_bitstream_1912_26532_1_dataset-752
 #==will replace this w/tgy.py code, that includes finding a fn in the gitsts, vs remaking it
 import os
 AUTH_TOKEN=os.getenv('gist_token')
-#AUTH_TOKEN=os.getenv('ec_gist_token') #for when post to earthcube gists
+#AUTH_TOKEN=os.getenv('ec_gist_token') #for when post to earthcube gists, soon
 
 #https://github.com/ThomasAlbin/gistyc
 import gistyc
@@ -73,11 +73,10 @@ def colab_url(gist_id,fn):
     return 'https://colab.research.google.com/gist/MBcode/' + gist_id + "/" + fn
 
 
-def htm_url(url): #tried forwarding but didn't work yet
-    #return f"""<html><head><meta http-equiv = "refresh" content = "1; url={url}/></head><body><p>colab NoteBook to open the data</p></body></html>"""
+def htm_url(url): 
     return f"""<html><head><meta http-equiv = "refresh" content = "1; url={url}" /></head><body><a href={url}>notebook to view your data</a></body></html>"""
 
-def htm_url_(url):
+def htm_url_(url): #old1before fwd to colab-NB-url
     return f'<html><a href={url}>notebook to view your data</a></html>'
 
 def print_nb_gists(g): #was used before writing find_gist
@@ -200,7 +199,7 @@ def mk_nb():
     r= mknb(dwnurl_str,ext,urn)
     return r
 
-@app.route('/logbad/') 
+@app.route('/logbad/')  #have try/except, so log errors soon, also have 'log' file in NB from wget/etc
 def log_bad():
     dwnurl_str = request.args.get('url',  type = str)
     lbs= f'log_bad:url={dwnurl_str}'
@@ -227,3 +226,4 @@ if __name__ == '__main__':
         app.run(host='0.0.0.0', port=8004, debug=True)
 #this works, incl pm&gist caches, &now flask works too 
 #remember diff btw dwnurl_str, filename-path, &filename alone, &what gets compared to find_gist
+#dv said he will have in a container, so will need token evn var, and http/s dirs, for now

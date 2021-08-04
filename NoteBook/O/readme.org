@@ -1,0 +1,1 @@
+Old stuff, from trying pasting url from cp-buffer, and other that could work w/juphub/binder
