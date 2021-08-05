@@ -54,6 +54,8 @@ def rdflib_viz(url,ft=None):
     #if not in interactive mode for
     plt.show()
 
+#finish up above, although ontospy also allows for some viz
+
 def wget_rdf(urn):
     if(urn!=None and urn.startswith('urn:')):
         url=urn.replace(":","/").replace("urn","https://oss.geodex.org",1)
@@ -68,7 +70,7 @@ def wget_rdf(urn):
         #from rdflib import Graph
         #g = Graph()
         #g.parse(fn2)
-        rdflib_viz(fn2)
+#       rdflib_viz(fn2)
     else:
         return f'bad-urn:{urn}'
 
