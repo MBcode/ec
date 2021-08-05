@@ -30,12 +30,16 @@ def wget_ft(fn,ft):
     wget(fn)
     add_ext(fn,ft)
 
+rdflib_inited=None
 def init_rdflib():
-  cs='pip install rdflib networkx'
-  os.system(cs)
+    cs='pip install rdflib networkx'
+    os.system(cs)
+    rdflib_inited=cs
 
 #https://stackoverflow.com/questions/39274216/visualize-an-rdflib-graph-in-python
 def rdflib_viz(url,ft=None):
+    if rdflib_inited==None:
+        init_reflib()
     import rdflib
     from rdflib.extras.external_graph_libs import rdflib_to_networkx_multidigraph
     import networkx as nx
@@ -54,7 +58,7 @@ def rdflib_viz(url,ft=None):
     #if not in interactive mode for
     plt.show()
 
-#finish up above, although ontospy also allows for some viz
+#still use above, although ontospy also allows for some viz
 
 def wget_rdf(urn):
     if(urn!=None and urn.startswith('urn:')):
@@ -70,22 +74,30 @@ def wget_rdf(urn):
         #from rdflib import Graph
         #g = Graph()
         #g.parse(fn2)
-#       rdflib_viz(fn2)
+        rdflib_viz(fn2) #can work, but looks crowded now
     else:
         return f'bad-urn:{urn}'
 
+rdf_inited=None
 def init_rdf():
-  cs='apt-get install raptor2-utils graphviz'
-  os.system(cs)
+    cs='apt-get install raptor2-utils graphviz'
+    os.system(cs)
+    rdf_inited=cs
 
 def nt2svg(fn):
-  cs= f'rapper -i ntriples -o dot {fn}.nt|cat>{fn}.dot'
-  os.system(cs)
-  cs= f'dot -Tsvg {fn}.dot |cat> {fn}.svg'
-  os.system(cs)
+    if rdf_inited==None:
+        init_rdf()
+    cs= f'rapper -i ntriples -o dot {fn}.nt|cat>{fn}.dot'
+    os.system(cs) 
+    cs= f'dot -Tsvg {fn}.dot |cat> {fn}.svg'
+    os.system(cs)
 
+#https://stackoverflow.com/questions/30334385/display-svg-in-ipython-notebook-from-a-function
 def display_svg(fn):
-  display(SVG(fn))
+    if rdf_inited==None:
+        init_rdf()
+    from IPython.display import SVG, display
+    display(SVG(fn))
 
 def nt_viz(fn):
     nt2svg(fn)
