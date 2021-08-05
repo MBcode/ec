@@ -39,7 +39,7 @@ def init_rdflib():
 #https://stackoverflow.com/questions/39274216/visualize-an-rdflib-graph-in-python
 def rdflib_viz(url,ft=None):
     if rdflib_inited==None:
-        init_reflib()
+        init_rdflib()
     import rdflib
     from rdflib.extras.external_graph_libs import rdflib_to_networkx_multidigraph
     import networkx as nx
@@ -60,7 +60,7 @@ def rdflib_viz(url,ft=None):
 
 #still use above, although ontospy also allows for some viz
 
-def wget_rdf(urn):
+def wget_rdf(urn,viz=None):
     if(urn!=None and urn.startswith('urn:')):
         url=urn.replace(":","/").replace("urn","https://oss.geodex.org",1)
         urlroot=path_leaf(url) #root before ext added
@@ -74,7 +74,8 @@ def wget_rdf(urn):
         #from rdflib import Graph
         #g = Graph()
         #g.parse(fn2)
-        rdflib_viz(fn2) #can work, but looks crowded now
+        if viz: #can still get errors
+            rdflib_viz(fn2) #can work, but looks crowded now
     else:
         return f'bad-urn:{urn}'
 
