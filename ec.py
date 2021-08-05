@@ -30,6 +30,30 @@ def wget_ft(fn,ft):
     wget(fn)
     add_ext(fn,ft)
 
+def init_rdflib():
+  cs='pip install rdflib networkx'
+  os.system(cs)
+
+#https://stackoverflow.com/questions/39274216/visualize-an-rdflib-graph-in-python
+def rdflib_viz(url,ft=None):
+    import rdflib
+    from rdflib.extras.external_graph_libs import rdflib_to_networkx_multidigraph
+    import networkx as nx
+    import matplotlib.pyplot as plt 
+    g = rdflib.Graph()
+    if ft!=None:
+        result = g.parse(url) #if didn't do mv, could send in format= 
+    else:
+        result = g.parse(url,ft)
+    G = rdflib_to_networkx_multidigraph(result) 
+    # Plot Networkx instance of RDF Graph
+    pos = nx.spring_layout(G, scale=2)
+    edge_labels = nx.get_edge_attributes(G, 'r')
+    nx.draw_networkx_edge_labels(G, pos, edge_labels=edge_labels)
+    nx.draw(G, with_labels=True) 
+    #if not in interactive mode for
+    plt.show()
+
 def wget_rdf(urn):
     if(urn!=None and urn.startswith('urn:')):
         url=urn.replace(":","/").replace("urn","https://oss.geodex.org",1)
@@ -44,6 +68,7 @@ def wget_rdf(urn):
         #from rdflib import Graph
         #g = Graph()
         #g.parse(fn2)
+        rdflib_viz(fn2)
     else:
         return f'bad-urn:{urn}'
 
