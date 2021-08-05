@@ -14,6 +14,13 @@ def file_ext(fn):
     st=os.path.splitext(fn)
     return st[-1]
 
+def file_base(fn):
+    st=os.path.splitext(fn)
+    return st[0]
+
+def has_ext(fn):
+    return (fn != file_base(fn))
+
 def wget(fn):
     cs= f'wget -a log {fn}' 
     os.system(cs)
@@ -86,6 +93,8 @@ def init_rdf():
     rdf_inited=cs
 
 def nt2svg(fnb):
+    if has_ext(fnb):
+        fnb=file_base(fnb)
     if rdf_inited==None:
         init_rdf()
     cs= f'rapper -i ntriples -o dot {fnb}.nt|cat>{fnb}.dot'
@@ -102,6 +111,8 @@ def display_svg(fn):
     display(SVG(fn))
 
 def nt_viz(fnb):
+    if has_ext(fnb):
+        fnb=file_base(fnb)
     nt2svg(fnb) #base(before ext)of .nt file, makes .svg version&displays
     fns= fnb + ".svg"
     display_svg(fns)
