@@ -85,13 +85,14 @@ def init_rdf():
     os.system(cs)
     rdf_inited=cs
 
-def nt2svg(fn):
+def nt2svg(fnb):
     if rdf_inited==None:
         init_rdf()
-    cs= f'rapper -i ntriples -o dot {fn}.nt|cat>{fn}.dot'
+    cs= f'rapper -i ntriples -o dot {fnb}.nt|cat>{fnb}.dot'
     os.system(cs) 
-    cs= f'dot -Tsvg {fn}.dot |cat> {fn}.svg'
+    cs= f'dot -Tsvg {fnb}.dot |cat> {fnb}.svg'
     os.system(cs)
+
 
 #https://stackoverflow.com/questions/30334385/display-svg-in-ipython-notebook-from-a-function
 def display_svg(fn):
@@ -100,9 +101,10 @@ def display_svg(fn):
     from IPython.display import SVG, display
     display(SVG(fn))
 
-def nt_viz(fn):
-    nt2svg(fn)
-    display_svg(fn)
+def nt_viz(fnb):
+    nt2svg(fnb) #base(before ext)of .nt file, makes .svg version&displays
+    fns= fnb + ".svg"
+    display_svg(fns)
 
 #should change os version of wget to request so can more easily log the return code
  #maybe, but this is easiest way to get the file locally to have to use
