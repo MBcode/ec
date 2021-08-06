@@ -543,7 +543,7 @@ ${s_publisher}</span>
             </div>
             <div class="row font-weight-bold">Downloads</div>
             <div class="row">
-                ${this.s_downloads.map(i => html`<a class="btn btn-info w-150" target="_blank" href="${i.contentUrl}">${i.linkName}</a><a target="_blank" href="${'http://mbobak-ofc.ncsa.illinois.edu:8004/mknb/?url=' + i.contentUrl + '&ext=' + i.name}"><img src="https://colab.research.google.com/img/colab_favicon_256px.png" width=28 </img></a>`)}
+                ${this.s_downloads.map(i => html`<a class="btn btn-info w-150" target="_blank" href="${i.contentUrl}">${i.linkName}</a><a target="_blank" href="${'http://141.142.218.86:3031/mknb/?url=' + i.contentUrl + '&ext=' + i.name}"><img src=http://mbobak-ofc.ncsa.illinois.edu/ext/ec/nb/openInColab.png><img src="https://colab.research.google.com/img/colab_favicon_256px.png" width=28 </img></a>`)}
 
             </div>
 
