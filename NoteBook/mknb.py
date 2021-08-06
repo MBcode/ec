@@ -211,6 +211,10 @@ def log_bad():
         err=""
     return r+err
 
+@app.route('/alive/') 
+def alive():
+    return "alive"
+
 if __name__ == '__main__':
     import sys
     if(len(sys.argv)>1):
@@ -223,7 +227,8 @@ if __name__ == '__main__':
         r=mknb(dwnurl_str, ext) #or trf.py test, that will be in ipynb template soon
         print(r)
     else: #w/o args, just to run a service:
-        app.run(host='0.0.0.0', port=8004, debug=True)
+        #app.run(host='0.0.0.0', port=8004, debug=True)
+        app.run(host='0.0.0.0', port=3031, debug=True)
 #this works, incl pm&gist caches, &now flask works too 
 #remember diff btw dwnurl_str, filename-path, &filename alone, &what gets compared to find_gist
 #dv said he will have in a container, so will need token evn var, and http/s dirs, for now
