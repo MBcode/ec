@@ -18,6 +18,11 @@ def file_base(fn):
     st=os.path.splitext(fn)
     return st[0]
 
+#could think a file w/'.'s in it's name, had an .ext
+ #so improve if possible; hopefully not by having a list of exts
+  #but maybe that the ext is say 6char max,..
+#only messed up filename when don't send in w/.ext and has dots, but ok w/.ext
+
 def has_ext(fn):
     return (fn != file_base(fn))
 
@@ -155,6 +160,12 @@ def read_file(fnp, ext=None):
     elif ft=='.txt' or re.search('text',ext,re.IGNORECASE):
         try:
             df=pd.read_csv(fn, sep='\n',comment='#')
+        except:
+            df = str(sys.exc_info()[0])
+            pass
+    elif ft=='.html' or re.search('htm',ext,re.IGNORECASE):
+        try:
+            df=pd.read_html(fn)
         except:
             df = str(sys.exc_info()[0])
             pass
