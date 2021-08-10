@@ -41,6 +41,10 @@ def add_ext(fn,ft):
 def wget_ft(fn,ft):
     wget(fn)
     add_ext(fn,ft)
+    #does it block/do we have2wait?, eg. time.sleep(sec)
+    fn1=path_leaf(fn) #just the file, not it's path
+    fs=os.path.getsize(fnl) #assuming it downloads w/that name
+    return fs
 
 rdflib_inited=None
 def init_rdflib():
@@ -87,7 +91,7 @@ def wget_rdf(urn,viz=None):
         #g = Graph()
         #g.parse(fn2)
         if viz: #can still get errors
-            rdflib_viz(fn2) #can work, but looks crowded now
+            rdflib_viz(fn2) #.nt file #can work, but looks crowded now
     else:
         return f'bad-urn:{urn}'
 
@@ -171,14 +175,19 @@ def read_file(fnp, ext=None):
             pass
     elif ft=='.zip' or re.search('zip',ext,re.IGNORECASE):
         ft='.zip'
-        wget_ft(fn,ft)
+        fs=wget_ft(fn,ft)
+        #fs=os.path.getsize(fnl) #assuming it downloads w/that name
 #       df=pd.read_csv(fn, sep='\t',comment='#')
-        df="can't read zip w/o knowing what is in it, doing:[!wget $url ],to see:[ !ls -l ]"
+        #df="can't read zip w/o knowing what is in it, doing:[!wget $url ],to see:[ !ls -l ]"
+        df="can't read zip w/o knowing what is in it, doing:[!wget $url ],to see:[ !ls -l ]size:{fs}"
     else:
-        wget_ft(fn,ft)
+        fs=wget_ft(fn,ft)
+        #fs=os.path.getsize(fnl) #assuming it downloads w/that name
         #df="no reader, can !wget $url"
-        df="no reader, doing:[!wget $url ],to see:[ !ls -l ]"
+        df="no reader, doing:[!wget $url ],to see:[ !ls -l ]size:{fs}"
     #look into bagit next/maybe, also log get errors, see if metadata lets us know when we need auth2get data
     #if(urn!=None): #put here for now
     #    wget_rdf(urn)
     return df
+
+#not just 404, getting small file back also worth logging
