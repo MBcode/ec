@@ -33,16 +33,19 @@ def wget(fn):
 def add_ext(fn,ft):
     fn1=path_leaf(fn) #just the file, not it's path
     fext=file_ext(fn1) #&just it's .ext
+    r=fn1
     if fext==None or fext=='':
         fnt=fn1 + ft
         cs= f'mv {fn1} {fnt}' 
         os.system(cs)
+        r=fnt
+    return r
 
 def wget_ft(fn,ft):
     wget(fn)
-    add_ext(fn,ft)
+    fnl=add_ext(fn,ft)
     #does it block/do we have2wait?, eg. time.sleep(sec)
-    fn1=path_leaf(fn) #just the file, not it's path
+    #fnl=path_leaf(fn) #just the file, not it's path
     fs=os.path.getsize(fnl) #assuming it downloads w/that name
     return fs
 
