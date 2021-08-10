@@ -56,7 +56,7 @@ def init_rdflib():
     rdflib_inited=cs
 
 #https://stackoverflow.com/questions/39274216/visualize-an-rdflib-graph-in-python
-def rdflib_viz(url,ft=None):
+def rdflib_viz(url,ft=None): #or have it default to 'turtle'
     if rdflib_inited==None:
         init_rdflib()
     import rdflib
@@ -67,7 +67,7 @@ def rdflib_viz(url,ft=None):
     if ft!=None:
         result = g.parse(url) #if didn't do mv, could send in format= 
     else:
-        result = g.parse(url,ft)
+        result = g.parse(url,format=ft)
     G = rdflib_to_networkx_multidigraph(result) 
     # Plot Networkx instance of RDF Graph
     pos = nx.spring_layout(G, scale=2)
@@ -182,12 +182,16 @@ def read_file(fnp, ext=None):
         #fs=os.path.getsize(fnl) #assuming it downloads w/that name
 #       df=pd.read_csv(fn, sep='\t',comment='#')
         #df="can't read zip w/o knowing what is in it, doing:[!wget $url ],to see:[ !ls -l ]"
-        df="can't read zip w/o knowing what is in it, doing:[!wget $url ],to see:[ !ls -l ]size:{fs}"
+        df=f'can not read zip w/o knowing what is in it, doing:[!wget $url ],to see:[ !ls -l ]size:{fs}'
+        if fs<300:
+            df+= "[Warn:small]"
     else:
         fs=wget_ft(fn,ft)
         #fs=os.path.getsize(fnl) #assuming it downloads w/that name
         #df="no reader, can !wget $url"
-        df="no reader, doing:[!wget $url ],to see:[ !ls -l ]size:{fs}"
+        df=f'no reader, doing:[!wget $url ],to see:[ !ls -l ]size:{fs}'
+        if fs<300:
+            df+= "[Warn:small]"
     #look into bagit next/maybe, also log get errors, see if metadata lets us know when we need auth2get data
     #if(urn!=None): #put here for now
     #    wget_rdf(urn)
