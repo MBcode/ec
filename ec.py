@@ -4,6 +4,11 @@
 import os
 import sys
 
+#from qry.py
+def put_txtfile(fn,s):
+    with open(fn, "w") as f:
+        return f.write(s)
+
 #start adding more utils, can use to: fn=read_file.path_leaf(url) then: !head fn
 def path_leaf(path):
     import ntpath
@@ -54,6 +59,19 @@ def init_rdflib():
     cs='pip install rdflib networkx'
     os.system(cs)
     rdflib_inited=cs
+
+#get fnb + ".nt" and put_txtfile that str
+def xml2nt(fn):
+    if rdflib_inited==None:
+        init_rdflib()
+    fnb=file_base(fn)
+    from rdflib import Graph
+    g = Graph()
+    g.parse(fn, format="xml")
+    s=g.serialize(format="ntriples").decode("u8") #works via cli,nb had ntserializer prob
+    fnt=fnb+".nt"
+    put_txtfile(fnt,s)
+    return len(s) 
 
 #https://stackoverflow.com/questions/39274216/visualize-an-rdflib-graph-in-python
 def rdflib_viz(url,ft=None): #or have it default to 'turtle'
