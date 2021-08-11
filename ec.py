@@ -46,11 +46,12 @@ def add_ext(fn,ft):
         r=fnt
     return r
 
-filelib_inited=None
-def init_filelib():
-    cs='apt-get install ranger'
-    os.system(cs)
-    filelib_inited=cs
+#filelib_inited=None
+#def init_filelib():
+#    cs='apt-get install ranger'
+#    os.system(cs)
+#    filelib_inited=cs
+#not useable in a NoteBook, so will look for a widget/etc
 
 def wget_ft(fn,ft):
     wget(fn)
@@ -61,8 +62,8 @@ def wget_ft(fn,ft):
     if fs>999 and fs<999999999:
         cs=f'unzip {fnl}'
         os.system(cs)
-        if filelib_inite!=None:
-            init_filelib() #should send note that can use ranger now
+        #if filelib_inite!=None:
+        #    init_filelib() #should send note that can use ranger now
     return fs
 
 rdflib_inited=None
@@ -182,7 +183,7 @@ def read_file(fnp, ext=None):
     df=""
     if ext==None and len(ft)<1:
         wget(fn)
-        df="no fileType info, doing:[!wget $url ],to see:[ !ls -l ]"
+        df="no fileType info, doing:[!wget $url ],to see:[ !ls -l ] or FileExplorerPane on the left"
     elif ft=='.tsv' or re.search('tsv',ext,re.IGNORECASE) or re.search('tab-sep',ext,re.IGNORECASE):
         try:
             df=pd.read_csv(fn, sep='\t',comment='#',warn_bad_lines=True, error_bad_lines=False)
@@ -213,14 +214,14 @@ def read_file(fnp, ext=None):
         #fs=os.path.getsize(fnl) #assuming it downloads w/that name
 #       df=pd.read_csv(fn, sep='\t',comment='#')
         #df="can't read zip w/o knowing what is in it, doing:[!wget $url ],to see:[ !ls -l ]"
-        df=f'can not read zip w/o knowing what is in it, doing:[!wget $url ],to see:[ !ls -l ]size:{fs}'
+        df=f'can not read zip w/o knowing what is in it, doing:[!wget $url ],to see:[ !ls -l ]size:{fs} or FileExplorerPane on the left'
         if fs<300:
             df+= "[Warn:small]"
     else:
         fs=wget_ft(fn,ft)
         #fs=os.path.getsize(fnl) #assuming it downloads w/that name
         #df="no reader, can !wget $url"
-        df=f'no reader, doing:[!wget $url ],to see:[ !ls -l ]size:{fs}'
+        df=f'no reader, doing:[!wget $url ],to see:[ !ls -l ]size:{fs} or FileExplorerPane on the left'
         if fs<300:
             df+= "[Warn:small]"
     #look into bagit next/maybe, also log get errors, see if metadata lets us know when we need auth2get data
