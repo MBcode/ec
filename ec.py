@@ -72,7 +72,14 @@ def xml2nt(fn):
     from rdflib import Graph
     g = Graph()
     g.parse(fn, format="xml")
-    s=g.serialize(format="ntriples").decode("u8") #works via cli,nb had ntserializer prob
+    #s=g.serialize(format="ntriples").decode("u8") #works via cli,nb had ntserializer prob
+    s=g.serialize(format="ntriples") #try w/o ;no, but works in NB w/just a warning
+    #s=g.serialize(format="ntriples").decode("utf-8") #try
+    #if s:
+    #    print(f's={s}')
+    #    s=str(s).decode("u8")
+    #    print("==============")
+    #    print(f's={s}')
     fnt=fnb+".nt"
     put_txtfile(fnt,s)
     return len(s) 
