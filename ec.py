@@ -46,24 +46,16 @@ def add_ext(fn,ft):
         r=fnt
     return r
 
-#filelib_inited=None
-#def init_filelib():
-#    cs='apt-get install ranger'
-#    os.system(cs)
-#    filelib_inited=cs
-#not useable in a NoteBook, so will look for a widget/etc
-
 def wget_ft(fn,ft):
     wget(fn)
     fnl=add_ext(fn,ft)
     #does it block/do we have2wait?, eg. time.sleep(sec)
     #fnl=path_leaf(fn) #just the file, not it's path
     fs=os.path.getsize(fnl) #assuming it downloads w/that name
-    if fs>999 and fs<999999999:
+    #if fs>999 and fs<999999999: #try upper limit later
+    if fs>699:
         cs=f'unzip {fnl}'
         os.system(cs)
-        #if filelib_inite!=None:
-        #    init_filelib() #should send note that can use ranger now
     return fs
 
 rdflib_inited=None
@@ -86,7 +78,7 @@ def xml2nt(fn):
     return len(s) 
 
 #https://stackoverflow.com/questions/39274216/visualize-an-rdflib-graph-in-python
-def rdflib_viz(url,ft=None): #or have it default to 'turtle'
+def rdflib_viz(url,ft=None): #or have it default to ntriples ;'turtle'
     if rdflib_inited==None:
         init_rdflib()
     import rdflib
@@ -100,7 +92,8 @@ def rdflib_viz(url,ft=None): #or have it default to 'turtle'
         result = g.parse(url,format=ft)
     G = rdflib_to_networkx_multidigraph(result) 
     #stackoverflow.com/questions/3567018/how-can-i-specify-an-exact-output-size-for-my-networkx-graph
-    plt.figure(3,figsize=(12,12)) 
+    #plt.figure(3,figsize=(12,12)) 
+    plt.figure(3,figsize=(16,16)) 
     # Plot Networkx instance of RDF Graph
     pos = nx.spring_layout(G, scale=2)
     edge_labels = nx.get_edge_attributes(G, 'r')
@@ -229,4 +222,5 @@ def read_file(fnp, ext=None):
     #    wget_rdf(urn)
     return df
 
+ #probably drop the [ls-l] part&just have ppl use fileBrowser, even though some CLI would still be good
 #not just 404, getting small file back also worth logging
