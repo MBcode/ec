@@ -32,7 +32,8 @@ def has_ext(fn):
     return (fn != file_base(fn))
 
 def wget(fn):
-    cs= f'wget -a log {fn}' 
+    #cs= f'wget -a log {fn}' 
+    cs= f'wget --tries=2 -a log {fn}' 
     os.system(cs)
 
 def add_ext(fn,ft):
@@ -41,14 +42,15 @@ def add_ext(fn,ft):
     r=fn1
     if fext==None or fext=='':
         fnt=fn1 + ft
-        cs= f'mv {fn1} {fnt}' 
+        #cs= f'mv {fn1} {fnt}' 
+        cs= f'sleep 2;mv {fn1} {fnt}' 
         os.system(cs)
         r=fnt
     return r
 
 def wget_ft(fn,ft):
     wget(fn)
-    fnl=add_ext(fn,ft)
+    fnl=add_ext(fn,ft) #try sleep right before the mv
     #does it block/do we have2wait?, eg. time.sleep(sec)
     #fnl=path_leaf(fn) #just the file, not it's path
     fs=os.path.getsize(fnl) #assuming it downloads w/that name
@@ -77,12 +79,6 @@ def xml2nt(fn):
     g.parse(fn, format="xml")
     #s=g.serialize(format="ntriples").decode("u8") #works via cli,nb had ntserializer prob
     s=g.serialize(format="ntriples") #try w/o ;no, but works in NB w/just a warning
-    #s=g.serialize(format="ntriples").decode("utf-8") #try
-    #if s:
-    #    print(f's={s}')
-    #    s=str(s).decode("u8")
-    #    print("==============")
-    #    print(f's={s}')
     fnt=fnb+".nt"
     put_txtfile(fnt,s)
     return len(s) 
