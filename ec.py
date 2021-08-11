@@ -46,12 +46,23 @@ def add_ext(fn,ft):
         r=fnt
     return r
 
+filelib_inited=None
+def init_filelib():
+    cs='apt-get install ranger'
+    os.system(cs)
+    filelib_inited=cs
+
 def wget_ft(fn,ft):
     wget(fn)
     fnl=add_ext(fn,ft)
     #does it block/do we have2wait?, eg. time.sleep(sec)
     #fnl=path_leaf(fn) #just the file, not it's path
     fs=os.path.getsize(fnl) #assuming it downloads w/that name
+    if fs>999 and fs<999999:
+        cs=f'unzip {fnl}'
+        os.system(cs)
+        if filelib_inite!=None:
+            init_filelib() #should send note that can use ranger now
     return fs
 
 rdflib_inited=None
@@ -87,6 +98,8 @@ def rdflib_viz(url,ft=None): #or have it default to 'turtle'
     else:
         result = g.parse(url,format=ft)
     G = rdflib_to_networkx_multidigraph(result) 
+    #stackoverflow.com/questions/3567018/how-can-i-specify-an-exact-output-size-for-my-networkx-graph
+    plt.figure(3,figsize=(12,12)) 
     # Plot Networkx instance of RDF Graph
     pos = nx.spring_layout(G, scale=2)
     edge_labels = nx.get_edge_attributes(G, 'r')
