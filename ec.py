@@ -58,7 +58,7 @@ def wget_ft(fn,ft):
     #does it block/do we have2wait?, eg. time.sleep(sec)
     #fnl=path_leaf(fn) #just the file, not it's path
     fs=os.path.getsize(fnl) #assuming it downloads w/that name
-    if fs>999 and fs<999999:
+    if fs>999 and fs<999999999:
         cs=f'unzip {fnl}'
         os.system(cs)
         if filelib_inite!=None:
