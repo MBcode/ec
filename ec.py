@@ -166,12 +166,22 @@ def display_svg(fn):
     from IPython.display import SVG, display
     display(SVG(fn))
 
-def nt_viz(fnb):
+def append2allnt(fnb):
+    cs= f'cat {fnb}.nt >> .all.nt'
+    os.system(cs) 
+
+def nt_viz(fnb=".all.nt"):
     if has_ext(fnb):
         fnb=file_base(fnb)
     nt2svg(fnb) #base(before ext)of .nt file, makes .svg version&displays
     fns= fnb + ".svg"
     display_svg(fns)
+    if fnb!=".all":
+        append2allnt(fnb)
+
+def rdfxml_viz(fnb):
+    xml2nt(fnb)
+    nt_viz(fnb)
 
 #should change os version of wget to request so can more easily log the return code
  #maybe, but this is easiest way to get the file locally to have to use
