@@ -111,9 +111,12 @@ def rdflib_viz(url,ft=None): #or have it default to ntriples ;'turtle'
 #still use above, although ontospy also allows for some viz
 
 def wget_rdf(urn,viz=None):
-    if(urn!=None and urn.startswith('urn:')):
+    if urn==None:
+        return f'no-urn:{urn}'
+    #if(urn!=None and urn.startswith('urn:')):
+    elif urn.startswith('urn:'):
         url=urn.replace(":","/").replace("urn","https://oss.geodex.org",1)
-        urlroot=path_leaf(url) #root before ext added
+        urlroot=path_leaf(url) #file w/o path
         url += ".rdf"
         cs= f'wget -a log {url}' 
         os.system(cs)
@@ -126,6 +129,16 @@ def wget_rdf(urn,viz=None):
         #g.parse(fn2)
         if viz: #can still get errors
             rdflib_viz(fn2) #.nt file #can work, but looks crowded now
+    elif urn.startswith('/'):
+        url=urn.replace("/","http://mbobak-ofc.ncsa.illinois.edu/ld/",1).replace(".jsonld",".nt",1)
+        urlroot=path_leaf(url) #file w/o path
+        #url += ".nt"
+        cs= f'wget -a log {url}' 
+        os.system(cs)
+        #fn2 = urlroot + ".nt" #more specificially, what is really in it
+        if viz: #can still get errors
+            #rdflib_viz(fn2) #.nt file #can work, but looks crowded now
+            rdflib_viz(urlroot) #.nt file #can work, but looks crowded now
     else:
         return f'bad-urn:{urn}'
 
