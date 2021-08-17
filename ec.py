@@ -209,6 +209,14 @@ def rdfxml_viz(fnb):
 #add 'rty'/error handling, which will incl sending bad-download links back to mknp.py
  #log in the except sections, below
 
+def check_size(fs,df):
+    if fs:
+        if fs<300:
+            df+= "[Warn:small]"
+    else:
+        df+= "[Warn:No File]"
+    return df
+
 def read_file(fnp, ext=None):
     "can be a url, will call pd read_.. for the ext type"
     import pandas as pd
@@ -256,15 +264,17 @@ def read_file(fnp, ext=None):
 #       df=pd.read_csv(fn, sep='\t',comment='#')
         #df="can't read zip w/o knowing what is in it, doing:[!wget $url ],to see:[ !ls -l ]"
         df=f'can not read zip w/o knowing what is in it, doing:[!wget $url ],to see:[ !ls -l ]size:{fs} or FileExplorerPane on the left'
-        if fs<300:
-            df+= "[Warn:small]"
+        #if fs and fs<300:
+        #    df+= "[Warn:small]"
+        df=check_size(fs,df)
     else:
         fs=wget_ft(fn,ft)
         #fs=os.path.getsize(fnl) #assuming it downloads w/that name
         #df="no reader, can !wget $url"
         df=f'no reader, doing:[!wget $url ],to see:[ !ls -l ]size:{fs} or FileExplorerPane on the left'
-        if fs<300:
-            df+= "[Warn:small]"
+        #if fs and fs<300:
+        #    df+= "[Warn:small]"
+        df=check_size(fs,df)
     #look into bagit next/maybe, also log get errors, see if metadata lets us know when we need auth2get data
     #if(urn!=None): #put here for now
     #    wget_rdf(urn)
