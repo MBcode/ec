@@ -1,3 +1,6 @@
+#=this is also at gitlab now, but won't get autoloaded until in github or allow for gitlab_repo
+ #but for cutting edge can just get the file from the test server, so can use: get_ec()
+
 #pagemil parameterized colab/gist can get this code via:
 #with httpimport.github_repo('MBcode', 'ec'):
 #  import ec
@@ -36,6 +39,16 @@ def wget(fn):
     cs= f'wget --tries=2 -a log {fn}' 
     os.system(cs)
 
+def pre_rm(url):
+    fnb=path_leaf(url)
+    cs=f'rm {fnb}'
+    os.system(cs)
+
+def get_ec(url="http://mbobak-ofc.ncsa.illinois.edu/ext/ec/nb/ec.py"):
+    pre_rm(url)
+    wget(url)
+    return "import ec"
+
 def add_ext(fn,ft):
     fn1=path_leaf(fn) #just the file, not it's path
     fext=file_ext(fn1) #&just it's .ext
@@ -53,7 +66,10 @@ def wget_ft(fn,ft):
     fnl=add_ext(fn,ft) #try sleep right before the mv
     #does it block/do we have2wait?, eg. time.sleep(sec)
     #fnl=path_leaf(fn) #just the file, not it's path
-    fs=os.path.getsize(fnl) #assuming it downloads w/that name
+    if os.path.isfile(fnl):
+        fs=os.path.getsize(fnl) #assuming it downloads w/that name
+    else:
+        fs=None
     #if fs>999 and fs<999999999: #try upper limit later
     #if fs>699:
     #    cs=f'unzip {fnl}'
@@ -157,6 +173,9 @@ def nt2svg(fnb):
     os.system(cs) 
     cs= f'dot -Tsvg {fnb}.dot |cat> {fnb}.svg'
     os.system(cs)
+
+#consider running sed "/https/s//http/g" on the .nt file, as an option, 
+ #for cases were it's use as part of the namespace is inconsistent
 
 
 #https://stackoverflow.com/questions/30334385/display-svg-in-ipython-notebook-from-a-function
