@@ -87,8 +87,8 @@ def wget_ft(fn,ft):
         os.system(cs)
         fnb=file_base(fnl)
         if os.path.isdir(fnb):
-        cs=f'ln -s {fnb} content'
-        os.system(cs)
+            cs=f'ln -s {fnb} content'
+            os.system(cs)
     return fs
 
 rdflib_inited=None
