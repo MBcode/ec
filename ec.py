@@ -82,8 +82,13 @@ def wget_ft(fn,ft):
     #    cs=f'unzip {fnl}'
     #    os.system(cs)
     #unzip even if small broken file
-    cs=f'unzip {fnl}'
-    os.system(cs)
+    if ft=='.zip': #should check if zip
+        cs=f'unzip {fnl}'
+        os.system(cs)
+        fnb=file_base(fnl)
+        if os.path.isdir(fnb):
+        cs=f'ln -s {fnb} content'
+        os.system(cs)
     return fs
 
 rdflib_inited=None
@@ -264,6 +269,7 @@ def read_file(fnp, ext=None):
             ft="." + ext
     else: #use ext from fn
         ft=str(fext)
+        ext=ft
     df=""
     if ext==None and len(ft)<1:
         wget(fn)
