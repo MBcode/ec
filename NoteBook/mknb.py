@@ -24,8 +24,11 @@ def tpg(fn="https/darchive.mblwhoilibrary.org_bitstream_1912_26532_1_dataset-752
     print(r)
 #==will replace this w/tgy.py code, that includes finding a fn in the gitsts, vs remaking it
 import os
-AUTH_TOKEN=os.getenv('gist_token')
-#AUTH_TOKEN=os.getenv('ec_gist_token') #for when post to earthcube gists, soon
+useEC=None #"yes"
+if useEC:
+    AUTH_TOKEN=os.getenv('ec_gist_token') #for when post to earthcube gists, soon
+else:
+    AUTH_TOKEN=os.getenv('gist_token')
 
 #https://github.com/ThomasAlbin/gistyc
 import gistyc
@@ -70,11 +73,15 @@ def gist_fn(gj):
     return list(gj['files'].keys())[0]
 
 def colab_url(gist_id,fn):
-    return 'https://colab.research.google.com/gist/MBcode/' + gist_id + "/" + fn
+    if useEC:
+        return 'https://colab.research.google.com/gist/earthcube/' + gist_id + "/" + fn
+    else:
+        return 'https://colab.research.google.com/gist/MBcode/' + gist_id + "/" + fn
 
 
 def htm_url(url): 
-    return f"""<html><head><meta http-equiv = "refresh" content = "1; url={url}" /></head><body><a href={url}>notebook to view your data</a></body></html>"""
+    #return f"""<html><head><meta http-equiv = "refresh" content = "0; url={url}" /></head><body><a href={url}>notebook to view your data</a></body></html>"""
+    return f"""<html><head><meta http-equiv = "refresh" content = "0; url={url}" /></head><body><a href={url}>nb</a></body></html>"""
 
 def htm_url_(url): #old1before fwd to colab-NB-url
     return f'<html><a href={url}>notebook to view your data</a></html>'
@@ -209,7 +216,7 @@ def log_bad():
         print(f'error:{err}')
     else:
         err=""
-    return r+err
+    return err
 
 @app.route('/alive/') 
 def alive():
