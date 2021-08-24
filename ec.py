@@ -204,6 +204,8 @@ def append2allnt(fnb):
     os.system(cs) 
 
 def nt_viz(fnb=".all.nt"):
+    if fnb==".all.nt" and os.path.isfile(fnb) and fnt!=None:
+        fnb=fnt  #if have urn .nt file, &nothing run yet, can call w/o arg&will view it
     if has_ext(fnb):
         fnb=file_base(fnb)
     nt2svg(fnb) #base(before ext)of .nt file, makes .svg version&displays
