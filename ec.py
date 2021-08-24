@@ -15,9 +15,13 @@ import sys
 #import recipy
 
 #from qry.py
-def put_txtfile(fn,s):
-    with open(fn, "w") as f:
+def put_txtfile(fn,s,wa="w"):
+    #with open(fn, "w") as f:
+    with open(fn, wa) as f:
         return f.write(s)
+
+def add2log(s):
+    put_txtfile("log",s,"a")
 
 #start adding more utils, can use to: fn=read_file.path_leaf(url) then: !head fn
 def path_leaf(path):
@@ -45,11 +49,13 @@ def wget(fn):
     #cs= f'wget -a log {fn}' 
     cs= f'wget --tries=2 -a log {fn}' 
     os.system(cs)
+    add2log(cs)
 
 def pre_rm(url):
     fnb=path_leaf(url)
     cs=f'rm {fnb}'
     os.system(cs)
+    add2log(cs)
 
 def get_ec(url="http://mbobak-ofc.ncsa.illinois.edu/ext/ec/nb/ec.py"):
     pre_rm(url)
@@ -65,6 +71,7 @@ def add_ext(fn,ft):
         #cs= f'mv {fn1} {fnt}' 
         cs= f'sleep 2;mv {fn1} {fnt}' 
         os.system(cs)
+        add2log(cs)
         r=fnt
     return r
 
@@ -85,16 +92,19 @@ def wget_ft(fn,ft):
     if ft=='.zip': #should check if zip
         cs=f'unzip {fnl}'
         os.system(cs)
+        add2log(cs)
         fnb=file_base(fnl)
         if os.path.isdir(fnb):
             cs=f'ln -s . content' #so can put . before what you paste
             os.system(cs)
+            add2log(cs)
     return fs
 
 rdflib_inited=None
 def init_rdflib():
     cs='pip install rdflib networkx'
     os.system(cs)
+    add2log(cs)
     rdflib_inited=cs
 
 #get fnb + ".nt" and put_txtfile that str
@@ -149,10 +159,12 @@ def wget_rdf(urn,viz=None):
         url += ".rdf"
         cs= f'wget -a log {url}' 
         os.system(cs)
+        add2log(cs)
         fn1 = urlroot + ".rdf"
         fn2 = urlroot + ".nt" #more specificially, what is really in it
         cs= f'mv {fn1} {fn2}' #makes easier to load into rdflib..eg: 
         os.system(cs)
+        add2log(cs)
         fnt=fn2
         #from rdflib import Graph
         #g = Graph()
@@ -165,6 +177,7 @@ def wget_rdf(urn,viz=None):
         #url += ".nt"
         cs= f'wget -a log {url}' 
         os.system(cs)
+        add2log(cs)
         #fn2 = urlroot + ".nt" #more specificially, what is really in it
         if viz: #can still get errors
             #rdflib_viz(fn2) #.nt file #can work, but looks crowded now
@@ -176,6 +189,7 @@ rdf_inited=None
 def init_rdf():
     cs='apt-get install raptor2-utils graphviz'
     os.system(cs)
+    add2log(cs)
     rdf_inited=cs
 
 def nt2svg(fnb):
@@ -185,8 +199,10 @@ def nt2svg(fnb):
         init_rdf()
     cs= f'rapper -i ntriples -o dot {fnb}.nt|cat>{fnb}.dot'
     os.system(cs) 
+    add2log(cs)
     cs= f'dot -Tsvg {fnb}.dot |cat> {fnb}.svg'
     os.system(cs)
+    add2log(cs)
 
 #consider running sed "/https/s//http/g" on the .nt file, as an option, 
  #for cases were it's use as part of the namespace is inconsistent
@@ -202,6 +218,7 @@ def display_svg(fn):
 def append2allnt(fnb):
     cs= f'cat {fnb}.nt >> .all.nt'
     os.system(cs) 
+    add2log(cs)
 
 def nt_viz(fnb=".all.nt"):
     if fnb==".all.nt" and os.path.isfile(fnb) and fnt!=None:
