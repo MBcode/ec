@@ -21,7 +21,8 @@ def put_txtfile(fn,s,wa="w"):
         return f.write(s)
 
 def add2log(s):
-    put_txtfile("log",s,"a")
+    fs=f'[{s}]\n'
+    put_txtfile("log",fs,"a")
 
 #start adding more utils, can use to: fn=read_file.path_leaf(url) then: !head fn
 def path_leaf(path):
