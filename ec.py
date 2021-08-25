@@ -147,13 +147,14 @@ def rdflib_viz(url,ft=None): #or have it default to ntriples ;'turtle'
     plt.show()
 
 #still use above, although ontospy also allows for some viz
-fnt=None
+f_nt=None
 
 def wget_rdf(urn,viz=None):
     if urn==None:
         return f'no-urn:{urn}'
     #if(urn!=None and urn.startswith('urn:')):
     elif urn.startswith('urn:'):
+        global f_nt
         url=urn.replace(":","/").replace("urn","https://oss.geodex.org",1)
         urlroot=path_leaf(url) #file w/o path
         url += ".rdf"
@@ -165,7 +166,7 @@ def wget_rdf(urn,viz=None):
         cs= f'mv {fn1} {fn2}' #makes easier to load into rdflib..eg: 
         os.system(cs)
         add2log(cs)
-        fnt=fn2
+        f_nt=fn2
         #from rdflib import Graph
         #g = Graph()
         #g.parse(fn2)
@@ -221,8 +222,8 @@ def append2allnt(fnb):
     add2log(cs)
 
 def nt_viz(fnb=".all.nt"):
-    if fnb==".all.nt" and os.path.isfile(fnb) and fnt!=None:
-        fnb=fnt  #if have urn .nt file, &nothing run yet, can call w/o arg&will view it
+    if fnb==".all.nt" and os.path.isfile(fnb) and f_nt!=None:
+        fnb=f_nt  #if have urn .nt file, &nothing run yet, can call w/o arg&will view it
     if has_ext(fnb):
         fnb=file_base(fnb)
     nt2svg(fnb) #base(before ext)of .nt file, makes .svg version&displays
