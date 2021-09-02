@@ -41,10 +41,12 @@ def path_leaf(path):
 
 def file_ext(fn):
     st=os.path.splitext(fn)
+    add2log(f'fe:st={st}\n')
     return st[-1]
 
 def file_base(fn):
     st=os.path.splitext(fn)
+    add2log(f'fb:st={st}\n')
     return st[0]
 
 #could think a file w/'.'s in it's name, had an .ext
@@ -237,7 +239,7 @@ def rdfxml_viz(fnb): #cp&paste (rdf)xml file paths from in .zip files
 def viz(fn=".all.nt"): #might call this rdf_viz once we get some other type of viz going
     if has_ext(fn):
         ext=file_ext(fn)
-        fnb=file_base(fn) #unused
+        fnb=file_base(fn) #unused, bc they should strip the ext anyway
     else:
         return "need a file extension, to know which routines to run to show it"
     if ext==".nt":
@@ -291,10 +293,13 @@ def nt2ft(url):
     #return s
     return os_system_(cs)
 
-def read_file(fnp, ext=None):
+def read_file(fnp, ext=None):  #download url and ext/filetype
+#def read_file(fnp, ext=nt2ft(fnp)):
     "can be a url, will call pd read_.. for the ext type"
     import pandas as pd
     import re
+    if(ext==None):
+        ext=nt2ft(fnp)
     fn=fnp.rstrip('/') #only on right side, for trailing slash, not start of full pasted path
     fn1=path_leaf(fn) #just the file, not it's path
     fext=file_ext(fn1) #&just it's .ext
@@ -306,11 +311,12 @@ def read_file(fnp, ext=None):
             ft="." + ext
     else: #use ext from fn
         ft=str(fext)
-        #if ft is blank, can: grep -A4 $url *.nt|grep encoding|cut -d' ' -f3
-        if ft and len(ft)<2:
-            ext=nt2ft(fnp) #but put in 'ext' bc it does the re. of the longer txt from the .nt file
-        else:
-            ext=ft
+        ##if ft is blank, can: grep -A4 $url *.nt|grep encoding|cut -d' ' -f3  #do above
+        #if ft and len(ft)<2:
+        #    ext=nt2ft(fnp) #but put in 'ext' bc it does the re. of the longer txt from the .nt file
+        #else:
+        #    ext=ft
+        ext=ft
     df=""
     if ext==None and len(ft)<1:
         wget(fn)
