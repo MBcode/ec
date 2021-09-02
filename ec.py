@@ -229,10 +229,10 @@ def rdfxml_viz(fnb): #cp&paste (rdf)xml file paths from in .zip files
     xml2nt(fnb)
     nt_viz(fnb)
 
-def viz(fn=".all.nt"):
+def viz(fn=".all.nt"): #might call this rdf_viz once we get some other type of viz going
     if has_ext(fn):
         ext=file_ext(fn)
-        fnb=file_base(fn)
+        fnb=file_base(fn) #unused
     else:
         return "need a file extension, to know which routines to run to show it"
     if ext==".nt":
@@ -280,6 +280,10 @@ def check_size(fs,df):
         df+=dfe
     return df
 
+def nt2ft(url):
+    cs=f"grep -A4 {url} *.nt|grep encoding|cut -d' ' -f3"
+    return os_system(cs)
+
 def read_file(fnp, ext=None):
     "can be a url, will call pd read_.. for the ext type"
     import pandas as pd
@@ -295,6 +299,9 @@ def read_file(fnp, ext=None):
             ft="." + ext
     else: #use ext from fn
         ft=str(fext)
+        #if ft is blank, can: grep -A4 $url *.nt|grep encoding|cut -d' ' -f3
+        if len(ft)<2:
+            ft=nt2ft(fnp)
         ext=ft
     df=""
     if ext==None and len(ft)<1:
