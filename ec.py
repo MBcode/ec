@@ -302,7 +302,8 @@ def read_file(fnp, ext=None):
         #if ft is blank, can: grep -A4 $url *.nt|grep encoding|cut -d' ' -f3
         if ft and len(ft)<2:
             ext=nt2ft(fnp) #but put in 'ext' bc it does the re. of the longer txt from the .nt file
-        ext=ft
+        else
+            ext=ft
     df=""
     if ext==None and len(ft)<1:
         wget(fn)
