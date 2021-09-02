@@ -2,8 +2,9 @@
  #but for cutting edge can just get the file from the test server, so can use: get_ec()
 
 #pagemil parameterized colab/gist can get this code via:
-#with httpimport.github_repo('MBcode', 'ec'):
+#with httpimport.github_repo('MBcode', 'ec'):   
 #  import ec
+#version in template used the earthcube utils
 import os
 import sys
 
@@ -206,7 +207,7 @@ def nt2svg(fnb):
     cs= f'dot -Tsvg {fnb}.dot |cat> {fnb}.svg'
     os_system(cs)
 
-#consider running sed "/https/s//http/g" on the .nt file, as an option, 
+#re/consider running sed "/https/s//http/g" on the .nt file, as an option, 
  #for cases were it's use as part of the namespace is inconsistent
 
 
@@ -287,18 +288,18 @@ def check_size(fs,df):
         df+=dfe
     return df
 
-def nt2ft(url):
+#considter ext2ft taking the longer-txt down to the stnd file-ext eg. .tsv ..
+
+def nt2ft(url): #could also use rdflib, but will wait till doing other queries as well
     cs=f"grep -A4 {url} *.nt|grep encoding|cut -d' ' -f3"
-    #s=os.popen(cs).read()
-    #return s
-    return os_system_(cs)
+    return os_system_(cs) 
 
 def read_file(fnp, ext=None):  #download url and ext/filetype
 #def read_file(fnp, ext=nt2ft(fnp)):
     "can be a url, will call pd read_.. for the ext type"
     import pandas as pd
     import re
-    if(ext==None):
+    if(ext==None): #find filetype from .nt ecodingFormat
         ext=nt2ft(fnp)
     fn=fnp.rstrip('/') #only on right side, for trailing slash, not start of full pasted path
     fn1=path_leaf(fn) #just the file, not it's path
@@ -311,11 +312,6 @@ def read_file(fnp, ext=None):  #download url and ext/filetype
             ft="." + ext
     else: #use ext from fn
         ft=str(fext)
-        ##if ft is blank, can: grep -A4 $url *.nt|grep encoding|cut -d' ' -f3  #do above
-        #if ft and len(ft)<2:
-        #    ext=nt2ft(fnp) #but put in 'ext' bc it does the re. of the longer txt from the .nt file
-        #else:
-        #    ext=ft
         ext=ft
     df=""
     if ext==None and len(ft)<1:
