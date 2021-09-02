@@ -28,6 +28,11 @@ def os_system(cs):
     os.system(cs)
     add2log(cs)
 
+def os_system_(cs):
+    s=os.popen(cs).read()
+    add2log(cs)
+    return s
+
 #start adding more utils, can use to: fn=read_file.path_leaf(url) then: !head fn
 def path_leaf(path):
     import ntpath
@@ -282,7 +287,9 @@ def check_size(fs,df):
 
 def nt2ft(url):
     cs=f"grep -A4 {url} *.nt|grep encoding|cut -d' ' -f3"
-    return os_system(cs)
+    #s=os.popen(cs).read()
+    #return s
+    return os_system_(cs)
 
 def read_file(fnp, ext=None):
     "can be a url, will call pd read_.. for the ext type"
