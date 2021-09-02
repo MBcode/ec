@@ -300,7 +300,7 @@ def read_file(fnp, ext=None):
     else: #use ext from fn
         ft=str(fext)
         #if ft is blank, can: grep -A4 $url *.nt|grep encoding|cut -d' ' -f3
-        if len(ft)<2:
+        if ft and len(ft)<2:
             ft=nt2ft(fnp)
         ext=ft
     df=""
