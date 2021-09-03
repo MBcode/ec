@@ -89,6 +89,7 @@ def add_ext(fn,ft):
 
 def wget_ft(fn,ft):
     wget(fn)
+    fnl=fn
     if ft!='.' and ft!='' and ft!=None and len(ft)>2:
         fnl=add_ext(fn,ft) #try sleep right before the mv
     #does it block/do we have2wait?, eg. time.sleep(sec)
