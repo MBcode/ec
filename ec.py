@@ -74,7 +74,7 @@ def get_ec(url="http://mbobak-ofc.ncsa.illinois.edu/ext/ec/nb/ec.py"):
     return "import ec"
 
 def add_ext(fn,ft):
-    if ft==None or ft=='' or ft=='.':
+    if ft==None or ft=='' or ft=='.' or len(ft)<2:
         return None
     fn1=path_leaf(fn) #just the file, not it's path
     fext=file_ext(fn1) #&just it's .ext
@@ -89,7 +89,8 @@ def add_ext(fn,ft):
 
 def wget_ft(fn,ft):
     wget(fn)
-    fnl=add_ext(fn,ft) #try sleep right before the mv
+    if ft!='.' and ft!='' and ft!=None and len(ft)>2:
+        fnl=add_ext(fn,ft) #try sleep right before the mv
     #does it block/do we have2wait?, eg. time.sleep(sec)
     #fnl=path_leaf(fn) #just the file, not it's path
     if os.path.isfile(fnl):
