@@ -42,12 +42,12 @@ def path_leaf(path):
 
 def file_ext(fn):
     st=os.path.splitext(fn)
-    add2log(f'fe:st={st}\n')
+    add2log(f'fe:st={st}')
     return st[-1]
 
 def file_base(fn):
     st=os.path.splitext(fn)
-    add2log(f'fb:st={st}\n')
+    add2log(f'fb:st={st}')
     return st[0]
 
 #could think a file w/'.'s in it's name, had an .ext
@@ -74,6 +74,8 @@ def get_ec(url="http://mbobak-ofc.ncsa.illinois.edu/ext/ec/nb/ec.py"):
     return "import ec"
 
 def add_ext(fn,ft):
+    if ft==None or ft=='' or ft=='.':
+        return None
     fn1=path_leaf(fn) #just the file, not it's path
     fext=file_ext(fn1) #&just it's .ext
     r=fn1
