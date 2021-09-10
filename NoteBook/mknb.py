@@ -18,12 +18,19 @@
 #base_url = "http://141.142.218.86:8081/notebooks/"  #was when I tested a jupyterhub intemediate;maybe binder friendly too
 #will mv them below post_gist so they can call that and return the colab-nb vs the testing/jupyterhub one
 
+#import urllib.parse #mostly want safe filenames v url's right now, but enough overlap worth using
+
 #=original gist code: ;now only testing, rm-soon
 def tpg(fn="https/darchive.mblwhoilibrary.org_bitstream_1912_26532_1_dataset-752737_bergen-mesohux-2017-dissolved-nutrients__v1.tsv.ipynb"): #test
     r=post_gist(fn)
     print(r)
 #==will replace this w/tgy.py code, that includes finding a fn in the gitsts, vs remaking it
 import os
+
+def first_str(s):
+    r=s.split(' ', 1 )
+    return r[0]
+
 useEC=None #"yes"
 if useEC:
     AUTH_TOKEN=os.getenv('ec_gist_token') #for when post to earthcube gists, soon
@@ -45,6 +52,7 @@ def post_gist(fn):
         return fcu
     else:
         #return gist_api.create_gist(file_name=fn)
+        print(f'file_name={fn}')
         gist_api.create_gist(file_name=fn)
         #could look up url, but find should do it, also makes sure it's there/in a way
         fcu = find_gist(fn)
@@ -127,8 +135,8 @@ def find_gist(ffnp):
 def dwnurl2fn(dwnurl):
     #fn = dwnurl.replace("/","_").replace(":__","/",1) + ".ipynb"
     #fn = dwnurl.replace("/","_").replace(":__","/",1).replace("?","") + ".ipynb"
-    #fn = dwnurl.replace("/","_").replace(":__","/",1).replace("?","").replace("#","_") + ".ipynb"
-    fn = dwnurl.replace("/","_").replace(":__","/",1).replace("?","").replace("#","_").replace(";","_") + ".ipynb"
+    fn = dwnurl.replace("/","_").replace(":__","/",1).replace("?","").replace("#","_") + ".ipynb"
+    #fn = dwnurl.replace("/","_").replace(":__","/",1).replace("?","").replace("#","_").replace(" ; ","_") + ".ipynb"
     return fn
 
 #pagemill insert param&run the NB
@@ -163,8 +171,13 @@ def pm_nb3(dwn_url, ext=None, urn=None):
         print(f'reuse:{fn}')
     else:
         if ext:
-            sext=ext.replace(" ","_").replace("(","_").replace(")","_").replace(";","_") #make this safer
-            ext_arg=f' -p ext {sext} '
+            #sext=ext.replace(" ","_").replace("(","_").replace(")","_") 
+            #sext=ext.replace(" ","_").replace("(","_").replace(")","_").replace(";","_") #make this safer
+            #sext=ext.replace(" ","_").replace("(","_").replace(")","_").replace(";"," ") #make this safer
+            sext=ext.replace(" ","_").replace("(","_").replace(")","_").replace(";"," ").replace("\n",' ') 
+            sext1=first_str(sext)
+            print(f'ext:{sext},1:{sext1}')
+            ext_arg=f' -p ext {sext1} '
         else:
             ext_arg=""
         if urn:
