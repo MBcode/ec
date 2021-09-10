@@ -127,7 +127,8 @@ def find_gist(ffnp):
 def dwnurl2fn(dwnurl):
     #fn = dwnurl.replace("/","_").replace(":__","/",1) + ".ipynb"
     #fn = dwnurl.replace("/","_").replace(":__","/",1).replace("?","") + ".ipynb"
-    fn = dwnurl.replace("/","_").replace(":__","/",1).replace("?","").replace("#","_") + ".ipynb"
+    #fn = dwnurl.replace("/","_").replace(":__","/",1).replace("?","").replace("#","_") + ".ipynb"
+    fn = dwnurl.replace("/","_").replace(":__","/",1).replace("?","").replace("#","_").replace(";","_") + ".ipynb"
     return fn
 
 #pagemill insert param&run the NB
@@ -162,7 +163,7 @@ def pm_nb3(dwn_url, ext=None, urn=None):
         print(f'reuse:{fn}')
     else:
         if ext:
-            sext=ext.replace(" ","_").replace("(","_").replace(")","_") #make this safer
+            sext=ext.replace(" ","_").replace("(","_").replace(")","_").replace(";","_") #make this safer
             ext_arg=f' -p ext {sext} '
         else:
             ext_arg=""
