@@ -174,7 +174,8 @@ def pm_nb3(dwn_url, ext=None, urn=None):
             #sext=ext.replace(" ","_").replace("(","_").replace(")","_") 
             #sext=ext.replace(" ","_").replace("(","_").replace(")","_").replace(";","_") #make this safer
             #sext=ext.replace(" ","_").replace("(","_").replace(")","_").replace(";"," ") #make this safer
-            sext=ext.replace(" ","_").replace("(","_").replace(")","_").replace(";"," ").replace("\n",' ') 
+            #sext=ext.replace(" ","_").replace("(","_").replace(")","_").replace(";"," ").replace("\n",' ') 
+            sext=ext.replace(" ","_").replace("(","_").replace(")","_").replace(";","_").replace("\n",' ') 
             sext1=first_str(sext)
             print(f'ext:{sext},1:{sext1}')
             ext_arg=f' -p ext {sext1} '
