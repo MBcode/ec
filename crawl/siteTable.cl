@@ -12,6 +12,7 @@
 (defvar *cf* (rest *csv*))  ;rest of csv
 (defvar *c* (subseq *cf* 0 18)) ;was 17
 (defvar *c2* (first *c*)) ;for testing
+(defvar *c5* (fourth *c*)) ;for testing
 (defun ldns (l &optional (hover t))
   "format:logo domain-name summary"
   (let ((repo (nth 0 l))
@@ -44,10 +45,11 @@
 (defun rld (l &optional (perRepo nil)) 
   "repo jsonLD line"
   (let ((index (nth 0 l))
-        (name (nth 6 l))
-        (domain (nth 7 l))
-        (summary (nth 13 l))
-        (re3 (nth 12 l))
+        (name (nth 10 l))
+        (domain (nth 11 l))
+        (summary (nth 17 l))
+        ;(re3 (nth 18 l))
+        (re3 (nth 2 l))
        ;(logo (nth 11 l)) ;will use local version of each, to avoid x http/s problems
         );SoS has logo, get contactPoint&funder too 
     ;https://github.com/ESIPFed/science-on-schema.org/blob/master/examples/data-repository/minimal.jsonld
