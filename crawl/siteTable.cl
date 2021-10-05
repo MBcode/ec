@@ -5,6 +5,12 @@
 ;Also have w/py pandas, &could be more fine grain, but this was quick sites2~table script
 ;df=pd.read_table('cdf_cndls.tsv') print(df[0:18].to_html()) ;mbobak@illinois.edu
 ;The formatting will change, incl maybe going into a real table, in an about.html page
+;--util add :if-exists :overwrite
+(defun save-lineS (l filename)
+ (when (fulll l)
+  (with-open-file (stream filename :direction :output :if-exists :overwrite)
+    (mapcar #'(lambda (x) (write-line x stream)) l))))
+;
 (defvar *is* " style=\"max-width: 80px; max-height: 40px\" ")
 (ql 'cl-csv)
 (defvar *csv* (cl-csv:read-csv #P"CDF_Sites.csv"))
@@ -49,7 +55,10 @@
         (domain (nth 11 l))
         (summary (nth 17 l))
         ;(re3 (nth 18 l))
+        (ror (nth 1 l))
         (re3 (nth 2 l))
+        (scholia (nth 3 l))
+        (wikidata (nth 4 l))
        ;(logo (nth 11 l)) ;will use local version of each, to avoid x http/s problems
         );SoS has logo, get contactPoint&funder too 
     ;https://github.com/ESIPFed/science-on-schema.org/blob/master/examples/data-repository/minimal.jsonld
@@ -62,7 +71,11 @@
         (format nil " \"description\": \"~a\"," summary)
        ;(format nil " \"logo\": { \"@type\": \"ImageObject\", \"url\": \"~a\" }," logo) ;go local:
         (format nil " \"logo\": { \"@type\": \"ImageObject\", \"url\": \"images/repo/~a.png\" }," index)
-        (format nil " \"identifier\": \"~a\"}" re3) ;was sameAs
+     ;  (format nil " \"identifier\": \"~a\"}" re3) ;was sameAs
+        (format nil " \"ror\": \"~a\"," ror) 
+        (format nil " \"re3data\": \"~a\"," re3) 
+        (format nil " \"scholia\": \"~a\"," scholia) 
+        (format nil " \"wikidata\": \"~a\"}" wikidata) 
         )))
       (if perRepo (cons index rl)
         rl)))) 
@@ -73,7 +86,7 @@
          (ld (rest idx-ld))
          (fnt (str-cat "ld/" idx "/repo.nt"))
          (fn (str-cat "ld/" idx "/repo.jsonld")))
-  (save-lines ld fn)
+  (save-lineS ld fn)
   (tsh (str-cat "riot " fn " |cat> " fnt))
   ))
 
@@ -88,7 +101,7 @@
 
 (defun stc (&optional (fn "c3.htm"))
   "save(test)table"
-  (save-lines (tp) fn))
+  (save-lineS (tp) fn))
 
 ;-
 (defun pr (lol)
@@ -101,7 +114,7 @@
 
 (defun str (&optional (fn "repo.jsonld"))
   "save(test)repo"
-  (save-lines (flatten1 (tr)) fn))
+  (save-lineS (flatten1 (tr)) fn))
 
 (defun ld-repo (&optional (lol *c*))
   (mapcar #'repo-ld lol))
