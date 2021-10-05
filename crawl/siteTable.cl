@@ -48,6 +48,8 @@
 ; "description": "{description}.",
 ; "sameAs": "{re3}"
 ; }' """
+;could just have an ordered list of slotnames, w/something to skip a few
+ ;also in py rewrite, import csv, which allows for ref cols by name
 (defun rld (l &optional (perRepo nil)) 
   "repo jsonLD line"
   (let ((index (nth 0 l))
@@ -59,11 +61,14 @@
         (re3 (nth 2 l))
         (scholia (nth 3 l))
         (wikidata (nth 4 l))
+        (sitemap (nth 5 l))
+        (base_url (nth 6 l))
        ;(logo (nth 11 l)) ;will use local version of each, to avoid x http/s problems
         );SoS has logo, get contactPoint&funder too 
     ;https://github.com/ESIPFed/science-on-schema.org/blob/master/examples/data-repository/minimal.jsonld
     (let ((rl (list 
         (format nil "{  \"@context\": {   \"@vocab\": \"https://schema.org/\" }, ")
+        (format nil " \"@id\": \"~a\"," domain)
         (format nil " \"@type\": [\"Service\", \"ResearchProject\"],")
         (format nil " \"legalName\": \"~a\"," name)
         (format nil " \"name\": \"~a\"," index)
@@ -75,7 +80,9 @@
         (format nil " \"ror\": \"~a\"," ror) 
         (format nil " \"re3data\": \"~a\"," re3) 
         (format nil " \"scholia\": \"~a\"," scholia) 
-        (format nil " \"wikidata\": \"~a\"}" wikidata) 
+        (format nil " \"wikidata\": \"~a\"," wikidata) 
+        (format nil " \"sitemap\": \"~a\"," sitemap) 
+        (format nil " \"base_url\": \"~a\"}" base_url) 
         )))
       (if perRepo (cons index rl)
         rl)))) 
