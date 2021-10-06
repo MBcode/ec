@@ -388,49 +388,49 @@ def init_sparql():
     sparql_inited=cs
     get_ec("http://mbobak-ofc.ncsa.illinois.edu/ext/ec/nb/sparql-query.txt")
 
- 
-#qs=get_txtfile("sparql-query.txt")
+ #qs=get_txtfile("sparql-query.txt")
 #if(not qs):
-    qs = """ PREFIX bds: <http://www.bigdata.com/rdf/search#>
-    PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-    PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-    prefix schema: <http://schema.org/>
-    prefix sschema: <https://schema.org/>
-    SELECT distinct ?subj ?g ?resourceType ?name ?description  ?pubname 
-        (GROUP_CONCAT(DISTINCT ?placename; SEPARATOR=", ") AS ?placenames)
-        (GROUP_CONCAT(DISTINCT ?kwu; SEPARATOR=", ") AS ?kw)
-        ?datep  (GROUP_CONCAT(DISTINCT ?url; SEPARATOR=", ") AS ?disurl) (MAX(?score1) as ?score) 
-        WHERE {
-            ?lit bds:search "norway" .
-            ?lit bds:matchAllTerms false .
-            ?lit bds:relevance ?score1 .
-            ?lit bds:minRelevance 0.14 .
-            ?subj ?p ?lit .
-            BIND (IF (exists {?subj a schema:Dataset .} ||exists{?subj a sschema:Dataset .} , "data", "tool")
-                     AS ?resourceType).
-          graph ?g {
-            Minus {?subj a sschema:ResearchProject } .
-            Minus {?subj a schema:ResearchProject } .
-            Minus {?subj a schema:Person } .
-            Minus {?subj a sschema:Person } .
-             ?subj schema:name|sschema:name ?name .
-                       ?subj schema:description|sschema:description ?description .
-             }
-            optional {?subj schema:distribution/schema:url|schema:subjectOf/schema:url ?url .}
-            OPTIONAL {?subj schema:datePublished|sschema:datePublished ?date_p .}
-            OPTIONAL {?subj 
+    #qs = 
+qs = """ PREFIX bds: <http://www.bigdata.com/rdf/search#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+prefix schema: <http://schema.org/>
+prefix sschema: <https://schema.org/>
+SELECT distinct ?subj ?g ?resourceType ?name ?description  ?pubname 
+    (GROUP_CONCAT(DISTINCT ?placename; SEPARATOR=", ") AS ?placenames)
+    (GROUP_CONCAT(DISTINCT ?kwu; SEPARATOR=", ") AS ?kw)
+    ?datep  (GROUP_CONCAT(DISTINCT ?url; SEPARATOR=", ") AS ?disurl) (MAX(?score1) as ?score) 
+    WHERE {
+        ?lit bds:search "norway" .
+        ?lit bds:matchAllTerms false .
+        ?lit bds:relevance ?score1 .
+        ?lit bds:minRelevance 0.14 .
+        ?subj ?p ?lit .
+        BIND (IF (exists {?subj a schema:Dataset .} ||exists{?subj a sschema:Dataset .} , "data", "tool")
+                 AS ?resourceType).
+      graph ?g {
+        Minus {?subj a sschema:ResearchProject } .
+        Minus {?subj a schema:ResearchProject } .
+        Minus {?subj a schema:Person } .
+        Minus {?subj a sschema:Person } .
+         ?subj schema:name|sschema:name ?name .
+                   ?subj schema:description|sschema:description ?description .
+         }
+        optional {?subj schema:distribution/schema:url|schema:subjectOf/schema:url ?url .}
+        OPTIONAL {?subj schema:datePublished|sschema:datePublished ?date_p .}
+        OPTIONAL {?subj 
 schema:publisher/schema:name|sschema:publisher/sschema:name|sschema:sdPublisher|schema:provider/schema:name 
-                    ?pub_name .}
-            OPTIONAL 
-            {?subj schema:spatialCoverage/schema:name|sschema:spatialCoverage/sschema:name ?place_name .}
-            OPTIONAL {?subj schema:keywords|sschema:keywords ?kwu .}
-            BIND ( IF ( BOUND(?date_p), ?date_p, "No datePublished") as ?datep ) .
-            BIND ( IF ( BOUND(?pub_name), ?pub_name, "No Publisher") as ?pubname ) .
-            BIND ( IF ( BOUND(?place_name), ?place_name, "No spatialCoverage") as ?placename ) .
-        }
-        GROUP BY ?subj ?pubname ?placenames ?kw ?datep ?disurl ?score ?name ?description  ?resourceType ?g
-        ORDER BY DESC(?score)
-        limit 1000"""
+                ?pub_name .}
+        OPTIONAL 
+        {?subj schema:spatialCoverage/schema:name|sschema:spatialCoverage/sschema:name ?place_name .}
+        OPTIONAL {?subj schema:keywords|sschema:keywords ?kwu .}
+        BIND ( IF ( BOUND(?date_p), ?date_p, "No datePublished") as ?datep ) .
+        BIND ( IF ( BOUND(?pub_name), ?pub_name, "No Publisher") as ?pubname ) .
+        BIND ( IF ( BOUND(?place_name), ?place_name, "No spatialCoverage") as ?placename ) .
+    }
+    GROUP BY ?subj ?pubname ?placenames ?kw ?datep ?disurl ?score ?name ?description  ?resourceType ?g
+    ORDER BY DESC(?score)
+    limit 1000"""
 #def sq2df(qry_str):
 def txt_query(qry_str):
     "sparql to df"
