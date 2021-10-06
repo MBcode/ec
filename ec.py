@@ -439,7 +439,8 @@ def txt_query(qry_str):
     qs=get_txtfile("sparql-query.txt")
     import sparqldataframe
     endpoint = "https://graph.geodex.org/blazegraph/namespace/nabu/sparql"
-    q=qs.replace('norway',qry_str)
+    q=qs.replace('${q}',qry_str)
+    q=qs.replace('norway',qry_str) #just in case that is still around
     #q=qs
     #print(f'q:{q}')
     df = sparqldataframe.query(endpoint, q)
