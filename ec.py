@@ -379,7 +379,7 @@ def read_file(fnp, ext=None):  #download url and ext/filetype
 #=========append fnc from filtereSPARQLdataframe.ipynb
 sparql_inited=None
 def init_sparql():
-    cs='pip install sparqldataframe'
+    cs='pip install sparqldataframe simplejson'
     os_system(cs)
     sparql_inited=cs
 
