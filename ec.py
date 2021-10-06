@@ -377,10 +377,18 @@ def read_file(fnp, ext=None):  #download url and ext/filetype
  #probably drop the [ls-l] part&just have ppl use fileBrowser, even though some CLI would still be good
 #not just 404, getting small file back also worth logging
 #=========append fnc from filtereSPARQLdataframe.ipynb
+sparql_inited=None
+def init_sparql():
+    cs='pip install sparqldataframe'
+    os_system(cs)
+    sparql_inited=cs
+
  
 #def sq2df(qry_str):
 def txt_query(qry_str):
     "sparql to df"
+    if sparql_inited==None:
+        init_sparql()
     qs = """ PREFIX bds: <http://www.bigdata.com/rdf/search#>
     PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
     PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
