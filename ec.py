@@ -16,6 +16,10 @@ import sys
 #import recipy
 
 #from qry.py
+def get_txtfile(fn):
+    with open(fn, "r") as f:
+        return f.read()
+
 def put_txtfile(fn,s,wa="w"):
     #with open(fn, "w") as f:
     with open(fn, wa) as f:
@@ -382,13 +386,11 @@ def init_sparql():
     cs='pip install sparqldataframe simplejson'
     os_system(cs)
     sparql_inited=cs
+    get_ec("http://mbobak-ofc.ncsa.illinois.edu/ext/ec/nb/sparql-query.txt")
 
  
-#def sq2df(qry_str):
-def txt_query(qry_str):
-    "sparql to df"
-    if sparql_inited==None:
-        init_sparql()
+#qs=get_txtfile("sparql-query.txt")
+#if(not qs):
     qs = """ PREFIX bds: <http://www.bigdata.com/rdf/search#>
     PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
     PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -429,6 +431,12 @@ schema:publisher/schema:name|sschema:publisher/sschema:name|sschema:sdPublisher|
         GROUP BY ?subj ?pubname ?placenames ?kw ?datep ?disurl ?score ?name ?description  ?resourceType ?g
         ORDER BY DESC(?score)
         limit 1000"""
+#def sq2df(qry_str):
+def txt_query(qry_str):
+    "sparql to df"
+    if sparql_inited==None:
+        init_sparql()
+    qs=get_txtfile("sparql-query.txt")
     import sparqldataframe
     endpoint = "https://graph.geodex.org/blazegraph/namespace/nabu/sparql"
     q=qs.replace('norway',qry_str)
