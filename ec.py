@@ -377,12 +377,16 @@ def read_file(fnp, ext=None):  #download url and ext/filetype
  #probably drop the [ls-l] part&just have ppl use fileBrowser, even though some CLI would still be good
 #not just 404, getting small file back also worth logging
 #=========append fnc from filtereSPARQLdataframe.ipynb
-qs = """ PREFIX bds: <http://www.bigdata.com/rdf/search#>
-PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-prefix schema: <http://schema.org/>
-prefix sschema: <https://schema.org/>
-SELECT distinct ?subj ?g ?resourceType ?name ?description  ?pubname 
+ 
+#def sq2df(qry_str):
+def txt_query(qry_str):
+    "sparql to df"
+    qs = """ PREFIX bds: <http://www.bigdata.com/rdf/search#>
+    PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+    PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+    prefix schema: <http://schema.org/>
+    prefix sschema: <https://schema.org/>
+    SELECT distinct ?subj ?g ?resourceType ?name ?description  ?pubname 
         (GROUP_CONCAT(DISTINCT ?placename; SEPARATOR=", ") AS ?placenames)
         (GROUP_CONCAT(DISTINCT ?kwu; SEPARATOR=", ") AS ?kw)
         ?datep  (GROUP_CONCAT(DISTINCT ?url; SEPARATOR=", ") AS ?disurl) (MAX(?score1) as ?score) 
@@ -390,14 +394,13 @@ SELECT distinct ?subj ?g ?resourceType ?name ?description  ?pubname
             ?lit bds:search "norway" .
             ?lit bds:matchAllTerms false .
             ?lit bds:relevance ?score1 .
+            ?lit bds:minRelevance 0.14 .
             ?subj ?p ?lit .
             BIND (IF (exists {?subj a schema:Dataset .} ||exists{?subj a sschema:Dataset .} , "data", "tool")
                      AS ?resourceType).
-            filter( ?score1 > 0.04).
           graph ?g {
             Minus {?subj a sschema:ResearchProject } .
             Minus {?subj a schema:ResearchProject } .
-
             Minus {?subj a schema:Person } .
             Minus {?subj a sschema:Person } .
              ?subj schema:name|sschema:name ?name .
@@ -418,10 +421,6 @@ schema:publisher/schema:name|sschema:publisher/sschema:name|sschema:sdPublisher|
         GROUP BY ?subj ?pubname ?placenames ?kw ?datep ?disurl ?score ?name ?description  ?resourceType ?g
         ORDER BY DESC(?score)
         limit 1000"""
- 
-#def sq2df(qry_str):
-def txt_query(qry_str):
-    "sparql to df"
     import sparqldataframe
     endpoint = "https://graph.geodex.org/blazegraph/namespace/nabu/sparql"
     q=qs.replace('norway',qry_str)
