@@ -1,2 +1,4 @@
 crawlLD extruct js/onLD, then checkSite on sitemap updates and ld2nt conversion
 [[flow.svg]]
+More on ETL for annotaions soon
+[[etl.svg]]
