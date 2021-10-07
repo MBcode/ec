@@ -216,7 +216,8 @@ def init_sparql():
     cs='pip install sparqldataframe simplejson'
     os_system(cs)
     sparql_inited=cs
-    get_ec("http://mbobak-ofc.ncsa.illinois.edu/ext/ec/nb/sparql-query.txt")
+    #get_ec("http://mbobak-ofc.ncsa.illinois.edu/ext/ec/nb/sparql-query.txt")
+    get_ec("https://raw.githubusercontent.com/MBcode/ec/master/NoteBook/sparql-query.txt")
     return get_txtfile("sparql-query.txt")
 
  #qs=get_txtfile("sparql-query.txt")
@@ -261,6 +262,7 @@ def rdfxml_viz(fnb): #cp&paste (rdf)xml file paths from in .zip files
     xml2nt(fnb)
     nt_viz(fnb)
 
+#this could be generalized further to display available views of the DataFrame as well
 def viz(fn=".all.nt"): #might call this rdf_viz once we get some other type of viz going
     if has_ext(fn):
         ext=file_ext(fn)
