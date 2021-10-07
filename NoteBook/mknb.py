@@ -178,15 +178,30 @@ def pm_nb3(dwn_url, ext=None, urn=None):
             sext=ext.replace(" ","_").replace("(","_").replace(")","_").replace(";","_").replace("\n",' ') 
             sext1=first_str(sext)
             print(f'ext:{sext},1:{sext1}')
-            ext_arg=f' -p ext {sext1} '
+          # ext_arg=f' -p ext {sext1} '
+            ext_arg=f' -p ext "{sext1}" '
         else:
             ext_arg=""
         if urn:
-            urn_arg=f' -p urn {urn} '
+          # urn_arg=f' -p urn {urn} '
+            urn_arg=f' -p urn "{urn}" '
         else:
             urn_arg=""
         #cs=f'papermill --prepare-only template.ipynb {fn} -p contenturl {dwnurl} {ext_arg} {urn_arg}'
-        cs=f'papermill --prepare-only template.ipynb {fn} -p url {dwnurl} {ext_arg} {urn_arg}'
+      # cs=f'papermill --prepare-only template.ipynb {fn} -p url {dwnurl} {ext_arg} {urn_arg}'
+        cs=f'papermill --prepare-only template.ipynb {fn} -p url "{dwnurl}" {ext_arg} {urn_arg}'
+        print(cs)
+        os.system(cs)
+    return post_gist(fn)
+
+def pm_q3(q):
+    import os
+    from os import path
+    fn= "q/" + q
+    if path.exists(fn):
+        print(f'reuse:{fn}')
+    else:
+        cs=f'papermill --prepare-only template.ipynb {fn} -p q {q}'
         print(cs)
         os.system(cs)
     return post_gist(fn)
@@ -215,7 +230,7 @@ blockip=os.getenv("blockip")
 if blockip:
     ip_ban.block(blockip)
 
-@app.route('/mknb/') #works, but often have2rerun the clicked link2get rid of errors
+@app.route('/mknb/') 
 def mk_nb():
     "make a NoteBook"
     dwnurl_str = request.args.get('url',  type = str)
@@ -226,6 +241,16 @@ def mk_nb():
     print(f'urn={urn}')
     r= mknb(dwnurl_str,ext,urn)
     return r
+
+@app.route('/mkQ/') 
+def mk_Q():
+    "make a NoteBook"
+    dwnurl_str = request.args.get('q',  type = str)
+    print(f'q={q}')
+    #r= mkQ(q) #just pagemill directly
+    r= pm_q3(q)
+    return r
+
 
 @app.route('/logbad/')  #have try/except, so log errors soon, also have 'log' file in NB from wget/etc
 def log_bad():
