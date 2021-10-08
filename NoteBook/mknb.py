@@ -171,10 +171,6 @@ def pm_nb3(dwn_url, ext=None, urn=None):
         print(f'reuse:{fn}')
     else:
         if ext:
-            #sext=ext.replace(" ","_").replace("(","_").replace(")","_") 
-            #sext=ext.replace(" ","_").replace("(","_").replace(")","_").replace(";","_") #make this safer
-            #sext=ext.replace(" ","_").replace("(","_").replace(")","_").replace(";"," ") #make this safer
-            #sext=ext.replace(" ","_").replace("(","_").replace(")","_").replace(";"," ").replace("\n",' ') 
             sext=ext.replace(" ","_").replace("(","_").replace(")","_").replace(";","_").replace("\n",' ') 
             sext1=first_str(sext)
             print(f'ext:{sext},1:{sext1}')
@@ -197,11 +193,11 @@ def pm_nb3(dwn_url, ext=None, urn=None):
 def pm_q3(q):
     import os
     from os import path
-    fn= "q/" + q
+    fn= "q/" + q + ".ipynb"
     if path.exists(fn):
         print(f'reuse:{fn}')
     else:
-        cs=f'papermill --prepare-only template.ipynb {fn} -p q {q}'
+        cs=f'papermill --prepare-only sparql.ipynb {fn} -p q {q}'
         print(cs)
         os.system(cs)
     return post_gist(fn)
@@ -245,7 +241,7 @@ def mk_nb():
 @app.route('/mkQ/') 
 def mk_Q():
     "make a NoteBook"
-    dwnurl_str = request.args.get('q',  type = str)
+    q = request.args.get('q',  type = str)
     print(f'q={q}')
     #r= mkQ(q) #just pagemill directly
     r= pm_q3(q)
