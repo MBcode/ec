@@ -1,37 +1,15 @@
-## Welcome to GitHub Pages
+## This is an [EarthCube](https://www.earthcube.org/) [GeoCODES](https://www.earthcube.org/geocodes) staging ground
 
-You can use the [editor on GitHub](https://github.com/MBcode/ec/edit/gh-pages/index.md) to maintain and preview the content for your website in Markdown files.
+Just starting to [edit](https://github.com/MBcode/ec/edit/gh-pages/index.md) the Markdown files.
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+The early doc started with the main [ReadMe](https://github.com/MBcode/ec#readme) &then topical sub-dirs
 
-### Markdown
+The latest thoughts on the most genericaly useful, but waylaid work is [here](https://github.com/MBcode/ec/tree/master/crawl#readme)
 
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
+One of the most lasting effects on the community is the use of [ScieneOnSchema.org](https://github.com/ESIPFed/science-on-schema.org/blob/master/guides/GETTING-STARTED.md) metadata
 
-```markdown
-Syntax highlighted code block
+Yet that often ends in text/**string** vs interconnected graph URI/**thing** descriptions
 
-# Header 1
-## Header 2
-### Header 3
+I want to start deduplicating, and giving URI IDs,& then using NER for annotation, to get a healthy graph of connections
 
-- Bulleted
-- List
-
-1. Numbered
-2. List
-
-**Bold** and _Italic_ and `Code` text
-
-[Link](url) and ![Image](src)
-```
-
-For more details see [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
-
-### Jekyll Themes
-
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/MBcode/ec/settings/pages). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
-
-### Support or Contact
-
-Having trouble with Pages? Check out our [documentation](https://docs.github.com/categories/github-pages-basics/) or [contact support](https://support.github.com/contact) and we’ll help you sort it out.
+By using even more [FAIR principles](https://www.go-fair.org/fair-principles/) we can improve the machine actionalble aids to doing science
