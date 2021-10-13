@@ -1,2 +1,2 @@
 Get cp -a of most active part of https://github.com/earthcube/geodexui as it is superceded by facetedsearch. [python3 -m http.server] 
-To more easily try things out, w/o effecting that other code in the future
+To more easily try things out, w/o effecting that other code in the future.  Try it out [[http://mbobak-ofc.ncsa.illinois.edu/fs][here]], and the [[https://geocodes.earthcube.org/#/landing][production site here]]
