@@ -10,6 +10,6 @@ One of the most lasting effects on the community is the use of [ScieneOnSchema.o
 
 Yet that often ends in text/**string** vs interconnected graph URI/**thing** descriptions
 
-I want to start deduplicating, and giving URI IDs,& then using NER for annotation, to get a healthy graph of connections
+I want to start deduplicating, giving URI IDs,& then using NER for annotation, to get a healthy graph of connections
 
-By using even more [FAIR principles](https://www.go-fair.org/fair-principles/) we can improve the machine actionalble aids to doing science
+By using even more [FAIR principles](https://www.go-fair.org/fair-principles/) we can improve the machine actionable aids to doing science
