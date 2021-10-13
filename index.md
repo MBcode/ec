@@ -13,3 +13,5 @@ Yet that often ends in text/**string** vs interconnected graph URI/**thing** des
 I want to start deduplicating, giving URI IDs,& then using NER for annotation, to get a healthy graph of connections
 
 By using even more [FAIR principles](https://www.go-fair.org/fair-principles/) we can improve the machine actionable aids to doing science
+
+![Image](https://github.com/MBcode/ec/blob/master/crawl/etl.svg)
