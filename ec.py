@@ -406,12 +406,15 @@ def read_file(fnp, ext=None):  #download url and ext/filetype
 #not just 404, getting small file back also worth logging
 #=========append fnc from filtereSPARQLdataframe.ipynb
 #def sq2df(qry_str):
-def txt_query(qry_str):
+#def txt_query(qry_str): #consider sending in qs=None =dflt lookup as now, or use what sent in
+def txt_query(qry_str,sqs=None): #a generalized version would take pairs/eg. <${g}> URN 
     "sparql to df"
     if sparql_inited==None:
-        qs=init_sparql()
+        #qs=init_sparql()
+        qs= sqs or init_sparql()
     else:
-        qs=get_txtfile("sparql-query.txt")
+        #qs=get_txtfile("sparql-query.txt")
+        qs= sqs or get_txtfile("sparql-query.txt")
     import sparqldataframe, simplejson
     endpoint = "https://graph.geodex.org/blazegraph/namespace/nabu/sparql"
     add2log(qry_str)
