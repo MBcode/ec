@@ -92,6 +92,9 @@ def get_webservice_txt(url="https://raw.githubusercontent.com/earthcube/facetsea
 def get_download_txt(url="https://raw.githubusercontent.com/earthcube/facetsearch/master/client/src/sparql_blaze/sparql_gettools_download.txt"):
     return get_ec_txt(url)
 
+def get_notebook_txt(url="https://raw.githubusercontent.com/MBcode/ec/master/NoteBook/sparql_gettools_notebook.txt"):
+    return get_ec_txt(url)
+
 def get_query_txt(url="https://raw.githubusercontent.com/MBcode/ec/master/NoteBook/sparql-query.txt"):
     return get_ec_txt(url)
 
@@ -454,6 +457,9 @@ def search_download(urn):
 
 def search_webservice(urn):
     return v4qry(urn,"webservice")
+
+def search_notebook(urn):
+    return v4qry(urn,"notebook")
 
 #=========append fnc from filtereSPARQLdataframe.ipynb
 #def sq2df(qry_str):
