@@ -71,11 +71,23 @@ def pre_rm(url):
     fnb=path_leaf(url)
     cs=f'rm {fnb}'
     os_system(cs)
+    return fnb
 
 def get_ec(url="http://mbobak-ofc.ncsa.illinois.edu/ext/ec/nb/ec.py"):
     pre_rm(url)
     wget(url)
     return "import ec"
+
+def get_ec_txt(url):
+    fnb= pre_rm(url)
+    wget(url)
+    return get_txtfile(fnb)
+
+def get_webservice_txt(url="https://raw.githubusercontent.com/earthcube/facetsearch/master/client/src/sparql_blaze/sparql_gettools_webservice.txt"):
+    return get_ec_txt(url)
+
+def get_download_txt(url="https://raw.githubusercontent.com/earthcube/facetsearch/master/client/src/sparql_blaze/sparql_gettools_download.txt"):
+    return get_ec_txt(url)
 
 def add_ext(fn,ft):
     if ft==None or ft=='' or ft=='.' or len(ft)<2:
