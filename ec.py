@@ -449,11 +449,11 @@ def v4qry(var,qt):
 def search_query(q): #same as txt_query below
     return v4qry(q,"query")
 
-def search_download(q):
-    return v4qry(q,"download")
+def search_download(urn):
+    return v4qry(urn,"download")
 
-def search_webservice(q):
-    return v4qry(q,"webservice")
+def search_webservice(urn):
+    return v4qry(urn,"webservice")
 
 #=========append fnc from filtereSPARQLdataframe.ipynb
 #def sq2df(qry_str):
