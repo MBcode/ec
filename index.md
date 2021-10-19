@@ -14,4 +14,4 @@ I want to start deduplicating, giving URI IDs,& then using NER for annotation, t
 
 By using even more [FAIR principles](https://www.go-fair.org/fair-principles/) we can improve the machine actionable aids to doing science
 
-![Image](https://raw.githubusercontent.com/MBcode/ec/master/crawl/etl.svg)
+![Image](https://github.com/MBcode/ec/raw/master/crawl/etl.svg)
