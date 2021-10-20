@@ -6,7 +6,7 @@ The early doc started with the main [ReadMe](https://github.com/MBcode/ec#readme
 
 The latest thoughts on the most genericaly useful, but waylaid work is [here (in diagrams)](https://github.com/MBcode/ec/tree/master/crawl#readme)
 
-One of the most lasting effects on the community is the use of [ScieneOnSchema.org](https://github.com/ESIPFed/science-on-schema.org/blob/master/guides/GETTING-STARTED.md) metadata
+One of the most lasting effects on the community is the use of [ScienceOnSchema.org](https://github.com/ESIPFed/science-on-schema.org/blob/master/guides/GETTING-STARTED.md) metadata
 
 Yet that often ends in text/**string** vs interconnected graph URI/**thing** descriptions
 
