@@ -15,3 +15,11 @@ I want to start deduplicating, giving URI IDs,& then using NER for annotation, t
 By using even more [FAIR principles](https://www.go-fair.org/fair-principles/) we can improve the machine actionable aids to doing science
 
 ![Image](https://github.com/MBcode/ec/raw/master/crawl/etl.svg)
+
+The checking could also be done from the [gleaner](https://gleaner.io/) generated quads.
+
+The _dedup_ could even be done via [openrefine](https://guides.library.illinois.edu/openrefine/duplicates), if not the [py](https://pypi.org/project/dedupe/) [lib](https://pypi.org/project/pandas-dedupe/)
+
+[Generating](https://notes.knowledgefutures.org/pub/ic0grz58/release/3) an @id for (especially repeated) blank-nodes
+
+Then [lookup](https://github.com/WDscholia/scholia/blob/master/scholia/api.py) /Name the entities (NER), incl [relations](https://lhncbc.nlm.nih.gov/ii/tools/SemRep_SemMedDB_SKR.html) which can then ve [shown](https://lhce-brat.nlm.nih.gov/index.xhtml#/SKR/Factuality/Reconcile_50/10048237) w/the txt
