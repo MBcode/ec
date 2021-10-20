@@ -88,8 +88,8 @@
 <!-- resourceMD&#45;&gt;annotation -->
 <g id="edge8" class="edge">
 <title>resourceMD&#45;&gt;annotation</title>
-<path fill="none" stroke="black" d="M81.27,-174.1C90.43,-163.57 103.23,-150.31 116.59,-141 126.2,-134.31 137.29,-128.41 148.04,-123.46"/>
-<polygon fill="black" stroke="black" points="149.62,-126.6 157.36,-119.36 146.8,-120.19 149.62,-126.6"/>
+<path fill="none" stroke="blue" d="M81.27,-174.1C90.43,-163.57 103.23,-150.31 116.59,-141 126.2,-134.31 137.29,-128.41 148.04,-123.46"/>
+<polygon fill="blue" stroke="blue" points="149.62,-126.6 157.36,-119.36 146.8,-120.19 149.62,-126.6"/>
 <text text-anchor="middle" x="137.09" y="-144.8" font-family="Times,serif" font-size="14.00">check</text>
 </g>
 <!-- search -->
@@ -128,7 +128,7 @@
 <!-- check -->
 <g id="node9" class="node">
 <title>check</title>
-<ellipse fill="none" stroke="black" cx="416.59" cy="-425" rx="37.09" ry="18"/>
+<ellipse fill="none" stroke="blue" cx="416.59" cy="-425" rx="37.09" ry="18"/>
 <text text-anchor="middle" x="416.59" y="-421.3" font-family="Times,serif" font-size="14.00">check</text>
 </g>
 <!-- dedup -->
