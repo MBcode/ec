@@ -18,7 +18,7 @@ By using even more [FAIR principles](https://www.go-fair.org/fair-principles/) w
 
 The checking could also be done from the [gleaner](https://gleaner.io/) generated quads.
 
-The _dedup_ could even be done via [openrefine](https://guides.library.illinois.edu/openrefine/duplicates), if not a [py](https://pypi.org/project/dedupe/) [lib](https://pypi.org/project/pandas-dedupe/)
+The _dedup_ could even be done via [openrefine](https://guides.library.illinois.edu/openrefine/duplicates), if not [a](https://pypi.org/project/sparqldataframe/) [py](https://pypi.org/project/pandas-dedupe/) [lib](https://pypi.org/project/dedupe/)
 
 _[Generating](https://notes.knowledgefutures.org/pub/ic0grz58/release/3) an @id_ for (especially repeated) blank-nodes
 
