@@ -14,7 +14,7 @@ So I want to start improving this situation by:
 
 _deduplicating_, giving _URI IDs,_ & then using _[NER](https://en.wikipedia.org/wiki/Named-entity_recognition)_ for annotation, to get a healthy graph of connections
 
-By using even more of the [FAIR principles](https://www.go-fair.org/fair-principles/), we can improve the machine action-ablility&general capabilities
+By using even more of the [FAIR principles](https://www.go-fair.org/fair-principles/)[,](https://phaidra.univie.ac.at/download/o:1246343) we can improve the machine action-ablility&general capabilities
 
 ![Image](https://github.com/MBcode/ec/raw/master/crawl/etl.svg)
 
