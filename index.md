@@ -4,7 +4,7 @@ Just starting to [edit](https://github.com/MBcode/ec/edit/gh-pages/index.md) the
 
 The early doc started with the main [ReadMe](https://github.com/MBcode/ec#readme) &then topical sub-dirs
 
-These latest (but waylaid) thoughts started [in these diagrams](https://github.com/MBcode/ec/tree/master/crawl#readme) now below
+These latest (but waylaid) thoughts started [in these diagrams](https://github.com/MBcode/ec/tree/master/crawl#readme), now below
 
 One of the most lasting effects on the community is the use of [ScienceOnSchema.org](https://github.com/ESIPFed/science-on-schema.org/blob/master/guides/GETTING-STARTED.md) [metadata](http://isda.ncsa.uiuc.edu/~mbobak/sd/)
 
