@@ -16,7 +16,8 @@
 (defvar *csv* (cl-csv:read-csv #P"CDF_Sites.csv"))
 (defvar *c1* (first *csv*)) ;headings
 (defvar *cf* (rest *csv*))  ;rest of csv
-(defvar *c* (subseq *cf* 0 18)) ;was 17
+;(defvar *c* (subseq *cf* 0 18)) ;was 17
+(defvar *c* (subseq *cf* 0 23)) ;was 17
 (defvar *c2* (first *c*)) ;for testing
 (defvar *c5* (fourth *c*)) ;for testing
 (defun ldns (l &optional (hover t))
