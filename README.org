@@ -1,4 +1,5 @@
 ** metadata-search of Dataset/resources
+*** New: [[https://mbcode.github.io/ec/][github-pages]]
 *** started with:
 crawl of embedded metadata for each of their landing pages, and search in a triplestore
 *** this repo started to:
