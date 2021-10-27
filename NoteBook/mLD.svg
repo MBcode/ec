@@ -5,75 +5,93 @@
  -->
 <!-- Title: matchLD Pages: 1 -->
 <svg width="614pt" height="116pt"
- viewBox="0.00 0.00 614.04 116.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+ viewBox="0.00 0.00 613.79 116.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
 <g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 112)">
 <title>matchLD</title>
-<polygon fill="white" stroke="transparent" points="-4,4 -4,-112 610.04,-112 610.04,4 -4,4"/>
+<polygon fill="white" stroke="transparent" points="-4,4 -4,-112 609.79,-112 609.79,4 -4,4"/>
 <!-- qryToolMatch -->
 <g id="node1" class="node">
 <title>qryToolMatch</title>
-<ellipse fill="none" stroke="black" cx="124.25" cy="-90" rx="62.29" ry="18"/>
-<text text-anchor="middle" x="124.25" y="-86.3" font-family="Times,serif" font-size="14.00">qryToolMatch</text>
-</g>
-<!-- FusekiTools -->
-<g id="node2" class="node">
-<title>FusekiTools</title>
-<ellipse fill="none" stroke="black" cx="55.25" cy="-18" rx="55.49" ry="18"/>
-<text text-anchor="middle" x="55.25" y="-14.3" font-family="Times,serif" font-size="14.00">FusekiTools</text>
-</g>
-<!-- qryToolMatch&#45;&gt;FusekiTools -->
-<g id="edge1" class="edge">
-<title>qryToolMatch&#45;&gt;FusekiTools</title>
-<path fill="none" stroke="black" d="M107.89,-72.41C99.13,-63.52 88.18,-52.41 78.54,-42.63"/>
-<polygon fill="black" stroke="black" points="80.99,-40.13 71.48,-35.47 76.01,-45.05 80.99,-40.13"/>
+<ellipse fill="none" stroke="black" cx="228.99" cy="-90" rx="62.29" ry="18"/>
+<text text-anchor="middle" x="228.99" y="-86.3" font-family="Times,serif" font-size="14.00">qryToolMatch</text>
 </g>
 <!-- BlazeMainMD -->
-<g id="node3" class="node">
+<g id="node2" class="node">
 <title>BlazeMainMD</title>
-<ellipse fill="none" stroke="black" cx="193.25" cy="-18" rx="64.99" ry="18"/>
-<text text-anchor="middle" x="193.25" y="-14.3" font-family="Times,serif" font-size="14.00">BlazeMainMD</text>
+<ellipse fill="none" stroke="black" cx="64.99" cy="-18" rx="64.99" ry="18"/>
+<text text-anchor="middle" x="64.99" y="-14.3" font-family="Times,serif" font-size="14.00">BlazeMainMD</text>
 </g>
 <!-- qryToolMatch&#45;&gt;BlazeMainMD -->
-<g id="edge2" class="edge">
+<g id="edge1" class="edge">
 <title>qryToolMatch&#45;&gt;BlazeMainMD</title>
-<path fill="none" stroke="black" d="M140.6,-72.41C149.36,-63.52 160.31,-52.41 169.95,-42.63"/>
-<polygon fill="black" stroke="black" points="172.48,-45.05 177.01,-35.47 167.5,-40.13 172.48,-45.05"/>
+<path fill="none" stroke="black" d="M195.41,-74.67C170.18,-63.9 135.42,-49.06 108.13,-37.41"/>
+<polygon fill="black" stroke="black" points="109.39,-34.14 98.81,-33.44 106.64,-40.58 109.39,-34.14"/>
+</g>
+<!-- FusekiTools -->
+<g id="node3" class="node">
+<title>FusekiTools</title>
+<ellipse fill="none" stroke="black" cx="386.99" cy="-18" rx="55.49" ry="18"/>
+<text text-anchor="middle" x="386.99" y="-14.3" font-family="Times,serif" font-size="14.00">FusekiTools</text>
+</g>
+<!-- qryToolMatch&#45;&gt;FusekiTools -->
+<g id="edge2" class="edge">
+<title>qryToolMatch&#45;&gt;FusekiTools</title>
+<path fill="none" stroke="black" d="M261.73,-74.5C286.29,-63.62 320.04,-48.66 346.33,-37.02"/>
+<polygon fill="black" stroke="black" points="347.92,-40.14 355.64,-32.89 345.08,-33.74 347.92,-40.14"/>
 </g>
 <!-- qryToolMatch2 -->
 <g id="node4" class="node">
 <title>qryToolMatch2</title>
-<ellipse fill="none" stroke="black" cx="359.25" cy="-90" rx="66.89" ry="18"/>
-<text text-anchor="middle" x="359.25" y="-86.3" font-family="Times,serif" font-size="14.00">qryToolMatch2</text>
+<ellipse fill="none" stroke="black" cx="386.99" cy="-90" rx="66.89" ry="18"/>
+<text text-anchor="middle" x="386.99" y="-86.3" font-family="Times,serif" font-size="14.00">qryToolMatch2</text>
 </g>
-<!-- qryToolMatch2&#45;&gt;BlazeMainMD -->
+<!-- qryToolMatch2&#45;&gt;FusekiTools -->
 <g id="edge3" class="edge">
-<title>qryToolMatch2&#45;&gt;BlazeMainMD</title>
-<path fill="none" stroke="black" d="M324.85,-74.5C299.28,-63.71 264.21,-48.92 236.7,-37.32"/>
-<polygon fill="black" stroke="black" points="237.89,-34.03 227.31,-33.37 235.17,-40.48 237.89,-34.03"/>
+<title>qryToolMatch2&#45;&gt;FusekiTools</title>
+<path fill="none" stroke="black" d="M386.99,-71.7C386.99,-63.98 386.99,-54.71 386.99,-46.11"/>
+<polygon fill="black" stroke="black" points="390.49,-46.1 386.99,-36.1 383.49,-46.1 390.49,-46.1"/>
 </g>
 <!-- NBlocalURNtriples -->
 <g id="node5" class="node">
 <title>NBlocalURNtriples</title>
-<ellipse fill="none" stroke="black" cx="359.25" cy="-18" rx="83.39" ry="18"/>
-<text text-anchor="middle" x="359.25" y="-14.3" font-family="Times,serif" font-size="14.00">NBlocalURNtriples</text>
+<ellipse fill="none" stroke="black" cx="230.99" cy="-18" rx="83.39" ry="18"/>
+<text text-anchor="middle" x="230.99" y="-14.3" font-family="Times,serif" font-size="14.00">NBlocalURNtriples</text>
 </g>
 <!-- qryToolMatch2&#45;&gt;NBlocalURNtriples -->
 <g id="edge4" class="edge">
 <title>qryToolMatch2&#45;&gt;NBlocalURNtriples</title>
-<path fill="none" stroke="black" d="M359.25,-71.7C359.25,-63.98 359.25,-54.71 359.25,-46.11"/>
-<polygon fill="black" stroke="black" points="362.75,-46.1 359.25,-36.1 355.75,-46.1 362.75,-46.1"/>
+<path fill="none" stroke="black" d="M353.91,-74.15C330.83,-63.8 299.8,-49.87 274.69,-38.6"/>
+<polygon fill="black" stroke="black" points="275.94,-35.33 265.38,-34.43 273.07,-41.72 275.94,-35.33"/>
 </g>
 <!-- NBlocalRDFxml -->
 <g id="node6" class="node">
 <title>NBlocalRDFxml</title>
-<ellipse fill="none" stroke="black" cx="533.25" cy="-18" rx="72.59" ry="18"/>
-<text text-anchor="middle" x="533.25" y="-14.3" font-family="Times,serif" font-size="14.00">NBlocalRDFxml</text>
+<ellipse fill="none" stroke="black" cx="532.99" cy="-18" rx="72.59" ry="18"/>
+<text text-anchor="middle" x="532.99" y="-14.3" font-family="Times,serif" font-size="14.00">NBlocalRDFxml</text>
 </g>
 <!-- qryToolMatch2&#45;&gt;NBlocalRDFxml -->
 <g id="edge5" class="edge">
 <title>qryToolMatch2&#45;&gt;NBlocalRDFxml</title>
-<path fill="none" stroke="black" d="M394.88,-74.67C421.59,-63.92 458.36,-49.13 487.28,-37.49"/>
-<polygon fill="black" stroke="black" points="488.79,-40.66 496.76,-33.68 486.18,-34.16 488.79,-40.66"/>
+<path fill="none" stroke="black" d="M418.31,-73.98C439.82,-63.67 468.58,-49.88 491.92,-38.69"/>
+<polygon fill="black" stroke="black" points="493.72,-41.71 501.22,-34.23 490.69,-35.4 493.72,-41.71"/>
+</g>
+<!-- qryRelated -->
+<g id="node7" class="node">
+<title>qryRelated</title>
+<ellipse fill="none" stroke="black" cx="75.99" cy="-90" rx="50.89" ry="18"/>
+<text text-anchor="middle" x="75.99" y="-86.3" font-family="Times,serif" font-size="14.00">qryRelated</text>
+</g>
+<!-- qryRelated&#45;&gt;BlazeMainMD -->
+<g id="edge6" class="edge">
+<title>qryRelated&#45;&gt;BlazeMainMD</title>
+<path fill="none" stroke="black" d="M73.28,-71.7C72.06,-63.98 70.61,-54.71 69.25,-46.11"/>
+<polygon fill="black" stroke="black" points="72.69,-45.44 67.68,-36.1 65.78,-46.53 72.69,-45.44"/>
+</g>
+<!-- qryRelated&#45;&gt;NBlocalURNtriples -->
+<g id="edge7" class="edge">
+<title>qryRelated&#45;&gt;NBlocalURNtriples</title>
+<path fill="none" stroke="black" d="M106.25,-75.34C129.39,-64.88 161.64,-50.32 187.54,-38.62"/>
+<polygon fill="black" stroke="black" points="189.1,-41.76 196.77,-34.46 186.22,-35.38 189.1,-41.76"/>
 </g>
 </g>
 </svg>
