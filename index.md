@@ -32,3 +32,5 @@ incl [linking](https://en.wikipedia.org/wiki/Entity_linking) [relations](https:/
 [sparql-NB](https://gist.github.com/MBcode/1fe85b1a87677968ea7c8804d56933d2) allows for cross-dataset queries, can do the dataset-page queries, & allows for more(deeper/finer):
 
 After 1st resource-tool match will want to use other local+remote [LinkedData](https://patterns.dataincubator.org/book/follow-your-nose.html)/triples to make better matches/kick off services
+
+The 2nd-toolmatch-query might be where you know which type of NB/workflow you want, but need to use some local-linked(meta)data to finish off, say a webservice call in that NoteBook
