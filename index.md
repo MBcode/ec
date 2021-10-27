@@ -18,7 +18,7 @@ By using even more of the [FAIR principles](https://www.go-fair.org/fair-princip
 
 ![Image](https://github.com/MBcode/ec/raw/master/crawl/etl.svg)
 
-The checking could also be done from the [gleaner](https://gleaner.io/) generated quads.
+The *checking* could also be done from the [gleaner](https://gleaner.io/) generated quads.
 
 The _dedup_ could even be done via [openrefine](https://guides.library.illinois.edu/openrefine/duplicates), if not [py](https://pypi.org/project/dedupe/) [lib](https://pypi.org/project/pandas-dedupe/)/[s](https://pypi.org/project/sparqldataframe/)
 
@@ -26,3 +26,7 @@ _[Generating](https://notes.knowledgefutures.org/pub/ic0grz58/release/3) an @id_
 
 Then [lookup](https://github.com/WDscholia/scholia/blob/master/scholia/api.py) (the shared) Name (of) the entities (_NER_), 
 incl [linking](https://en.wikipedia.org/wiki/Entity_linking) [relations](https://lhncbc.nlm.nih.gov/ii/tools/SemRep_SemMedDB_SKR.html) which can then be [shown](https://lhce-brat.nlm.nih.gov/index.xhtml#/SKR/Factuality/Reconcile_50/10048237) w/the txt
+
+![Image](https://raw.githubusercontent.com/MBcode/ec/master/NoteBook/mLD.svg)
+
+After 1st resource-tool match will want to use other local+remote [LinkedData](https://patterns.dataincubator.org/book/follow-your-nose.html)/triples to make better matches/kick off services
