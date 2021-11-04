@@ -1,3 +1,5 @@
+#M Bobak, for ncsa.uiuc NSF EarthCube effort, GeoCODES search&resource use w/in NoteBooks
+# some on (new)direction(s) at: https://mbcode.github.io/ec
 #=this is also at gitlab now, but won't get autoloaded until in github or allow for gitlab_repo
  #but for cutting edge can just get the file from the test server, so can use: get_ec()
 
@@ -285,6 +287,7 @@ def rdfxml_viz(fnb): #cp&paste (rdf)xml file paths from in .zip files
     nt_viz(fnb)
 
 #this could be generalized further to display available views of the DataFrame as well
+ #so might call this viz_rdf & the other viz_df, but still have viz that can figure that out
 def viz(fn=".all.nt"): #might call this rdf_viz once we get some other type of viz going
     if has_ext(fn):
         ext=file_ext(fn)
@@ -362,6 +365,7 @@ def read_file(fnp, ext=None):  #download url and ext/filetype
         ft=str(fext)
         ext=ft
     df=""
+    #bad_lines going away, get netcdf etc in here, even though I don't see it much
     if ext==None and len(ft)<1:
         wget(fn)
         df="no fileType info, doing:[!wget $url ],to see:[ !ls -l ] or FileExplorerPane on the left"
