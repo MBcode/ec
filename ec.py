@@ -147,6 +147,7 @@ def init_rdflib():
     rdflib_inited=cs
 
 def url2jsonLD(url):
+    add2log(url)
     if rdflib_inited==None:
         init_rdflib()
     import extruct
@@ -155,6 +156,7 @@ def url2jsonLD(url):
     r = requests.get(url)
     base_url_ = get_base_url(r.text, r.url)
     ld = extruct.extract(r.text, base_url=base_url_ ,syntaxes=['json-ld'] )
+    add2log(ld)
     return ld
 
 #get fnb + ".nt" and put_txtfile that str
