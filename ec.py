@@ -2,6 +2,10 @@
 # some on (new)direction(s) at: https://mbcode.github.io/ec
 #=this is also at gitlab now, but won't get autoloaded until in github or allow for gitlab_repo
  #but for cutting edge can just get the file from the test server, so can use: get_ec()
+#def laptop():
+#    "already have libs installed"
+#    global rdf_inited,rdflib_inited,sparql_inited=True,True,True
+#    return "rdf_inited,rdflib_inited,sparql_inited=True,True,True"
 
 #pagemil parameterized colab/gist can get this code via:
 #with httpimport.github_repo('MBcode', 'ec'):   
@@ -55,6 +59,10 @@ def file_base(fn):
     st=os.path.splitext(fn)
     add2log(f'fb:st={st}')
     return st[0]
+
+def file_leaf_base(path):
+    pl=path_leaf(path)
+    return file_base(pl)
 
 #could think a file w/'.'s in it's name, had an .ext
  #so improve if possible; hopefully not by having a list of exts
@@ -146,7 +154,9 @@ def init_rdflib():
     os_system(cs)
     rdflib_inited=cs
 
+#-from crawlLD.py
 def url2jsonLD(url):
+    "get jsonLD from w/in url"
     add2log(f'url2jsonLD({url})')
     if rdflib_inited==None:
         init_rdflib()
@@ -155,12 +165,69 @@ def url2jsonLD(url):
     from w3lib.html import get_base_url
     r = requests.get(url)
     base_url_ = get_base_url(r.text, r.url)
-    ld = extruct.extract(r.text, base_url=base_url_ ,syntaxes=['json-ld'] )
+    #ld = extruct.extract(r.text, base_url=base_url_ ,syntaxes=['json-ld'] )
+    md = extruct.extract(r.text, base_url=base_url_ ,syntaxes=['json-ld'] )
+    if md: #still geting as if all MetaData, so select out json-ld
+        #ld = md.get('json-ld')
+        lda = md.get('json-ld')
+        #print(f'lda={lda}')
+        ld=lda[0] #ret first here
+        #print(f'ld={ld}')
+    else: 
+        ld =""
     add2log(ld)
     return ld
 
+#def fn2jsonld(fn, base_url=None):
+def fn2jsonld(fn, base_url=None):
+    "url=base_url+fn save to fn"
+    import re
+#   if not base_url:
+#       base_url = os.getenv('BASE_URL')
+    #print(base_url)
+    #print(fn)
+#    url= base_url + fn
+    url=fn
+    #print(url)
+    #ld=url2jsonLD(url)
+    md=url2jsonLD(url)
+    if md:
+        ld = md.get('json-ld')
+    else: 
+        ld =""
+    #print(len(ld))
+    cfn=re.sub(r'(\n\s*)+\n+', '\n', fn.strip())
+    fn = cfn + ".jsonld"
+    #print(fn)
+    if ld:
+        with open(fn  ,'w') as f:
+            #pp.pprint(ld,f)
+            #f.write(pprint.pformat(ld[0]))
+            f.write(json.dumps(ld[0], indent= 2))
+    return ld
+#-
+#already done above,but take parts2fix below
+def getjsonLD(url):
+    "url2 .jsonld"
+    import re
+    import json
+    ld=url2jsonLD(url) #get json
+    #fnb=file_base(url)
+    fnb=file_leaf_base(url)
+    cfn=re.sub(r'(\n\s*)+\n+', '\n', fnb.strip())
+    #fnj=fnb+".jsonld" 
+    #put_txtfile(fnj,ld)
+    fnj=cfn+".jsonld" 
+    add2log(f'getjsonLD:{fnb},{fnj}')
+    #LD=json.dumps(ld[0], indent= 2)
+    LD=json.dumps(ld, indent= 2)
+    put_txtfile(fnj,LD)
+    #put_txtfile(fnj,LD.decode("utf-8"))
+    return fnj
+
 #get fnb + ".nt" and put_txtfile that str
 def xml2nt(fn,frmt="xml"):
+    "turn .xml(rdf) to .nt"
     if rdflib_inited==None:
         init_rdflib()
     fnb=file_base(fn)
@@ -168,11 +235,33 @@ def xml2nt(fn,frmt="xml"):
     g = Graph()
     #g.parse(fn, format="xml")
     g.parse(fn, format=frmt) #allow for "json-ld"..
+    #UnicodeDecodeError: 'utf-8' codec can't decode byte 0x8b in position 1: invalid start byte ;fix
     #s=g.serialize(format="ntriples").decode("u8") #works via cli,nb had ntserializer prob
     s=g.serialize(format="ntriples") #try w/o ;no, but works in NB w/just a warning
-    fnt=fnb+".nt"
+    fnt=fnb+".nt" #condsider returning this
     put_txtfile(fnt,s)
-    return len(s) 
+    add2log(f'xml2nt:{fnt},len:{s}')
+    #return len(s) 
+    return fnt 
+
+def jsonld2nt(fn,frmt="json-ld"):
+    "turn .jsonld to .nt"
+    add2log(f'jsonld2nt:{fn},{frmt}')
+    return xml2nt(fn,frmt)
+
+def url2nt(url):
+    "get .jsonLD file,&create a .nt version"
+    #ld=url2jsonLD(url)
+    #s1=len(ld)
+    fnj=getjsonLD(url)
+    fnt=jsonld2nt(fnj)
+    #fnt=jsonld2nt(fnb)
+    #s2=jsonld2nt(fnb)
+    #add2log(f'url2nt,jsonld:{s1},nt:{s2}')
+    #return s2
+    #add2log(f'url2nt,jsonld:{s1},{fnt}')
+    add2log(f'url2nt,{fnj},{fnt}')
+    return fnt
 
 #https://stackoverflow.com/questions/39274216/visualize-an-rdflib-graph-in-python
 def rdflib_viz(url,ft=None): #or have it default to ntriples ;'turtle'
@@ -332,13 +421,13 @@ def log_msg(url): #in mknb.py logbad routed expects 'url' but can encode things
 #add 'rty'/error handling, which will incl sending bad-download links back to mknp.py
  #log in the except sections, below
 
-def check_size_(fs,df):
-    if fs:
-        if fs<300:
-            df+= "[Warn:small]"
-    else:
-        df+= "[Warn:No File]"
-    return df
+#def check_size_(fs,df): #earlier now unused version
+#    if fs:
+#        if fs<300:
+#            df+= "[Warn:small]"
+#    else:
+#        df+= "[Warn:No File]"
+#    return df
 
 def check_size(fs,df):
     "FileSize,DataFrame as ret txt"
@@ -349,6 +438,7 @@ def check_size(fs,df):
     else:
         dfe= "[Warn:No File]"
     if dfe:
+        add2log(dfe)
         log_msg(dfe) #should incl url/etc but start w/this
         df+=dfe
     return df
@@ -356,6 +446,7 @@ def check_size(fs,df):
 #considter ext2ft taking the longer-txt down to the stnd file-ext eg. .tsv ..
 
 def nt2ft(url): #could also use rdflib, but will wait till doing other queries as well
+    "path2 .nt file -> encoding~FileType"
     cs=f"grep -A4 {url} *.nt|grep encoding|cut -d' ' -f3"
     return os_system_(cs) 
 
