@@ -25,24 +25,30 @@ pp = pprint.PrettyPrinter(indent=2)
  #smapper, pip ver broken, but works in gh
 
 
-#-get the metadata in jsonld only for now
-#def print_data(url):
-def url2metadata(url):
+##-get the metadata in jsonld only for now
+##def print_data(url):
+#def url2metadata(url):
+#    r = requests.get(url)
+#    base_url_ = get_base_url(r.text, r.url)
+#    try:
+#        data = extruct.extract(r.text, base_url=base_url_) #,syntaxes=['json-ld'] if was ok to throw others away
+#    except:
+#        data = None
+#    #pp.pprint(data)
+#    return data
+
+#def url2jsonld(url):
+#    md =  url2metadata(url)
+#    if md:
+#        ld = md.get('json-ld')
+#    else: 
+#        ld ="" 
+#    return ld
+
+def url2jsonLD(url):
     r = requests.get(url)
     base_url_ = get_base_url(r.text, r.url)
-    try:
-        data = extruct.extract(r.text, base_url=base_url_) #,syntaxes=['json-ld'] if was ok to throw others away
-    except:
-        data = None
-    #pp.pprint(data)
-    return data
-
-def url2jsonld(url):
-    md =  url2metadata(url)
-    if md:
-        ld = md.get('json-ld')
-    else: 
-        ld ="" 
+    ld = extruct.extract(r.text, base_url=base_url_ ,syntaxes=['json-ld'] )
     return ld
 
 #def fn2jsonld(fn):
@@ -55,7 +61,7 @@ def fn2jsonld(fn, base_url=None):
     #print(fn)
     url= base_url + fn
     #print(url)
-    ld=url2jsonld(url)
+    ld=url2jsonLD(url)
     #print(len(ld))
     cfn=re.sub(r'(\n\s*)+\n+', '\n', fn.strip())
     fn = cfn + ".jsonld"
@@ -68,7 +74,7 @@ def fn2jsonld(fn, base_url=None):
     return ld
 
 def test(): #use a optional here
-    url2jsonld("http://get.iedadata.org/doi/111486")
+    url2jsonLD("http://get.iedadata.org/doi/111486")
 
 def t2(ns="101000"): #works
     fn2jsonld(ns)
