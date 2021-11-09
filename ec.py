@@ -147,7 +147,7 @@ def init_rdflib():
     rdflib_inited=cs
 
 def url2jsonLD(url):
-    add2log(url)
+    add2log(f'url2jsonLD({url})')
     if rdflib_inited==None:
         init_rdflib()
     import extruct
