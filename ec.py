@@ -2,10 +2,12 @@
 # some on (new)direction(s) at: https://mbcode.github.io/ec
 #=this is also at gitlab now, but won't get autoloaded until in github or allow for gitlab_repo
  #but for cutting edge can just get the file from the test server, so can use: get_ec()
-#def laptop():
-#    "already have libs installed"
-#    global rdf_inited,rdflib_inited,sparql_inited=True,True,True
-#    return "rdf_inited,rdflib_inited,sparql_inited=True,True,True"
+rdf_inited,rdflib_inited,sparql_inited=None,None,None
+def laptop():
+    "already have libs installed"
+    global rdf_inited,rdflib_inited,sparql_inited
+    rdf_inited,rdflib_inited,sparql_inited=True,True,True
+    return "rdf_inited,rdflib_inited,sparql_inited=True,True,True"
 
 #pagemil parameterized colab/gist can get this code via:
 #with httpimport.github_repo('MBcode', 'ec'):   
@@ -13,6 +15,7 @@
 #version in template used the earthcube utils
 import os
 import sys
+import json
 
 #more loging
 #def install_recipy():
@@ -25,6 +28,10 @@ import sys
 def get_txtfile(fn):
     with open(fn, "r") as f:
         return f.read()
+
+def get_jsfile2dict(fn):
+    s=get_textfile(fn)
+    return json.loads(s)
 
 def put_txtfile(fn,s,wa="w"):
     #with open(fn, "w") as f:
@@ -150,7 +157,8 @@ def wget_ft(fn,ft):
 rdflib_inited=None
 def init_rdflib():
     #cs='pip install rdflib networkx'
-    cs='pip install rdflib networkx extruct' 
+    #cs='pip install rdflib networkx extruct' 
+    cs='pip install rdflib-jsonld networkx extruct' 
     os_system(cs)
     rdflib_inited=cs
 
@@ -292,7 +300,7 @@ def rdflib_viz(url,ft=None): #or have it default to ntriples ;'turtle'
 f_nt=None
 
 #could load .nt as a tsv file, to look at if interested
-def read_rdf(fn,ext=".tsv"):
+def read_rdf(fn,ext=".tsv"):  #too bad no tabs though../fix?
     return read_file(fn,ext)
 
 def wget_rdf(urn,viz=None):
@@ -303,8 +311,12 @@ def wget_rdf(urn,viz=None):
         global f_nt
         url=urn.replace(":","/").replace("urn","https://oss.geodex.org",1)
         urlroot=path_leaf(url) #file w/o path
+        urlj= url + ".jsonld" #get this as well so can get_jsfile2dict the file
+        urlj.replace("milled","summoned")
         url += ".rdf"
         cs= f'wget -a log {url}' 
+        os_system(cs)
+        cs= f'wget -a log {urlj}' 
         os_system(cs)
         fn1 = urlroot + ".rdf"
         fn2 = urlroot + ".nt" #more specificially, what is really in it
@@ -476,13 +488,15 @@ def read_file(fnp, ext=None):  #download url and ext/filetype
         df="no fileType info, doing:[!wget $url ],to see:[ !ls -l ] or FileExplorerPane on the left"
     elif ft=='.tsv' or re.search('tsv',ext,re.IGNORECASE) or re.search('tab-sep',ext,re.IGNORECASE):
         try:
-            df=pd.read_csv(fn, sep='\t',comment='#',warn_bad_lines=True, error_bad_lines=False)
+            #df=pd.read_csv(fn, sep='\t',comment='#',warn_bad_lines=True, error_bad_lines=False)
+            df=pd.read_csv(fn, sep='\t',comment='#')
         except:
             df = str(sys.exc_info()[0])
             pass
     elif ft=='.csv' or re.search('csv',ext,re.IGNORECASE):
         try:
-            df=pd.read_csv(fn,comment="#",warn_bad_lines=True, error_bad_lines=False)
+            #df=pd.read_csv(fn,comment="#",warn_bad_lines=True, error_bad_lines=False)
+            df=pd.read_csv(fn,comment="#")
         except:
             df = str(sys.exc_info()[0])
             pass
