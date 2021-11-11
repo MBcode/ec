@@ -320,7 +320,8 @@ def wget_rdf(urn,viz=None):
         os_system(cs)
         fn1 = urlroot + ".rdf"
         fn2 = urlroot + ".nt" #more specificially, what is really in it
-        cs= f'mv {fn1} {fn2}' #makes easier to load into rdflib..eg: 
+        #cs= f'mv {fn1} {fn2}' #makes easier to load into rdflib..eg: 
+        cs= f'cat {fn1}|sed "/> /s//>\t/g"|sed "/ </s//\t</g"|cat>{fn2}' #&2 read into df
         os_system(cs)
         f_nt=fn2
         #from rdflib import Graph
@@ -460,7 +461,10 @@ def check_size(fs,df):
 def nt2ft(url): #could also use rdflib, but will wait till doing other queries as well
     "path2 .nt file -> encoding~FileType"
     cs=f"grep -A4 {url} *.nt|grep encoding|cut -d' ' -f3"
-    return os_system_(cs) 
+    if cs:
+        return os_system_(cs) 
+    else:
+        return None
 
 def read_file(fnp, ext=None):  #download url and ext/filetype
 #def read_file(fnp, ext=nt2ft(fnp)):
@@ -488,15 +492,15 @@ def read_file(fnp, ext=None):  #download url and ext/filetype
         df="no fileType info, doing:[!wget $url ],to see:[ !ls -l ] or FileExplorerPane on the left"
     elif ft=='.tsv' or re.search('tsv',ext,re.IGNORECASE) or re.search('tab-sep',ext,re.IGNORECASE):
         try:
-            #df=pd.read_csv(fn, sep='\t',comment='#',warn_bad_lines=True, error_bad_lines=False)
-            df=pd.read_csv(fn, sep='\t',comment='#')
+            df=pd.read_csv(fn, sep='\t',comment='#',warn_bad_lines=True, error_bad_lines=False)
+            #df=pd.read_csv(fn, sep='\t',comment='#')
         except:
             df = str(sys.exc_info()[0])
             pass
     elif ft=='.csv' or re.search('csv',ext,re.IGNORECASE):
         try:
-            #df=pd.read_csv(fn,comment="#",warn_bad_lines=True, error_bad_lines=False)
-            df=pd.read_csv(fn,comment="#")
+            df=pd.read_csv(fn,comment="#",warn_bad_lines=True, error_bad_lines=False)
+            #df=pd.read_csv(fn,comment="#")
         except:
             df = str(sys.exc_info()[0])
             pass
