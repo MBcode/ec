@@ -320,9 +320,9 @@ def wget_rdf(urn,viz=None):
         os_system(cs)
         fn1 = urlroot + ".rdf"
         fn2 = urlroot + ".nt" #more specificially, what is really in it
-        #cs= f'mv {fn1} {fn2}' #makes easier to load into rdflib..eg: 
-        cs= f'cat {fn1}|sed "/> /s//>\t/g"|sed "/ </s//\t</g"|cat>{fn2}' #&2 read into df
-        os_system(cs)
+        #cs= f'mv {fn1} {fn2}' #makes easier to load into rdflib..eg: #&2 read into df
+        cs= f'cat {fn1}|sed "/> /s//>\t/g"|sed "/ </s//\t</g"|sed "/doi:/s//DOI:/g"|cat>{fn2}'
+        os_system(cs)   #fix .nt so .dot is better ;eg. w/doi
         f_nt=fn2
         #from rdflib import Graph
         #g = Graph()
