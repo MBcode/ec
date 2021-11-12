@@ -360,7 +360,33 @@ def init_sparql():
     #return get_txtfile("sparql-query.txt")
     return get_query_txt()
 
- #qs=get_txtfile("sparql-query.txt")
+def nt2dn(fn,n):
+    ".nt to d#.nt where n=#, w/http/s schema.org all as dcat" 
+    fdn= f'd{n}.nt'
+    cs=f'cat {fn}|sed "/ht*[ps]:..schema.org./s//http:\/\/www.w3.org\/ns\/dcat#/g"|cat>{fdn}'
+    os_system(cs) #this makes queries a LOT easier
+    return fdn
+
+def pp2so(pp,fn): #might alter name ;basicly the start of jq via sparql on .nt files
+    "SPARQL qry given a predicate-path, ret subj&obj, given nt2dn run 1st, giving fn"
+    from rdflib import ConjunctiveGraph #might just install rdflib right away
+    if isinstance(fn, int):
+        fnt=f'd{fn}.nt'
+    else:
+        fnt=fn
+    #pp=":spatialCoverage/:geo/:box"
+    #sq=f'PREFIX : <http://www.w3.org/ns/dcat#> \n SELECT distinct ?s ?o WHERE { ?s {pp} ?o }'
+    sqpp="""PREFIX : <http://www.w3.org/ns/dcat#>
+        SELECT distinct ?s ?o
+        WHERE { ?s predicate-path ?o }"""
+    sq=sqpp.replace("predicate-path",pp)
+    add2log(f'fn={fn},sq={sq}')
+    g = ConjunctiveGraph(identifier=fnt)
+    data = open(fnt, "rb")
+    g.parse(data, format="ntriples")
+    results = g.query(sq)
+    add2log(results)
+    return [str(result[0]) for result in results]
 
 def nt2svg(fnb):
     if has_ext(fnb):
