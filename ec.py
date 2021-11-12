@@ -234,7 +234,7 @@ def getjsonLD(url):
     return fnj
 
 #get fnb + ".nt" and put_txtfile that str
-def xml2nt(fn,frmt="xml"):
+def xml2nt(fn,frmt="xml"):  #could also use rapper here, see: rdfxml2nt
     "turn .xml(rdf) to .nt"
     if rdflib_inited==None:
         init_rdflib()
@@ -347,8 +347,10 @@ def wget_rdf(urn,viz=None):
 rdf_inited=None
 def init_rdf():
     cs='apt-get install raptor2-utils graphviz'
-    os_system(cs)
+    os_system(cs)  #incl rapper, can do a few rdf conversions
     rdf_inited=cs
+
+#should just put sparql init in w/rdf _init, as not that much more work
 
 sparql_inited=None
 def init_sparql():
@@ -369,7 +371,6 @@ def nt2dn(fn,n):
 
 def pp2so(pp,fn): #might alter name ;basicly the start of jq via sparql on .nt files
     "SPARQL qry given a predicate-path, ret subj&obj, given nt2dn run 1st, giving fn"
-    from rdflib import ConjunctiveGraph #might just install rdflib right away
     if isinstance(fn, int):
         fnt=f'd{fn}.nt'
     else:
@@ -381,12 +382,23 @@ def pp2so(pp,fn): #might alter name ;basicly the start of jq via sparql on .nt f
         WHERE { ?s predicate-path ?o }"""
     sq=sqpp.replace("predicate-path",pp)
     add2log(f'fn={fn},sq={sq}')
+    if rdf_inited==None:
+        init_rdf()
+    from rdflib import ConjunctiveGraph #might just install rdflib right away
     g = ConjunctiveGraph(identifier=fnt)
-    data = open(fnt, "rb")
+    data = open(fnt, "rb") #or get_textfile -no
     g.parse(data, format="ntriples")
     results = g.query(sq)
-    add2log(results)
+    add2log(results) #runs but still need2check output../fix
     return [str(result[0]) for result in results]
+
+def rdfxml2nt(fnb):
+    if has_ext(fnb):
+        fnb=file_base(fnb)
+    if rdf_inited==None:
+        init_rdf()
+    cs= f'rapper -i rdfxml -o ntriples {fnb}.nt|cat>{fnb}.nt'
+    os_system(cs) 
 
 def nt2svg(fnb):
     if has_ext(fnb):
