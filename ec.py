@@ -3,7 +3,7 @@
 #=this is also at gitlab now, but won't get autoloaded until in github or allow for gitlab_repo
  #but for cutting edge can just get the file from the test server, so can use: get_ec()
 rdf_inited,rdflib_inited,sparql_inited=None,None,None
-def laptop():
+def laptop(): #could call: in_binder
     "already have libs installed"
     global rdf_inited,rdflib_inited,sparql_inited
     rdf_inited,rdflib_inited,sparql_inited=True,True,True
@@ -47,6 +47,7 @@ def os_system(cs):
     add2log(cs)
 
 def os_system_(cs):
+    "system call w/return value"
     s=os.popen(cs).read()
     add2log(cs)
     return s
@@ -158,7 +159,7 @@ rdflib_inited=None
 def init_rdflib():
     #cs='pip install rdflib networkx'
     #cs='pip install rdflib networkx extruct' 
-    cs='pip install rdflib-jsonld networkx extruct' 
+    cs='pip install rdflib rdflib-jsonld networkx extruct' 
     os_system(cs)
     rdflib_inited=cs
 
@@ -354,7 +355,8 @@ def init_rdf():
 
 sparql_inited=None
 def init_sparql():
-    cs='pip install sparqldataframe simplejson'
+    #cs='pip install sparqldataframe simplejson'
+    cs='pip install sparqldataframe simplejson owlready2'
     os_system(cs)
     sparql_inited=cs
     ##get_ec("http://mbobak-ofc.ncsa.illinois.edu/ext/ec/nb/sparql-query.txt")
@@ -362,19 +364,48 @@ def init_sparql():
     #return get_txtfile("sparql-query.txt")
     return get_query_txt()
 
+#-
+def dfn(fn):
+    "FileName ore d#"
+    if isinstance(fn, int):
+        fnt=f'd{fn}.nt'
+    else:
+        fnt=fn
+    return fnt
+#-
+#if sparql_inited==None:
+#    si= init_sparql()  #still need to init
+#from owlready2 import *
+#
+#def sq_file(sq,fn):
+#    #import owlready2 as o2
+#    global default_world
+#    o= get_ontology("d1.nt").load()
+#    return list(default_world.sparql(sq))
+#-
+def sparql_f2(fq,fn,r=None): #jena needs2be installed for this, so not in NB yet;can emulate though
+    "files: qry,data"
+    if r: #--results= Results format (Result set: text, XML, JSON, CSV, TSV; Graph: RDF serialization)
+        rs=f' --results={r} '
+    else:
+        rs=""
+    fnt=dfn(fn) #maybe gen fn from int
+    #if had txt put_txtfile; if qry.txt w/var then have2replace
+    cs=f'sparql --data={fnt} --query{fq} {rs}'
+    return os_system_(cs)
+
+#-
 def nt2dn(fn,n):
     ".nt to d#.nt where n=#, w/http/s schema.org all as dcat" 
     fdn= f'd{n}.nt'
+    #fnd=dfn(fn) #maybe gen fn from int
     cs=f'cat {fn}|sed "/ht*[ps]:..schema.org./s//http:\/\/www.w3.org\/ns\/dcat#/g"|cat>{fdn}'
     os_system(cs) #this makes queries a LOT easier
     return fdn
 
 def pp2so(pp,fn): #might alter name ;basicly the start of jq via sparql on .nt files
     "SPARQL qry given a predicate-path, ret subj&obj, given nt2dn run 1st, giving fn"
-    if isinstance(fn, int):
-        fnt=f'd{fn}.nt'
-    else:
-        fnt=fn
+    fnt=dfn(fn) #maybe gen fn from int
     #pp=":spatialCoverage/:geo/:box"
     #sq=f'PREFIX : <http://www.w3.org/ns/dcat#> \n SELECT distinct ?s ?o WHERE { ?s {pp} ?o }'
     sqpp="""PREFIX : <http://www.w3.org/ns/dcat#>
