@@ -373,13 +373,17 @@ def dfn(fn):
         fnt=fn
     return fnt
 #-
-def sq_file(sq,fn):
+def sq_file(sq,fn=1):
+    fnt=dfn(fn) #maybe gen fn from int
+    add2log(f'dataFN={fnt}')
+    add2log(f'qry={sq}')
     if sparql_inited==None:
         si= init_sparql()  #still need to init
     #global default_world
     #from owlready2 import *
     import owlready2 as o2
-    o= o2.get_ontology("d1.nt").load()
+    #o= o2.get_ontology("d1.nt").load()
+    o= o2.get_ontology(fnt).load()
     return list(o2.default_world.sparql(sq))
 #-
 def sparql_f2(fq,fn,r=None): #jena needs2be installed for this, so not in NB yet;can emulate though
