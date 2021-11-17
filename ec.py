@@ -694,10 +694,10 @@ def txt_query(qry_str,sqs=None): #a generalized version would take pairs/eg. <${
     return df
 
 #==w/in-search-related-data: https://github.com/MBcode/ec/blob/master/qry/rec.py
-import pandas as pd
-import numpy as np
+#import pandas as pd
+#import numpy as np
 #import simplejson
-import sparqldataframe
+#import sparqldataframe
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 cosine_sim=None
