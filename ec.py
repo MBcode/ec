@@ -23,6 +23,14 @@ import json
 #    os.system(cs)
 #install_recipy()
 #import recipy
+def first(l):
+    from collections.abc import Iterable
+    if isinstance(l,list):
+        return l[0]
+    elif isinstance(l,Iterable):
+        return list(l)[0]
+    else:
+        return l
 
 #from qry.py
 def get_txtfile(fn):
@@ -684,3 +692,72 @@ def txt_query(qry_str,sqs=None): #a generalized version would take pairs/eg. <${
     df = sparqldataframe.query(endpoint, q)
     #df.describe()
     return df
+
+#==w/in-search-related-data: https://github.com/MBcode/ec/blob/master/qry/rec.py
+import pandas as pd
+import numpy as np
+import simplejson
+import sparqldataframe
+from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.metrics.pairwise import cosine_similarity
+cosine_sim=None
+
+def get_subj_from_index(index):
+	return df[df.index == index]["subj"].values[0]
+
+def get_index_from_subj(subj):
+	return df[df.subj == subj]["index"].values[0]
+
+def combine_features(row):
+	try:
+		return row['kw'] +" "+row['name']+" "+row["description"]+" "+row["pubname"]
+	except:
+		print("Error:", row)
+
+def get_related(likes):
+    global cosine_sim
+    #movie_user_likes = "Avatar"
+    #should pick one of the ones from the df randomly, or can do them all 
+    #movie_user_likes = "https://www.bco-dmo.org/dataset/752737"
+    ## Step 6: Get index of this movie from its subj
+    dataset_index = get_index_from_subj(likes)
+    similar_datasets =  list(enumerate(cosine_sim[dataset_index]))
+    ## Step 7: Get a list of similar movies in descending order of similarity score
+    sorted_similar_datasets = sorted(similar_datasets,key=lambda x:x[1],reverse=True)
+    ## Step 8: Print subjs of first 50 movies
+    i=0
+    for element in sorted_similar_datasets:
+        print(get_subj_from_index(element[0]))
+        i=i+1
+        if i>50:
+            break
+    return sorted_similar_datasets
+
+def get_related_indices(like_index):
+    "return a list of indices that are related to input index"
+    global cosine_sim
+    similar_indices =  list(enumerate(cosine_sim[like_index]))
+    sorted_similar = sorted(similar_indices,key=lambda x:x[1],reverse=True)
+    #return sorted_similar
+    return list(map(first,sorted_similar))
+
+def dfCombineFeaturesSimilary(df, features = ['kw','name','description','pubname']):
+    "run only once per new sparql-df"
+    global cosine_sim
+    df.insert(0,'index',range(0,len(df)))
+    df.set_index('index')
+    df["combined_features"] = df.apply(combine_features,axis=1)
+    ##Step 4: Create count matrix from this new combined column
+    cv = CountVectorizer()
+    count_matrix = cv.fit_transform(df["combined_features"])
+    ##Step 5: Compute the Cosine Similarity based on the count_matrix
+    cosine_sim = cosine_similarity(count_matrix) 
+
+#=so after sparql-nb: df=ec.txt_query(q)
+#can dfCombineFeaturesSimilary(df)
+#then get_related_indices(row)
+#=I should also write other fnc to access rows of txt_query df returns, to get possible donwloads
+def test_related(q,row=0): #eg "Norway"
+    df=txt_query(q)
+    dfCombineFeaturesSimilary(df)
+    return get_related_indices(row)
