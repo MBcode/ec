@@ -403,7 +403,7 @@ def pp_l2s(pp,js=None):
 
 def rget(pp,fn=1):
     "predicate path to s/o values"
-    dfn=ec.dfn(fn)
+    dfn=dfn(fn)
 #r=ec.sq_file("PREFIX : <http://www.w3.org/ns/dcat#> SELECT distinct ?s ?o WHERE  { ?s :spatialCoverage/:geo/:box ?o}","d1.nt")
     #s1="PREFIX : <http://www.w3.org/ns/dcat#> SELECT distinct ?s ?o WHERE  { ?s "
     s1="PREFIX : <https://schema.org/> SELECT distinct ?s ?o WHERE  { ?s " #till fix sed
@@ -412,8 +412,8 @@ def rget(pp,fn=1):
     pps=pp_l2s(pp)
     qs=s1 + pps + s2
     print(qs)
-    ec.add2log(f'rget:{qs}')
-    r=ec.sq_file(qs,dfn)
+    add2log(f'rget:{qs}')
+    r=sq_file(qs,dfn)
     return r
 #-
 def sparql_f2(fq,fn,r=None): #jena needs2be installed for this, so not in NB yet;can emulate though
