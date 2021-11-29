@@ -397,7 +397,7 @@ def sq_file(sq,fn=1):
 def pp_l2s(pp,js=None):
     "predicatePath list2str"
     if(js): #["spatialCoverage" "geo" "box" ], True  -> "spatialCoverage.geo.box"
-        return ".".join(pp)
+        return "." + ".".join(pp)
     else: #["spatialCoverage" "geo" "box" ]  -> ":spatialCoverage/:geo/:box"
         return ":" + "/:".join(pp)
 
