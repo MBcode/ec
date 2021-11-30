@@ -6,7 +6,7 @@ The early doc started with the main [ReadMe](https://github.com/MBcode/ec#readme
 
 These latest (but waylaid) thoughts started [in these diagrams](https://github.com/MBcode/ec/tree/master/crawl#readme), now below
 
-One of the most lasting effects on the community is the use of [ScienceOnSchema.org](https://github.com/ESIPFed/science-on-schema.org/blob/master/guides/GETTING-STARTED.md) [metadata](http://isda.ncsa.uiuc.edu/~mbobak/sd/)
+One of the most lasting effects on the community is the use of [ScienceOnSchema.org](https://github.com/ESIPFed/science-on-schema.org/blob/master/guides/GETTING-STARTED.md) [metadata](http://isda.ncsa.uiuc.edu/~mbobak/sd/) [(superset)](https://www.w3.org/TR/vocab-dcat-3/)
 
 Yet that often ends in text/**string** vs interconnected graph URI/**[thing](https://blog.google/products/search/introducing-knowledge-graph-things-not/)** descriptions
 
