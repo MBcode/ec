@@ -720,8 +720,8 @@ def txt_query(qry_str,sqs=None): #a generalized version would take pairs/eg. <${
 #import numpy as np
 #import simplejson
 #import sparqldataframe
-from sklearn.feature_extraction.text import CountVectorizer
-from sklearn.metrics.pairwise import cosine_similarity
+#from sklearn.feature_extraction.text import CountVectorizer
+#from sklearn.metrics.pairwise import cosine_similarity
 cosine_sim=None
 
 def get_subj_from_index(index):
@@ -765,6 +765,8 @@ def get_related_indices(like_index):
 
 def dfCombineFeaturesSimilary(df, features = ['kw','name','description','pubname']):
     "run only once per new sparql-df"
+    from sklearn.feature_extraction.text import CountVectorizer
+    from sklearn.metrics.pairwise import cosine_similarity
     global cosine_sim
     df.insert(0,'index',range(0,len(df)))
     df.set_index('index')
