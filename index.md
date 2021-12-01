@@ -24,7 +24,7 @@ The _dedup_ could even be done via [openrefine](https://guides.library.illinois.
 
 _[Generating](https://notes.knowledgefutures.org/pub/ic0grz58/release/3) an @id_ for (especially repeated) blank-nodes
 
-Then [lookup](https://github.com/WDscholia/scholia/blob/master/scholia/api.py) (the shared) Name (of) the entities (_NER_), 
+[Then](https://github.com/MBcode/is/wiki) [lookup](https://github.com/WDscholia/scholia/blob/master/scholia/api.py) (the shared) Name (of) the entities (_NER_), 
 incl [linking](https://en.wikipedia.org/wiki/Entity_linking) [relations](https://lhncbc.nlm.nih.gov/ii/tools/SemRep_SemMedDB_SKR.html) 
 
 which can then be [shown](https://lhce-brat.nlm.nih.gov/index.xhtml#/SKR/Factuality/Reconcile_50/10048237) w/the txt, &[generated](https://lhncbc.nlm.nih.gov/ii/tools/MetaMap/Docs/CreatingTheEFODataSetForMetaMap.html) from an ontology
