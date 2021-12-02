@@ -112,6 +112,10 @@ def get_ec_txt(url):
     wget(url)
     return get_txtfile(fnb)
 
+
+def get_relateddatafilename_txt(url="https://raw.githubusercontent.com/earthcube/facetsearch/master/client/src/sparql_blaze/sparql_gettools_relateddatafilename.txt"):
+    return get_ec_txt(url)
+
 def get_webservice_txt(url="https://raw.githubusercontent.com/earthcube/facetsearch/master/client/src/sparql_blaze/sparql_gettools_webservice.txt"):
     return get_ec_txt(url)
 
@@ -689,6 +693,9 @@ def search_webservice(urn):
 
 def search_notebook(urn):
     return v4qry(urn,"notebook")
+
+def search_relateddatafilename(urn):
+    return v4qry(urn,"relateddatafilename")
 
 #=========append fnc from filtereSPARQLdataframe.ipynb
 #def sq2df(qry_str):
