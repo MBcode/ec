@@ -46,7 +46,12 @@ def put_txtfile(fn,s,wa="w"):
     with open(fn, wa) as f:
         return f.write(s)
 
+def date2log():
+    cs="date>>log"
+    os.system(cs)
+
 def add2log(s):
+    date2log()
     fs=f'[{s}]\n'
     put_txtfile("log",fs,"a")
 
@@ -112,7 +117,7 @@ def get_ec_txt(url):
     wget(url)
     return get_txtfile(fnb)
 
-
+#get_  _txt   fncs:
 #def get_relateddatafilename_txt(url="https://raw.githubusercontent.com/earthcube/facetsearch/toolMatchNotebookQuery/client/src/sparql_blaze/sparql_relateddatafilename.txt"):
 def get_relateddatafilename_txt(url="https://raw.githubusercontent.com/MBcode/ec/master/NoteBook/sparql_relateddatafilename.txt"):
     return get_ec_txt(url)  #need var to be {?q} so dont have to write extra logic below
@@ -664,6 +669,9 @@ def v2iqt(var,sqs):  #does the above fncs
         return sqs.replace('<${g}>',f'<{var}>')
     if '${q}' in sqs:   #var=q
         return sqs.replace('${q}',var)
+    #could add relatedData case, but changed to 'q' for now
+    #really if only 1 var, could always just change it
+    #_someday could send in dict to replace if >1
 
 def iqt2df(iqt,endpoint="https://graph.geodex.org/blazegraph/namespace/nabu/sparql"):
     "instantiated-query-template/txt to df"
@@ -679,12 +687,18 @@ def iqt2df(iqt,endpoint="https://graph.geodex.org/blazegraph/namespace/nabu/spar
 
 def v4qry(var,qt):
     "var + query-type 2 df"
-    sqs = eval("get_" + qt + "_txt()")
+    sqs = eval("get_" + qt + "_txt()") #get_  _txt   fncs, are above
     iqt = v2iqt(var,sqs)
+    #add2log(iqt) #logged in next fnc
     return iqt2df(iqt)
 
 def search_query(q): #same as txt_query below
     return v4qry(q,"query")
+
+#functionality that is see on dataset page:
+
+def search_relateddatafilename(q):
+    return v4qry(q,"relateddatafilename")
 
 def search_download(urn):
     return v4qry(urn,"download")
@@ -694,9 +708,6 @@ def search_webservice(urn):
 
 def search_notebook(urn):
     return v4qry(urn,"notebook")
-
-def search_relateddatafilename(urn):
-    return v4qry(urn,"relateddatafilename")
 
 #=========append fnc from filtereSPARQLdataframe.ipynb
 #def sq2df(qry_str):
