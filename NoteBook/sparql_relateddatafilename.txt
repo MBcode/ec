@@ -3,7 +3,7 @@ PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 prefix schema: <http://schema.org/>
 prefix sschema: <https://schema.org/>
-select ?subj ?name ?g ?description
+select distinct ?subj ?name ?g ?description
        WHERE {
             ?lit bds:search "${q}" .
             ?lit bds:matchAllTerms false .
