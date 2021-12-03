@@ -810,9 +810,11 @@ def test_related(q,row=0): #eg "Norway"
 #but sparql-nd will already have the df calculated, so just do the similarity-matrix for it once, 
  #then call get_related_indices for each dataset/row you want to look at, or can now use:
 def show_related(df,row):  #after dfCombineFeaturesSimilary is run on your df 'sparql results'
-    main=df['description'][row].strip()
-    print(f'related to row={row},{main}')
+    #main=df['description'][row].strip() #this should be in the related-df
+    #print(f'related to row={row},{main}')
     related=get_related_indices(row)
+    if len(df)<4:
+        print("not many to compare with")
     for ri in related:
         des=df['description'][ri].strip()
         print(f'{ri}:{des}')
