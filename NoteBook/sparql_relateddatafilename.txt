@@ -19,4 +19,3 @@ select distinct ?subj ?name ?g ?description
 }
 group by ?subj ?name ?g ?description
 order by DESC(?score1 )
-LIMIT ${n}
