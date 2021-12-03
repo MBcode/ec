@@ -8,7 +8,7 @@ WHERE {
     ?lit bds:search "${q}" .
     ?lit bds:matchAllTerms false .
     ?lit bds:relevance ?score1 .
-    ?lit bds:minRelevance 0.14 .
+    ?lit bds:minRelevance 0.4 .
     ?subj ?p ?lit .
   graph ?g {
     FILTER ( ! isBlank(?subj) )
