@@ -2,6 +2,8 @@
 
 Just starting to [edit](https://github.com/MBcode/ec/edit/gh-pages/index.md) these Markdown files
 
+Much of this is how to improve the MetaData for better harmonization, discoverablity, &machine-useablity
+
 The early doc started with the main [ReadMe](https://github.com/MBcode/ec#readme) &then topical sub-dirs
 
 These latest (but waylaid) thoughts started [in these diagrams](https://github.com/MBcode/ec/tree/master/crawl#readme), now below
