@@ -385,7 +385,7 @@ def init_sparql():
 
 #-
 def dfn(fn):
-    "FileName ore d#"
+    "FileName or int:for:d#.nt"
     if isinstance(fn, int):
         fnt=f'd{fn}.nt'
     else:
@@ -414,7 +414,7 @@ def pp_l2s(pp,js=None):
 
 def rget(pp,fn=1):
     "predicate path to s/o values"
-    dfn=dfn(fn)
+    fnt=dfn(fn)
 #r=ec.sq_file("PREFIX : <http://www.w3.org/ns/dcat#> SELECT distinct ?s ?o WHERE  { ?s :spatialCoverage/:geo/:box ?o}","d1.nt")
     #s1="PREFIX : <http://www.w3.org/ns/dcat#> SELECT distinct ?s ?o WHERE  { ?s "
     s1="PREFIX : <https://schema.org/> SELECT distinct ?s ?o WHERE  { ?s " #till fix sed
@@ -423,8 +423,9 @@ def rget(pp,fn=1):
     pps=pp_l2s(pp)
     qs=s1 + pps + s2
     print(qs)
-    add2log(f'rget:{qs}')
-    r=sq_file(qs,dfn)
+    #add2log(f'rget:{qs}')
+    add2log(f'rget:{qs},{fnt}')
+    r=sq_file(qs,fnt)
     return r
 #-
 def sparql_f2(fq,fn,r=None): #jena needs2be installed for this, so not in NB yet;can emulate though
@@ -439,13 +440,38 @@ def sparql_f2(fq,fn,r=None): #jena needs2be installed for this, so not in NB yet
     return os_system_(cs)
 
 #-
-def nt2dn(fn,n):
+#def nt2dn(fn,n):
+def nt2dn(fn=f_nt,n=1):
     ".nt to d#.nt where n=#, w/http/s schema.org all as dcat" 
     fdn= f'd{n}.nt'
     #fnd=dfn(fn) #maybe gen fn from int
     cs=f'cat {fn}|sed "/ht*[ps]:..schema.org./s//http:\/\/www.w3.org\/ns\/dcat#/g"|cat>{fdn}'  #FIX
     os_system(cs) #this makes queries a LOT easier
     return fdn
+
+def df2URNs(df):
+  return df['g']
+
+def dfRow2urn(df,row):
+  URNs=df2URNs(df)
+  return URNs[row]
+
+def urn2rdf(urn,n=1):
+    df=wget_rdf(urn)
+    global f_nt
+    nt2dn(f_nt,n)
+    return df
+
+def dfRow2rdf(df,row):
+    urn=dfRow2urn(df,row)
+    return urn2rdf(urn,row)
+
+def dfRow2urls(df,row): 
+    fnt=dfn(row) #check if dfRow2rdf already done
+    from os.path import exists #can check if cached file there
+    if not exists(fnt):
+        dfRow2rdf(df,row)
+    return rget(["contentUrl"],row)
 
 def pp2so(pp,fn): #might alter name ;basicly the start of jq via sparql on .nt files
     "SPARQL qry given a predicate-path, ret subj&obj, given nt2dn run 1st, giving fn"
