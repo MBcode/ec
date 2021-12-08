@@ -31,6 +31,10 @@ incl [linking](https://en.wikipedia.org/wiki/Entity_linking) [relations](https:/
 
 which can then be [shown](https://lhce-brat.nlm.nih.gov/index.xhtml#/SKR/Factuality/Reconcile_50/10048237) w/the txt, &[generated](https://lhncbc.nlm.nih.gov/ii/tools/MetaMap/Docs/CreatingTheEFODataSetForMetaMap.html) from an ontology
 
+This part is [described](https://github.com/MBcode/is/wiki) in these early [slides](https://docs.google.com/presentation/d/1hPkhgtFMYjKwesR_WVtMeA7ACHtAtTBo/edit?usp=sharing&ouid=112141946798542182515&rtpof=true&sd=true)
+
+Breakdown of present/future matching:
+
 ![Image](https://raw.githubusercontent.com/MBcode/ec/master/NoteBook/mLD.svg)
 
 [sparql-NB](https://gist.github.com/MBcode/1fe85b1a87677968ea7c8804d56933d2) allows for cross-dataset queries, can do the dataset-page queries, & allows for more(deeper/finer):
