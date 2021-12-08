@@ -177,7 +177,8 @@ rdflib_inited=None
 def init_rdflib():
     #cs='pip install rdflib networkx'
     #cs='pip install rdflib networkx extruct' 
-    cs='pip install rdflib rdflib-jsonld networkx extruct' 
+    #cs='pip install rdflib rdflib-jsonld networkx extruct' 
+    cs='pip install rdflib rdflib-jsonld networkx extruct python-magic' 
     os_system(cs)
     rdflib_inited=cs
 
@@ -578,8 +579,16 @@ def nt2ft(url): #could also use rdflib, but will wait till doing other queries a
     else:
         return None
 
-def read_file(fnp, ext=None):  #download url and ext/filetype
+def file_type(fn):
+    import magic
+    add2log(magic.from_file(fn))
+    mt=magic.from_file(fn, mime = True)
+    add2log(f'{fn},mime:{mt}')
+    return mt
+#get something that can look of header of download, before get the file, too
+
 #def read_file(fnp, ext=nt2ft(fnp)):
+def read_file(fnp, ext=None):  #download url and ext/filetype
     "can be a url, will call pd read_.. for the ext type"
     import pandas as pd
     import re
@@ -635,6 +644,7 @@ def read_file(fnp, ext=None):  #download url and ext/filetype
 #       df=pd.read_csv(fn, sep='\t',comment='#')
         #df="can't read zip w/o knowing what is in it, doing:[!wget $url ],to see:[ !ls -l ]"
         df=f'can not read zip w/o knowing what is in it, doing:[!wget $url ],to see:[ !ls -l ]size:{fs} or FileExplorerPane on the left'
+        file_type(fn1) #save2 mt and use, next
         #if fs and fs<300:
         #    df+= "[Warn:small]"
         df=check_size(fs,df)
@@ -643,6 +653,7 @@ def read_file(fnp, ext=None):  #download url and ext/filetype
         #fs=os.path.getsize(fnl) #assuming it downloads w/that name
         #df="no reader, can !wget $url"
         df=f'no reader, doing:[!wget $url ],to see:[ !ls -l ]size:{fs} or FileExplorerPane on the left'
+        file_type(fn1) #save2 mt and use, next
         #if fs and fs<300:
         #    df+= "[Warn:small]"
         df=check_size(fs,df)
