@@ -366,7 +366,8 @@ def wget_rdf(urn,viz=None):
 
 rdf_inited=None
 def init_rdf():
-    cs='apt-get install raptor2-utils graphviz'
+    #cs='apt-get install raptor2-utils graphviz'
+    cs='apt-get install raptor2-utils graphviz libmagic-dev'
     os_system(cs)  #incl rapper, can do a few rdf conversions
     rdf_inited=cs
 
@@ -606,9 +607,13 @@ def nt2ft(url): #could also use rdflib, but will wait till doing other queries a
         return None
 
 def file_type(fn):
+    from os.path import exists 
     import magic
-    add2log(magic.from_file(fn))
-    mt=magic.from_file(fn, mime = True)
+    if exists(fn):
+        add2log(magic.from_file(fn))
+        mt=magic.from_file(fn, mime = True)
+    else:
+        mt="file not found"
     add2log(f'{fn},mime:{mt}')
     return mt
 #get something that can look of header of download, before get the file, too
