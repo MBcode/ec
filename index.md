@@ -3,6 +3,7 @@
 Just starting to [edit](https://github.com/MBcode/ec/edit/gh-pages/index.md) these Markdown files
 
 Much of this is how to improve the MetaData for better harmonization, discoverablity, &machine-useablity
+![Image](http://mbobak-ofc.ncsa.illinois.edu/ec/m4m.png)
 
 The early doc started with the main [ReadMe](https://github.com/MBcode/ec#readme) &then topical sub-dirs
 
