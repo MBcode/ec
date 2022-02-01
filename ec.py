@@ -104,7 +104,7 @@ def pre_rm(url):
     os_system(cs)
     return fnb
 
-def get_ec(url="http://mbobak-ofc.ncsa.illinois.edu/ext/ec/nb/ec.py"):
+def get_ec(url="http://geocodes.ddns.net/ec/nb/ec.py"):
     pre_rm(url)
     wget(url)
     return "import ec"
