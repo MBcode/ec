@@ -351,7 +351,7 @@ def wget_rdf(urn,viz=None):
             rdflib_viz(fn2) #.nt file #can work, but looks crowded now
         return read_rdf(f_nt)
     elif urn.startswith('/'):
-        url=urn.replace("/","http://mbobak-ofc.ncsa.illinois.edu/ld/",1).replace(".jsonld",".nt",1)
+        url=urn.replace("/","http://geocodes.ddns.net/ld/",1).replace(".jsonld",".nt",1)
         urlroot=path_leaf(url) #file w/o path
         #url += ".nt"
         cs= f'wget -a log {url}' 
