@@ -624,6 +624,7 @@ def read_file(fnp, ext=None):  #download url and ext/filetype
     import pandas as pd
     import re
     if rdf_inited==None: #new, going to need it
+        init_rdflib()
         init_rdf()
     if(ext==None): #find filetype from .nt ecodingFormat
         ext=nt2ft(fnp)
