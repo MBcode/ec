@@ -27,6 +27,6 @@ hack,SourceType,Active,Name,ProperName,URL,Headless,Domain,PID,Logo
 51,sitemap,FALSE,resource_registry,Resource Registry,https://object.cloud.sdsc.edu/v1/AUTH_85f46aa78936477d8e71b186269414e8/gleaner-summoned,FALSE,http://www.earthcube.org/resourceregistry/,,https://www.earthcube.org/sites/default/files/doc-repository/logo_earthcube_full_horizontal.png
 53,sitemap,FALSE,datadiscoverystudio,,http://datadiscoverystudio.org/sitemap/CinergiSiteIndex.xml,FALSE,http://datadiscoverystudio.org/geoportal,,http://datadiscoverystudio.org/geoportal/images/DataDiscoveryStudioBufferedWhite.png
 55,sitemap,FALSE,unidata,UNIDATA,,FALSE,http://www.unidata.ucar.edu/,https://www.re3data.org/repository/r3d100010355,
-57,sitemap,FALSE,r2r,Rolling Deck to Repository Program (R2R),,FALSE,https://www.rvdata.us/,http://www.re3data.org/repository/r3d100010735,https://www.rvdata.us/images/Logo.4b1519be.png
+57,sitemap,FALSE,r2r,Rolling Deck to Repository Program (R2R),https://dev.rvdata.us/sitemap.xml,FALSE,https://www.rvdata.us/,http://www.re3data.org/repository/r3d100010735,https://www.rvdata.us/images/Logo.4b1519be.png
 58,sitemap,TRUE,geocodes_demo_datasets,Geocodes Demo Datasets,https://raw.githubusercontent.com/earthcube/GeoCODES-Metadata/gh-pages/metadata/Dataset/sitemap.xml,FALSE,https://www.earthcube.org/datasets/,https://github.com/earthcube/GeoCODES-Metadata/metadata/OtherResources,
 59,sitemap,TRUE,usap-dc,US Antartic Program Data Center,https://www.usap-dc.org/view/dataset/sitemap.xml,,,,
