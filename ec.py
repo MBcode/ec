@@ -38,8 +38,10 @@ def get_txtfile(fn):
         return f.read()
 
 def get_jsfile2dict(fn):
-    s=get_textfile(fn)
-    return json.loads(s)
+    #s=get_txtfile(fn)
+    #return json.loads(s)
+    with open(fn, "r") as f:
+        return json.load(f)
 
 def put_txtfile(fn,s,wa="w"):
     #with open(fn, "w") as f:
@@ -368,6 +370,7 @@ rdf_inited=None
 def init_rdf():
     #cs='apt-get install raptor2-utils graphviz'
     cs='apt-get install raptor2-utils graphviz libmagic-dev'
+    #cs='apt-get install raptor2-utils graphviz libmagic-dev jq'  #nice2have jq sometime
     os_system(cs)  #incl rapper, can do a few rdf conversions
     rdf_inited=cs
 
@@ -894,11 +897,17 @@ crate_bottom = "]}"
 
 #in this 1st pass, could try: jq .distribution filename, and read that in to process
 
+#if mv from jq, and use get_jsfile2dict, maybe save dictionary w/in an instance 
+ #that can be further processes later ;or start w/fnc that skips get_distribution w/get_distr_dicts
+def get_distr_dicts(fn):
+    d=get_jsfile2dict(fn)
+    return d.get("distribution")
+
 def get_distribution(fn):
     cs=f'jq .distribution {fn}'
     return os_system_(cs)
-
-def get_distr_dicts(fn):
+#skip these 2 fncs
+def get_distr_dicts_(fn):
     "distribution dictionary"
     s=get_distribution(fn)
     return json.loads(s)
