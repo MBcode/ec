@@ -36,7 +36,7 @@ def get_jsfile2dict(fn):
 
 def put_txtfile(fn,s,wa="w"):
     #with open(fn, "w") as f:
-    with open(fn, wa) as f:
+    with open(fn, "a") as f:
         return f.write(s)
 
 def get_distribution(fn):

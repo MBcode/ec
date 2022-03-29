@@ -45,7 +45,7 @@ def get_jsfile2dict(fn):
 
 def put_txtfile(fn,s,wa="w"):
     #with open(fn, "w") as f:
-    with open(fn, wa) as f:
+    with open(fn, "a") as f:
         return f.write(s)
 
 def date2log():
@@ -369,8 +369,7 @@ def wget_rdf(urn,viz=None):
 rdf_inited=None
 def init_rdf():
     #cs='apt-get install raptor2-utils graphviz'
-    cs='apt-get install raptor2-utils graphviz libmagic-dev'
-    #cs='apt-get install raptor2-utils graphviz libmagic-dev jq'  #nice2have jq sometime
+    cs='apt-get install raptor2-utils graphviz libmagic-dev' #can add jq yourself
     os_system(cs)  #incl rapper, can do a few rdf conversions
     rdf_inited=cs
 
@@ -895,22 +894,10 @@ crate_bottom = "]}"
 #now given a filename, load in the jsonld, and find the distribution
 # go over that array, and make the ..url into @id's that will also go w/in the hasPart
 
-#in this 1st pass, could try: jq .distribution filename, and read that in to process
-
-#if mv from jq, and use get_jsfile2dict, maybe save dictionary w/in an instance 
- #that can be further processes later ;or start w/fnc that skips get_distribution w/get_distr_dicts
 def get_distr_dicts(fn):
+    "distribution dictionary/s"
     d=get_jsfile2dict(fn)
     return d.get("distribution")
-
-def get_distribution(fn):
-    cs=f'jq .distribution {fn}'
-    return os_system_(cs)
-#skip these 2 fncs
-def get_distr_dicts_(fn):
-    "distribution dictionary"
-    s=get_distribution(fn)
-    return json.loads(s)
 
 def add_id(d): #there will be other predicates to check
     "set @id as (access)url"
@@ -945,15 +932,16 @@ def jld2crate(fn):
 
 def jld2crate_(fn):
     fn_out="roc/" + fn
-    put_txtfile(fn_out,top)
+    put_txtfile(fn_out,crate_top)
     dl=get_distr_dicts(fn)
     dl2=list(map(add_id,dl))
     ids=list(map(get_idd,dl))
     put_txtfile(fn_out,json.dumps(ids))
-    put_txtfile(fn_out,middle)
+    put_txtfile(fn_out,crate_middle)
     put_txtfile(fn_out,json.dumps(dl2))
-    put_txtfile(fn_out,bottom)
+    put_txtfile(fn_out,crate_bottom)
 
+#so can take URN jsonld and make a crate, still need the URNs though
 #tests on http://geocodes.ddns.net/ld/iedadata/324529.jsonld will take these out
 def t1():
     jld2crate("324529.jsonld")
@@ -964,7 +952,7 @@ def t2(fn="324529.jsonld"):
 #I will have it put to files, w/more checks
 #&use alt predicates for the @id if needed
 
-#Still need to add URN as another entry
+#Still should add URN as another entry in crate
  #which is something gleaner generated
  #I wish we could use(a version of)the download url
  #and then we would all know what to expect w/o 
