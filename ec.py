@@ -100,6 +100,10 @@ def wget(fn):
     cs= f'wget --tries=2 -a log {fn}' 
     os_system(cs)
 
+def mkdir(dir):
+    cs=f'rm {dir}'
+    return os_system(cs)
+
 def pre_rm(url):
     fnb=path_leaf(url)
     cs=f'rm {fnb}'
@@ -931,6 +935,7 @@ def jld2crate(fn):
     print(crate_bottom)
 
 def jld2crate_(fn):
+    mkdir("roc") #for now
     fn_out="roc/" + fn
     put_txtfile(fn_out,crate_top)
     dl=get_distr_dicts(fn)
