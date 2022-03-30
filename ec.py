@@ -212,6 +212,14 @@ def url2jsonLD(url):
     add2log(ld)
     return ld
 
+def url2jsonLD_file(url):
+    "get jsonLD from w/in url, save to file"
+    ld=url2jsonLD(url)
+    fnb=file_leaf_base(url)
+    LD=json.dumps(ld, indent= 2)
+    put_txtfile(fnb,LD)
+    return fnb
+
 #def fn2jsonld(fn, base_url=None):
 def fn2jsonld(fn, base_url=None):
     "url=base_url+fn save to fn"
