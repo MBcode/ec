@@ -101,7 +101,7 @@ def wget(fn):
     os_system(cs)
 
 def mkdir(dir):
-    cs=f'rm {dir}'
+    cs=f'mkdir {dir}'
     return os_system(cs)
 
 def pre_rm(url):
