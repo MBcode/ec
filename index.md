@@ -4,7 +4,7 @@ I [edit these markdown file here](https://github.com/MBcode/ec/edit/gh-pages/ind
 
 Much of this is page is on how to improve the MetaData for better:
 harmonization, discoverablity, and machine-useablity
-![Image](http://141.142.218.86/ec/m4m/m4m.png)
+[![Image](http://141.142.218.86/ec/m4m/m4m.png)](http://geocodes.ddns.net/ec/m4m/d10/)
 
 Much of what is below is about making the metadata we crawl better, but we could also consider having people author better metadata via [tools](https://www.researchobject.org/ro-crate/tools/) like [describo](https://arkisto-platform.github.io/describo-online/) who's shared-ID-lookup could someday be folded in to our [jsonLD_forms-editor](https://ecjsonforms.netlify.app/#/)
 
