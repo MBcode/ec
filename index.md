@@ -2,7 +2,8 @@
 
 I [edit these markdown file here](https://github.com/MBcode/ec/edit/gh-pages/index.md) 
 
-Much of this is how to improve the MetaData for better harmonization, discoverablity, &machine-useablity
+Much of this is page is on how to improve the MetaData for better:
+harmonization, discoverablity, and machine-useablity
 ![Image](http://141.142.218.86/ec/m4m/m4m.png)
 
 Much of what is below is about making the metadata we crawl better, but we could also consider having people author better metadata via [tools](https://www.researchobject.org/ro-crate/tools/) like [describo](https://arkisto-platform.github.io/describo-online/) who's shared-ID-lookup could someday be folded in to our [jsonLD_forms-editor](https://ecjsonforms.netlify.app/#/)
@@ -11,7 +12,7 @@ The early doc started with the main [ReadMe](https://github.com/MBcode/ec#readme
 
 These latest (but waylaid) thoughts started [in these diagrams](https://github.com/MBcode/ec/tree/master/crawl#readme), now below
 
-One of the most lasting effects on the community is the use of [ScienceOnSchema.org](https://github.com/ESIPFed/science-on-schema.org/blob/master/guides/GETTING-STARTED.md) [metadata](http://isda.ncsa.uiuc.edu/~mbobak/sd/) [(superset)](https://www.w3.org/TR/vocab-dcat-3/)
+One of the most lasting effects on the community is the use of [ScienceOnSchema.org](https://github.com/ESIPFed/science-on-schema.org/blob/master/guides/GETTING-STARTED.md) [metadata](http://isda.ncsa.uiuc.edu/~mbobak/sd/) [(superset) DCAT3](https://www.w3.org/TR/vocab-dcat-3/#dcat-sdo)
 
 Yet that often ends in text/**string** vs interconnected graph URI/**[thing](https://blog.google/products/search/introducing-knowledge-graph-things-not/)** descriptions
 
