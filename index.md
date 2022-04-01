@@ -3,7 +3,9 @@
 Just starting to [edit](https://github.com/MBcode/ec/edit/gh-pages/index.md) these Markdown files
 
 Much of this is how to improve the MetaData for better harmonization, discoverablity, &machine-useablity
-![Image](http://mbobak-ofc.ncsa.illinois.edu/ec/m4m.png)
+![Image](http://geocodes.ddns.net/ec/m4m/m4m.png)
+
+Much of what is below is about maing the metadata we crawl better, but we could also consider having people author better metadata via [tools](https://www.researchobject.org/ro-crate/tools/) like [describo](https://arkisto-platform.github.io/describo-online/) who's shared-ID-lookup could someday be folded in to our [jsonLD_forms-editor](https://ecjsonforms.netlify.app/#/)
 
 The early doc started with the main [ReadMe](https://github.com/MBcode/ec#readme) &then topical sub-dirs
 
