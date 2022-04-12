@@ -140,6 +140,9 @@ def get_notebook_txt(url="https://raw.githubusercontent.com/MBcode/ec/master/Not
 def get_query_txt(url="https://raw.githubusercontent.com/MBcode/ec/master/NoteBook/sparql-query.txt"):
     return get_ec_txt(url)
 
+def get_subj2urn_txt(url="http://geocodes.ddns.net/ec/nb/sparql_subj2urn.txt"):
+    return get_ec_txt(url)
+
 def add_ext(fn,ft):
     if ft==None or ft=='' or ft=='.' or len(ft)<2:
         return None
@@ -189,6 +192,7 @@ def init_rdflib():
     rdflib_inited=cs
 
 #-from crawlLD.py
+#def crawl_LD(url) ;could get other than jsonld, &fuse
 def url2jsonLD(url):
     "get jsonLD from w/in url"
     add2log(f'url2jsonLD({url})')
@@ -268,6 +272,7 @@ def getjsonLD(url):
     return fnj
 
 #get fnb + ".nt" and put_txtfile that str
+#def 2nt  from any rdf frmt to a .nt file, bc easiest to concat
 def xml2nt(fn,frmt="xml"):  #could also use rapper here, see: rdfxml2nt
     "turn .xml(rdf) to .nt"
     if rdflib_inited==None:
@@ -769,6 +774,9 @@ def search_webservice(urn):
 
 def search_notebook(urn):
     return v4qry(urn,"notebook")
+
+def subj2urn(doi):
+    return v4qry(doi,"subj2urn")
 
 #=========append fnc from filtereSPARQLdataframe.ipynb
 #def sq2df(qry_str):
