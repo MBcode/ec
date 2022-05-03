@@ -310,6 +310,22 @@ def url2nt(url):
     add2log(f'url2nt,{fnj},{fnt}')
     return fnt
 
+def append2everyline(fn,aptxt,fn2=None):
+    with open(fn) as fp:
+        lines= fp.read().splitlines()
+    if (fn2==None):
+        fn2=fn1.replace(".nt",".nq") #main use for triples to quads
+    with open(fn, "w") as fp:
+        for line in lines:
+            print(line + " " + aptxt, file=fp)
+    return fn2
+
+def url2nq(url):
+    "crawl url ret .jsonld .nt .nq"
+    fn= url2nt(url)
+    apptxt= f'<{url}>'
+    return append2everyline(fn, apptxt)
+
 #https://stackoverflow.com/questions/39274216/visualize-an-rdflib-graph-in-python
 def rdflib_viz(url,ft=None): #or have it default to ntriples ;'turtle'
     if rdflib_inited==None:
