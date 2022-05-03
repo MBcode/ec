@@ -313,17 +313,18 @@ def url2nt(url):
 def append2everyline(fn,aptxt,fn2=None):
     with open(fn) as fp:
         lines= fp.read().splitlines()
-    if (fn2==None):
-        fn2=fn1.replace(".nt",".nq") #main use for triples to quads
-    with open(fn, "w") as fp:
+    if(fn2==None):
+        fn2=fn.replace(".nt",".nq") #main use for triples to quads
+    with open(fn2, "w") as fp:
         for line in lines:
+            line= line.strip('.') #get rid of this from triples
             print(line + " " + aptxt, file=fp)
     return fn2
 
 def url2nq(url):
     "crawl url ret .jsonld .nt .nq"
     fn= url2nt(url)
-    apptxt= f'<{url}>'
+    apptxt= f'<{url}> .'
     return append2everyline(fn, apptxt)
 
 #https://stackoverflow.com/questions/39274216/visualize-an-rdflib-graph-in-python
