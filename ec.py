@@ -327,6 +327,16 @@ def url2nq(url):
     apptxt= f'<{url}> .'
     return append2everyline(fn, apptxt)
 
+def crawl_sitemap(url):
+    "url w/o sitemap.xml, might try other lib"
+    cs='pip install ultimate_sitemap_parser' #assume done rarely, once/session 
+    os_system(cs)
+    from usp.tree import sitemap_tree_for_homepage
+    tree = sitemap_tree_for_homepage(url)
+    for page in tree.all_pages():
+        url2nq(page.url)
+        #print(f'url2nq({page.url})') #dbg
+
 #https://stackoverflow.com/questions/39274216/visualize-an-rdflib-graph-in-python
 def rdflib_viz(url,ft=None): #or have it default to ntriples ;'turtle'
     if rdflib_inited==None:
