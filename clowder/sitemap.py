@@ -13,7 +13,8 @@ def put_txtfile(fn,s,wa="w"):
 
 sm = "sitemap.xml"
 url = "http://localhost:9000/api/datasets" #have as cli arg next
-URLb = "http://localhost:9000/" #ame as url.remove("api/datasets")
+#URLb = "http://localhost:9000/" #same as:
+URLb = url.strip("api/datasets")
 
 r=requests.get(url)
 #print(f'r={r}')
@@ -28,6 +29,4 @@ ja=json.loads(r.text)
 for ds in ja:
     id=ds.get('id')
     if(id):
-        #print(f'{URLb}{id}')
-        #print(f'<url><loc>{URLb}{id}</loc></url>')
-        put_txtfile(sm,f'<url><loc>{URLb}{id}</loc></url>')
+        put_txtfile(sm,f'<url><loc>{URLb}/datasets/{id}</loc></url>')
