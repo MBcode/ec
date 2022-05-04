@@ -22,6 +22,7 @@ def datasetlist2sitemap(url,sm="sitemap.xml"):
         id=ds.get('id')
         if(id):
             put_txtfile(sm,f'<url><loc>{URLb}/datasets/{id}</loc></url> ')
+    put_txtfile(sm,"</urlset>")
 
 if __name__ == '__main__':
     #if >2 could set alt sitemap name
