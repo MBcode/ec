@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 #generate a sitemap for all the datasets, via the clowder api
 # http://isda.ncsa.uiuc.edu/~mbobak
 import requests
@@ -20,7 +21,7 @@ def datasetlist2sitemap(url,sm="sitemap.xml"):
     for ds in ja:
         id=ds.get('id')
         if(id):
-            put_txtfile(sm,f'<url><loc>{URLb}/datasets/{id}</loc></url>')
+            put_txtfile(sm,f'<url><loc>{URLb}/datasets/{id}</loc></url> ')
 
 if __name__ == '__main__':
     #if >2 could set alt sitemap name
