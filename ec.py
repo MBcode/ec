@@ -105,6 +105,7 @@ def mkdir(dir):
     return os_system(cs)
 
 def pre_rm(url):
+    "rm (possibly alredy) downloaded version of url"
     fnb=path_leaf(url)
     cs=f'rm {fnb}'
     os_system(cs)
@@ -336,6 +337,23 @@ def crawl_sitemap(url):
     for page in tree.all_pages():
         url2nq(page.url)
         #print(f'url2nq({page.url})') #dbg
+
+#if already crawled and just need to convert
+
+#def nt2nq(fn,dir="nt"): #default ~hardcode, bc not sent in loop
+def nt2nq(fn,dir=""): #use this dflt in ec.py in case no ./nt
+    fnb=file_base(fn)
+    #url=base_url + fnb.lstrip("nt") + "/" #hard coded 'dir'
+    url=base_url + fnb.lstrip(dir) + "/"
+    aptxt= f'<{url}> .'
+    return append2everyline(fn,aptxt)
+
+def all_nt2nq(dir):
+    get= dir + "/*.nt"
+    ntfiles = glob.glob(get)
+    for fn in ntfiles:
+        #nt2nq(fn)
+        print(nt2nq(fn))
 
 #https://stackoverflow.com/questions/39274216/visualize-an-rdflib-graph-in-python
 def rdflib_viz(url,ft=None): #or have it default to ntriples ;'turtle'
