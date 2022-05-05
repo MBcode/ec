@@ -340,8 +340,13 @@ def crawl_sitemap(url):
 
 #if already crawled and just need to convert
 
+#since  no request to pull base_url from, will have to setenv it
 #def nt2nq(fn,dir="nt"): #default ~hardcode, bc not sent in loop
 def nt2nq(fn,dir=""): #use this dflt in ec.py in case no ./nt
+    import os
+    base_url= os.getenv('BASE_URL')
+    if (not base_url):
+        print("for now, need to: setenv BASE_URL ...")
     fnb=file_base(fn)
     #url=base_url + fnb.lstrip("nt") + "/" #hard coded 'dir'
     url=base_url + fnb.lstrip(dir) + "/"
@@ -349,6 +354,7 @@ def nt2nq(fn,dir=""): #use this dflt in ec.py in case no ./nt
     return append2everyline(fn,aptxt)
 
 def all_nt2nq(dir):
+    import glob
     get= dir + "/*.nt"
     ntfiles = glob.glob(get)
     for fn in ntfiles:
