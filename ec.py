@@ -744,7 +744,8 @@ def read_file(fnp, ext=None):  #download url and ext/filetype
             pass
     elif ft=='.csv' or re.search('csv',ext,re.IGNORECASE):
         try:
-            df=pd.read_csv(fn,comment="#",warn_bad_lines=True, error_bad_lines=False)
+            #df=pd.read_csv(fn,comment="#",warn_bad_lines=True, error_bad_lines=False)
+            df=pd.read_csv(fn,comment='#', on_bad_lines='skip')
             #df=pd.read_csv(fn,comment="#")
         except:
             df = str(sys.exc_info()[0])
@@ -788,6 +789,24 @@ def read_file(fnp, ext=None):  #download url and ext/filetype
 
  #probably drop the [ls-l] part&just have ppl use fileBrowser, even though some CLI would still be good
 #not just 404, getting small file back also worth logging
+#---- sources:
+def get_sources_csv(url="https://raw.githubusercontent.com/MBcode/ec/master/crawl/sources.csv"):
+    return get_ec_txt(url)
+
+def get_sources_df(url="https://raw.githubusercontent.com/MBcode/ec/master/crawl/sources.csv"):
+    s= read_file(url,".csv")
+    return s.loc[s['Active']] #can only crawl the active ones
+
+#def get_sources_urls(): #could become crawl_
+def crawl_sources_urls(): #work on sitemap lib to handle non-stnd ones
+    import re
+    s=get_sources_df()
+    for url in s['URL']:
+        print(f'sitemap:({url})') #dbg
+        #urlb=re.sub('\/site*.xml','',url)
+        urlb=re.sub('sitemap.xml','',url)
+        #crawl_sitemap(urlb)
+        print(f'crawl_sitemap({urlb})') #dbg
 #----
 def qs2graph(q,sqs):
     return sqs.replace('${q}',q)
