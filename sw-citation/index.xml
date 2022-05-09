@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>EarthCube Software Citation</title>
+    <link>/ec-sw-citation/</link>
+    <description>Recent content on EarthCube Software Citation</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language><atom:link href="/ec-sw-citation/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Overview</title>
+      <link>/ec-sw-citation/overview/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>/ec-sw-citation/overview/</guid>
+      <description>EARTHCUBE SOFTWARE CITATION As the EarthCube program concludes, these software citation recommendations are intended to provide guidance for current EC-funded software development projects on how to ensure persistent identification, citability, and discoverability for EarthCube-funded software.
+It is recognized that software citation is under-utilized and that many excellent projects have gone under- and unrecognized because they were not appropriately cited in the contexts they were used. In some cases, this could have been improved by explicit citation instructions provided to end users</description>
+    </item>
+    <item>
+      <title>Recommendations</title>
+      <link>/ec-sw-citation/recommendations/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>/ec-sw-citation/recommendations/</guid>
+      <description>Recommendations Recommendations for software citation are made across two axis: for developers and for end users. This distinction underscores the differences between the needs of the audience and creator, where the audience (end user) needs to understand how the value of the software they use can and should be transmitted through the secondary and tertiary products of that use: research, application, publication or integration with other software.
+The software creators, however, set the stage for the audience&amp;rsquo;s perception of their software&amp;rsquo;s value through a variety of means, not the least of which is the clear indication of how software should be acknowledged and situated in various contexts such as publications.</description>
+    </item>
+    <item>
+      <title>Resources</title>
+      <link>/ec-sw-citation/resources/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>/ec-sw-citation/resources/</guid>
+      <description>RESOURCES Software citation has become a much more important topic of research and discussion in recent years. Here are some resources to learn more about what is being recommended and what is acknowledged as state of the art in best practices.
+ N. P. Chue Hong, A. Allen, A. Gonzalez-Beltran, A. de Waard, A. M. Smith, C. Robinson, C. Jones, D. Bouquin, D. S. Katz, D. Kennedy, G. Ryder, J. Hausman, L.</description>
+    </item>
+    <item>
+      <title>Examples</title>
+      <link>/ec-sw-citation/examples/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>/ec-sw-citation/examples/</guid>
+      <description>Examples There are a number of good examples that demonstrate the various ways citation can be formally integrated into your project.
+ Unidata Integrated Data Viewer (IDV) Weather Research and Forecasting (WRF) Model Model for Prediction Across Scales (MPAS)  </description>
+    </item>
+    <item>
+      <title>FAQ</title>
+      <link>/ec-sw-citation/faq/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>/ec-sw-citation/faq/</guid>
+      <description>COMMON QUESTIONS While there are many questions you may have about the nature of the citation for your own project, we have tried to capture some of the common questions about software citation.
+  My software is released regularly as multiple versions, what should I do?  There are several options to consider in this situation:
+OPTION 1: Create one DOI that is used for all versions
+Pros: This is the simplest approach, and requires the least maintenance effort by the software creators.</description>
+    </item>
+  </channel>
+</rss>

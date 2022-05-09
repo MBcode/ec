@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>For Software Developers on EarthCube Software Citation</title>
+    <link>/ec-sw-citation/recommendations/fordevs/</link>
+    <description>Recent content in For Software Developers on EarthCube Software Citation</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language><atom:link href="/ec-sw-citation/recommendations/fordevs/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Persistent Identifiers</title>
+      <link>/ec-sw-citation/recommendations/fordevs/identifiers/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>/ec-sw-citation/recommendations/fordevs/identifiers/</guid>
+      <description>Persistent Identifiers Three potential ways to get a persistent identifier are as follows:
+Github-to-Zenodo export If you have your software in a Github repository, Zenodo provides a DOI minting service directly from Github. Zenodo extracts and archives a snapshot of your Github repository as it was at a specific time, and assigns a DOI to that snapshot. Make sure that you check the author list after exporting to Zenodo, in particular to change Github monikers to authors’ names and add ORCIDs when missing.</description>
+    </item>
+    <item>
+      <title>Attribution &amp; Acknowledgement</title>
+      <link>/ec-sw-citation/recommendations/fordevs/acknowledgements/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>/ec-sw-citation/recommendations/fordevs/acknowledgements/</guid>
+      <description>Software Attribution &amp;amp; Acknowledgement Providing clear acknowledgement instructions to your end users required appropriate languae and file placement where end users are most likely to see it, such as your software landing page or Github README file.
+Your software package’s web page or Github repository should include language indicating how you would like attribution:  The information you place on your site should provide clear instructions on how you would like your citation to appear.</description>
+    </item>
+    <item>
+      <title>Software Licenses</title>
+      <link>/ec-sw-citation/recommendations/fordevs/licenses/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>/ec-sw-citation/recommendations/fordevs/licenses/</guid>
+      <description>Software License and Rights Provide a license with your software.   Copyright licensing protects the ownership of original creative works. Before choosing a license for your software, review its software components for inclusion of other licensed or copyrighted software to make sure that your contribution is in compliance with the contributions of the included software. This provides the necessary attribution linkages to creative works that are built on top of the contributions of others.</description>
+    </item>
+  </channel>
+</rss>

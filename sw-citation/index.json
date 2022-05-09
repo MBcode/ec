@@ -1,0 +1,107 @@
+[
+  {
+    "content": "EARTHCUBE SOFTWARE CITATION As the EarthCube program concludes, these software citation recommendations are intended to provide guidance for current EC-funded software development projects on how to ensure persistent identification, citability, and discoverability for EarthCube-funded software.\nIt is recognized that software citation is under-utilized and that many excellent projects have gone under- and unrecognized because they were not appropriately cited in the contexts they were used. In some cases, this could have been improved by explicit citation instructions provided to end users\nThese recommendations also provide templates and strategies for subsequent software development projects going forward.\nPlease begin with the Recommendations section to work through the recommendations for developers of software or end users.\n",
+    "description": "",
+    "tags": null,
+    "title": "Overview",
+    "uri": "/ec-sw-citation/overview/"
+  },
+  {
+    "content": "Recommendations Recommendations for software citation are made across two axis: for developers and for end users. This distinction underscores the differences between the needs of the audience and creator, where the audience (end user) needs to understand how the value of the software they use can and should be transmitted through the secondary and tertiary products of that use: research, application, publication or integration with other software.\nThe software creators, however, set the stage for the audience’s perception of their software’s value through a variety of means, not the least of which is the clear indication of how software should be acknowledged and situated in various contexts such as publications. Without clear acknowledgement and citation guidance, the audience is left to their own devices about when, where and how the software they use should be acknowledged. Up to this point, leaving this expectation to be fulfilled by the audience has yielded uneven and suboptimal results.\nThe following sections will detail how creators (developers) and audience (users) should approach software citation:\n Software Developer Recommendations Software User Recommendations  ",
+    "description": "",
+    "tags": null,
+    "title": "Recommendations",
+    "uri": "/ec-sw-citation/recommendations/"
+  },
+  {
+    "content": "SOFTWARE DEVELOPERS There are three basic recommendations for software developers or maintainers of primary code repositories. The intent of these recommendations are to provide an unambiguous mechanism to signal to the user base that the software you are providing is intended to be cited and that there is no room for interpretation for your citation and software license.\n  Create a persistent web identifier (such as a Digital Object Identifier (DOI)) for your software so that it can be appropriately traced, tracked, cited and maintained.\n Please see the detailed guidelines for more information.    Provide clear acknowledgement instructions and place this language in the appropriate files and webpages.\n Please review example acknowledgements for samples.    Provide a license with your software so end users understand the terms, conditions and intent of your software.\n Please review software license information for additional details.    ",
+    "description": "",
+    "tags": null,
+    "title": "For Software Developers",
+    "uri": "/ec-sw-citation/recommendations/fordevs/"
+  },
+  {
+    "content": "SOFTWARE USERS Cite the software you use Whether created by you or somebody else software needs citation. The more software is cited, the more likely its creators will be acknowledged for the contribution their software has made to research, applications or wherever it is used.\nUse consistent information in your software citations The Earth Science Informatics Partners (ESIP) citation guideline suggests your citation minimally include title, version, publication year, PID (DOI) URL, Publisher, author and access date as shown in this example:\nESIP Example Citation GuidelineAuthor. (Publication Year). Title. Version No. Publisher. PID URL. Access Date.\n ",
+    "description": "",
+    "tags": null,
+    "title": "For Software Users",
+    "uri": "/ec-sw-citation/recommendations/forusers/"
+  },
+  {
+    "content": "Persistent Identifiers Three potential ways to get a persistent identifier are as follows:\nGithub-to-Zenodo export If you have your software in a Github repository, Zenodo provides a DOI minting service directly from Github. Zenodo extracts and archives a snapshot of your Github repository as it was at a specific time, and assigns a DOI to that snapshot. Make sure that you check the author list after exporting to Zenodo, in particular to change Github monikers to authors’ names and add ORCIDs when missing. Also, make sure the title of your Github repository is meaningful before you export to Zenodo.\nBenefits\n If your software is released in discrete releases, and you want different DOIs to be assigned with each of your releases, the Zenodo integration with Github may be useful, as can be tightly integrated with the project releases within your repository. Preservation is done by Zenodo, which is operated by the CERN high-energy physics facility in Europe.  Drawbacks\n Zenodo integration only works with Github. The snapshotted version in Zenodo can become out of sync with the most current software in Github. No curation support.  University library repository Some university libraries offer the capability to archive software in their digital repositories. They typically also assign persistent identifiers to their repository’s resources, often DOIs.\nBenefits\n Local \u0026 in-person service from professional staff at your local organization. Curation support for creating metadata, organizing files, and the archiving process.  Drawbacks\n Many university library digital repositories are designed to take in many different kinds of digital assets, such as data sets, documents, and images. Thus, their services may not be designed specifically for software, and may not have any features that directly support software.  Some, however, are developing services specifically to host software.\nSoftware Heritage Software Heritage is an initiative aiming to collect, preserve, and share the entire body of software source code and its development history.\nBenefits\n  The Software Heritage services are specifically designed for software preservation and tracking.\n  Fine grained tracking and reference of software - Software Heritage IDs can be used to reference specific versions of software source projects and source code files, down to fragments of individual files. Ex: this URL references lines 14-20 of a specific file within the Software Heritage archive: https://archive.softwareheritage.org/browse/content/sha1_git:2f1b8cc8aed317ad1ae83310fc3fabf4f339bca6/?origin_url=https://github.com/pangeo-data/pangeo\u0026path=a618ecbf43e04f12b39bec8e5d0145ff1795ad69/.travis.yml\u0026revision=8f1343558d7c0eecf4aa1001329b9bdfb3efe00f\u0026snapshot=3b3af1c32cc2dfc8ec9b509a19acf570a07d3c58#L14-20\n  Drawbacks\n Software Heritage does not use DOIs to identify their software. They have their own identifier system. Publishers may expect/require DOIs. SH IDs can be long and unwieldy, as shown in the above example No curation support. No metadata requirements.  ",
+    "description": "",
+    "tags": null,
+    "title": "Persistent Identifiers",
+    "uri": "/ec-sw-citation/recommendations/fordevs/identifiers/"
+  },
+  {
+    "content": "Software Attribution \u0026 Acknowledgement Providing clear acknowledgement instructions to your end users required appropriate languae and file placement where end users are most likely to see it, such as your software landing page or Github README file.\nYour software package’s web page or Github repository should include language indicating how you would like attribution:  The information you place on your site should provide clear instructions on how you would like your citation to appear. Provide a clear example of the citation as you would like it to appear in publications and other works that cite your software. If your software is hosted on a web page, that page should provide a recommended citation. If your software is hosted on Github, the README.MD file should provide a recommended citation, so if users find the landing page but have not yet visited the source code, they can quickly understand how to cite the work. Here is an example from the wrf-python software package repository on github:  Add a Software DOI Badge to your Github Repository DOI badges help improve the visibility of your software on your software repository. This is a very simple way to let your visitors and end users know that a DOI exists and that they are being encouraged to use it.\nYou can add a DOI badge very easily to your top-level master branch README.md file with the following shortcode that uses the shields.io badge catalog:\n[![DOI](https://img.shields.io/badge/DOI-YOUR_ DOI)](https://doi.org/YOUR_DOI) And once you add this to the first line of your README.md, your badge will look like this:\nInclude CITATION File Format (CFF) file in the root of your repo. This is a relatively new addition to Github that allows you to add structured citation information directly into your Github repository. See the Github Guide for CITATION Files for additional information, as well as detailed information about the Citation File Format (CFF).\n† (Advanced) Include a command in the software that allows users to generate a citation: You can optionally include a command in the software that allows users to generate a citation. The latticekrig project makes heavy use of the R programming language. To encourage citation and to remind users that within their R environment that they may get an example of the citation as the authors intended, the citation(\"latticekrig\") command in the language will generate the citation with the current running version of the software.\n",
+    "description": "",
+    "tags": null,
+    "title": "Attribution \u0026 Acknowledgement",
+    "uri": "/ec-sw-citation/recommendations/fordevs/acknowledgements/"
+  },
+  {
+    "content": "Software License and Rights Provide a license with your software.   Copyright licensing protects the ownership of original creative works. Before choosing a license for your software, review its software components for inclusion of other licensed or copyrighted software to make sure that your contribution is in compliance with the contributions of the included software. This provides the necessary attribution linkages to creative works that are built on top of the contributions of others.\n  Selecting a license for your software is important. While there are many licenses available to use, the following are commonly used open source licenses:\n Apache-2.0 BSD3-Clause MIT    Should you need a non-open source or require a different open source license than those recommended above, try visiting the site https://choosealicense.com/ which maintains a simple wizard for helping end users select an open source license. For a more comprehensive view of all licenses available (for both software or documentation) visit the SPDX Project which has a list of over 100 licenses to choose from. Visit https://spdx.org/licenses/ for more information.\n  ",
+    "description": "",
+    "tags": null,
+    "title": "Software Licenses",
+    "uri": "/ec-sw-citation/recommendations/fordevs/licenses/"
+  },
+  {
+    "content": "RESOURCES Software citation has become a much more important topic of research and discussion in recent years. Here are some resources to learn more about what is being recommended and what is acknowledged as state of the art in best practices.\n N. P. Chue Hong, A. Allen, A. Gonzalez-Beltran, A. de Waard, A. M. Smith, C. Robinson, C. Jones, D. Bouquin, D. S. Katz, D. Kennedy, G. Ryder, J. Hausman, L. Hwang, M. B. Jones, M. Harrison, M. Crosas, M. Wu, P. Löwe, R. Haines, S. Edmunds, S. Stall, S. Swaminathan, S. Druskat, T. Crick, T. Morrell, T. Pollard, “Software Citation Checklist for Authors,” Zenodo, 15-Oct-2019. DOI: 10.5281/zenodo.3479198 N. P. Chue Hong, A. Allen, A. Gonzalez-Beltran, A. de Waard, A. M. Smith, C. Robinson, C. Jones, D. Bouquin, D. S. Katz, D. Kennedy, G. Ryder, J. Hausman, L. Hwang, M. B. Jones, M. Harrison, M. Crosas, M. Wu, P. Löwe, R. Haines, S. Edmunds, S. Stall, S. Swaminathan, S. Druskat, T. Crick, T. Morrell, T. Pollard, “Software Citation Checklist for Developers,” Zenodo, 15-Oct-2019. DOI: 10.5281/zenodo.3482768 Jessica Hausman, Shelley Stall, James Gallagher, \u0026 Mingfang Wu. (2019): Software and Services Citation Guidelines and Examples: https://doi.org/10.6084/m9.figshare.7640426.v4  ",
+    "description": "",
+    "tags": null,
+    "title": "Resources",
+    "uri": "/ec-sw-citation/resources/"
+  },
+  {
+    "content": "Examples There are a number of good examples that demonstrate the various ways citation can be formally integrated into your project.\n Unidata Integrated Data Viewer (IDV) Weather Research and Forecasting (WRF) Model Model for Prediction Across Scales (MPAS)  ",
+    "description": "",
+    "tags": null,
+    "title": "Examples",
+    "uri": "/ec-sw-citation/examples/"
+  },
+  {
+    "content": "Unidata IDV The Unidata Integrated Data Viewer (IDV) DOI: 10.5065/D6RN35XM includes a clear visual cue and instruction from the software’s primary landing page:\nFrom which a simple citation recommendation example is included, that also provides information about the cited version of the software, which points to the current IDV software version.\n Unidata, (2012): Integrated Data Viewer (IDV) version 3.1 [software]. Boulder, CO: UCAR/Unidata. ( http://doi.org/10.5065/D6RN35XM)\n ",
+    "description": "",
+    "tags": null,
+    "title": "Unidata IDV",
+    "uri": "/ec-sw-citation/examples/unidata/"
+  },
+  {
+    "content": "WRF The Weather Research and Forecasting Model (WRF) software projects represent sound examples of how citable resources can be made from widely used software.\nWRF-ARW - Weather Research and Forecasting Model - Advanced Research WRF\nThis project provides a simple citation example:\n WRF Community. (2000). Weather Research and Forecasting Model. 3.9.1.1. UCAR/NCAR. https://doi.org/10.5065/D6MK6B4K. Accessed 22 December 2021.\n WRF-Hydro\nThe WRF-Hydro software, which is a hydrological extension to the WRF model provides a citation recommendedation like this:\n Gochis, David J., Barlage, Michael, Cabell, Ryan, Casali, Matthew, Dugger, Aubrey, FitzGerald, Katelyn, McAllister, Molly, McCreight, James, RafieeiNasab, Arezoo, Read, Laura, Sampson, Kevin, Yates, David, Zhang, Ying. (2013). WRF-Hydro Modeling System. 5.0. UCAR/NCAR - Research Application Laboratory. https://doi.org/10.5065/d6j38rbj. Accessed 22 December 2021.\n ",
+    "description": "",
+    "tags": null,
+    "title": "WRF",
+    "uri": "/ec-sw-citation/examples/wrf/"
+  },
+  {
+    "content": "MPAS The Model for Prediction Across Scales (MPAS) project DOI 10.5281/zenodo.996549 also provides an example of how citable resources can be made from widely used atmospheric science software. MPAS uses Zenodo to archive various software versions.\nMPAS - Model for Prediction Across Scales\n MPAS Development Team. (2017). Model for Prediction Across Scales version 5.2. Zenodo. https://doi.org/10.5281/zenodo.996549\n MPAS-Dev\n Michael Duda, Doug Jacobsen, Mark Petersen, Matt Hoffman, Adrian K. Turner, ldfowler58, Xylar Asay-Davis, Todd Ringler, Phillip J. Wolfram, Luke Van Roekel, William Lipscomb, stephenprice, skamaroc, Nicole Jeffery, Dom Heinzeller, Jon Woodring, maltrud, Juan Saenz, Miles Curry, … Tong Zhang. (2021). MPAS-Dev/MPAS-Model: MPAS Version 7.1 (v7.1). Zenodo. https://doi.org/10.5281/zenodo.5426259\n ",
+    "description": "",
+    "tags": null,
+    "title": "MPAS",
+    "uri": "/ec-sw-citation/examples/mpas/"
+  },
+  {
+    "content": "COMMON QUESTIONS While there are many questions you may have about the nature of the citation for your own project, we have tried to capture some of the common questions about software citation.\n  My software is released regularly as multiple versions, what should I do?  There are several options to consider in this situation:\nOPTION 1: Create one DOI that is used for all versions\nPros: This is the simplest approach, and requires the least maintenance effort by the software creators.\nCons: This approach can make it difficult to track citations to different software versions. There is likely to be less granularity in any citation metrics that accrue to the software.\nRecommended practices: Have the DOI resolve to a page that clearly displays all of the available software versions. Provide a clear citation example for each version that includes the version number in the recommended citation.\nOPTION 2: Create a new DOIs for each release version\nPros: Enables users to precisely identify and point to specific versions of the software that they have used.\nCons: Requires users to know how to reference the specific version that they used. Also requires the software creator/manager to take steps to create DOIs for each version. It also requires clear definitions of what a “version” means for the particular software project.\nRecommended practices: Create documentation that clearly defines what versions have been created, and their differences. Have the DOIs resolve to a page that clearly displays the relevant software versions. Provide a clear citation example for each version that includes the version number in the recommended citation. For software released through Github, strongly consider using Zenodo to create DOIs, as it creates DOIs for official Github releases when the Github-to-Zenodo plug-in has been activated.\nConsiderations for assessing your version / release strategy\n How much do you change your software? What is versionable about your software? How frequent do you make releases? How much traceability do you want? E.g. do you want to know which versions are being used most? Do multiple versions coexist in the user community?      A lot of the items in my repository are Jupyter Notebooks, should I mint a DOI for each notebook?  It is becoming commonplace for project software to be developed in the form of Jupyter Notebooks, and in some cases demonstration code is also in Jupyter. The recommendation for Jupyter is to consider the logical cohesion of the “software” within the notebook (or notebooks). If a notebook can be considered a standalone artifact and does not have dependencies with other notebooks or code not part of the software within the notebook, then it would be advised that a DOI is minted for that notebook. If, however, a notebook is part of a larger set of notebooks or other software, it is advised you mint a DOI for the collection of items and not just the notebook alone, especially if the collection is what you would like cited.\nOne easy way to think of it is if the DOI was given out to the notebook (or collection), would it represent a useful whole as distributed.\n    What are the benefits of DOIs versus just a website URL?  A DOI is a persistent trackable identifier. DOIs for software are increasingly being used in citation metrics which provide more visibility and greater understanding of how the identifier (and associated software) are linked to academic publications and other software. Many academic indexing services are recognizing software DOIs as important trackable assets for metrics.\n  ",
+    "description": "",
+    "tags": null,
+    "title": "FAQ",
+    "uri": "/ec-sw-citation/faq/"
+  },
+  {
+    "content": "",
+    "description": "",
+    "tags": null,
+    "title": "Categories",
+    "uri": "/ec-sw-citation/categories/"
+  },
+  {
+    "content": "",
+    "description": "",
+    "tags": null,
+    "title": "Tags",
+    "uri": "/ec-sw-citation/tags/"
+  }
+]

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Examples on EarthCube Software Citation</title>
+    <link>/ec-sw-citation/examples/</link>
+    <description>Recent content in Examples on EarthCube Software Citation</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language><atom:link href="/ec-sw-citation/examples/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Unidata IDV</title>
+      <link>/ec-sw-citation/examples/unidata/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>/ec-sw-citation/examples/unidata/</guid>
+      <description>Unidata IDV The Unidata Integrated Data Viewer (IDV) DOI: 10.5065/D6RN35XM includes a clear visual cue and instruction from the software&amp;rsquo;s primary landing page:
+From which a simple citation recommendation example is included, that also provides information about the cited version of the software, which points to the current IDV software version.
+ Unidata, (2012): Integrated Data Viewer (IDV) version 3.1 [software]. Boulder, CO: UCAR/Unidata. ( http://doi.org/10.5065/D6RN35XM)
+ </description>
+    </item>
+    <item>
+      <title>WRF</title>
+      <link>/ec-sw-citation/examples/wrf/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>/ec-sw-citation/examples/wrf/</guid>
+      <description>WRF The Weather Research and Forecasting Model (WRF) software projects represent sound examples of how citable resources can be made from widely used software.
+WRF-ARW - Weather Research and Forecasting Model - Advanced Research WRF
+This project provides a simple citation example:
+ WRF Community. (2000). Weather Research and Forecasting Model. 3.9.1.1. UCAR/NCAR. https://doi.org/10.5065/D6MK6B4K. Accessed 22 December 2021.
+ WRF-Hydro
+The WRF-Hydro software, which is a hydrological extension to the WRF model provides a citation recommendedation like this:</description>
+    </item>
+    <item>
+      <title>MPAS</title>
+      <link>/ec-sw-citation/examples/mpas/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>/ec-sw-citation/examples/mpas/</guid>
+      <description>MPAS The Model for Prediction Across Scales (MPAS) project DOI 10.5281/zenodo.996549 also provides an example of how citable resources can be made from widely used atmospheric science software. MPAS uses Zenodo to archive various software versions.
+MPAS - Model for Prediction Across Scales
+ MPAS Development Team. (2017). Model for Prediction Across Scales version 5.2. Zenodo. https://doi.org/10.5281/zenodo.996549
+ MPAS-Dev
+ Michael Duda, Doug Jacobsen, Mark Petersen, Matt Hoffman, Adrian K. Turner, ldfowler58, Xylar Asay-Davis, Todd Ringler, Phillip J.</description>
+    </item>
+  </channel>
+</rss>
