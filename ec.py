@@ -827,7 +827,8 @@ def v2iqt(var,sqs):  #does the above fncs
     #really if only 1 var, could always just change it
     #_someday could send in dict to replace if >1
 
-def iqt2df(iqt,endpoint="https://graph.geodex.org/blazegraph/namespace/nabu/sparql"):
+#def iqt2df(iqt,endpoint="https://graph.geodex.org/blazegraph/namespace/nabu/sparql"):
+def iqt2df(iqt,endpoint="https://graph.geocodes.earthcube.org/blazegraph/namespace/earthcube/sparql"):
     "instantiated-query-template/txt to df"
     if not iqt:
         return "need isntantiated query text"
@@ -880,7 +881,8 @@ def txt_query(qry_str,sqs=None): #a generalized version would take pairs/eg. <${
         #qs=get_txtfile("sparql-query.txt")
         qs= sqs or get_txtfile("sparql-query.txt")
     import sparqldataframe, simplejson
-    endpoint = "https://graph.geodex.org/blazegraph/namespace/nabu/sparql"
+    #endpoint = "https://graph.geodex.org/blazegraph/namespace/nabu/sparql"
+    endpoint = "https://graph.geocodes.earthcube.org/blazegraph/namespace/earthcube/sparql"
     add2log(qry_str)
     q=qs.replace('${q}',qry_str)
     add2log(q)
