@@ -399,7 +399,7 @@ def urn2uri(urn): #from wget_rdf, replace w/this call soon
         return f'no-urn:{urn}'
     #if(urn!=None and urn.startswith('urn:')):
     elif urn.startswith('urn:'):
-        global f_nt
+        #global f_nt
         url=urn.replace(":","/").replace("urn","https://oss.geodex.org",1)
         urlroot=path_leaf(url) #file w/o path
         urlj= url + ".jsonld" #get this as well so can get_jsfile2dict the file
@@ -409,19 +409,21 @@ def urn2uri(urn): #from wget_rdf, replace w/this call soon
         #os_system(cs)
         #cs= f'wget -a log {urlj}' 
         #os_system(cs)
-        return url
+        return url, urlroot, urlj
 
+#take urn2uri out of this, but have to return a few vars
 def wget_rdf(urn,viz=None):
     if urn==None:
         return f'no-urn:{urn}'
     #if(urn!=None and urn.startswith('urn:')):
     elif urn.startswith('urn:'):
         global f_nt
-        url=urn.replace(":","/").replace("urn","https://oss.geodex.org",1)
-        urlroot=path_leaf(url) #file w/o path
-        urlj= url + ".jsonld" #get this as well so can get_jsfile2dict the file
-        urlj.replace("milled","summoned")
-        url += ".rdf"
+ #      url=urn.replace(":","/").replace("urn","https://oss.geodex.org",1)
+ #      urlroot=path_leaf(url) #file w/o path
+ #      urlj= url + ".jsonld" #get this as well so can get_jsfile2dict the file
+ #      urlj.replace("milled","summoned")
+ #      url += ".rdf"
+        url, urlroot, urlj = urn2uri(urn) #so can reuse this, also getting sys change/fining missing in minio
         cs= f'wget -a log {url}' 
         os_system(cs)
         cs= f'wget -a log {urlj}' 
@@ -867,6 +869,8 @@ def search_notebook(urn):
 def subj2urn(doi):
     return v4qry(doi,"subj2urn")
 
+#should get graph.geo.. from https://dev.geocodes.earthcube.org/#/config dynamically
+ #incl the default path for each of those other queries, ecrr, ;rdf location as well
 #=========append fnc from filtereSPARQLdataframe.ipynb
 #def sq2df(qry_str):
 #def txt_query(qry_str): #consider sending in qs=None =dflt lookup as now, or use what sent in
