@@ -393,7 +393,22 @@ f_nt=None
 def read_rdf(fn,ext=".tsv"):  #too bad no tabs though../fix?
     return read_file(fn,ext)
 
-def urn2uri(urn): #from wget_rdf, replace w/this call soon
+#if I ever get a chance, I'm going to go back to my more understandable /ld/repo/name format
+#def urn2uri_(urn):  #looking for a more stable indicator
+def urn2uri(urn): 
+    "URN to backup store"
+    if urn==None:
+        return f'no-urn:{urn}'
+    elif urn.startswith('urn:'):
+        #url=urn.replace("urn:","http://141.142.218.86/",1).replace(":","/") ;gives///
+        url=urn.replace(":","/").replace("urn","http://141.142.218.86",1)
+        urlroot=path_leaf(url) #file w/o path
+        url += ".rdf"
+        return url
+
+#summoned=jsonld milled=rdf=which is really .nt ;though gets asserted as quads /?
+#def urn2uri(urn): #from wget_rdf, replace w/this call soon
+def urn2urls(urn): #from wget_rdf, replace w/this call soon
     "way we map URNs ~now" #check on this w/the URN changes 
     if urn==None:
         return f'no-urn:{urn}'
@@ -401,7 +416,7 @@ def urn2uri(urn): #from wget_rdf, replace w/this call soon
     elif urn.startswith('urn:'):
         #global f_nt
         url=urn.replace(":","/").replace("urn","https://oss.geodex.org",1)
-        urlroot=path_leaf(url) #file w/o path
+      # urlroot=path_leaf(url) #file w/o path
         urlj= url + ".jsonld" #get this as well so can get_jsfile2dict the file
         urlj.replace("milled","summoned")
         url += ".rdf"
@@ -409,7 +424,8 @@ def urn2uri(urn): #from wget_rdf, replace w/this call soon
         #os_system(cs)
         #cs= f'wget -a log {urlj}' 
         #os_system(cs)
-        return url, urlroot, urlj
+        #return url, urlroot, urlj
+        return url, urlj
 
 #take urn2uri out of this, but have to return a few vars
 def wget_rdf(urn,viz=None):
@@ -423,7 +439,9 @@ def wget_rdf(urn,viz=None):
  #      urlj= url + ".jsonld" #get this as well so can get_jsfile2dict the file
  #      urlj.replace("milled","summoned")
  #      url += ".rdf"
-        url, urlroot, urlj = urn2uri(urn) #so can reuse this, also getting sys change/fining missing in minio
+        #url, urlroot, urlj = urn2uri(urn) #so can reuse this, also getting sys change/fining missing in minio
+        url, urlj = urn2urls(urn) #so can reuse this, also getting sys change/fining missing in minio
+        urlroot=path_leaf(url) #file w/o path
         cs= f'wget -a log {url}' 
         os_system(cs)
         cs= f'wget -a log {urlj}' 
