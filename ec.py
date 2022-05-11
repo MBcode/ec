@@ -405,6 +405,8 @@ def urn2uri(urn):
         url += ".rdf"
         return url
 
+minio_backup= "http://141.142.218.86" #can also reset this global
+
 minio_prod= "https://oss.geodex.org" #minio
 minio_dev= "https://oss.geocodes.earthcube.org"
 minio=minio_prod #but need to reset for amgeo in dev, would rather have all in one space, eg.just above
