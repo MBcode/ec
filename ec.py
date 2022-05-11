@@ -433,6 +433,18 @@ def urn2urls(urn): #from wget_rdf, replace w/this call soon
         #return url, urlroot, urlj
         return url, urlj
 
+def rdf2nt(urlroot_):
+    "DFs rdf is really .nt, also regularize2dcat"
+    urlroot=urlroot_.replace(".rdf","") #to be sure
+    global f_nt
+    fn1 = urlroot + ".rdf"
+    fn2 = urlroot + ".nt" #more specificially, what is really in it
+    #cs= f'mv {fn1} {fn2}' #makes easier to load into rdflib..eg: #&2 read into df
+    cs= f'cat {fn1}|sed "/> /s//>\t/g"|sed "/ </s//\t</g"|sed "/doi:/s//DOI:/g"|cat>{fn2}'
+    os_system(cs)   #fix .nt so .dot is better ;eg. w/doi
+    f_nt=fn2
+    return fn2
+
 #take urn2uri out of this, but have to return a few vars
 def wget_rdf(urn,viz=None):
     if urn==None:
@@ -452,12 +464,13 @@ def wget_rdf(urn,viz=None):
         os_system(cs)
         cs= f'wget -a log {urlj}' 
         os_system(cs)
-        fn1 = urlroot + ".rdf"
-        fn2 = urlroot + ".nt" #more specificially, what is really in it
-        #cs= f'mv {fn1} {fn2}' #makes easier to load into rdflib..eg: #&2 read into df
-        cs= f'cat {fn1}|sed "/> /s//>\t/g"|sed "/ </s//\t</g"|sed "/doi:/s//DOI:/g"|cat>{fn2}'
-        os_system(cs)   #fix .nt so .dot is better ;eg. w/doi
-        f_nt=fn2
+      # fn1 = urlroot + ".rdf"
+      # fn2 = urlroot + ".nt" #more specificially, what is really in it
+      # #cs= f'mv {fn1} {fn2}' #makes easier to load into rdflib..eg: #&2 read into df
+      # cs= f'cat {fn1}|sed "/> /s//>\t/g"|sed "/ </s//\t</g"|sed "/doi:/s//DOI:/g"|cat>{fn2}'
+      # os_system(cs)   #fix .nt so .dot is better ;eg. w/doi
+      # f_nt=fn2
+        rdf2nt(urlroot)
         #from rdflib import Graph
         #g = Graph()
         #g.parse(fn2)
