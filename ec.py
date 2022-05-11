@@ -402,9 +402,12 @@ def urn2uri(urn):
     elif urn.startswith('urn:'):
         #url=urn.replace("urn:","http://141.142.218.86/",1).replace(":","/") ;gives///
         url=urn.replace(":","/").replace("urn","http://141.142.218.86",1)
-        urlroot=path_leaf(url) #file w/o path
         url += ".rdf"
         return url
+
+minio_prod= "https://oss.geodex.org" #minio
+minio_dev= "https://oss.geocodes.earthcube.org"
+minio=minio_prod #but need to reset for amgeo in dev, would rather have all in one space, eg.just above
 
 #summoned=jsonld milled=rdf=which is really .nt ;though gets asserted as quads /?
 #def urn2uri(urn): #from wget_rdf, replace w/this call soon
@@ -415,7 +418,8 @@ def urn2urls(urn): #from wget_rdf, replace w/this call soon
     #if(urn!=None and urn.startswith('urn:')):
     elif urn.startswith('urn:'):
         #global f_nt
-        url=urn.replace(":","/").replace("urn","https://oss.geodex.org",1)
+       #url=urn.replace(":","/").replace("urn","https://oss.geodex.org",1) #minio
+        url=urn.replace(":","/").replace("urn",minio,1) #minio
       # urlroot=path_leaf(url) #file w/o path
         urlj= url + ".jsonld" #get this as well so can get_jsfile2dict the file
         urlj.replace("milled","summoned")
