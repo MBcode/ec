@@ -795,6 +795,13 @@ def read_file(fnp, ext=None):  #download url and ext/filetype
         except:
             df = str(sys.exc_info()[0])
             pass
+    elif ft=='.json' or re.search('js',ext,re.IGNORECASE):
+        try:
+            print(f'read_json({nf}')
+            df=pd.read_json(fn)
+        except:
+            df = str(sys.exc_info()[0])
+            pass
     elif ft=='.html' or re.search('htm',ext,re.IGNORECASE):
         try:
             df=pd.read_html(fn)
