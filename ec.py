@@ -405,6 +405,66 @@ def urn2uri(urn):
         url += ".rdf"
         return url
 
+#after ro_crate subset have all SO/dcat version 
+#
+def get_gID(): #could have arg that defaults to gName
+  subj = "gID:" + gName.replace(".","") 
+  return subj 
+
+def get_collectionID(collectionName):
+  subj=get_gID()
+  collection= f'<{subj}/collection/{collectionName}>'
+  return collection 
+
+def set_collectionName(collectionName):
+  rs= prefixes+ "prefix gID: https://sites.google.com/site/ \n " 
+  subj = "gID:" + gName.replace(".","") #get_gID()
+  search = f'<gID:search/{q}>'
+  rs+= f'<{subj}> <so:searchAction> {search} \n '
+  rs+= f'{search} <so:search> "{q}" \n '
+  collection= f'<{subj}/collection/{collectionName}>' #get_collectionID(collectionName)
+  rs+= f'<{subj}> <so:collection> {collection} \n '
+  return rs 
+
+#def set_collection_rows(collection,rows): #needs collection generated from set_collectionName right now
+def set_collection_rows(collectionName,rows):
+  row=rows[0] #will iterate over for all rows soon, a: row2d..
+  u2=row2urn_url(row)
+  urn,url=u2[0],u2[1] #will do other urls soon too
+  uri=urn2uri(urn)
+  collection=get_collectionID(collectionName) #if sent name vs final collection
+  rs+= f'{collection} dcat:Dataset <{uri}> \n '
+  rs+= f'<{uri}> dcat:Distribution <{u2[1]}> \n '
+  return rs 
+
+#This was in the gist above, but broke out parts above, so could call below w/less code
+#if we want more of a breakdown, so can ask for user/agent's collections then it's ....
+def rows2collection_(rows,collectionName):
+  rs= prefixes+ "prefix gID: https://sites.google.com/site/ \n " 
+  subj = "gID:" + gName.replace(".","") 
+  search = f'<gID:search/{q}>'
+  rs+= f'<{subj}> <so:searchAction> {search} \n '
+  rs+= f'{search} <so:search> "{q}" \n '
+  collection= f'<{subj}/collection/{collectionName}>'
+  rs+= f'<{subj}> <so:collection> {collection} \n '
+  row=rows[0] #will iterate over for all rows soon, a: row2d..
+  u2=row2urn_url(row)
+  urn,url=u2[0],u2[1] #will do other urls soon too
+  uri=urn2uri(urn)
+  rs+= f'{collection} dcat:Dataset <{uri}> \n '
+  rs+= f'<{uri}> dcat:Distribution <{u2[1]}> \n '
+  return rs 
+
+#def rows2collection_nt(rows,collectionName): #could reuse above in parts & transform
+def rows2collection(rows,collectionName): #redo above 1st
+  rs1=set_collectionName(collectionName)
+  rs2=set_collection_rows(collectionName,rows)
+  return rs1+rs2 
+
+#assertThese=rows2collection(rows,"my1")
+#assertThese 
+
+#
 minio_backup= "http://141.142.218.86" #can also reset this global
 
 minio_prod= "https://oss.geodex.org" #minio
