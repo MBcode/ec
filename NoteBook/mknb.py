@@ -202,6 +202,46 @@ def pm_q3(q):
         os.system(cs)
     return post_gist(fn)
 
+def pm_c(c):
+    import os
+    from os import path
+    fn= "c/" + "not_yet" + ".ipynb"
+    if path.exists(fn):
+        print(f'reuse:{fn}')
+    else:
+        cs=f'papermill --prepare-only sparql.ipynb {fn} -p c {c}'
+        print(cs)
+        os.system(cs)
+    return post_gist(fn)
+
+def pm_dtq(d,q,t):
+    import os
+    from os import path
+    #fn= "c/" + q + ".ipynb"
+    fn= "c/" + name + ".ipynb"
+    if path.exists(fn):
+        print(f'reuse:{fn}')
+    else:
+        cs=f'papermill --prepare-only sparql.ipynb {fn} -p q {q} -p {URNs} '
+        print(cs)
+        os.system(cs)
+    return post_gist(fn)
+
+def pm_dtq(datasets,tools=None,queries=None):
+    import os
+    from os import path
+    #fn= "c/" + q + ".ipynb"
+    fn= "c/" + name + ".ipynb"
+    if path.exists(fn):
+        print(f'reuse:{fn}')
+    else:
+        t_args = ( f' -p {tools} ' if tools else "")
+        q_args = ( f' -p {queries} ' if queries else "")
+        cs=f'papermill --prepare-only sparql.ipynb {fn} -p q {q} -p {datasets} {t_args} {q_args} '
+        print(cs)
+        os.system(cs)
+    return post_gist(fn)
+
 #def pm2(dwnurl, fn):
 #def pm_nb2(dwn_url, ext=None):
 
@@ -218,13 +258,13 @@ def mknb(dwnurl_str,ext=None,urn=None):
 
 from flask import Flask
 from flask import request
-from flask_ipban import IpBan
+#from flask_ipban import IpBan
 app = Flask(__name__)
-ip_ban = IpBan(ban_seconds=200)
-ip_ban.init_app(app)
-blockip=os.getenv("blockip")
-if blockip:
-    ip_ban.block(blockip)
+#ip_ban = IpBan(ban_seconds=200)
+#ip_ban.init_app(app)
+#blockip=os.getenv("blockip")
+#if blockip:
+#    ip_ban.block(blockip)
 
 @app.route('/mknb/') 
 def mk_nb():
@@ -245,6 +285,43 @@ def mk_Q():
     print(f'q={q}')
     #r= mkQ(q) #just pagemill directly
     r= pm_q3(q)
+    return r
+
+@app.route('/mkC/') 
+def mk_C():
+    "make a NoteBook"
+    c = request.args.get('collection',  type = str)
+    print(f'c={collection}')
+    r= pm_c(q)
+    return r
+
+#open collection, of sparqlNB-query=q and an array of URNs for the datasets
+@app.route('/mkQ2/')  #qry&URN's come in an "[array,of,elts]"
+def mk_Q2():
+    "make a NoteBook for a collection"
+    q = request.args.get('name',  type = str) #suggest: user:collectionName to can be shared/reused easily
+    print(f'name={name}')
+    q = request.args.get('Qs',  type = str)
+    print(f'Qs={Qs}')
+    urn = request.args.get('URNs', default = 'None',   type = str)
+    print(f'URNs={URNs}')
+    #r= mkQ(q) #just pagemill directly
+    r= pm_q_d(Qs,URNs)
+    return r
+
+#open collection, of sparqlNB-query=q and an array of URNs for the datasets
+#dave has large json chunks, which I got him2limit a bit,but will still not scale
+@app.route('/mkQ3/')  #qry&URN's come in an "[array,of,elts]"
+def mk_Q3():
+    "make a NoteBook for a collection"
+    q = request.args.get('datasets',  type = str) 
+    print(f'data={datasets}')
+    q = request.args.get('Qs',  type = str)
+    print(f'Qs={queries}')
+    urn = request.args.get('URNs', default = 'None',   type = str)
+    print(f'tools=={tools}')
+    #r= mkQ(q) #just pagemill directly
+    r= pm_dtq(datasets,tools,queries)
     return r
 
 
