@@ -291,8 +291,8 @@ def mk_Q():
 def mk_C():
     "make a NoteBook"
     c = request.args.get('collection',  type = str)
-    print(f'c={collection}')
-    r= pm_c(q)
+    print(f'c={c}')
+    r= pm_c(c)
     return r
 
 #open collection, of sparqlNB-query=q and an array of URNs for the datasets
