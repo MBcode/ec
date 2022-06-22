@@ -25,10 +25,10 @@ IN_COLAB = 'google.colab' in sys.modules
 if not IN_COLAB:
     local()
 
-def ndtq():
+def ndtq(name=None,datasets=None,queries=None,tools=None):
   "get collection args for colab or binder"
   import json
-  if IN_COLAB:
+  if IN_COLAB: #this has to come from top level
     n=json.loads(name)
     d=json.loads(datasets)
     t=json.loads(tools)
