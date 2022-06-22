@@ -26,6 +26,7 @@ def tpg(fn="https/darchive.mblwhoilibrary.org_bitstream_1912_26532_1_dataset-752
     print(r)
 #==will replace this w/tgy.py code, that includes finding a fn in the gitsts, vs remaking it
 import os
+import json
 
 def first_str(s):
     r=s.split(' ', 1 )
@@ -162,6 +163,8 @@ def pm_nb(dwnurl, ext=None):
 
     #above had problems(on1machine), so have cli backup in case:
 
+    #only use above if can keep it from executing, like I do in the other cli calls
+
 def pm_nb3(dwn_url, ext=None, urn=None):
     import os
     from os import path
@@ -202,16 +205,44 @@ def pm_q3(q):
         os.system(cs)
     return post_gist(fn)
 
-def pm_c(c):
+def prepare_only(inp,fn,d):
+    import papermill as pm
     import os
     from os import path
-    fn= "c/" + "not_yet" + ".ipynb"
+    e=None
+    #if path.exists(fn):
+    #    print(f'reuse:{fn}')
+    #else:
+    try:
+        e = pm.execute_notebook(inp,fn,parameters=d,prepare_only=True)
+    except:
+        print(f'except:{e}') #might have to catch this exception
+    #print(f'pm:{e}') #might have to catch this exception
+    #return post_gist(fn) #htm w/link to colab of the gist
+    print(f'prepared_ in:{fn}')
+    return fn
+
+def pm_c(c):  #sending json via cli is making it loose the quotes
+    import os
+    from os import path
+    cd=json.loads(c)
+    #name = cd.name
+    name = cd.get("name")
+    if not name:
+        name = "note_yet"
+    fn= "c/" + name + ".ipynb"
     if path.exists(fn):
         print(f'reuse:{fn}')
     else:
-        cs=f'papermill --prepare-only sparql.ipynb {fn} -p c {c}'
+        #cs=f'papermill --prepare-only sparql.ipynb {fn} -p c {c}'
+        cs=f'papermill --prepare-only sparql.ipynb {fn} '
+        for key in cd:
+            val= json.dumps(cd[key]).replace("\'","\"")
+            cs2= f" -p {key} '{val}'"
+            cs += cs2
         print(cs)
         os.system(cs)
+        #prepare_only("sparql.ipynb",fn,c)
     return post_gist(fn)
 
 def pm_dtq(d,q,t):
@@ -292,6 +323,8 @@ def mk_C():
     "make a NoteBook"
     c = request.args.get('collection',  type = str)
     print(f'c={c}')
+    #cj=json.loads(c)
+    #r= pm_c(cj)
     r= pm_c(c)
     return r
 
