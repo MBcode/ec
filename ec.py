@@ -616,6 +616,13 @@ def rget(pp,fn=1):
     r=sq_file(qs,fnt)
     return r
 #-
+def grep_po(p,fn):
+  "find predicate in nt file and returns it's objects"
+  cs= f"grep '{p}' {fn}|cut -f 3"
+  rs= ec.os_system_(cs)
+  ra=rs.split(" .\n")
+  return ra
+#-
 def sparql_f2(fq,fn,r=None): #jena needs2be installed for this, so not in NB yet;can emulate though
     "files: qry,data"
     if r: #--results= Results format (Result set: text, XML, JSON, CSV, TSV; Graph: RDF serialization)
