@@ -25,6 +25,27 @@ IN_COLAB = 'google.colab' in sys.modules
 if not IN_COLAB:
     local()
 
+def ndtq():
+  "get collection args for colab or binder"
+  import json
+  if ec.IN_COLAB:
+    n=json.loads(name)
+    d=json.loads(datasets)
+    t=json.loads(tools)
+    Q=json.loads(queries)
+  else:
+    ds = ipyparams.params['collection']
+    print(ds)
+    dso = json.loads(ds)
+    # if this cell fails the first run.
+    #run a second time, and it works.
+    n=dso.get('name')
+    d=dso.get('datasets')
+    t=dso.get('tools')
+    Q=dso.get('queries')
+  print(f'n={n},d={d},q={q},t={t}')
+  return n,d,t,Q
+
 #more loging
 #def install_recipy():
 #    cs='pip install recipy'
