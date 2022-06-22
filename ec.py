@@ -651,7 +651,7 @@ def rget(pp,fn=1):
     r=sq_file(qs,fnt)
     return r
 #-
-def grep_po(p,fn):
+def grep_po_(p,fn):
   "find predicate in nt file and returns the objects"
   #cs= f"grep '{p}' {fn}|cut -f 3"
   cs= f"grep '{p}' {fn}|cut -d' ' -f 3"
@@ -659,6 +659,16 @@ def grep_po(p,fn):
   #ra=rs.split(" .\n")
   ra=rs.split("\n")
   ra=list(map(lambda x: x.strip(".").strip(" "), ra))[:-1]
+  return ra
+
+def grep_po(p,fn):
+  "find predicate in nt file and returns the objects"
+  cs= f"grep '{p}' {fn}|cut -f 3"
+  #cs= f"grep '{p}' {fn}|cut -d' ' -f 3"
+  rs= os_system_(cs)
+  ra=rs.split(" .\n")
+  #ra=rs.split("\n")
+  #ra=list(map(lambda x: x.strip(".").strip(" "), ra))[:-1]
   return ra
 #-
 def sparql_f2(fq,fn,r=None): #jena needs2be installed for this, so not in NB yet;can emulate though
