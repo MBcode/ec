@@ -28,7 +28,7 @@ if not IN_COLAB:
 def ndtq():
   "get collection args for colab or binder"
   import json
-  if ec.IN_COLAB:
+  if IN_COLAB:
     n=json.loads(name)
     d=json.loads(datasets)
     t=json.loads(tools)
@@ -43,7 +43,7 @@ def ndtq():
     d=dso.get('datasets')
     t=dso.get('tools')
     Q=dso.get('queries')
-  print(f'n={n},d={d},q={q},t={t}')
+  print(f'n={n},d={d},q={Q},t={t}')
   return n,d,t,Q
 
 #more loging
@@ -654,7 +654,7 @@ def rget(pp,fn=1):
 def grep_po(p,fn):
   "find predicate in nt file and returns it's objects"
   cs= f"grep '{p}' {fn}|cut -f 3"
-  rs= ec.os_system_(cs)
+  rs= os_system_(cs)
   ra=rs.split(" .\n")
   return ra
 #-
