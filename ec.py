@@ -501,6 +501,12 @@ def urn2urls(urn): #from wget_rdf, replace w/this call soon
         #return url, urlroot, urlj
         return url, urlj
 
+#only urls of rdf not downloadable yet
+def urn2fnt(urn):
+    rdf_urls=urn2urls(urn)
+    fnt=file_base(path_leaf(rdf_urls[0])) + ".nt"
+    return fnt
+
 def rdf2nt(urlroot_):
     "DFs rdf is really .nt, also regularize2dcat"
     urlroot=urlroot_.replace(".rdf","") #to be sure
