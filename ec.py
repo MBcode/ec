@@ -9,6 +9,11 @@ def laptop(): #could call: in_binder
     rdf_inited,rdflib_inited,sparql_inited=True,True,True
     return "rdf_inited,rdflib_inited,sparql_inited=True,True,True"
 
+def local():
+    "do in binder till can autoset if not in colab"
+    #put in a binder version of sparql_nb template, for now
+    laptop()
+
 #pagemil parameterized colab/gist can get this code via:
 #with httpimport.github_repo('MBcode', 'ec'):   
 #  import ec
@@ -16,6 +21,9 @@ def laptop(): #could call: in_binder
 import os
 import sys
 import json
+IN_COLAB = 'google.colab' in sys.modules
+if not IN_COLAB:
+    local()
 
 #more loging
 #def install_recipy():
