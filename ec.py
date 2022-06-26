@@ -671,6 +671,11 @@ def grep_po(p,fn):
   #ra=list(map(lambda x: x.strip(".").strip(" "), ra))[:-1]
   return ra
 #-
+def urn2accessURL(urn):
+    fnt=urn2fnt(urn)
+    print(f'grep_po:{fnt}')
+    return grep_po('accessURL',fnt)
+#-
 def sparql_f2(fq,fn,r=None): #jena needs2be installed for this, so not in NB yet;can emulate though
     "files: qry,data"
     if r: #--results= Results format (Result set: text, XML, JSON, CSV, TSV; Graph: RDF serialization)
