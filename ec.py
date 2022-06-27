@@ -659,24 +659,30 @@ def grep_po_(p,fn):
   #ra=rs.split(" .\n")
   ra=rs.split("\n")
   ra=list(map(lambda x: x.strip(".").strip(" "), ra))[:-1]
-  return ra
+  return ra #get rid of these
 
 def grep_po(p,fn):
   "find predicate in nt file and returns the objects"
-  cs= f"grep '{p}' {fn}|cut -f 3"
+  cs= f"egrep '{p}' {fn}|cut -f 3"
   #cs= f"grep '{p}' {fn}|cut -d' ' -f 3"
   rs= os_system_(cs)
   ra=rs.split(" .\n")
-  #ra=rs.split("\n")
-  #ra=list(map(lambda x: x.strip(".").strip(" "), ra))[:-1]
   return ra
-#-
-def urn2accessURL(urn):
-    fnt=urn2fnt(urn) #should be same as f_nt
-    print(f'grep_po:{fnt}')
-    #return grep_po('accessURL',fnt)
-    return grep_po('accessURL|contentUrl',fnt)
-#-
+#could ret the Predicate,Object,(lists)and pred(s) could be the 2nd return
+#unless where to call it grep_p2o or grep_pred2obj
+def grep_pred2obj(p,fn):
+  "find predicate in nt file and returns the objects"
+  cs= f"egrep '{p}' {fn}|cut -f 3"
+  rs= os_system_(cs)
+  ra=rs.split(" .\n")
+  return ra
+#def urn2accessURL(urn):
+def urn2accessURL(urn,fnt=None):
+    if not fnt:
+        fnt=urn2fnt(urn) #should be same as f_nt
+    print(f'grep_pred2obj:{fnt}')
+    return grep_pred2obj('accessURL|contentUrl',fnt)
+#-might want to collect/order by file types
 def sparql_f2(fq,fn,r=None): #jena needs2be installed for this, so not in NB yet;can emulate though
     "files: qry,data"
     if r: #--results= Results format (Result set: text, XML, JSON, CSV, TSV; Graph: RDF serialization)
