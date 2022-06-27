@@ -672,9 +672,10 @@ def grep_po(p,fn):
   return ra
 #-
 def urn2accessURL(urn):
-    fnt=urn2fnt(urn)
+    fnt=urn2fnt(urn) #should be same as f_nt
     print(f'grep_po:{fnt}')
-    return grep_po('accessURL',fnt)
+    #return grep_po('accessURL',fnt)
+    return grep_po('accessURL|contentUrl',fnt)
 #-
 def sparql_f2(fq,fn,r=None): #jena needs2be installed for this, so not in NB yet;can emulate though
     "files: qry,data"
