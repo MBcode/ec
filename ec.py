@@ -519,7 +519,7 @@ def urn2urls(urn): #from wget_rdf, replace w/this call soon
         url=urn.replace(":","/").replace("urn",minio,1) #minio
       # urlroot=path_leaf(url) #file w/o path
         urlj= url + ".jsonld" #get this as well so can get_jsfile2dict the file
-        urlj.replace("milled","summoned")
+      # urlj.replace("milled","summoned")
         url += ".rdf"
         #cs= f'wget -a log {url}' 
         #os_system(cs)
