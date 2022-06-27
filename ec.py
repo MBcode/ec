@@ -670,18 +670,24 @@ def grep_po(p,fn):
   return ra
 #could ret the Predicate,Object,(lists)and pred(s) could be the 2nd return
 #unless where to call it grep_p2o or grep_pred2obj
-def grep_pred2obj(p,fn):
-  "find predicate in nt file and returns the objects"
+#def grep_pred2obj(p,fn):
+def grep2obj(p,fn): #=f_nt): #fn could default to (global) f_nt
+  "find pattern in nt file and returns the objects, of the spo lines"
   cs= f"egrep '{p}' {fn}|cut -f 3"
   rs= os_system_(cs)
-  ra=rs.split(" .\n")
+  #ra=rs.split(" .\n")
+  ra=rs.split(".\n")
+  if ra:
+      ra=list(map(lambda x: x.strip().replace('"',''), ra))
   return ra
+#get pack to using a local store, to be more robust
 #def urn2accessURL(urn):
 def urn2accessURL(urn,fnt=None):
+    "get access/content url from urn/it's .nt file"
     if not fnt:
         fnt=urn2fnt(urn) #should be same as f_nt
-    print(f'grep_pred2obj:{fnt}')
-    return grep_pred2obj('accessURL|contentUrl',fnt)
+    print(f'grep2obj:{fnt}')
+    return grep2obj('accessURL|contentUrl',fnt)
 #-might want to collect/order by file types
 def sparql_f2(fq,fn,r=None): #jena needs2be installed for this, so not in NB yet;can emulate though
     "files: qry,data"
