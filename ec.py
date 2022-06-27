@@ -697,8 +697,9 @@ def urn2accessURL(urn,fnt=None):
 #to iterate over this could have a getDatasetURLs &either give URNs or  ROWs&dfSPARQL
 def getDatasetURLs(IDs,dfS=None):
   "return the URLs from every dataset given, by URNs or df w/rows"
-  ds_urls= list(map(urn2accessURL,IDs)) if d1 else list(map(lambda row: dfRow2urls(dfS,row),IDs))  #or put in another row number to get url
-  #ds_url= list(map(lambda urls: urls[0],ds_urls)) if d1 else list(map(lambda urls: urls[row][1], ds_urls)) #default to 1st of the urls
+  d1p= not isinstance(IDs[0], int)
+  ds_urls= list(map(urn2accessURL,IDs)) if d1p else list(map(lambda row: dfRow2urls(dfS,row),IDs))  #or put in another row number to get url
+  #ds_url= list(map(lambda urls: urls[0],ds_urls)) if d1p else list(map(lambda urls: urls[row][1], ds_urls)) #default to 1st of the urls
   ds_url= list(map(lambda urls: urls[0],ds_urls)) #default to 1st of the urls ;need to check in 2nd/sparql_nb w/o collection
   return ds_urls, url
 #-might want to collect/order by file types
