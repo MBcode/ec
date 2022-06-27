@@ -61,6 +61,9 @@ def first(l):
     else:
         return l
 
+def flatten(xss): #stackoverflow
+    return [x for xs in xss for x in xs]
+
 #from qry.py
 def get_txtfile(fn):
     with open(fn, "r") as f:
@@ -115,6 +118,9 @@ def file_base(fn):
 def file_leaf_base(path):
     pl=path_leaf(path)
     return file_base(pl)
+
+def collect_ext(l,ext):
+  return list(filter(lambda x: file_ext(x)==ext,flatten(l)))
 
 #could think a file w/'.'s in it's name, had an .ext
  #so improve if possible; hopefully not by having a list of exts
@@ -688,6 +694,13 @@ def urn2accessURL(urn,fnt=None):
         fnt=urn2fnt(urn) #should be same as f_nt
     print(f'grep2obj:{fnt}')
     return grep2obj('accessURL|contentUrl',fnt)
+#to iterate over this could have a getDatasetURLs &either give URNs or  ROWs&dfSPARQL
+def getDatasetURLs(IDs,dfS=None):
+  "return the URLs from every dataset given, by URNs or df w/rows"
+  ds_urls= list(map(urn2accessURL,IDs)) if d1 else list(map(lambda row: dfRow2urls(dfS,row),IDs))  #or put in another row number to get url
+  #ds_url= list(map(lambda urls: urls[0],ds_urls)) if d1 else list(map(lambda urls: urls[row][1], ds_urls)) #default to 1st of the urls
+  ds_url= list(map(lambda urls: urls[0],ds_urls)) #default to 1st of the urls ;need to check in 2nd/sparql_nb w/o collection
+  return ds_urls, url
 #-might want to collect/order by file types
 def sparql_f2(fq,fn,r=None): #jena needs2be installed for this, so not in NB yet;can emulate though
     "files: qry,data"
