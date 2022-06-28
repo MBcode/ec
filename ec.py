@@ -122,6 +122,9 @@ def file_leaf_base(path):
 def collect_ext(l,ext):
   return list(filter(lambda x: file_ext(x)==ext,flatten(l)))
 
+def collect_str(l,s):
+  return list(filter(lambda x: s in x ,flatten(l)))
+
 #could think a file w/'.'s in it's name, had an .ext
  #so improve if possible; hopefully not by having a list of exts
   #but maybe that the ext is say 6char max,..
