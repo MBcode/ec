@@ -366,12 +366,30 @@ def url2nq(url):
     apptxt= f'<{url}> .'
     return append2everyline(fn, apptxt)
 
-def crawl_sitemap(url):
-    "url w/o sitemap.xml, might try other lib"
+def setup_sitemap(): #do this by hand for now
     cs='pip install ultimate_sitemap_parser' #assume done rarely, once/session 
     os_system(cs)
+
+def sitemap_tree(url):
+    "len .all_pages for count"
+    print("assume: setup_sitemap()")
     from usp.tree import sitemap_tree_for_homepage
     tree = sitemap_tree_for_homepage(url)
+    return tree
+
+def sitemap_all_pages(url):
+    tree=sitemap_tree(url)
+    return tree.all_pages()
+
+def sitemap_len(url):
+    "for counts" # maybe allow filtering types later
+    pages=sitemap_all_pages(url)
+    pl=list(pages)
+    return len(pl)
+
+def crawl_sitemap(url):
+    "url w/o sitemap.xml, might try other lib"
+    tree=sitemap_tree(url)
     for page in tree.all_pages():
         url2nq(page.url)
         #print(f'url2nq({page.url})') #dbg
