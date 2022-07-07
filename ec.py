@@ -180,7 +180,14 @@ def get_query_txt(url="https://raw.githubusercontent.com/MBcode/ec/master/NoteBo
     return get_ec_txt(url)
 
 def get_subj2urn_txt(url="http://geocodes.ddns.net/ec/nb/sparql_subj2urn.txt"):
-    return get_ec_txt(url)
+    #return get_ec_txt(url)
+    return """prefix sschema: <https://schema.org/>
+            SELECT distinct    ?g WHERE {
+            graph ?g { <${g}> a schema:Dataset }}"""
+
+def get_graphs_txt(url="http://geocodes.ddns.net/ec/nb/sparql_graphs.txt"):
+    #return get_ec_txt(url)
+    return "SELECT distinct ?g  WHERE {GRAPH ?g {?s ?p ?o}}"
 
 def add_ext(fn,ft):
     if ft==None or ft=='' or ft=='.' or len(ft)<2:
@@ -365,6 +372,10 @@ def url2nq(url):
     fn= url2nt(url)
     apptxt= f'<{url}> .'
     return append2everyline(fn, apptxt)
+
+def setup_s3fs(): #do this by hand for now
+    cs='pip install s3fs' #assume done rarely, once/session 
+    os_system(cs)
 
 def setup_sitemap(): #do this by hand for now
     cs='pip install ultimate_sitemap_parser' #assume done rarely, once/session 
@@ -1037,6 +1048,8 @@ def v2iqt(var,sqs):  #does the above fncs
         return sqs.replace('<${g}>',f'<{var}>')
     if '${q}' in sqs:   #var=q
         return sqs.replace('${q}',var)
+    else:
+        return sqs #when nothing to replace, like in get_graphs
     #could add relatedData case, but changed to 'q' for now
     #really if only 1 var, could always just change it
     #_someday could send in dict to replace if >1
@@ -1080,6 +1093,9 @@ def search_notebook(urn):
 
 def subj2urn(doi):
     return v4qry(doi,"subj2urn")
+
+def get_graphs():
+    return v4qry("","graphs")
 
 #should get graph.geo.. from https://dev.geocodes.earthcube.org/#/config dynamically
  #incl the default path for each of those other queries, ecrr, ;rdf location as well
