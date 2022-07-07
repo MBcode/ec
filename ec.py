@@ -383,7 +383,7 @@ def setup_sitemap(): #do this by hand for now
 
 def sitemap_tree(url):
     "len .all_pages for count"
-    print("assume: setup_sitemap()")
+    #print("assume: setup_sitemap()")
     from usp.tree import sitemap_tree_for_homepage
     tree = sitemap_tree_for_homepage(url)
     return tree
@@ -397,6 +397,14 @@ def sitemap_len(url):
     pages=sitemap_all_pages(url)
     pl=list(pages)
     return len(pl)
+
+def sitemaps_count(sitemaps):
+    sitemap_count = {}
+    for sitemap in sitemaps:
+        count=sitemap_len(sitemap)
+        print(f'{sitemap} has {count} records')
+        sitemap_count[sitemap]=count
+    return sitemap_count
 
 def crawl_sitemap(url):
     "url w/o sitemap.xml, might try other lib"
@@ -676,11 +684,11 @@ def pp_l2s(pp,js=None):
 def rget(pp,fn=1):
     "predicate path to s/o values"
     fnt=dfn(fn)
-#r=ec.sq_file("PREFIX : <http://www.w3.org/ns/dcat#> SELECT distinct ?s ?o WHERE  { ?s :spatialCoverage/:geo/:box ?o}","d1.nt")
+#r=sq_file("PREFIX : <http://www.w3.org/ns/dcat#> SELECT distinct ?s ?o WHERE  { ?s :spatialCoverage/:geo/:box ?o}","d1.nt")
     #s1="PREFIX : <http://www.w3.org/ns/dcat#> SELECT distinct ?s ?o WHERE  { ?s "
     s1="PREFIX : <https://schema.org/> SELECT distinct ?s ?o WHERE  { ?s " #till fix sed
     s2=" ?o}"
-    #r=ec.sq_file(s1 + ":spatialCoverage/:geo/:box" + s2,dfn)
+    #r=sq_file(s1 + ":spatialCoverage/:geo/:box" + s2,dfn)
     pps=pp_l2s(pp)
     qs=s1 + pps + s2
     print(qs)
@@ -1190,7 +1198,7 @@ def dfCombineFeaturesSimilary(df, features = ['kw','name','description','pubname
     ##Step 5: Compute the Cosine Similarity based on the count_matrix
     cosine_sim = cosine_similarity(count_matrix) 
 
-#=so after sparql-nb: df=ec.txt_query(q)
+#=so after sparql-nb: df=txt_query(q)
 #can dfCombineFeaturesSimilary(df)
 #then get_related_indices(row)
 #=I should also write other fnc to access rows of txt_query df returns, to get possible donwloads
