@@ -379,10 +379,11 @@ def setup_s3fs(): #do this by hand for now
 
 def setup_sitemap(): #do this by hand for now
     cs='pip install ultimate_sitemap_parser' #assume done rarely, once/session 
-    #cs='pip install advertools' #assume done rarely, once/session 
+    os_system(cs) #get rid of top one soon
+    cs='pip install advertools' #assume done rarely, once/session 
     os_system(cs)
 
-def sitemap_tree(url):
+def sitemap_tree(url): #will depricate
     "len .all_pages for count"
     #print("assume: setup_sitemap()")
     from usp.tree import sitemap_tree_for_homepage
@@ -397,10 +398,10 @@ def sitemap_df(url):
     return df
 
 def sitemap_all_pages(url):
-    tree=sitemap_tree(url)
-    return tree.all_pages()
-    #df=sitemap_df(url)
-    #return df['loc']
+    #tree=sitemap_tree(url)
+    #return tree.all_pages()
+    df=sitemap_df(url)
+    return df['loc']
 
 def sitemap_len(url):
     "for counts" # maybe allow filtering types later
