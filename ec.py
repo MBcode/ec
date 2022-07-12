@@ -379,6 +379,7 @@ def setup_s3fs(): #do this by hand for now
 
 def setup_sitemap(): #do this by hand for now
     cs='pip install ultimate_sitemap_parser' #assume done rarely, once/session 
+    #cs='pip install advertools' #assume done rarely, once/session 
     os_system(cs)
 
 def sitemap_tree(url):
@@ -388,9 +389,18 @@ def sitemap_tree(url):
     tree = sitemap_tree_for_homepage(url)
     return tree
 
+#switch over libs from tree to df
+
+def sitemap_df(url):
+    import  advertools as adv
+    df=adv.sitemap_to_df(url)
+    return df
+
 def sitemap_all_pages(url):
     tree=sitemap_tree(url)
     return tree.all_pages()
+    #df=sitemap_df(url)
+    #return df['loc']
 
 def sitemap_len(url):
     "for counts" # maybe allow filtering types later
@@ -408,9 +418,12 @@ def sitemaps_count(sitemaps):
 
 def crawl_sitemap(url):
     "url w/o sitemap.xml, might try other lib"
-    tree=sitemap_tree(url)
-    for page in tree.all_pages():
-        url2nq(page.url)
+    #tree=sitemap_tree(url)
+    pages=sitemap_all_pages(url)
+    #for page in tree.all_pages():
+    for page in pages:
+        url2nq(page)
+        #url2nq(page.url)
         #print(f'url2nq({page.url})') #dbg
 
 #if already crawled and just need to convert
