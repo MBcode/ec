@@ -802,6 +802,53 @@ def dfRow2urls(df,row):
         dfRow2rdf(df,row)
     return rget(["contentUrl"],row)
 
+def nt2g(fnt):
+    from rdflib import ConjunctiveGraph #might just install rdflib right away
+    g = ConjunctiveGraph(identifier=fnt)
+    data = open(fnt, "rb") #or get_textfile -no
+    g.parse(data, format="ntriples")
+    return g
+
+#def diff_nt(fn1,fn2):
+def diff_nt_g(fn1,fn2):
+    #import rdflib
+    from rdflib.compare import to_canonical_graph, to_isomorphic, graph_diff
+    g1=nt2g(fn1)
+    g2=nt2g(fn2)
+    iso1 = to_isomorphic(g1)
+    iso2 = to_isomorphic(g2)
+    if iso1 == iso2:
+        return g, None, None
+    else:
+        in_both, in_first, in_second = graph_diff(iso1, iso2)
+        #dump_nt_sorted(in_both)
+        #dump_nt_sorted(in_first)
+        #dump_nt_sorted(in_second)
+        return in_both, in_first, in_second 
+
+#https://github.com/RDFLib/rdflib/blob/master/rdflib/compare.py
+
+def dump_nt_sorted(g):
+    for l in sorted(g.serialize(format='nt').splitlines()):
+        if l: print(l.decode('ascii'))
+
+#fix: rdflib/plugins/serializers/nt.py:28: UserWarning: NTSerializer does not use custom encoding.
+ #warnings.warn("NTSerializer does not use custom encoding.")
+
+def diff_nt(fn1,fn2):
+    in_both, in_first, in_second = diff_nt_g(fn1,fn2)
+    if in_both:
+        print(f'in_both:{in_both}')
+        dump_nt_sorted(in_both)
+    if in_first:
+        print(f'in_first:{in_first}')
+        dump_nt_sorted(in_first)
+    if in_second:
+        print(f'in_second:{in_second}')
+        dump_nt_sorted(in_second)
+    return in_both, in_first, in_second 
+
+
 def pp2so(pp,fn): #might alter name ;basicly the start of jq via sparql on .nt files
     "SPARQL qry given a predicate-path, ret subj&obj, given nt2dn run 1st, giving fn"
     fnt=dfn(fn) #maybe gen fn from int
