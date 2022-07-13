@@ -134,7 +134,7 @@ def has_ext(fn):
     return (fn != file_base(fn))
 
 def wget(fn):
-    #cs= f'wget -a log {fn}' 
+    #cs= f'wget -a log {fn}'  #--quiet
     cs= f'wget --tries=2 -a log {fn}' 
     os_system(cs)
 
@@ -161,6 +161,35 @@ def get_ec_txt(url):
     fnb= pre_rm(url)
     wget(url)
     return get_txtfile(fnb)
+
+def post_untar(url,uncompress="tar -zxvf "): #could be "unzip -qq "
+    "uncompress downloaded version of url"
+    fnb=path_leaf(url)
+    cs=f'{uncompress} {fnb}'
+    os_system(cs)
+    return fnb
+
+def install_url(url): #use type for uncompress later
+    pre_rm(url)
+    wget(url)
+    post_untar(url) #
+
+def install_java():
+    ca= "apt-get install -y openjdk-8-jdk-headless -qq > /dev/null"
+    os_system(cs)  #needed for jena..
+    os.environ["JAVA_HOME"] = "/usr/lib/jvm/java-8-openjdk-amd64"
+    # !java -version #check java version
+
+def install_jena(url="https://dlcdn.apache.org/jena/binaries/apache-jena-4.5.0.tar.gz"):
+    install_url(url)
+
+def install_any23(url="https://dlcdn.apache.org/any23/2.7/apache-any23-cli-2.7.tar.gz"):
+    install_url(url)
+
+def setup_j():
+    install_java()
+    install_jena()
+    install_any23()
 
 #get_  _txt   fncs:
 #def get_relateddatafilename_txt(url="https://raw.githubusercontent.com/earthcube/facetsearch/toolMatchNotebookQuery/client/src/sparql_blaze/sparql_relateddatafilename.txt"):
