@@ -172,7 +172,8 @@ def post_untar(url,uncompress="tar -zxvf "): #could be "unzip -qq "
 def install_url(url): #use type for uncompress later
     pre_rm(url)
     wget(url)
-    post_untar(url) #
+    fnb=post_untar(url) #
+    return fnb.rstrip(".tar.gz").rstrip(".zip") #handle either type
 
 def install_java():
     ca= "apt-get install -y openjdk-8-jdk-headless -qq > /dev/null"
@@ -183,13 +184,24 @@ def install_java():
 def install_jena(url="https://dlcdn.apache.org/jena/binaries/apache-jena-4.5.0.tar.gz"):
     install_url(url)
 
+def install_fuseki(url="https://dlcdn.apache.org/jena/binaries/apache-jena-fuseki-4.5.0.tar.gz"):
+    install_url(url)
+
 def install_any23(url="https://dlcdn.apache.org/any23/2.7/apache-any23-cli-2.7.tar.gz"):
     install_url(url)
 
-def setup_j():
+def setup_j(jf=None):
     install_java()
-    install_jena()
-    install_any23()
+    path=os.getenv("PATH")
+    jena_dir=install_jena()
+    any23_dir=install_any23()
+    if jf:
+        fuseki_dir=install_jena()
+        addpath= f':{jena_dir}/bin:{fuseki_dir}/bin:{any23_dir}/bin'
+    else:
+        addpath= f':{jena_dir}/bin:{any23_dir}/bin'
+    os.environ["PATH"]= path + addpath 
+    return addpath
 
 #get_  _txt   fncs:
 #def get_relateddatafilename_txt(url="https://raw.githubusercontent.com/earthcube/facetsearch/toolMatchNotebookQuery/client/src/sparql_blaze/sparql_relateddatafilename.txt"):
