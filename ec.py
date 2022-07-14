@@ -142,6 +142,7 @@ def wget2(fn,fnl): #might make optional in wget
     "wget url, save to " #eg. sitemap to repo.xml
     cs= f'wget -O {fnl} --tries=2 -a log {fn}' 
     os_system(cs) 
+    return get_txtfile(fnl) #not necc,but useful
 
 def mkdir(dir):
     cs=f'mkdir {dir}'
@@ -166,6 +167,53 @@ def get_ec_txt(url):
     fnb= pre_rm(url)
     wget(url)
     return get_txtfile(fnb)
+
+#testing:
+#=merge using:
+def merge_dict_list(d1,d2):
+    from collections import defaultdict
+    dd = defaultdict(list)
+    for d in (d1, d2): # you can list as many input dicts as you want here
+        for key, value in d.items():
+            dd[key].append(value)
+    return dd
+
+def repos2counts(repos):
+    "from cached sitemaps,etc"
+    repo_df_loc={}
+    for repo in repos:
+        repo_df_loc[repo]=repo2site_loc_df(repo)
+    repo_counts={}
+    #for repo in repos:
+    for repo in repo_df_loc:
+        repo_counts[repo]=len(repo_df_loc[repo])
+    #for now on ld-cache-counts:
+    repo_ld_counts={}
+    repo_fnum=wget2("http://geocodes.ddns.net/ec/test/repo_fnum.txt","summoned.txt")
+    repo_fnum_list=repo_fnum.split('\n')
+    for repo_num in repo_fnum_list:
+        repo_num_list=repo_num.split(' ')
+        if len(repo_num_list)>1:
+            #print(repo_num_list)
+            repo_=repo_num_list[0]
+            fnum=repo_num_list[1]
+            rl=repo_.split('/')
+            if len(rl)>2:
+                #print(rl)
+                rn=rl[2]
+                repo_ld_counts[rn]=fnum
+    #for now on final-counts: #next from graph.csv and run system cmd on it,then strip extra spaces
+    repoCounts=wget2("http://geocodes.ddns.net/ec/test/graph_counts.txt","graph.txt")
+    final_counts={}
+    rl2_list=repoCounts.split('\n')
+    for  rl2 in rl2_list:
+        num_repo=rl2.split(' ')
+        if len(num_repo)>1:
+            #print(num_repo)
+            count=num_repo[0]
+            repo=num_repo[1].lstrip('milled:').lstrip('summoned:') #in case either
+            final_counts[repo]=count
+    return repo_counts,repo_ld_counts,final_counts,      repo_df_loc 
 
 def post_untar(url,uncompress="tar -zxvf "): #could be "unzip -qq "
     "uncompress downloaded version of url"
