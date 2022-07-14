@@ -138,6 +138,11 @@ def wget(fn):
     cs= f'wget --tries=2 -a log {fn}' 
     os_system(cs)
 
+def wget2(fn,fnl): #might make optional in wget
+    "wget url, save to " #eg. sitemap to repo.xml
+    cs= f'wget -O {fnl} --tries=2 -a log {fn}' 
+    os_system(cs) 
+
 def mkdir(dir):
     cs=f'mkdir {dir}'
     return os_system(cs)
@@ -443,6 +448,17 @@ def sitemap_all_pages(url):
     #return tree.all_pages()
     df=sitemap_df(url)
     return df['loc']
+
+def repo2site_loc_df(repo):
+    "get df[loc] from repos sitemap" #use cached sitemap
+    base_url="http://geocodes.ddns.net/ec/crawl/sitemaps/"
+    url=f'{base_url}{repo}.xml'
+    return sitemap_all_pages(url)
+
+def sitemaps_all_loc(sitemaps):
+    "list(iterable) to get all DFs of LOCs"
+    return map(sitemap_all_pages,sitemaps)
+    #also be able to work w/dictionaries,  repo_name sitmap in, count out
 
 def sitemap_len(url):
     "for counts" # maybe allow filtering types later
