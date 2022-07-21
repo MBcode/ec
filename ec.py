@@ -356,6 +356,13 @@ def url2jsonLD(url):
     add2log(ld)
     return ld
 
+def url2jsonLD_fn(url,fn):
+    "url2jsonLD_file w/forced filename"
+    ld=url2jsonLD(url)
+    LD=json.dumps(ld, indent= 2)
+    fnj = fn + ".jsonld" #only if not there
+    return put_txtfile(fn,LD)
+
 def url2jsonLD_file(url):
     "get jsonLD from w/in url, save to file"
     ld=url2jsonLD(url)
