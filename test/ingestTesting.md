@@ -383,10 +383,13 @@ repoCounts
       13379 milled:ucar
 
 
-# Put in org info in store, so can query to get a table of the falloff between stages
+# Put in counts in store, so can query to get a table of the falloff between stages
 
 repo_counts(from sitemap) -> repo_ld_counts(from LD-cache) -> final_counts(in the endpoint)
-
+```mermaid
+flowchart TD
+R[repo_counts, sitemap=highest] ----> L[repo_ld_counts, jsonLD/nt =or lower] ----> E[final_counts, endpoint =or lower]
+```
 
 ```python
 #get all counts from sitemap/etc caches
