@@ -2,6 +2,11 @@
 
 repo_counts(from sitemap) -> repo_ld_counts(from LD-cache) -> final_counts(in the endpoint)
 
+```mermaid
+flowchart TD
+R[repo_counts, from sitemap] ----> L[repo_ld_counts, from LD-cache] ----> E[final_counts, in the endpoint]
+```
+
 Then unit/end-to-end spot testing of crawl products, to check that code changes don't change outputs
 
 #Load the github.com/earthcube/earthcube_utilities 
