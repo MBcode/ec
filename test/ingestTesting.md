@@ -594,7 +594,10 @@ url -> jsonld (compare w/pre extracted), ntriples (compare w/pre converted),
 Can compare each step in isolation, and all the way through
 
 [Some near misses still have same meaning in next step]
-
+```mermaid
+flowchart TD
+U[sitemap url] -- crawl --> J[jsonLD file] -- convert --> G[.nt or .nq version]
+```
 
 ```python
 ec.first(repo_df_loc)
