@@ -655,7 +655,10 @@ amgeo[0]
 ```python
 ec.init_rdflib()
 ```
-
+```mermaid
+flowchart TD
+J[jsonLD from sitemap] -- compare-with --> L[saved jsonLD standard] -- report-diffs --> D[in key/values]
+```
 
 ```python
 #do a crawl of a url
