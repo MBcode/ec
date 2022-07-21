@@ -793,7 +793,14 @@ amgeo.to_csv("amgeo.csv")
     drwxr-xr-x 1 root root 4096 Jul  6 13:22 sample_data
     -rw-r--r-- 1 root root  956 Jul 14 03:15 summoned.txt
 
-
+A few ways to sample datasets,  
+to be put in a gold_standard in github to campare with
+```mermaid
+flowchart TD
+S[sample sitemap] -- one_site --> O[to start];
+S -- first_from_each_site --> F[better];
+S -- weighted-random --> B[best]
+```
 
 ```python
 #can use this as a basis for an expected_urls.csv in https://github.com/MBcode/ec/tree/master/test 
