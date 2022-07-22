@@ -802,6 +802,9 @@ S -- first_from_each_site --> F[better];
 S -- weighted-random --> B[best]
 ```
 
+For most repositories will still need a sampling stradegy, and to check the gold-standard metadata set,
+[before](https://github.com/MBcode/ec/tree/master/test/standard) it can be checked into the [part of github](https://github.com/earthcube/GeoCODES-Metadata) that the testing workflow will use
+
 ```python
 #can use this as a basis for an expected_urls.csv in https://github.com/MBcode/ec/tree/master/test 
 !cat amgeo.csv
