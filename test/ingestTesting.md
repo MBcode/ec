@@ -765,6 +765,12 @@ L ----> S;
 This comes from https://github.com/RDFLib/rdflib/blob/master/rdflib/compare.py so we should be able to get similar output
 
 Another way we could check the whole sample at onece (first), is to run the search sparql_query.txt on all the sampled triples loaded into  rdflib, and compare with a gold-standard's query, then focus in on the URNs that did not show up
+
+```mermaid
+flowchart TD
+J[triples from sitemap] -- in --> JR[sitemap rdflib]  -- sparql_query --> DR[sitemap df] ----> D[pd.df.diff];
+L[saved standard triples] -- in --> LR[standard rdflib]  -- sparql_query --> DL[standard df] ----> D;
+```
 There also could be changed values, but then we should check if the live crawl got any updated dataset metdadata as well
 
 
