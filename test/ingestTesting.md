@@ -754,7 +754,7 @@ ec.diff_nt_g("ld1.jsonld","ld1gold.jsonld") #working on wrapper that prints out:
 ```
 ```mermaid
 flowchart TD
-J[jsonLD from sitemap] -- compare-with --> L[saved jsonLD standard]; 
+L[saved standard triples] -- compare-with --> J[triples from sitemap]; 
 J ----> B[in_both];
 L ----> B;
 L ----> F[in_first];
