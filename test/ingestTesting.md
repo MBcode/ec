@@ -752,6 +752,20 @@ ec.put_txtfile("ld1.jsonld",ld1j)
 #for both jsonld and ntriples comparison, either via direct or ttl file or graph comparison:
 ec.diff_nt_g("ld1.jsonld","ld1gold.jsonld") #working on wrapper that prints out: in_both, in_first, in_second 
 ```
+```mermaid
+flowchart TD
+J[jsonLD from sitemap] -- compare-with --> L[saved jsonLD standard]; 
+J ----> B[in_both];
+L ----> B;
+J ----> F[in_first];
+L ----> F;
+J ----> S[in_second];
+L ----> S;
+```
+This comes from https://github.com/RDFLib/rdflib/blob/master/rdflib/compare.py so we should be able to get similar output
+
+Another way we could check the whole sample at onece (first), is to run the search sparql_query.txt on all the sampled triples loaded into  rdflib, and compare with a gold-standard's query, then focus in on the URNs that did not show up
+There also could be changed values, but then we should check if the live crawl got any updated dataset metdadata as well
 
 
 ```python
