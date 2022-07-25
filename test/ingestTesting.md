@@ -757,10 +757,8 @@ flowchart TD
 J[jsonLD from sitemap] -- compare-with --> L[saved jsonLD standard]; 
 J ----> B[in_both];
 L ----> B;
-J ----> F[in_first];
-L ----> F;
+L ----> F[in_first];
 J ----> S[in_second];
-L ----> S;
 ```
 This comes from https://github.com/RDFLib/rdflib/blob/master/rdflib/compare.py so we should be able to get similar output
 
