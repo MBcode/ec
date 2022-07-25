@@ -598,6 +598,9 @@ Can compare each step in isolation, and all the way through
 flowchart TD
 U[sitemap url] -- crawl --> J[jsonLD file] -- convert --> G[.nt or .nq version]
 ```
+Below (details) has a crawl and cmp from ec utils, using an easily access/comparable ld-cache
+The start of the gleaner details are at: https://github.com/earthcube/geocodes_documentation/wiki/DataLoadingValidationStory
+Where we can run a small test set all the way through, but can't yet easily keep a dataset associated/find-it with it's crawl-url
 
 ```python
 ec.first(repo_df_loc)
