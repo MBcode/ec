@@ -772,7 +772,10 @@ flowchart TD
 J[triples from sitemap] -- in --> JR[sitemap rdflib]  -- sparql_query --> DR[sitemap df] ----> D[pd.df.diff];
 L[saved standard triples] -- in --> LR[standard rdflib]  -- sparql_query --> DL[standard df] ----> D;
 ```
-There also could be changed values, but then we should check if the live crawl got any updated dataset metdadata as well
+
+Other than the search sparql_query.txt we can run some validation queries, as well, eg. from:
+https://github.com/gleanerio/notebooks/blob/master/notebooks/validation/shacl_assay.ipynb
+
 
 
 ```python
@@ -791,6 +794,7 @@ There also could be changed values, but then we should check if the live crawl g
 #with ntriple comparison have seen ttl help
 ```
 
+There also could be changed values, but then we should check if the live crawl got any updated dataset metdadata as well
 
 ```python
 #to make sure hasn't changed w/gold stnd, look at df['lastmod']
