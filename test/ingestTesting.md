@@ -596,7 +596,9 @@ Can compare each step in isolation, and all the way through
 [Some near misses still have same meaning in next step]
 ```mermaid
 flowchart TD
-U[sitemap url] -- crawl --> J[jsonLD file] -- convert --> G[.nt or .nq version]
+U[sitemap url] -- crawl --> J[jsonLD file] -- convert --> G[.nt or .nq version];
+J -- compare-with --> JG[gold standard jsonLD];
+G -- compare-with --> GG[gold standard triples]
 ```
 Below (details) has a crawl and cmp from ec utils, using an easily access/comparable ld-cache
 The start of the gleaner details are at: https://github.com/earthcube/geocodes_documentation/wiki/DataLoadingValidationStory
@@ -652,7 +654,7 @@ amgeo[0]
 
     'https://amgeo-dev.colorado.edu/static/data/data-01-01-2013-12-30-00.html'
 
-
+Can sort by key, or load as dict, and get the diff there
 
 
 ```python
@@ -660,8 +662,10 @@ ec.init_rdflib()
 ```
 ```mermaid
 flowchart TD
-J[jsonLD from sitemap] -- compare-with --> L[saved jsonLD standard] -- report-diffs --> D[in key/values]
+J[jsonLD from sitemap] -- compare-with --> L[saved jsonLD standard] -- report-diffs --> D[in key/values];
 ```
+
+For deeper key/value diffs could use: [deepdiff](https://pypi.org/project/deepdiff/)  or [Dictdiffer](https://dictdiffer.readthedocs.io/en/latest/)
 
 ```python
 #do a crawl of a url
