@@ -1,5 +1,11 @@
 # GeoCODES ingest pipeline testing:
 
+Be able to check how many of the expected datasets from the sitemap make it to differt stages
+then go back and see that some of what made it are correct/valid and similar to expected/saved test-set values
+
+
+Checking counts along the way:
+
 repo_counts(from sitemap) -> repo_ld_counts(from LD-cache) -> final_counts(in the endpoint)
 
 ```mermaid
