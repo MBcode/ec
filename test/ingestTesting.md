@@ -782,6 +782,12 @@ flowchart TD
 J[triples from sitemap] -- in --> JR[sitemap rdflib]  -- sparql_query --> DR[sitemap df] ----> D[pd.df.diff];
 L[saved standard triples] -- in --> LR[standard rdflib]  -- sparql_query --> DL[standard df] ----> D;
 ```
+Could also run workflow into an endpoint, and query with sparqldataframe, then compare with a saved/stnd-df
+```mermaid
+flowchart TD
+TW[test-set:workflow to endpoint] -- sparql --> CD[current DF];
+SD[saved/stnd DF] -- compare-with --> CD;
+```
 
 Other than the search sparql_query.txt we can run some validation queries, as well, eg. from:
 https://github.com/gleanerio/notebooks/blob/master/notebooks/validation/shacl_assay.ipynb
