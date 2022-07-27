@@ -1,10 +1,10 @@
 # GeoCODES ingest pipeline testing:
 
-Be able to check how many of the expected datasets from the sitemap make it to differt stages
-then go back and see that some of what made it are correct/valid and similar to expected/saved test-set values
+Be able to 1) check how many of the expected datasets from the sitemap make it to differt stages
+then 2) go back and see that some of what made it are correct/valid and similar to expected/saved test-set values
 
 
-Checking counts along the way:
+# 1) Checking counts along the way:
 
 repo_counts(from sitemap) -> repo_ld_counts(from LD-cache) -> final_counts(in the endpoint)
 
@@ -511,7 +511,7 @@ cmp_all_stages
 
 
 
-# Now, Compare some steps against expected values
+# 2) Now, Compare some steps against expected values
 
 from sitemap-url to the 2 parts of the LD-cache and final endpoint graph
 
