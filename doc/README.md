@@ -6,6 +6,8 @@ This repository is for documentation on the GeoCodes technolgoy stack and produc
 
 # [Faceted](https://github.com/earthcube/facetsearch) [search](http://geocodes.ddns.net/ec/GeoCODES)
 
+# [Testing](https://github.com/MBcode/ec/blob/master/test/ingestTesting.md) the [metadata](https://github.com/earthcube/GeoCODES-Metadata) as it goes through the stack
+
 # GeoCODES container [stack](https://github.com/earthcube/geocodes)
 
 # Editing json-ld descriptions of resources, with [forms](https://github.com/earthcube/jsonld_forms)
