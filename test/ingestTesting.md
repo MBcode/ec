@@ -701,8 +701,10 @@ TW[test-set:workflow to endpoint] -- sparql --> CD[current DF];
 SD[saved/stnd DF] -- compare-with --> CD;
 ```
 We could start with this end-to-end testing if the query would catch everything expected from the test sample,
-       then the missing URNs could help more directly look up gleaner ld-cache, vs having to load PROV to find it from sitemap/crawl urls
-
+       then the missing URNs could help more directly look up gleaner ld-cache, vs having to load PROV to find it from sitemap/crawl urls.
+Then can know missing test datasets URNs right away, and the next query should try to find everything we need for search
+  and see if it is still available, (&can time it while we do this).
+       
 Other than the search sparql_query.txt we can run some validation queries, as well, eg. from:
 https://github.com/gleanerio/notebooks/blob/master/notebooks/validation/shacl_assay.ipynb
 
