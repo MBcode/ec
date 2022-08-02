@@ -707,12 +707,16 @@ Then can know missing test datasets URNs right away, and the next query should t
        
  We have a few  test jsonld instances in [GeoCODES-Metadata](https://github.com/earthcube/GeoCODES-Metadatatree/main/metadata) that probably need their dataset_tests.csv to have finer grain expectations of the results of the tests; also to have the ability to have more than one test run; download, json conformance, and then to have some things that just go to a repo-dashboard of warnings, like schema conformance.  As long as it also tests well to turining into triples, and getting asserted in the triplestore, we should still do a text-bases search on it's strings. But even beyond conformance, the metadata has a way to go, to have better machine actionablitity.
        
-As mentioned above the order of the tests should start with end-to-end, so we can find the URNs that didn't make it to compare with the gold-stadard sparql-search-df,  from that we can see where it got lost in the ld-cache (minio right ow).
+As mentioned above the order of the tests should start with end-to-end, so we can find the URNs that didn't make it to compare with the gold-stadard sparql-search-df,  from that we can see where it got lost in the ld-cache (minio right now).  Then we can also run tests/check logs to figure out where it died; eg. did not download, wasn't proper json, or LD, didn't go to triples, didn't get synced via nabu?
+       
+We also need to have the other sparql (for eg. tools) done for this end-to-end test; as I still occasionally do not see tool matches where I would expect them.
        
 Other than the search sparql_query.txt we can run some validation queries, as well, eg. from:
 https://github.com/gleanerio/notebooks/blob/master/notebooks/validation/shacl_assay.ipynb
+       But as mentioned this should (mostly?) go into a repo-feedback-dashboard
 
-
+As a different kind of testing: that the services are healthy/live: I have 2 cron jobs, one to restart the endpoint every 4hrs, and another that checks every hour if it returns for a basic request, and if not will restart it.
+KevinC also has a similar query via nagios, that will alert me, if these fail.  We could also look at mmonit.com 
 
 ```python
 !wc ld1.jsonld ld1gold.jsonld
