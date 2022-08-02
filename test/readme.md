@@ -5,6 +5,7 @@ We have a few test jsonld instances in
  As long as it also tests well to turining into triples, and getting asserted in the triplestore, we should still do a text-bases search on it's strings.
  But even beyond conformance, the metadata has a way to go, to have better machine actionablitity.
 
-## .md version derived from .ipynb version, with a focus on documentation only, and adding diagrams
-## ./standard instances have been moved over, but had schema testing, which will only be usefull for a repo-feedback dashboard
-## the expected_urls.csv or dataset_tests.csv will get finer grain, incl all the tests a dataset will go through
+### .md version derived from .ipynb version, with a focus on documentation only, and adding diagrams
+### ./standard instances have been moved over, but had schema testing, which will only be usefull for a repo-feedback dashboard
+### the expected_urls.csv or dataset_tests.csv will get finer grain, incl all the tests a dataset will go through
+### it also mentions monitoring, incl. crontab restarts and a more frequent check+log with check.py
