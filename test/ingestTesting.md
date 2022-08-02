@@ -705,6 +705,10 @@ We could start with this end-to-end testing if the query would catch everything 
 Then can know missing test datasets URNs right away, and the next query should try to find everything we need for search
   and see if it is still available, (&can time it while we do this).
        
+ We have a few  test jsonld instances in [GeoCODES-Metadata](https://github.com/earthcube/GeoCODES-Metadatatree/main/metadata) that probably need their dataset_tests.csv to have finer grain expectations of the results of the tests; also to have the ability to have more than one test run; download, json conformance, and then to have some things that just go to a repo-dashboard of warnings, like schema conformance.  As long as it also tests well to turining into triples, and getting asserted in the triplestore, we should still do a text-bases search on it's strings. But even beyond conformance, the metadata has a way to go, to have better machine actionablitity.
+       
+As mentioned above the order of the tests should start with end-to-end, so we can find the URNs that didn't make it to compare with the gold-stadard sparql-search-df,  from that we can see where it got lost in the ld-cache (minio right ow).
+       
 Other than the search sparql_query.txt we can run some validation queries, as well, eg. from:
 https://github.com/gleanerio/notebooks/blob/master/notebooks/validation/shacl_assay.ipynb
 
