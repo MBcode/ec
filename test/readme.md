@@ -9,3 +9,4 @@ We have a few test jsonld instances in
 ### ./standard instances have been moved over, but had schema testing, which will only be usefull for a repo-feedback dashboard
 ### the expected_urls.csv or dataset_tests.csv will get finer grain, incl all the tests a dataset will go through
 ### it also mentions monitoring, incl. crontab restarts and a more frequent check+log with check.py
+### added slack app w/webhook url, so nagios can be sent to ecotech channel so we have more eyes on it
