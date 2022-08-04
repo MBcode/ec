@@ -12,5 +12,5 @@ W[ingest workflow tests] -- insertable --> E[searchable endpoint];
 W -- breaks --> F[fix our/their];
 E -- schema-problem --> RD[repo dashboard];
 F -- our --> FWF[fix workflow];
-F == their --> RD;
+F -- their --> RD;
 ```
