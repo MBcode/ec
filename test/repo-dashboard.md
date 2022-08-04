@@ -10,7 +10,7 @@ Later we can try some entity annotation again, and also share that.
 flowchart TD
 W[ingest workflow tests] -- insertable --> E[searchable endpoint]; 
 W -- breaks --> F[fix our/their];
-W -- schema-problem --> RD[repo dashboard];
+E -- schema-problem --> RD[repo dashboard];
 F -- our --> FWF[fix workflow];
 F == their --> RD;
 ```
