@@ -8,6 +8,9 @@ cs="restart_triplestore.sh" #fixed to _ once it is working
 url="https://graph.geodex.org/blazegraph/namespace/earthcube/sparql"
 url2="http://graph.geocodes.earthcube.org"
 
+def restart_endpoint(cs="restart_triplestore.sh"):
+    os.system(cs)
+
 #from ec.py:
 def put_txtfile(fn,s,wa="w"):
     #with open(fn, "w") as f:
@@ -55,12 +58,17 @@ get_sc(url2)
 #getting ok while it is having problems, bc not hitting that part of the store?
 #might load ec.py and do an actual query, and start to log timings as well
 
-def get_query_time():
-    import httpimport
-    with httpimport.github_repo('MBcode', 'ec'):
-      import ec
+#got different results from ec.py bc default endpoint is different, 
+ #so either send in, or use local version w/change
+#def get_query_time(local=None):
+def get_query_time(local=True):
+    if local:
+        import httpimport
+        with httpimport.github_repo('MBcode', 'ec'):
+          import ec
     #ec.get_ec() #work from scratch version for a bit
-    #import ec
+    else:
+        import ec
     q="norway"
     ec.local() #don't load lots of libs for the notebook
     import time
@@ -71,5 +79,47 @@ def get_query_time():
     #print(df)
     print(elapse)
     add2log(elapse)
+    return elapse
 
-get_query_time()
+
+#not using signal version, as wasn't caught properly
+def handler(signum, frame):
+    print("handler")
+    add2log("norway query > 35 sec")
+    raise Exception("norway query > 35 sec")
+
+def try_query_time(local=None):
+    import signal
+    #signal.alarm(35)
+    signal.alarm(5) #for testing
+    try:
+        elapse=get_query_time(local)
+        print(elapse)
+    except Exception as exc:
+        add2log("norway query > 35 sec")
+        print(exc)
+        add2log(exc) #pass str
+        #add2slack(exc) #pass str
+    print("post try")
+
+#try_query_time(True) #use local version w/diff endpoint for now
+
+def query_timeout(local=None):
+    from func_timeout import func_timeout, FunctionTimedOut
+    try:
+        #elapse=get_query_time(local)
+        #elapse=func_timeout(5,get_query_time,args=(local))
+        #elapse=func_timeout(5,get_query_time,args=())
+        elapse=func_timeout(45,get_query_time)
+        print(elapse)
+    except FunctionTimedOut:
+        add2log("norway query > 45 sec, so restart_endpoint")
+        restart_endpoint()
+    except Exception as exc:
+        add2log("norway query > 35 sec")
+        print(exc)
+        add2log(exc) #pass str
+        #add2slack(exc) #pass str
+    print("post try")
+
+query_timeout(True) #use local version w/diff endpoint for now
