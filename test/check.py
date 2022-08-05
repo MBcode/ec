@@ -31,6 +31,7 @@ def os_system(cs):
 #=
 key =  "too/secret"
 def add2slack(s):
+    #change to requests, and use getenv, if I actually use this part
     cs="curl -X POST -H ‘Content-type: application/json’ --data '{\"text\":{s}}' https://hooks.slack.com/services/{key}"
     os_system(cs)
 
@@ -38,7 +39,8 @@ def get_sc(url):
     try:
         print(f'checking:{url}')
         #rds=requests.post(url)
-        rds=requests.get(url, timeout=(15, 45))
+        #rds=requests.get(url, timeout=(15, 45))
+        rds=requests.get(url2, timeout=(15, 45))
         #print(rds.json()) #check for good return before running the rest 
         print(rds.status_code)
     #except:
@@ -50,4 +52,24 @@ def get_sc(url):
         os.system(cs)
 
 get_sc(url2)
- 
+#getting ok while it is having problems, bc not hitting that part of the store?
+#might load ec.py and do an actual query, and start to log timings as well
+
+def get_query_time():
+    import httpimport
+    with httpimport.github_repo('MBcode', 'ec'):
+      import ec
+    #ec.get_ec() #work from scratch version for a bit
+    #import ec
+    q="norway"
+    ec.local() #don't load lots of libs for the notebook
+    import time
+    start=time.time()
+    df=ec.txt_query(q)
+    end=time.time()
+    elapse=end - start
+    #print(df)
+    print(elapse)
+    add2log(elapse)
+
+get_query_time()
