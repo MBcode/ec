@@ -3,6 +3,7 @@
 import requests
 import json
 import os
+import logging
 cs="restart_triplestore.sh" #fixed to _ once it is working
 #cs="restart-triplestore.sh" #use during testing
 url="https://graph.geodex.org/blazegraph/namespace/earthcube/sparql"
@@ -112,6 +113,7 @@ def query_timeout(local=None):
         #elapse=func_timeout(5,get_query_time,args=())
         elapse=func_timeout(45,get_query_time)
         print(elapse)
+        add2log(f'elapse={elapse}') 
     except FunctionTimedOut:
         add2log("norway query > 45 sec, so restart_endpoint")
         restart_endpoint()
@@ -119,7 +121,10 @@ def query_timeout(local=None):
         add2log("norway query > 35 sec")
         print(exc)
         add2log(exc) #pass str
-        #add2slack(exc) #pass str
+        #add2slack(exc) #pass str #don't have to tell us on slack if had to restart, just log it
     print("post try")
 
-query_timeout(True) #use local version w/diff endpoint for now
+#right now the timings are hourly, strange the diff in endpoints, will be good to see
+ #and even better finally getting the time to work on it, which it is being tracked(for timing..)
+
+query_timeout(True) #use local version w/diff endpoint for now 
