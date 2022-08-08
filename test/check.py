@@ -4,6 +4,8 @@ import requests
 import json
 import os
 import logging
+#logger = logging.getLogger(__name__)
+#at the moment this won't make any difference, but can use soon
 cs="restart_triplestore.sh" #fixed to _ once it is working
 #cs="restart-triplestore.sh" #use during testing
 url="https://graph.geodex.org/blazegraph/namespace/earthcube/sparql"
@@ -28,16 +30,20 @@ def add2log(s):
     fs=f'[{s}]\n'
     #put_txtfile("log",fs,"a") 
     put_txtfile("check.log",fs,"a") 
+    #logger.warning(s) #would differentiate
 
 def os_system(cs):
     os.system(cs)
     add2log(cs)
 #=
-key =  "too/secret"
 def add2slack(s):
+    key=os.getenv("nagioslack") #make sure works for su/crontab too
     #change to requests, and use getenv, if I actually use this part
-    cs="curl -X POST -H ‘Content-type: application/json’ --data '{\"text\":{s}}' https://hooks.slack.com/services/{key}"
-    os_system(cs)
+    if key:
+        cs="curl -X POST -H ‘Content-type: application/json’ --data '{\"text\":{s}}' https://hooks.slack.com/services/{key}"
+        os_system(cs)
+    else:
+        print("no key for logging")
 
 def get_sc(url):
     try:
@@ -92,7 +98,7 @@ def handler(signum, frame):
 def try_query_time(local=None):
     import signal
     #signal.alarm(35)
-    signal.alarm(5) #for testing
+    signal.alarm(35) #for testing
     try:
         elapse=get_query_time(local)
         print(elapse)
@@ -101,6 +107,7 @@ def try_query_time(local=None):
         print(exc)
         add2log(exc) #pass str
         #add2slack(exc) #pass str
+        add2slack("norway query > 35 sec, so auto-restarting")
     print("post try")
 
 #try_query_time(True) #use local version w/diff endpoint for now
@@ -127,4 +134,4 @@ def query_timeout(local=None):
 #right now the timings are hourly, strange the diff in endpoints, will be good to see
  #and even better finally getting the time to work on it, which it is being tracked(for timing..)
 
-query_timeout(True) #use local version w/diff endpoint for now 
+query_timeout(True) #use local version w/diff endpoint for now
