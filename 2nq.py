@@ -24,13 +24,21 @@ def file_base(fn):
 #_:bcbhdkms5s8cef2c4s7j0 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://schema.org/Dataset> "urn:09517b808d22d1e828221390c845b6edef7e7a40".
 #fn = "09517b808d22d1e828221390c845b6edef7e7a40.rdf"
 
+#https://stackoverflow.com/questions/3675318/how-to-replace-the-some-characters-from-the-end-of-a-string
+def replace_last(source_string, replace_what, replace_with):
+    head, _sep, tail = source_string.rpartition(replace_what)
+    return head + replace_with + tail
+
 def fn2nq(fn):
     fnb = file_base(fn)
     fn2 = fnb + ".nq"
     with open(fn2,'w') as fd_out:
         with open(fn,'r') as fd_in:
             for line in fd_in:
-                line_out = line.replace(" .",f' "urn:{fnb}" .')
+                #line_out = line.replace(" .",f' "urn:{fnb}" .')
+                #replace_with = f' "urn:{fnb}" .'
+                replace_with = f' <urn:{fnb}> .'
+                line_out = replace_last(line, " .", replace_with)
                 fd_out.write(line_out)
     return fn2
 
