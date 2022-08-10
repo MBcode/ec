@@ -1,4 +1,4 @@
-# From ingestTesting.md
+# From [ingestTesting.md](https://github.com/MBcode/ec/blob/master/test/ingestTesting.md) 
 
 We have a few test jsonld instances in 
 [GeoCODES-Metadata](https://github.com/earthcube/GeoCODES-Metadatatree/main/metadata) that probably need their dataset_tests.csv to have finer grain expectations of the results of the tests; also to have the ability to have more than one test run; download, json conformance, and then to have some things that just go to a [repo-dashboard of warnings](repo-dashboard.md), like schema conformance.
