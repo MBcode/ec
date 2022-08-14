@@ -202,9 +202,12 @@ def diff_sd(fn1,fn2):
 
 #if have url for gold-stnd bucket, and have missing urn
 milled_bucket="" #either the test milled, or from production then from diff buckets, ;still missing URNs from end2end start it off
-def check_urn_rdf(urn,test_bucket="https://oss.geocodes-dev.earthcube.org/citesting/milled/geocodes_demo_datasets/"):
-    gold_rdf=f'{test_bucket}{urn}.rdf'
-    test_rdf=f'{milled_bucket}{urn}.rdf'
+def check_urn_rdf(urn,test_bucket="https://oss.geocodes-dev.earthcube.org/citesting/milled/geocodes_demo_datasets/",
+        gold="http://ideational.ddns.net/ec/test/citesting/milled/geocodes_demo_datasets/"):
+    import pandas as pd
+    #gold_rdf=f'{test_bucket}{urn}.rdf' #test_rdf=f'{milled_bucket}{urn}.rdf'
+    gold_rdf=f'{gold}{urn}.rdf'
+    test_rdf=f'{test_bucket}{urn}.rdf'
     #could blabel_l them both if need be
     df_gold=pd.read_csv(gold_rdf)
     df_test=pd.read_csv(test_rdf)
