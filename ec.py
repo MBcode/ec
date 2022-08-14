@@ -3,6 +3,8 @@
 #=this is also at gitlab now, but won't get autoloaded until in github or allow for gitlab_repo
  #but for cutting edge can just get the file from the test server, so can use: get_ec()
 rdf_inited,rdflib_inited,sparql_inited=None,None,None
+endpoint=None
+local=None
 def laptop(): #could call: in_binder
     "already have libs installed"
     global rdf_inited,rdflib_inited,sparql_inited
@@ -12,7 +14,7 @@ def laptop(): #could call: in_binder
 def local():
     "do in binder till can autoset if not in colab"
     #put in a binder version of sparql_nb template, for now
-    laptop()
+    local=laptop()
 
 #pagemil parameterized colab/gist can get this code via:
 #with httpimport.github_repo('MBcode', 'ec'):   
@@ -137,6 +139,7 @@ def wget(fn):
     #cs= f'wget -a log {fn}'  #--quiet
     cs= f'wget --tries=2 -a log {fn}' 
     os_system(cs)
+    return path_leaf(fn) #new
 
 def wget2(fn,fnl): #might make optional in wget
     "wget url, save to " #eg. sitemap to repo.xml
@@ -169,6 +172,44 @@ def get_ec_txt(url):
     return get_txtfile(fnb)
 
 #testing:
+jar=os.getenv("jar") #move this to top, near global endpoint
+if not jar:
+    if local:
+        jar="~/bin/jar" #have set by local, setup will have to get otherwise
+    else:
+        jar="."
+
+def blabel_l(fn): 
+    fb=file_base(fn) 
+    ext=file_ext(fn)
+    cs=f'java -Xmx4155M -jar {jar}/blabel.jar  LabelRDFGraph -l -i {fn} -o {fb}_l{ext}'
+    os_system(cs)
+
+def read_sd(fn):
+    "read_csv space delimited"
+    import pandas as pd
+    return pd.read_csv(fn,delimiter=" ")
+
+#https://stackoverflow.com/questions/48647534/python-pandas-find-difference-between-two-data-frames
+def df_diff(df1,df2):
+    import pandas as pd
+    return pd.concat([df1,df2]).drop_duplicates(keep=False)
+
+def diff_sd(fn1,fn2):
+    df1=read_sd(fn1)
+    df2=read_sd(fn2)
+    return df_diff(df1,df2)
+
+#if have url for gold-stnd bucket, and have missing urn
+milled_bucket="" #either the test milled, or from production then from diff buckets, ;still missing URNs from end2end start it off
+def check_urn_rdf(urn,test_bucket="https://oss.geocodes-dev.earthcube.org/citesting/milled/geocodes_demo_datasets/"):
+    gold_rdf=f'{test_bucket}{urn}.rdf'
+    test_rdf=f'{milled_bucket}{urn}.rdf'
+    #could blabel_l them both if need be
+    df_gold=pd.read_csv(gold_rdf)
+    df_test=pd.read_csv(test_rdf)
+    return df_diff(df_gold,df_test)
+
 #=merge using:
 def merge_dict_list(d1,d2):
     from collections import defaultdict
