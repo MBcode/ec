@@ -4,6 +4,7 @@
  #but for cutting edge can just get the file from the test server, so can use: get_ec()
 rdf_inited,rdflib_inited,sparql_inited=None,None,None
 endpoint=None
+dflt_endpoint = "https://graph.geocodes.earthcube.org/blazegraph/namespace/earthcube/sparql"
 local=None
 def laptop(): #could call: in_binder
     "already have libs installed"
@@ -1280,7 +1281,8 @@ def v2iqt(var,sqs):  #does the above fncs
     #_someday could send in dict to replace if >1
 
 #def iqt2df(iqt,endpoint="https://graph.geodex.org/blazegraph/namespace/nabu/sparql"):
-def iqt2df(iqt,endpoint="https://graph.geocodes.earthcube.org/blazegraph/namespace/earthcube/sparql"):
+#def iqt2df(iqt,endpoint="https://graph.geocodes.earthcube.org/blazegraph/namespace/earthcube/sparql"):
+def iqt2df(iqt,endpoint=dflt_endpoint):
     "instantiated-query-template/txt to df"
     if not iqt:
         return "need isntantiated query text"
@@ -1339,7 +1341,8 @@ def txt_query(qry_str,sqs=None): #a generalized version would take pairs/eg. <${
         qs= sqs or get_txtfile("sparql-query.txt")
     import sparqldataframe, simplejson
     #endpoint = "https://graph.geodex.org/blazegraph/namespace/nabu/sparql"
-    endpoint = "https://graph.geocodes.earthcube.org/blazegraph/namespace/earthcube/sparql"
+    #endpoint = "https://graph.geocodes.earthcube.org/blazegraph/namespace/earthcube/sparql"
+    endpoint = dflt_endpoint
     add2log(qry_str)
     q=qs.replace('${q}',qry_str)
     add2log(q)
