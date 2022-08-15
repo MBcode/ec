@@ -192,6 +192,21 @@ def read_sd(fn):
     import pandas as pd
     return pd.read_csv(fn,delimiter=" ")
 
+def read_json_(fn):
+    "read_csv json and flatten for df_diff"
+    import pandas as pd
+    return pd.read_json(fn) #finish or skip for:
+
+def read_json(url):
+    import urllib.request
+    import json
+    with urllib.request.urlopen(url) as response:
+        res = response.read()
+        if res:
+            return json.loads(res)
+        else:
+            return None
+
 #https://stackoverflow.com/questions/48647534/python-pandas-find-difference-between-two-data-frames
 def df_diff(df1,df2):
     import pandas as pd
@@ -202,6 +217,23 @@ def diff_sd(fn1,fn2):
     df1=read_sd(fn1)
     df2=read_sd(fn2)
     return df_diff(df1,df2)
+
+def diff_flat_json(fn1,fn2):
+    "df_diff 2 space delimited files"
+    df1=read_json(fn1)
+    df2=read_json(fn2)
+    return df_diff(df1,df2) #or skip for:
+
+def get_json_eq(fn1,fn2):
+    d1=read_json(fn1)
+    d2=read_json(fn2)
+    return d1 == d2
+
+def get_json_diff(fn1,fn2):
+    d1=read_json(fn1)
+    d2=read_json(fn2)
+    #(https://pypi.org/project/deepdiff/)  or (https://dictdiffer.readthedocs.io/en/latest/)
+    return d1 == d2 #finish, as will have to install in NBs too
 
 #def list_diff(li1,li2):
 def list_diff_not_in(li1,li2):
@@ -240,9 +272,19 @@ def check_urn_rdf(urn,
     #return df_diff(df_gold,df_test)
     return diff_sd(gold_rdf,test_rdf)
 
+def check_urn_jsonld(urn,
+        test_bucket="https://oss.geocodes-dev.earthcube.org/citesting/summoned/geocodes_demo_datasets/",
+        gold="http://ideational.ddns.net/ec/test/citesting/summoned/geocodes_demo_datasets/"):
+    gold_rdf=f'{gold}{urn}.jsonld'
+    test_rdf=f'{test_bucket}{urn}.jsonld'
+    #return diff_sd(gold_rdf,test_rdf)
+    #return diff_flat_json(gold_rdf,test_rdf)
+    return get_json_eq(gold_rdf,test_rdf)
+
 def check_urn_diffs(endpoint="http://ideational.ddns.net:3030/geocodes_demo_datasets/sparql", 
         test_bucket="https://oss.geocodes-dev.earthcube.org/citesting/milled/geocodes_demo_datasets/",
         gold="http://ideational.ddns.net/ec/test/citesting/milled/geocodes_demo_datasets/"):
+    "find_urn_diffs and for each missing check_urn_rdf"
     gold_URNs= gold + "URNs.txt"
     dfu=find_urn_diffs(endpoint,gold_URNs)
     return list(map(check_urn_rdf,dfu))
