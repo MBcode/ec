@@ -1333,6 +1333,18 @@ def get_graphs():
     "return all the g URNs"
     return v4qry("","graphs")
 
+def get_graphs_list(endpoint=None):
+    "get URNs as list, can send in alt endpoint"
+    global dflt_endpoint
+    if not endpoint:
+        dfg=get_graphs()
+    else:
+        save = dflt_endpoint
+        dflt_endpoint = endpoint
+        dfg=get_graphs()
+        dflt_endpoint = save
+    return dfg['g'].tolist()
+
 #should get graph.geo.. from https://dev.geocodes.earthcube.org/#/config dynamically
  #incl the default path for each of those other queries, ecrr, ;rdf location as well
 #=========append fnc from filtereSPARQLdataframe.ipynb
