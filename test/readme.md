@@ -14,8 +14,8 @@ but now also have output from [blabel](https://github.com/aidhog/blabel/) that r
 flowchart TD
 U[sitemap gh-URLs] -- crawl --> J[jsonLD file] -- convert --> G[.nt or .nq version] -- load --> T[test_endpoint];
 T -- query --> TR[test_results];
-TR -- compare-with --> GR[gold_results] -- get --> M[missinging URNs] -- find_nt --> G;
-M -- nt_not_found --> J;
+TR -- compare-with --> GR[gold_results] -- get --> M[missinging URNs] -- use2 --> C[check_LD_cache] -- find_nt --> G;
+C --  nt_not_found --> J;
 J -- compare-with --> JG[gold standard jsonLD];
 G -- compare-with --> GG[gold standard triples]
 ```
