@@ -10,6 +10,15 @@ next to use diff in df to find missing URNs, and look in LD-cache for them (bc o
 Check both jsonld and other rdf, with standard values
 in [testing.md](https://github.com/MBcode/ec/blob/master/test/ingestTesting.md) sec 2, still have dictdiff and rdflib graph cmp
 but now also have output from [blabel](https://github.com/aidhog/blabel/) that removes BlankNodes+some dups, for easier nt file comparison
+```mermaid
+flowchart TD
+U[sitemap gh-URLs] -- crawl --> J[jsonLD file] -- convert --> G[.nt or .nq version] -- load --> T[test_endpoint];
+T -- query --> TR[test_results];
+TR -- compare-with --> GR[gold_results] -- get --> M[missinging URNs] -- find_nt --> G;
+M -- nt_not_found --> J;
+J -- compare-with --> JG[gold standard jsonLD];
+G -- compare-with --> GG[gold standard triples]
+```
 
 ### .md version derived from .ipynb version, with a focus on documentation only, and adding diagrams
 ### ./standard instances have been moved over[*](https://github.com/earthcube/GeoCODES-Metadata/tree/main/metadata/Dataset/json), but had schema testing, which will only be usefull for a repo-feedback dashboard
