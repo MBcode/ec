@@ -1282,7 +1282,8 @@ def v2iqt(var,sqs):  #does the above fncs
 
 #def iqt2df(iqt,endpoint="https://graph.geodex.org/blazegraph/namespace/nabu/sparql"):
 #def iqt2df(iqt,endpoint="https://graph.geocodes.earthcube.org/blazegraph/namespace/earthcube/sparql"):
-def iqt2df(iqt,endpoint=dflt_endpoint):
+#def iqt2df(iqt,endpoint=dflt_endpoint):
+def iqt2df(iqt,endpoint=None):
     "instantiated-query-template/txt to df"
     if not iqt:
         return "need isntantiated query text"
@@ -1290,7 +1291,12 @@ def iqt2df(iqt,endpoint=dflt_endpoint):
     if sparql_inited==None:
         si= init_sparql()  #still need to init
         #qs= iqt #or si  #need q to instantiate
-    add2log(iqt)
+    #add2log(iqt)
+    global dflt_endpoint
+    if not endpoint:
+        endpoint=dflt_endpoint
+    add2log(f'query:{iqt}')
+    add2log(f'endpoint:{endpoint}')
     df = sparqldataframe.query(endpoint, iqt)
     return df
 
@@ -1318,10 +1324,13 @@ def search_webservice(urn):
 def search_notebook(urn):
     return v4qry(urn,"notebook")
 
+#
 def subj2urn(doi):
+    "<<doi a so:Dataset>>'s graph"
     return v4qry(doi,"subj2urn")
 
 def get_graphs():
+    "return all the g URNs"
     return v4qry("","graphs")
 
 #should get graph.geo.. from https://dev.geocodes.earthcube.org/#/config dynamically
@@ -1342,6 +1351,7 @@ def txt_query(qry_str,sqs=None): #a generalized version would take pairs/eg. <${
     import sparqldataframe, simplejson
     #endpoint = "https://graph.geodex.org/blazegraph/namespace/nabu/sparql"
     #endpoint = "https://graph.geocodes.earthcube.org/blazegraph/namespace/earthcube/sparql"
+    global dflt_endpoint
     endpoint = dflt_endpoint
     add2log(qry_str)
     q=qs.replace('${q}',qry_str)
