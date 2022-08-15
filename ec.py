@@ -181,6 +181,7 @@ if not jar:
         jar="."
 
 def blabel_l(fn): 
+    "get rid of BlankNodes, needs setup_j"
     fb=file_base(fn) 
     ext=file_ext(fn)
     cs=f'java -Xmx4155M -jar {jar}/blabel.jar  LabelRDFGraph -l -i {fn} -o {fb}_l{ext}'
@@ -197,22 +198,54 @@ def df_diff(df1,df2):
     return pd.concat([df1,df2]).drop_duplicates(keep=False)
 
 def diff_sd(fn1,fn2):
+    "df_diff 2 space delimited files"
     df1=read_sd(fn1)
     df2=read_sd(fn2)
     return df_diff(df1,df2)
 
+#def list_diff(li1,li2):
+def list_diff_not_in(li1,li2):
+    "those in l1 not in l2"
+    s = set(li2)
+    return [x for x in li1 if x not in s]
+
+def find_urn_diffs(endpoint="http://ideational.ddns.net:3030/geocodes_demo_datasets/sparql", 
+        gold="http://ideational.ddns.net/ec/test/citesting/milled/geocodes_demo_datasets/URNs.txt"):
+    "get_graphs_list and saved gold-list, and diff" #should do a set diff
+    df_gold=read_sd(gold)
+    #print(df_gold)
+    #get_graphs w/convience gives list
+    #return df_diff(df_gold, )
+    test_list=get_graphs_list(endpoint)
+    gold_list=df_gold['g'].tolist()
+    tl=len(test_list)
+    tg=len(gold_list)
+    print(f'got:{tl},expected:{tg}')
+    #return list_diff(test_list,gold_list)
+    return list_diff_not_in(gold_list,test_list)
+
 #if have url for gold-stnd bucket, and have missing urn
 milled_bucket="" #either the test milled, or from production then from diff buckets, ;still missing URNs from end2end start it off
-def check_urn_rdf(urn,test_bucket="https://oss.geocodes-dev.earthcube.org/citesting/milled/geocodes_demo_datasets/",
+def check_urn_rdf(urn,
+        test_bucket="https://oss.geocodes-dev.earthcube.org/citesting/milled/geocodes_demo_datasets/",
         gold="http://ideational.ddns.net/ec/test/citesting/milled/geocodes_demo_datasets/"):
+    "check a URNs diff btw urls for current+gold-stnd buckets"
     import pandas as pd
     #gold_rdf=f'{test_bucket}{urn}.rdf' #test_rdf=f'{milled_bucket}{urn}.rdf'
     gold_rdf=f'{gold}{urn}.rdf'
     test_rdf=f'{test_bucket}{urn}.rdf'
     #could blabel_l them both if need be
-    df_gold=pd.read_csv(gold_rdf)
-    df_test=pd.read_csv(test_rdf)
-    return df_diff(df_gold,df_test)
+    #df_gold=pd.read_csv(gold_rdf)
+    #df_test=pd.read_csv(test_rdf)
+    #return df_diff(df_gold,df_test)
+    return diff_sd(gold_rdf,test_rdf)
+
+def check_urn_diffs(endpoint="http://ideational.ddns.net:3030/geocodes_demo_datasets/sparql", 
+        test_bucket="https://oss.geocodes-dev.earthcube.org/citesting/milled/geocodes_demo_datasets/",
+        gold="http://ideational.ddns.net/ec/test/citesting/milled/geocodes_demo_datasets/"):
+    gold_URNs= gold + "URNs.txt"
+    dfu=find_urn_diffs(endpoint,gold_URNs)
+    return list(map(check_urn_rdf,dfu))
 
 #=merge using:
 def merge_dict_list(d1,d2):
