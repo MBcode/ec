@@ -280,13 +280,16 @@ def install_java():
     # !java -version #check java version
 
 def install_jena(url="https://dlcdn.apache.org/jena/binaries/apache-jena-4.5.0.tar.gz"):
-    install_url(url)
+    return install_url(url)
 
 def install_fuseki(url="https://dlcdn.apache.org/jena/binaries/apache-jena-fuseki-4.5.0.tar.gz"):
-    install_url(url)
+    return install_url(url)
 
 def install_any23(url="https://dlcdn.apache.org/any23/2.7/apache-any23-cli-2.7.tar.gz"):
-    install_url(url)
+    return install_url(url)
+
+def setup_blabel(url="http://geocodes.ddns.net/ld/bn/blabel.jar"):
+    wget(url)
 
 def setup_j(jf=None):
     install_java()
@@ -299,6 +302,7 @@ def setup_j(jf=None):
     else:
         addpath= f':{jena_dir}/bin:{any23_dir}/bin'
     os.environ["PATH"]= path + addpath 
+    setup_blabel() #which also needs java
     return addpath
 
 #get_  _txt   fncs:
@@ -1550,3 +1554,36 @@ def t2(fn="324529.jsonld"):
  #I wish we could use(a version of)the download url
  #and then we would all know what to expect w/o 
   #depending on some centeral rand#generator
+
+#blabel: take a triple file w/every line ending in " ." and use filename to make a quad, needed for gleaner/testing
+#potentially useful elsewhere; eg. if added repo: could use this in my workflow to make quads
+#DF's gleaner uses the shah of the jsonld to name the .rdf files which are actually .nt files
+# but then there are lots of .nq files that are actually .nt files, but should be able to get them w/this
+#maybe someplace in nabu this is done, but by then I can't have the files to load them
+
+#use filename to convert .rdf file to a .nq file
+#▶<102 a09local: /milled/geocodes_demo_datasets> mo 09517b808d22d1e828221390c845b6edef7e7a40.rdf
+#_:bcbhdkms5s8cef2c4s7j0 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://schema.org/Dataset> .
+#goes to:
+#_:bcbhdkms5s8cef2c4s7j0 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://schema.org/Dataset> "urn:09517b808d22d1e828221390c845b6edef7e7a40".
+#fn = "09517b808d22d1e828221390c845b6edef7e7a40.rdf"
+
+#https://stackoverflow.com/questions/3675318/how-to-replace-the-some-characters-from-the-end-of-a-string
+def replace_last(source_string, replace_what, replace_with):
+    head, _sep, tail = source_string.rpartition(replace_what)
+    return head + replace_with + tail
+
+def fn2nq(fn):
+    "take a fn.* returns a fn.nq w/4th col urn:fn"
+    fnb = file_base(fn)
+    fn2 = fnb + ".nq"
+    with open(fn2,'w') as fd_out:
+        with open(fn,'r') as fd_in:
+            for line in fd_in:
+                #line_out = line.replace(" .",f' "urn:{fnb}" .')
+                #replace_with = f' "urn:{fnb}" .'
+                replace_with = f' <urn:{fnb}> .'
+                line_out = replace_last(line, " .", replace_with)
+                fd_out.write(line_out)
+    return fn2
+
