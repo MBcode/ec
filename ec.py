@@ -241,18 +241,25 @@ def list_diff_not_in(li1,li2):
     s = set(li2)
     return [x for x in li1 if x not in s]
 
+#testing cmp w/gold should come from github soon
+ #then will send in bucket from run soon after
+
 def find_urn_diffs(endpoint="http://geocodes.ddns.net:3030/geocodes_demo_datasets/sparql", 
-        gold="http://geocodes.ddns.net/ec/test/citesting/milled/geocodes_demo_datasets/URNs.txt"):
+       #gold="https://raw.githubusercontent.com/MBcode/ec/master/test/standard/milled/geocodes_demo_datasets/URNs.txt"):
+       gold="http://geocodes.ddns.net/ec/test/citesting/milled/geocodes_demo_datasets/URNs.txt"):
     "get_graphs_list and saved gold-list, and diff" #should do a set diff
+    print("in find_urn_diffs,read_sd gold")
     df_gold=read_sd(gold)
-    #print(df_gold)
+    print(f'gold:{df_gold}')
     #get_graphs w/convience gives list
     #return df_diff(df_gold, )
     test_list=get_graphs_list(endpoint)
+    print(f'test:{test_list}')
     gold_list=df_gold['g'].tolist()
+    print(f'gold:{gold_list}')
     tl=len(test_list)
     tg=len(gold_list)
-    print(f'got:{tl},expected:{tg}')
+    print(f'got:{tl},expected:{tg}') #consider also listing sitmap counts
     #return list_diff(test_list,gold_list)
     return list_diff_not_in(gold_list,test_list)
 
@@ -274,7 +281,8 @@ def check_urn_rdf(urn,
 
 def check_urn_jsonld(urn,
         test_bucket="https://oss.geocodes-dev.earthcube.org/citesting/summoned/geocodes_demo_datasets/",
-        gold="http://geocodes.ddns.net/ec/test/citesting/summoned/geocodes_demo_datasets/"):
+        gold="https://raw.githubusercontent.com/MBcode/ec/master/test/standard/summoned/geocodes_demo_datasets/"):
+       #gold="http://geocodes.ddns.net/ec/test/citesting/summoned/geocodes_demo_datasets/"):
     gold_rdf=f'{gold}{urn}.jsonld'
     test_rdf=f'{test_bucket}{urn}.jsonld'
     #return diff_sd(gold_rdf,test_rdf)
@@ -283,10 +291,13 @@ def check_urn_jsonld(urn,
 
 def check_urn_diffs(endpoint="http://ideational.ddns.net:3030/geocodes_demo_datasets/sparql", 
         test_bucket="https://oss.geocodes-dev.earthcube.org/citesting/milled/geocodes_demo_datasets/",
-        gold="http://geocodes.ddns.net/ec/test/citesting/milled/geocodes_demo_datasets/"):
+        gold="https://raw.githubusercontent.com/MBcode/ec/master/test/standard/milled/geocodes_demo_datasets/"):
+       #gold="http://geocodes.ddns.net/ec/test/citesting/milled/geocodes_demo_datasets/"):
     "find_urn_diffs and for each missing check_urn_rdf"
     gold_URNs= gold + "URNs.txt"
-    dfu=find_urn_diffs(endpoint,gold_URNs)
+    print(f'find_urn_diffs:{endpoint},{gold_URNs}')
+    #dfu=find_urn_diffs(endpoint,gold_URNs)
+    dfu=find_urn_diffs(endpoint) #use it's default for a bit, bc read_sd prob w/github raw right now
     print(f'check_urn_rdf of:{dfu}')
     rdf_checks= list(map(check_urn_rdf,dfu))
     jsonld_checks= list(map(check_urn_jsonld,dfu)) #could do after, only if a problem, or just check them all now
