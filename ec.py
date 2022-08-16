@@ -4,6 +4,7 @@
  #but for cutting edge can just get the file from the test server, so can use: get_ec()
 rdf_inited,rdflib_inited,sparql_inited=None,None,None
 endpoint=None
+testing_endpoint="http://ideational.ddns.net:3030/geocodes_demo_datasets/sparql"
 testing_bucket="citesting"
 dflt_endpoint = "https://graph.geocodes.earthcube.org/blazegraph/namespace/earthcube/sparql"
 local=None
@@ -201,17 +202,19 @@ def read_sd(fn):
 
 def read_json_(fn):
     "read_json and flatten for df_diff"
-    import pandas as pd
-    return pd.read_json(fn) #finish or skip for:
+    #import pandas as pd
+    #return pd.read_json(fn) #finish or skip for:
+    return read_file(fn,".json") #getting "<class 'NameError'>"
 
 #def read_json(url):
 def read_json(urn):
-    "reques json+ret dict"
+    "request json, ret dict"
     import urllib.request
     import json
     url=urn.replace("urn:","")
     print(f'read_json:{url}')
     with urllib.request.urlopen(url) as response:
+        #try:
         res = response.read()
         if res:
             return json.loads(res)
@@ -238,6 +241,10 @@ def diff_flat_json(fn1,fn2):
 def get_json_eq(fn1,fn2):
     d1=read_json(fn1)
     d2=read_json(fn2)
+    if not d1:
+        print("d1 missing")
+    if not d2:
+        print("d2 missing")
     return d1 == d2
 
 def get_json_diff(fn1,fn2):
@@ -252,19 +259,26 @@ def list_diff_not_in(li1,li2):
     s = set(li2)
     return [x for x in li1 if x not in s]
 
-#testing cmp w/gold should now comes from github 
- #then will send in bucket from run soon after, now citesting, but be able to set; testing_bucket
+#testing cmp w/gold-stnd should now comes from github 
+ #also can send alt bucket ..., now citesting, but be able to set: testing_bucket
+#now endpoint loaded from ld-cache to work out mechanics of these fncs, 
+ #will get from live workflow one we are sure it will be up during testing ;can be reset from script
 
-def find_urn_diffs(endpoint="http://geocodes.ddns.net:3030/geocodes_demo_datasets/sparql", 
+def find_urn_diffs(endpoint="http://ideational.ddns.net:3030/geocodes_demo_datasets/sparql", 
         gold="https://raw.githubusercontent.com/MBcode/ec/master/test/standard/milled/geocodes_demo_datasets/URNs.txt"):
-    "get_graphs_list and saved gold-list, and diff" #should do a set diff
+    "get_graphs_list and saved gold-list, and diff" #~do a set diff
     print("in find_urn_diffs,read_sd gold")
     #df_gold=read_sd(gold)
     df_gold=read_file(gold,".txt")
     print(f'gold:{df_gold}')
     #get_graphs w/convience gives list
     #return df_diff(df_gold, )
-    test_list=get_graphs_list(endpoint)
+    global testing_endpoint
+    if endpoint == testing_endpoint:
+        test_endpoint=endpoint
+    else: #use global so can set by script
+        test_endpoint=testing_endpoint
+    test_list=get_graphs_list(test_endpoint)
     print(f'test:{test_list}')
     gold_list=df_gold['g'].tolist()
     print(f'gold:{gold_list}')
@@ -275,7 +289,11 @@ def find_urn_diffs(endpoint="http://geocodes.ddns.net:3030/geocodes_demo_dataset
     return list_diff_not_in(gold_list,test_list)
 
 #if have url for gold-stnd bucket, and have missing urn
-milled_bucket="" #either the test milled, or from production then from diff buckets, ;still missing URNs from end2end start it off
+#milled_bucket="" #either the test milled, or from production then from diff buckets, ;still missing URNs from end2end start it off
+
+#check_urn_ rdf|jsonld look up from LD-cache of latest run, and compare w/gold-stnd in github
+  #tested separately, &ok on 1st pass
+
 def check_urn_rdf(urn,
         test_bucket="https://oss.geocodes-dev.earthcube.org/citesting/milled/geocodes_demo_datasets/",
         gold="https://raw.githubusercontent.com/MBcode/ec/master/test/standard/milled/geocodes_demo_datasets/"):
@@ -294,6 +312,7 @@ def check_urn_jsonld(urn,
         test_bucket="https://oss.geocodes-dev.earthcube.org/citesting/summoned/geocodes_demo_datasets/",
         gold="https://raw.githubusercontent.com/MBcode/ec/master/test/standard/summoned/geocodes_demo_datasets/"):
     "check a URNs summonded-jsonld diff btw urls for current+gold-stnd buckets"
+    #rm urn: if necessary
     gold_rdf=f'{gold}{urn}.jsonld'
     test_rdf=f'{test_bucket}{urn}.jsonld'
     #return diff_sd(gold_rdf,test_rdf)
