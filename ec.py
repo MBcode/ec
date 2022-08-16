@@ -193,11 +193,12 @@ def read_sd(fn):
     return pd.read_csv(fn,delimiter=" ")
 
 def read_json_(fn):
-    "read_csv json and flatten for df_diff"
+    "read_json and flatten for df_diff"
     import pandas as pd
     return pd.read_json(fn) #finish or skip for:
 
 def read_json(url):
+    "reques json+ret dict"
     import urllib.request
     import json
     with urllib.request.urlopen(url) as response:
@@ -245,11 +246,12 @@ def list_diff_not_in(li1,li2):
  #then will send in bucket from run soon after
 
 def find_urn_diffs(endpoint="http://geocodes.ddns.net:3030/geocodes_demo_datasets/sparql", 
-       #gold="https://raw.githubusercontent.com/MBcode/ec/master/test/standard/milled/geocodes_demo_datasets/URNs.txt"):
-       gold="http://geocodes.ddns.net/ec/test/citesting/milled/geocodes_demo_datasets/URNs.txt"):
+        gold="https://raw.githubusercontent.com/MBcode/ec/master/test/standard/milled/geocodes_demo_datasets/URNs.txt"):
+    #gold="http://geocodes.ddns.net/ec/test/citesting/milled/geocodes_demo_datasets/URNs.txt"):
     "get_graphs_list and saved gold-list, and diff" #should do a set diff
     print("in find_urn_diffs,read_sd gold")
-    df_gold=read_sd(gold)
+    #df_gold=read_sd(gold)
+    df_gold=read_file(gold,".txt")
     print(f'gold:{df_gold}')
     #get_graphs w/convience gives list
     #return df_diff(df_gold, )
@@ -296,8 +298,8 @@ def check_urn_diffs(endpoint="http://ideational.ddns.net:3030/geocodes_demo_data
     "find_urn_diffs and for each missing check_urn_rdf"
     gold_URNs= gold + "URNs.txt"
     print(f'find_urn_diffs:{endpoint},{gold_URNs}')
-    #dfu=find_urn_diffs(endpoint,gold_URNs)
-    dfu=find_urn_diffs(endpoint) #use it's default for a bit, bc read_sd prob w/github raw right now
+    dfu=find_urn_diffs(endpoint,gold_URNs)
+    #dfu=find_urn_diffs(endpoint) #use it's default for a bit, bc read_sd prob w/github raw right now ;change2 read_file
     print(f'check_urn_rdf of:{dfu}')
     rdf_checks= list(map(check_urn_rdf,dfu))
     jsonld_checks= list(map(check_urn_jsonld,dfu)) #could do after, only if a problem, or just check them all now
