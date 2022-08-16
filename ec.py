@@ -302,11 +302,21 @@ def check_urn_diffs(endpoint="http://ideational.ddns.net:3030/geocodes_demo_data
     if(testing_bucket != "citesting"): #as soon as needed finish out the lambda
         use_test_bucket=test_bucket.replace("citesting",testing_bucket)
         print(f'need2setup2pass changed test_bucket:{use_test_bucket}')
-    #will need lambdas if want to pass any change to the defaults on
-    print(f'check_urn_rdf of:{dfu}')
-    rdf_checks= list(map(check_urn_rdf,dfu))
-    jsonld_checks= list(map(check_urn_jsonld,dfu)) #could do after, only if a problem, or just check them all now
-    print(f'get:{rdf_checks}')
+        #maybe have test_ url made of test_base + bucket + (summonde4.jsonld,milled4.rdf) + test_set
+        test_base="https://oss.geocodes-dev.earthcube.org/"
+        test_set="geocodes_demo_datasets" #could set this as a global as well
+        test_rdf=f'{test_base}{use_test_bucket}/milled/{test_set}/'
+        print(f'new rdf:{test_rdf}')
+        test_jsonld=f'{test_base}{use_test_bucket}/summoned/{test_set}/'
+        print(f'new jsonld:{test_jsonld}')
+        rdf_checks= list(map(lambda urn: check_urn_rdf(urn,endpoint,rdf_checks),dfu))
+        jsonld_checks= list(map(lambda urn: check_urn_jsonld(urn,endpoint,jsonld_checks),dfu)) 
+    else: # the other way   #got similar output w/missing bucket,so needs more test situations/closer look
+        #will need lambdas if want to pass any change to the defaults on
+        print(f'check_urn_rdf of:{dfu}')
+        rdf_checks= list(map(check_urn_rdf,dfu))
+        jsonld_checks= list(map(check_urn_jsonld,dfu)) #could do after, only if a problem, or just check them all now
+        print(f'get:{rdf_checks}')
     return rdf_checks.append(jsonld_checks) 
     #return rdf_checks
 
