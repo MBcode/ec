@@ -188,20 +188,29 @@ def blabel_l(fn):
     cs=f'java -Xmx4155M -jar {jar}/blabel.jar  LabelRDFGraph -l -i {fn} -o {fb}_l{ext}'
     os_system(cs)
 
-def read_sd(fn):
+def read_sd_(fn):
     "read_csv space delimited"
     import pandas as pd
     return pd.read_csv(fn,delimiter=" ")
+
+def read_sd(fn):
+    "read_file space delimited"
+    fn_=fn.replace("urn:","")
+    print(f'read_sd:{fn_}')
+    return read_file(fn_,".txt")
 
 def read_json_(fn):
     "read_json and flatten for df_diff"
     import pandas as pd
     return pd.read_json(fn) #finish or skip for:
 
-def read_json(url):
+#def read_json(url):
+def read_json(urn):
     "reques json+ret dict"
     import urllib.request
     import json
+    url=urn.replace("urn:","")
+    print(f'read_json:{url}')
     with urllib.request.urlopen(url) as response:
         res = response.read()
         if res:
@@ -270,7 +279,7 @@ milled_bucket="" #either the test milled, or from production then from diff buck
 def check_urn_rdf(urn,
         test_bucket="https://oss.geocodes-dev.earthcube.org/citesting/milled/geocodes_demo_datasets/",
         gold="https://raw.githubusercontent.com/MBcode/ec/master/test/standard/milled/geocodes_demo_datasets/"):
-    "check a URNs diff btw urls for current+gold-stnd buckets"
+    "check a URNs milled-rdf diff btw urls for current+gold-stnd buckets"
     import pandas as pd
     #gold_rdf=f'{test_bucket}{urn}.rdf' #test_rdf=f'{milled_bucket}{urn}.rdf'
     gold_rdf=f'{gold}{urn}.rdf'
@@ -284,22 +293,25 @@ def check_urn_rdf(urn,
 def check_urn_jsonld(urn,
         test_bucket="https://oss.geocodes-dev.earthcube.org/citesting/summoned/geocodes_demo_datasets/",
         gold="https://raw.githubusercontent.com/MBcode/ec/master/test/standard/summoned/geocodes_demo_datasets/"):
+    "check a URNs summonded-jsonld diff btw urls for current+gold-stnd buckets"
     gold_rdf=f'{gold}{urn}.jsonld'
     test_rdf=f'{test_bucket}{urn}.jsonld'
     #return diff_sd(gold_rdf,test_rdf)
     #return diff_flat_json(gold_rdf,test_rdf)
     return get_json_eq(gold_rdf,test_rdf) #if not= then use dict-diff lib to show the diffs
 
+#endpoint loaded like nabu, to work on all this functionality, then can make sure it keeps it up like the ld-cache
+#'validation'
 def check_urn_diffs(endpoint="http://ideational.ddns.net:3030/geocodes_demo_datasets/sparql", 
         test_bucket="https://oss.geocodes-dev.earthcube.org/citesting/milled/geocodes_demo_datasets/",
         gold="https://raw.githubusercontent.com/MBcode/ec/master/test/standard/milled/geocodes_demo_datasets/"):
-    "find_urn_diffs and for each missing check_urn_rdf"
+    "find_urn_diffs and for each missing check_urn_rdf|jsonld" #get_graphs diff w/expected URNs, then check each missing
     gold_URNs= gold + "URNs.txt"
     print(f'find_urn_diffs:{endpoint},{gold_URNs}')
     dfu=find_urn_diffs(endpoint,gold_URNs)
     #dfu=find_urn_diffs(endpoint) #use it's default for a bit, bc read_sd prob w/github raw right now ;change2 read_file
     global testing_bucket
-    if(testing_bucket != "citesting"): #as soon as needed finish out the lambda
+    if(testing_bucket != "citesting"): #to change test_bucket ...
         use_test_bucket=test_bucket.replace("citesting",testing_bucket)
         print(f'need2setup2pass changed test_bucket:{use_test_bucket}')
         #maybe have test_ url made of test_base + bucket + (summonde4.jsonld,milled4.rdf) + test_set
@@ -318,7 +330,7 @@ def check_urn_diffs(endpoint="http://ideational.ddns.net:3030/geocodes_demo_data
         jsonld_checks= list(map(check_urn_jsonld,dfu)) #could do after, only if a problem, or just check them all now
         print(f'get:{rdf_checks}')
     return rdf_checks.append(jsonld_checks) 
-    #return rdf_checks
+    #return rdf_checks #test the check fncs w/any (array of) URNs that exist
 
 #=merge using:
 def merge_dict_list(d1,d2):
