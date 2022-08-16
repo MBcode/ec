@@ -241,8 +241,8 @@ def list_diff_not_in(li1,li2):
     s = set(li2)
     return [x for x in li1 if x not in s]
 
-def find_urn_diffs(endpoint="http://ideational.ddns.net:3030/geocodes_demo_datasets/sparql", 
-        gold="http://ideational.ddns.net/ec/test/citesting/milled/geocodes_demo_datasets/URNs.txt"):
+def find_urn_diffs(endpoint="http://geocodes.ddns.net:3030/geocodes_demo_datasets/sparql", 
+        gold="http://geocodes.ddns.net/ec/test/citesting/milled/geocodes_demo_datasets/URNs.txt"):
     "get_graphs_list and saved gold-list, and diff" #should do a set diff
     df_gold=read_sd(gold)
     #print(df_gold)
@@ -260,7 +260,7 @@ def find_urn_diffs(endpoint="http://ideational.ddns.net:3030/geocodes_demo_datas
 milled_bucket="" #either the test milled, or from production then from diff buckets, ;still missing URNs from end2end start it off
 def check_urn_rdf(urn,
         test_bucket="https://oss.geocodes-dev.earthcube.org/citesting/milled/geocodes_demo_datasets/",
-        gold="http://ideational.ddns.net/ec/test/citesting/milled/geocodes_demo_datasets/"):
+        gold="http://geocodes.ddns.net/ec/test/citesting/milled/geocodes_demo_datasets/"):
     "check a URNs diff btw urls for current+gold-stnd buckets"
     import pandas as pd
     #gold_rdf=f'{test_bucket}{urn}.rdf' #test_rdf=f'{milled_bucket}{urn}.rdf'
@@ -274,20 +274,25 @@ def check_urn_rdf(urn,
 
 def check_urn_jsonld(urn,
         test_bucket="https://oss.geocodes-dev.earthcube.org/citesting/summoned/geocodes_demo_datasets/",
-        gold="http://ideational.ddns.net/ec/test/citesting/summoned/geocodes_demo_datasets/"):
+        gold="http://geocodes.ddns.net/ec/test/citesting/summoned/geocodes_demo_datasets/"):
     gold_rdf=f'{gold}{urn}.jsonld'
     test_rdf=f'{test_bucket}{urn}.jsonld'
     #return diff_sd(gold_rdf,test_rdf)
     #return diff_flat_json(gold_rdf,test_rdf)
-    return get_json_eq(gold_rdf,test_rdf)
+    return get_json_eq(gold_rdf,test_rdf) #if not= then use dict-diff lib to show the diffs
 
 def check_urn_diffs(endpoint="http://ideational.ddns.net:3030/geocodes_demo_datasets/sparql", 
         test_bucket="https://oss.geocodes-dev.earthcube.org/citesting/milled/geocodes_demo_datasets/",
-        gold="http://ideational.ddns.net/ec/test/citesting/milled/geocodes_demo_datasets/"):
+        gold="http://geocodes.ddns.net/ec/test/citesting/milled/geocodes_demo_datasets/"):
     "find_urn_diffs and for each missing check_urn_rdf"
     gold_URNs= gold + "URNs.txt"
     dfu=find_urn_diffs(endpoint,gold_URNs)
-    return list(map(check_urn_rdf,dfu))
+    print(f'check_urn_rdf of:{dfu}')
+    rdf_checks= list(map(check_urn_rdf,dfu))
+    jsonld_checks= list(map(check_urn_jsonld,dfu)) #could do after, only if a problem, or just check them all now
+    print(f'get:{rdf_checks}')
+    return rdf_checks.append(jsonld_checks) 
+    #return rdf_checks
 
 #=merge using:
 def merge_dict_list(d1,d2):
