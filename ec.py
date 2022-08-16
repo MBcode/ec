@@ -4,6 +4,7 @@
  #but for cutting edge can just get the file from the test server, so can use: get_ec()
 rdf_inited,rdflib_inited,sparql_inited=None,None,None
 endpoint=None
+testing_bucket="citesting"
 dflt_endpoint = "https://graph.geocodes.earthcube.org/blazegraph/namespace/earthcube/sparql"
 local=None
 def laptop(): #could call: in_binder
@@ -242,12 +243,11 @@ def list_diff_not_in(li1,li2):
     s = set(li2)
     return [x for x in li1 if x not in s]
 
-#testing cmp w/gold should come from github soon
- #then will send in bucket from run soon after
+#testing cmp w/gold should now comes from github 
+ #then will send in bucket from run soon after, now citesting, but be able to set; testing_bucket
 
 def find_urn_diffs(endpoint="http://geocodes.ddns.net:3030/geocodes_demo_datasets/sparql", 
         gold="https://raw.githubusercontent.com/MBcode/ec/master/test/standard/milled/geocodes_demo_datasets/URNs.txt"):
-    #gold="http://geocodes.ddns.net/ec/test/citesting/milled/geocodes_demo_datasets/URNs.txt"):
     "get_graphs_list and saved gold-list, and diff" #should do a set diff
     print("in find_urn_diffs,read_sd gold")
     #df_gold=read_sd(gold)
@@ -269,7 +269,7 @@ def find_urn_diffs(endpoint="http://geocodes.ddns.net:3030/geocodes_demo_dataset
 milled_bucket="" #either the test milled, or from production then from diff buckets, ;still missing URNs from end2end start it off
 def check_urn_rdf(urn,
         test_bucket="https://oss.geocodes-dev.earthcube.org/citesting/milled/geocodes_demo_datasets/",
-        gold="http://geocodes.ddns.net/ec/test/citesting/milled/geocodes_demo_datasets/"):
+        gold="https://raw.githubusercontent.com/MBcode/ec/master/test/standard/milled/geocodes_demo_datasets/"):
     "check a URNs diff btw urls for current+gold-stnd buckets"
     import pandas as pd
     #gold_rdf=f'{test_bucket}{urn}.rdf' #test_rdf=f'{milled_bucket}{urn}.rdf'
@@ -284,7 +284,6 @@ def check_urn_rdf(urn,
 def check_urn_jsonld(urn,
         test_bucket="https://oss.geocodes-dev.earthcube.org/citesting/summoned/geocodes_demo_datasets/",
         gold="https://raw.githubusercontent.com/MBcode/ec/master/test/standard/summoned/geocodes_demo_datasets/"):
-       #gold="http://geocodes.ddns.net/ec/test/citesting/summoned/geocodes_demo_datasets/"):
     gold_rdf=f'{gold}{urn}.jsonld'
     test_rdf=f'{test_bucket}{urn}.jsonld'
     #return diff_sd(gold_rdf,test_rdf)
@@ -294,12 +293,16 @@ def check_urn_jsonld(urn,
 def check_urn_diffs(endpoint="http://ideational.ddns.net:3030/geocodes_demo_datasets/sparql", 
         test_bucket="https://oss.geocodes-dev.earthcube.org/citesting/milled/geocodes_demo_datasets/",
         gold="https://raw.githubusercontent.com/MBcode/ec/master/test/standard/milled/geocodes_demo_datasets/"):
-       #gold="http://geocodes.ddns.net/ec/test/citesting/milled/geocodes_demo_datasets/"):
     "find_urn_diffs and for each missing check_urn_rdf"
     gold_URNs= gold + "URNs.txt"
     print(f'find_urn_diffs:{endpoint},{gold_URNs}')
     dfu=find_urn_diffs(endpoint,gold_URNs)
     #dfu=find_urn_diffs(endpoint) #use it's default for a bit, bc read_sd prob w/github raw right now ;change2 read_file
+    global testing_bucket
+    if(testing_bucket != "citesting"): #as soon as needed finish out the lambda
+        use_test_bucket=test_bucket.replace("citesting",testing_bucket)
+        print(f'need2setup2pass changed test_bucket:{use_test_bucket}')
+    #will need lambdas if want to pass any change to the defaults on
     print(f'check_urn_rdf of:{dfu}')
     rdf_checks= list(map(check_urn_rdf,dfu))
     jsonld_checks= list(map(check_urn_jsonld,dfu)) #could do after, only if a problem, or just check them all now
