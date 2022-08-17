@@ -7,8 +7,8 @@ Has a few parts, that the doc could be broken into:
 2) Then from the original cut of spot testing, but [now just new code and img below](https://github.com/MBcode/ec/blob/master/test/testing.md); Will get a rewrite to just focus on that
 3) How to best sample from the sitemaps, which has become a test set, w/the hash naming in ec/test/standard/ summoned&milled
 
-### Need end-to-end expected [sparql](standard/qry1.txt)-to->[df](standard/queryResults1.csv)/[URNs](https://github.com/MBcode/ec/blob/master/test/standard/milled/geocodes_demo_datasets/URNs.txt), have for mb_ milled quads now
-next to use diff in df to find missing URNs, and look in LD-cache for them (bc of gleaner naming)
+### Got end-to-end expected [sparql](standard/qry1.txt)-to->[df](standard/queryResults1.csv)/[URNs](https://github.com/MBcode/ec/blob/master/test/standard/milled/geocodes_demo_datasets/URNs.txt), for 1st comparison below
+next I use diff in df to find missing URNs, and look in LD-cache for them (bc of gleaner naming)
 Check both jsonld and other rdf, with standard values
 in [testing.md](https://github.com/MBcode/ec/blob/master/test/ingestTesting.md) sec 2, still have dictdiff and rdflib graph cmp
 but now also have output from [blabel](https://github.com/aidhog/blabel/) that removes BlankNodes+some dups, for easier nt file comparison
