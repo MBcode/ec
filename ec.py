@@ -198,7 +198,13 @@ def read_sd(fn):
     "read_file space delimited"
     fn_=fn.replace("urn:","")
     print(f'read_sd:{fn_}')
-    return read_file(fn_,".txt")
+    #return read_file(fn_,".txt")
+    import pandas as pd
+    try:
+        df=pd.read_csv(fn, sep='\n',header=None,comment='#')
+    except:
+        df = str(sys.exc_info()[0])
+    return df
 
 def read_json_(fn):
     "read_json and flatten for df_diff"
@@ -306,7 +312,7 @@ def check_urn_rdf(urn,
     #df_gold=pd.read_csv(gold_rdf)
     #df_test=pd.read_csv(test_rdf)
     #return df_diff(df_gold,df_test)
-    return diff_sd(gold_rdf,test_rdf)
+    return diff_sd(gold_rdf,test_rdf) #the read should skip the header
 
 def check_urn_jsonld(urn,
         test_bucket="https://oss.geocodes-dev.earthcube.org/citesting/summoned/geocodes_demo_datasets/",
@@ -1291,7 +1297,7 @@ def file_type(fn):
     return mt
 #get something that can look of header of download, before get the file, too
 
-#def read_file(fnp, ext=nt2ft(fnp)):
+#def read_file(fnp, ext=nt2ft(fnp)):  $should send 'header' in
 def read_file(fnp, ext=None):  #download url and ext/filetype
     "can be a url, will call pd read_.. for the ext type"
     import pandas as pd
@@ -1335,7 +1341,7 @@ def read_file(fnp, ext=None):  #download url and ext/filetype
         except:
             df = str(sys.exc_info()[0])
             pass
-    elif ft=='.txt' or re.search('text',ext,re.IGNORECASE):
+    elif ft=='.txt' or re.search('text',ext,re.IGNORECASE): #want to be able to header=None here
         try:
             df=pd.read_csv(fn, sep='\n',comment='#')
         except:
