@@ -16,6 +16,155 @@ next to use diff in df to find missing URNs, and look in LD-cache for them (bc o
 Check both jsonld and other rdf, with standard values
 in [testing.md](https://github.com/MBcode/ec/blob/master/test/ingestTesting.md) sec 2, still have dictdiff and rdflib graph cmp
 but now also have output from [blabel](https://github.com/aidhog/blabel/) that removes BlankNodes+some dups, for easier nt file comparison
+
+## what gets passed into the Notebook
+This should be read from/passed to the notebook. Suggest as a JSON structure. Needs to be short and Hashcoded url
+
+
+|  Name | Description                                                           |
+| ---------- |-----------------------------------------------------------------------|
+| config name | name of config directory from glcon                                   |
+| org        | short name or repo                                                    |
+| sitemap | url of sitemap                                                        |
+| s3 base | base of s3 url |
+| graph base | base url of graph endpoint |
+| s2 bucket | name of bucket |
+| graph namespace | name of graph namespace |
+| expected results | for testing we might pass in a set of (counts, etc) in json structure |
+
+## Data Loading 
+```mermaid
+flowchart LR
+   subgraph S3Minio 
+      subgraph BUCKET 
+         JsonLD
+         RDF(Quads or Triples)
+      end
+   end
+  SG(sitemapgh-URLs) --> gleaner  --> JsonLD 
+  gleaner  --> RDF 
+  SG(sitemapgh-URLs) --> SMC( SItemap Count )
+  subgraph COUNT
+    GLNRCOUNT(JSONLD Count)
+    SMC( SItemap Count )
+    GSGraphCOUNT(Named Graph count) 
+  end
+  JsonLD --> GLNRCOUNT
+  subgraph Graphstore  
+      subgraph NAMESPACE 
+         QUADS
+      end
+   end     
+  JsonLD --> Nabu --> NGRPH(Named Graphs) --> QUADS
+  NGRPH --> GSGraphCOUNT
+```
+ Basic Dataload Tests:
+* Count 1.0 - Do counts match
+  * Does the gleaner count match the sitemap count
+  * Does the Named Graph Count match the JsonLD Count
+
+ 
+## Gleaner
+```mermaid
+flowchart TD
+   subgraph GitHub GeocodesMetadata 
+      subgraph Files 
+         manifestUUID
+         GoldenJSONLD
+         GoldenRDF
+
+      end
+   end
+   subgraph S3Minio 
+      subgraph BUCKET 
+         JsonLD
+         RDF(Quads or Triples)
+      end
+   end
+  SG(sitemapgh-URLs) --> gleaner  -- summon --> GenerateUUID 
+  GenerateUUID -- Store-File-by_UUID --> JsonLD 
+  SG(sitemapgh-URLs) --> SMC( SItemap Count )
+  subgraph Test
+    GLNRUUID(UUID Equals manifestUUID )
+    GLNRCOUNT( Sitemap count == JSONLD count )
+    GLNRJSON( JSONLD == Golden JSONLD)
+  end
+  JsonLD --> GLNRCOUNT
+  SMC --> GLNRCOUNT
+  manifestUUID --> GLNRUUID
+  JsonLD --> GLNRUUID 
+  gleaner  --> RDF
+  GoldenJSONLD --> JsonLD
+  GLNRJSON --> JsonLD
+```
+## Gleaner Tests
+* Did we get as many as expected --> Does the gleaner count match the sitemap count
+* Are the UUID generated as expected - Does the UUID Match the expected
+* Did is summon correctly -- JSONLD  == Golden JSONLD
+## Reporting:
+* Sitemap URL
+* Org Information
+* sitemap count
+* JSONLD Count
+* Bucket name
+* stats on summon
+  * (jsonld count/ sitemap count)
+* not harvested records from sitemap 
+
+## Nabu
+```mermaid
+flowchart TD
+   subgraph GitHub GeocodesMetadata 
+      subgraph Files 
+         manifestUUID
+         GoldenJSONLD
+         GoldenRDF
+
+      end
+   end
+   subgraph S3Minio 
+      subgraph BUCKET 
+         JsonLD
+         RDF(Quads or Triples)
+      end
+   end
+   subgraph Graphstore  
+      subgraph NAMESPACE 
+         QUADS
+      end
+   end 
+  nabu --> JsonLD  
+  nabu --> QUADS  
+  subgraph Test
+    NABUGRAPHCOUNT( JSONLD Count == Named Graph Count )
+    NABUTRIPLES( TRIPLES IN NAMED GRAPH == GOLDENRDF )
+    NABUNAMEDGRAPH( UUID is as expected)
+    NABUNDuplicated( Load twice No Duplicates)
+  end
+  JsonLD --> NABUGRAPHCOUNT
+  QUADS --> NABUGRAPHCOUNT
+  GoldenRDF --> NABUTRIPLES
+  QUADS --> NABUTRIPLES
+  manifestUUID --> NABUNAMEDGRAPH
+  JsonLD --> NABUNAMEDGRAPH 
+  QUADS --> NABUNAMEDGRAPH
+  nabu  --> RDF
+```
+### Gleaner Tests
+* Did we get as many as expected --> Does the json count == named graph count
+* Are the UUID generated as expected - Does the UUID Match the expected
+* Did they transform as expected -- Named Graph Triples == Golden Triples  
+* dupes: when loaded twice are there duplicate triples
+### Reporting:
+* Org Information
+* Converted Count
+* Graph namespace and endpoint
+* stats on nabu
+ * (named graph count/jsonld count)
+* not converted records
+
+
+## Functional  Conversion Testing
 ```mermaid
 flowchart TD
 U[sitemap gh-URLs] -- crawl --> J[jsonLD file] -- convert --> G[.nt or .nq version] -- load --> T[test_endpoint];
