@@ -1,7 +1,7 @@
 # GeoCODES ingest pipeline testing:
 
 Be able to 1) check how many of the expected datasets from the sitemap make it to differt stages
-then 2) go back and see that some of what made it are correct/valid and similar to expected/saved test-set values
+then 2) go back and see that some of what made it are correct/valid and similar to expected/saved test-set values  3) best way to get a test set sample
 
 
 # 1) Checking counts along the way:
@@ -758,7 +758,8 @@ amgeo.to_csv("amgeo.csv")
     drwxr-xr-x 1 root root 4096 Jul  6 13:22 sample_data
     -rw-r--r-- 1 root root  956 Jul 14 03:15 summoned.txt
 
-# A few ways to sample datasets,  
+# 3) best way to get a test set sample
+## A few ways to sample datasets,  
 to be put in a gold_standard in github to campare with
 ```mermaid
 flowchart TD
