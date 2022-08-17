@@ -236,7 +236,11 @@ def diff_sd(fn1,fn2):
     "df_diff 2 space delimited files"
     df1=read_sd(fn1)
     df2=read_sd(fn2)
-    return df_diff(df1,df2)
+    dfdiff=df_diff(df1,df2)
+    if dfdiff.empty:
+        return True
+    else:
+        return dfdiff
 
 def diff_flat_json(fn1,fn2):
     "df_diff 2 space delimited files"
