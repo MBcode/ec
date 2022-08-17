@@ -33,6 +33,11 @@ This should be read from/passed to the notebook. Suggest as a JSON structure. Ne
 | expected results | for testing we might pass in a set of (counts, etc) in json structure |
 
 ## Data Loading 
+Basic Data loading flight testing:
+* Count 1.0 - Do counts match
+    * Does the gleaner count match the sitemap count
+    * Does the Named Graph Count match the JsonLD Count
+
 ```mermaid
 flowchart LR
    subgraph S3Minio 
@@ -44,10 +49,11 @@ flowchart LR
   SG(sitemapgh-URLs) --> gleaner  --> JsonLD 
   gleaner  --> RDF 
   SG(sitemapgh-URLs) --> SMC( SItemap Count )
-  subgraph COUNT
+  subgraph TEST
     GLNRCOUNT(JSONLD Count)
     SMC( SItemap Count )
     GSGraphCOUNT(Named Graph count) 
+    DLQUERY(Run queries from manifest ) 
   end
   JsonLD --> GLNRCOUNT
   subgraph Graphstore  
@@ -57,14 +63,26 @@ flowchart LR
    end     
   JsonLD --> Nabu --> NGRPH(Named Graphs) --> QUADS
   NGRPH --> GSGraphCOUNT
+  SPARQL-Query --> DLQUERY
 ```
- Basic Dataload Tests:
-* Count 1.0 - Do counts match
-  * Does the gleaner count match the sitemap count
-  * Does the Named Graph Count match the JsonLD Count
 
  
 ## Gleaner
+## Gleaner Tests
+* Did we get as many as expected --> Does the gleaner count match the sitemap count
+* Are the UUID generated as expected - Does the UUID Match the expected
+* Did is summon correctly -- JSONLD  == Golden JSONLD
+* If as CI Test Dataload, Run Queries from Manifest -- Do we get expected results
+## Reporting:
+* Sitemap URL
+* Org Information
+* sitemap count
+* JSONLD Count
+* Bucket name
+* stats on summon
+    * (jsonld count/ sitemap count)
+* not harvested records from sitemap
+* 
 ```mermaid
 flowchart TD
    subgraph GitHub GeocodesMetadata 
@@ -97,21 +115,21 @@ flowchart TD
   GoldenJSONLD --> JsonLD
   GLNRJSON --> JsonLD
 ```
-## Gleaner Tests
-* Did we get as many as expected --> Does the gleaner count match the sitemap count
-* Are the UUID generated as expected - Does the UUID Match the expected
-* Did is summon correctly -- JSONLD  == Golden JSONLD
-## Reporting:
-* Sitemap URL
-* Org Information
-* sitemap count
-* JSONLD Count
-* Bucket name
-* stats on summon
-  * (jsonld count/ sitemap count)
-* not harvested records from sitemap 
+
 
 ## Nabu
+### Nabu Tests
+* Did we get as many as expected --> Does the json count == named graph count
+* Are the UUID generated as expected - Does the UUID Match the expected
+* Did they transform as expected -- Named Graph Triples == Golden Triples
+* dupes: when loaded twice are there duplicate triples
+### Reporting:
+* Org Information
+* Converted Count
+* Graph namespace and endpoint
+* stats on nabu
+* (named graph count/jsonld count)
+* not converted records
 ```mermaid
 flowchart TD
    subgraph GitHub GeocodesMetadata 
@@ -150,18 +168,7 @@ flowchart TD
   QUADS --> NABUNAMEDGRAPH
   nabu  --> RDF
 ```
-### Gleaner Tests
-* Did we get as many as expected --> Does the json count == named graph count
-* Are the UUID generated as expected - Does the UUID Match the expected
-* Did they transform as expected -- Named Graph Triples == Golden Triples  
-* dupes: when loaded twice are there duplicate triples
-### Reporting:
-* Org Information
-* Converted Count
-* Graph namespace and endpoint
-* stats on nabu
- * (named graph count/jsonld count)
-* not converted records
+
 
 
 ## Functional  Conversion Testing
