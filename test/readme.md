@@ -1,5 +1,11 @@
 # From [ingestTesting.md](https://github.com/MBcode/ec/blob/master/test/ingestTesting.md) 
 
+Has a few parts, that the doc could be broken into:
+
+1) How the counts from the repo-sitemaps sometimes fall off in the LD-cache jsonld&ntriples, then also not getting into the endpoint
+2) Then the original cut of spot testing, but now like img below, with code; Will get a rewrite to just focus on that
+3) How to best sample from the sitemaps, which has become a test set, w/the hash naming in ec/test/standard/ summoned&milled
+
 We have a few test jsonld instances in 
 [GeoCODES-Metadata](https://github.com/earthcube/GeoCODES-Metadatatree/main/metadata) that probably need their dataset_tests.csv to have finer grain expectations of the results of the tests; also to have the ability to have more than one test run; download, json conformance, and then to have some things that just go to a [repo-dashboard of warnings](repo-dashboard.md), like schema conformance.
  As long as it also tests well to turining into triples, and getting asserted in the triplestore, we should still do a text-bases search on it's strings.
