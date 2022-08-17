@@ -12,7 +12,7 @@ We have a few test jsonld instances in
  As long as it also tests well to turining into triples, and getting asserted in the triplestore, we should still do a text-bases search on it's strings.
  But even beyond conformance, the metadata has a way to go, to have better machine actionablitity.
  
-### Need end-to-end expected [sparql](standard/qry1.txt)-[df](standard/queryResults1.csv), have for mb_ milled quads now
+### Need end-to-end expected [sparql](standard/qry1.txt)-to->[df](standard/queryResults1.csv)/[URNs](https://github.com/MBcode/ec/blob/master/test/standard/milled/geocodes_demo_datasets/URNs.txt), have for mb_ milled quads now
 next to use diff in df to find missing URNs, and look in LD-cache for them (bc of gleaner naming)
 Check both jsonld and other rdf, with standard values
 in [testing.md](https://github.com/MBcode/ec/blob/master/test/ingestTesting.md) sec 2, still have dictdiff and rdflib graph cmp
