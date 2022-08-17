@@ -1,4 +1,5 @@
 # From [ingestTesting.md](https://github.com/MBcode/ec/blob/master/test/ingestTesting.md) 
+### .md version derived from .ipynb version, with a focus on documentation only, and adding diagrams
 
 Has a few parts, that the doc could be broken into:
 
@@ -26,11 +27,12 @@ J -- compare-with --> JG[gold standard jsonLD];
 G -- compare-with --> GG[gold standard triples]
 ```
 
-### .md version derived from .ipynb version, with a focus on documentation only, and adding diagrams
 ### ./standard instances have been moved over[*](https://github.com/earthcube/GeoCODES-Metadata/tree/main/metadata/Dataset/json), but had schema testing, which will only be usefull for a repo-feedback dashboard
+The current mb_ are just json, w/my naming, ec/test/standard has summoned .jsonld and milled .rdf to test against
 ### the expected_urls.csv or dataset_tests.csv will get finer grain, incl all the tests a dataset will go through
+Right now I think most in standard will complete, but need to know which don't and why; will look at SR's look at this
 ### it also mentions monitoring, incl. crontab restarts and a more frequent check+log with check.py
-### added slack app w/webhook url, so nagios can be sent to ecotech channel so we have more eyes on it
+Added slack app w/webhook url, so nagios can be sent to ecotech channel so we have more eyes on it
 
 
 ### other docs started [here](https://github.com/MBcode/ec/tree/master/doc)
