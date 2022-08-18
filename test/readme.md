@@ -27,13 +27,14 @@ This should be read from/passed to the notebook. Suggest as a JSON structure. Ne
 | s2 bucket | name of bucket |
 | graph namespace | name of graph namespace |
 | expected results | for testing we might pass in a set of (counts, etc) in json structure |
+| pointer to csv | for CI testing  has queries, expected urn's |
 
 ## Data Loading 
 Basic Data loading flight testing:
 * Count 1.0 - Do counts match
     * Does the gleaner count match the sitemap count
     * Does the Named Graph Count match the JsonLD Count
-
+    * urn's
 ```mermaid
 flowchart LR
    subgraph S3Minio 
