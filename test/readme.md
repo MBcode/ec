@@ -34,23 +34,42 @@ Basic Data loading flight testing:
 * Count 1.0 - Do counts match
     * Does the gleaner count match the sitemap count
     * Does the Named Graph Count match the JsonLD Count
-    * urn's
+* Identify missing information
+  *  are there missing files between the steps?
+      * This can be done as part of gleaner/nabu test scopes
+### Report
+* Gelaner Report
+* Nabu Report
+* SCHACL Validation reports (TBD) 
+* count history if we have that in the provenance
+ 
 ```mermaid
 flowchart LR
    subgraph S3Minio 
       subgraph BUCKET 
-         JsonLD
          RDF(Quads or Triples)
+         JsonLD
+
       end
    end
-  SG(sitemapgh-URLs) --> gleaner  --> JsonLD 
-  gleaner  --> RDF 
+   subgraph Config
+        Repository-Information
+      SG(sitemapgh-URLs)
+      TESTMAN([ Manifest config for Repo ])
+   end
+  SG --> gleaner 
+  gleaner -- creates from summoned json --> RDF 
+  JsonLD -- reads  summoned --> gleaner
+  gleaner -- summon  --> JsonLD 
   SG(sitemapgh-URLs) --> SMC( SItemap Count )
   subgraph TEST
-    GLNRCOUNT(JSONLD Count)
-    SMC( SItemap Count )
-    GSGraphCOUNT(Named Graph count) 
-    DLQUERY(Run queries from manifest ) 
+      subgraph count
+        SMC( SItemap Count )
+
+        GLNRCOUNT(JSONLD Count)
+        GSGraphCOUNT(Named Graph count) 
+       end
+        DLQUERY(Run queries from manifest ) 
   end
   JsonLD --> GLNRCOUNT
   subgraph Graphstore  
@@ -58,9 +77,9 @@ flowchart LR
          QUADS
       end
    end     
+  QUADS --> GSGraphCOUNT
   JsonLD --> Nabu --> NGRPH(Named Graphs) --> QUADS
-  NGRPH --> GSGraphCOUNT
-  SPARQL-Query --> DLQUERY
+  TESTMAN --> TESTQUERY[[SPARQL-Query ]]  --> DLQUERY
 ```
 
  
@@ -92,25 +111,30 @@ flowchart TD
    end
    subgraph S3Minio 
       subgraph BUCKET 
-         JsonLD
-         RDF(Quads or Triples)
-      end
+          subgraph path/summon 
+             JsonLD       
+          end
+         subgraph path/milled
+             RDF(Quads or Triples)
+          end
+      end 
    end
   SG(sitemapgh-URLs) --> gleaner  -- summon --> GenerateUUID 
-  GenerateUUID -- Store-File-by_UUID --> JsonLD 
-  SG(sitemapgh-URLs) --> SMC( SItemap Count )
+  SG(sitemapgh-URLs)  --> SMC[[SItemap Count ]]
   subgraph Test
-    GLNRUUID(UUID Equals manifestUUID )
-    GLNRCOUNT( Sitemap count == JSONLD count )
-    GLNRJSON( JSONLD == Golden JSONLD)
+    GLNRUUID[[UUID Equals manifestUUID ]]
+    GLNRJSON[[ JSONLD == Golden JSONLD]]
+    GLNRCOUNT[[ Sitemap count == JSONLD count ]]
   end
+  GoldenJSONLD <-- test-eequals --> JsonLD
+  GenerateUUID -- Store-File-by_UUID --> JsonLD 
+  GenerateUUID --> GLNRCTRIPLES[[convert to triples]] -- Store-File-by_UUID --> RDF 
   JsonLD --> GLNRCOUNT
   SMC --> GLNRCOUNT
-  manifestUUID --> GLNRUUID
-  JsonLD --> GLNRUUID 
-  gleaner  --> RDF
-  GoldenJSONLD --> JsonLD
-  GLNRJSON --> JsonLD
+  manifestUUID <-- test-equals --> GLNRUUID
+  JsonLD -- file-uuid --> GLNRUUID 
+
+  JsonLD -->  GLNRJSON 
 ```
 
 
@@ -129,7 +153,10 @@ flowchart TD
 * not converted records
 ```mermaid
 flowchart TD
-   subgraph GitHub GeocodesMetadata 
+
+  nabu --> NABUCONVERT[[TRANSFORM ]] --> NABUGRAPHSTORE[[ upload Named Graph  ]]  --> QUADS
+
+  subgraph GitHub GeocodesMetadata 
       subgraph Files 
          manifestUUID
          GoldenJSONLD
@@ -139,31 +166,41 @@ flowchart TD
    end
    subgraph S3Minio 
       subgraph BUCKET 
-         JsonLD
-         RDF(Quads or Triples)
-      end
+          subgraph path-summon/repo 
+             JsonLD       
+          end
+         subgraph path-milled/repo
+             RDF(Quads or Triples)
+          end
+      end 
    end
+
    subgraph Graphstore  
       subgraph NAMESPACE 
-         QUADS
+         subgraph QUADS
+             AQuad
+             AnotherQuad
+             NthQuad
+         end 
       end
    end 
-  nabu --> JsonLD  
-  nabu --> QUADS  
+
   subgraph Test
     NABUGRAPHCOUNT( JSONLD Count == Named Graph Count )
     NABUTRIPLES( TRIPLES IN NAMED GRAPH == GOLDENRDF )
     NABUNAMEDGRAPH( UUID is as expected)
     NABUNDuplicated( Load twice No Duplicates)
   end
-  JsonLD --> NABUGRAPHCOUNT
-  QUADS --> NABUGRAPHCOUNT
-  GoldenRDF --> NABUTRIPLES
-  QUADS --> NABUTRIPLES
+  nabu  -- reads bucket --> JsonLD
+  JsonLD  --> S3Count[[count using S3]] --> NABUGRAPHCOUNT
+  QUADS --> GRAPHCOUNT[[Count Loaded Graphs]] --> NABUGRAPHCOUNT
+  GoldenRDF <-- test--> NABUTRIPLES
+  GoldenRDF <-- indentical --> AQuad
+  AQuad --> NABUTRIPLES
   manifestUUID --> NABUNAMEDGRAPH
-  JsonLD --> NABUNAMEDGRAPH 
-  QUADS --> NABUNAMEDGRAPH
-  nabu  --> RDF
+  AQuad -- graph-is-uuid --> NABUNAMEDGRAPH 
+  JsonLD -- filename-is-uuid --> NABUNAMEDGRAPH 
+
 ```
 
 
