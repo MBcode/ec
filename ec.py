@@ -325,6 +325,7 @@ def check_urn_jsonld(urn,
     #rm urn: if necessary
     gold_rdf=f'{gold}{urn}.jsonld'
     test_rdf=f'{test_bucket}{urn}.jsonld'
+    print(f'check_urn_jsonld:{urn}')
     #return diff_sd(gold_rdf,test_rdf)
     #return diff_flat_json(gold_rdf,test_rdf)
     return get_json_eq(gold_rdf,test_rdf) #if not= then use dict-diff lib to show the diffs
@@ -337,13 +338,15 @@ def check_urn_ld_cache(urn,bucket="citesting",test_set="geocodes_demo_datasets",
         test_bucket=test_bucket.replace("citesting",testing_bucket)
     else:
         test_bucket=bucket
-    test_rdf=f'{test_base}{use_test_bucket}/milled/{test_set}/'
+    test_rdf=f'{test_base}{test_bucket}/milled/{test_set}/' #{urn}.rdf added later
     print(f'new rdf:{test_rdf}')
-    test_jsonld=f'{test_base}{use_test_bucket}/summoned/{test_set}/'
+    #rdf_check= list(check_urn_rdf(urn,test_rdf)) #bool not iterable
+    rdf_check= check_urn_rdf(urn,test_rdf)
+    test_jsonld=f'{test_base}{test_bucket}/summoned/{test_set}/' #{urn}.jsonld added later
     print(f'new jsonld:{test_jsonld}')
-    rdf_check= list(check_urn_rdf(test_rdf))
-    jsonld_check= check_urn_jsonld(test_jsonld) 
-    return rdf_check.append(jsonld_check) #mapping over these, they would come back in pairs
+    jsonld_check= check_urn_jsonld(urn,test_jsonld) 
+    #return rdf_check.append(jsonld_check) #mapping over these, they would come back in pairs
+    return rdf_check, jsonld_check 
 
 #endpoint loaded like nabu, to work on all this functionality, then can make sure it keeps it up like the ld-cache
 def get_urn_diffs(endpoint="http://ideational.ddns.net:3030/geocodes_demo_datasets/sparql", 
@@ -354,7 +357,7 @@ def get_urn_diffs(endpoint="http://ideational.ddns.net:3030/geocodes_demo_datase
     dfu=find_urn_diffs(endpoint,gold_URNs)
     return dfu
 
-#'validation'
+#'validation'  ;check consituent fncs before switch over to this one
 def check_urn_diffs(endpoint="http://ideational.ddns.net:3030/geocodes_demo_datasets/sparql", 
         test_bucket="https://oss.geocodes-dev.earthcube.org/citesting/milled/geocodes_demo_datasets/",
         gold="https://raw.githubusercontent.com/MBcode/ec/master/test/standard/milled/geocodes_demo_datasets/"):
@@ -383,8 +386,10 @@ def check_urn_diffs_(endpoint="http://ideational.ddns.net:3030/geocodes_demo_dat
         print(f'new rdf:{test_rdf}')
         test_jsonld=f'{test_base}{use_test_bucket}/summoned/{test_set}/'
         print(f'new jsonld:{test_jsonld}')
-        rdf_checks= list(map(lambda urn: check_urn_rdf(urn,endpoint,rdf_checks),dfu))
-        jsonld_checks= list(map(lambda urn: check_urn_jsonld(urn,endpoint,jsonld_checks),dfu)) 
+        #rdf_checks= list(map(lambda urn: check_urn_rdf(urn,endpoint,rdf_checks),dfu))
+        rdf_checks= list(map(lambda urn: check_urn_rdf(urn,test_rdf),dfu))
+        #jsonld_checks= list(map(lambda urn: check_urn_jsonld(urn,endpoint,jsonld_checks),dfu)) 
+        jsonld_checks= list(map(lambda urn: check_urn_jsonld(urn,test_jsonld),dfu)) 
     else: # the other way   #got similar output w/missing bucket,so needs more test situations/closer look
         #will need lambdas if want to pass any change to the defaults on
         print(f'check_urn_rdf of:{dfu}')
