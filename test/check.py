@@ -37,15 +37,23 @@ def os_system(cs):
     add2log(cs)
 #=
 def add2slack(s):
-    cs='source ~/mb/.ssh/.ck'
-    os.system(cs)
+    #cs='source ~/mb/.ssh/.ck'
+    #os.system(cs)
     key=os.getenv("nagioslack") #make sure works for su/crontab too
     #change to requests, and use getenv, if I actually use this part
     if key:
-        cs="curl -X POST -H ‘Content-type: application/json’ --data '{\"text\":{s}}' https://hooks.slack.com/services/{key}"
+        add2log(f'try:{s}')
+        #cs="curl -X POST -H ‘Content-type: application/json’ 
+         #--data '{\"text\":{s}}' https://hooks.slack.com/services/{key}"
+        #rs=requests.post(f'https://hooks.slack.com/services/{key}', json={"text": "restarted"})
+        rs=requests.post(f'https://hooks.slack.com/services/{key}', json={"text": f'"{s}"'})
+        sc=rs.status_code
+        add2log(f'get:{sc}')
         os_system(cs)
+        add2log(s)
     else:
         print("no key for logging")
+        add2log("no key for logging")
 
 def get_sc(url):
     try:
