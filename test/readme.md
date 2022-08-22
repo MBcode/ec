@@ -8,7 +8,8 @@ Here are the parts that the doc was broken into:
 3) How to best [sample.md](https://github.com/MBcode/ec/blob/master/test/sample.md) from the sitemaps, which has become a test set, w/the hash naming in ec/test/standard/ summoned&milled
 
 
-### Below is an overview that is mostly of CI spot testing:
+### Below is an overview that is mostly on CI spot testing: 
+being reworked in  [testing.md](testing.md) to better fit actual flow
 
 
 ## what gets passed into the Notebook
