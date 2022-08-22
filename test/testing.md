@@ -27,6 +27,7 @@ G -- compare-with --> GG[gold standard triples]
 
 
 ```python
+#cmp_jsonld:
 #new version that looks to github for gold-stnd and ld-cache bucket from latest run:
 jld_eq=ec.check_urn_jsonld("11316929f925029101493e8a05d043b0ae829559") #for each URN that might be missing
 jld_eq
@@ -45,6 +46,7 @@ jld_eq
 
 
 ```python
+#cmp_nt:
 #now can also do this for ld-cache of the ntriples
 nt_eq=ec.check_urn_rdf("11316929f925029101493e8a05d043b0ae829559") #fix so skips header
 nt_eq
