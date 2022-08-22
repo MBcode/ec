@@ -46,6 +46,47 @@ Basic Data loading flight testing:
     * If the file for the URN is not in the LD-cache as .rdf, then blame nabu
     * If the file for the URN is not in the LD-cache as .jsonld, then blame gleaner
 
+```mermaid
+flowchart LR
+   subgraph S3Minio
+      subgraph BUCKET
+         RDF(Quads or Triples)
+         JsonLD
+
+      end
+   end
+   subgraph Config
+        Repository-Information
+      SG(sitemapgh-URLs)
+      TESTMAN([ Manifest config for Repo ])
+   end
+  SG --> gleaner
+  
+  gleaner -- summon  --> JsonLD
+  SG(sitemapgh-URLs) --> SMC( SItemap Count )
+  subgraph TEST
+      subgraph count
+        SMC( SItemap Count )
+        RC( .rdf count )
+        GLNRCOUNT(JSONLD Count)
+        GSGraphCOUNT(Named Graph count)
+       end
+        DLQUERY(Run queries from manifest )
+  end
+  JsonLD --> GLNRCOUNT
+  JsonLD --> RDF
+  RDF --> RC
+  subgraph Graphstore
+      subgraph NAMESPACE
+         QUADS
+      end
+   end
+  QUADS --> GSGraphCOUNT
+  RDF --> Nabu --> NGRPH(Named Graphs) --> QUADS
+  TESTMAN --> TESTQUERY[[SPARQL-Query ]]  --> DLQUERY
+```
+
+
 ### Report
 * EC-Testing report of what made it through the Gleaner then nabu stages
 * Endpoint comparison can give more than URN diffs.  We can track any value changes as well
