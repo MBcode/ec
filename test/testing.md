@@ -3,15 +3,32 @@
 
 Here are the parts that the doc was broken into:
 
-1) How the [counts](https://github.com/MBcode/ec/blob/master/test/counts.md) from the repo-sitemaps sometimes fall off in the LD-cache jsonld&ntriples, then also not getting into the endpoint
+1) How the [counts](https://github.com/MBcode/ec/blob/master/test/counts.md) from the repo-sitemaps sometimes fall off in the LD-cache (jsonld&ntriples), then also not getting into the endpoint
 2) Then from the original cut of spot testing, but [now just new code and img below](https://github.com/MBcode/ec/blob/master/test/testing.md)=this page, is getting a rewrite to just focus on that
 3) How to best [sample](https://github.com/MBcode/ec/blob/master/test/sample.md) from the sitemaps, which has become a test set, w/the hash naming in ec/test/standard/ summoned&milled
 
 ### Sec2: spot testing.md
+
+## what gets passed into the Notebook
+This should be read from/passed to the notebook. Suggest as a JSON structure. Needs to be short and Hashcoded url
+Though would like it if gleaner/nabu could be run w/o having to touch so many places.
+
+|  Name | Description                                                           |
+| ---------- |-----------------------------------------------------------------------|
+| config name | name of config directory from glcon                                   |
+| org        | short name or repo                                                    |
+| sitemap | url of sitemap                                                        |
+| LD-cache base | base of s3 url |
+|  bucket | name of bucket |
+| graph base | base url of graph endpoint |
+| graph namespace | name of graph namespace |
+| expected results | for testing we might pass in a set of (counts, etc) in json structure |
+| pointer to csv | for CI testing  has queries, expected urn's |
+
 ### Got end-to-end expected [sparql](standard/qry1.txt)-to->[df](standard/queryResults1.csv)/[URNs](https://github.com/MBcode/ec/blob/master/test/standard/milled/geocodes_demo_datasets/URNs.txt), for 1st comparison below
 next I use diff in df to find missing URNs, and look in LD-cache for them (bc of gleaner naming)
 Check both jsonld and other rdf, with standard values
-in [testing.md](https://github.com/MBcode/ec/blob/master/test/ingestTesting.md) sec 2, still have dictdiff and rdflib graph cmp
+in [ingestTesting.md](https://github.com/MBcode/ec/blob/master/test/ingestTesting.md) sec 2, still have dictdiff and rdflib graph cmp
 but now also have output from [blabel](https://github.com/aidhog/blabel/) that removes BlankNodes+some dups, for easier nt file comparison
 ```mermaid
 flowchart TD
