@@ -25,6 +25,21 @@ Though would like it if gleaner/nabu could be run w/o having to touch so many pl
 | expected results | for testing we might pass in a set of (counts, etc) in json structure |
 | pointer to csv | for CI testing  has queries, expected urn's |
 
+## Data Loading: 
+### Run end to end, show missing, check in cache, then know count at every stage
+Basic Data loading flight testing:
+* Run end to end, sitemap to endpoint
+    * Query endpoint to get graph/filename URN names that might be missing
+    * Gives you counts for the last step, and an easier way to lookup middle steps
+* Use URN for filename in LD-cache to check to see if missing there as well
+    * Check LD-cache for both types of RDF: summoned jsonld and milled ntriples
+    * Will give us both the counts for these stages, and any diffs, to help debug process
+* Scoped software use / blame
+    * Gleaner & 'nabu' to get  sitemap to 'endpoint', and be able to find if all the expected graphs made it
+    * Testing is done with earthcube_utils, that check the endpoint graphs against the expected, and check cache for missing
+    * If ntriples in cache, but not in endpoint, then blame 'nabu' for not syncing it
+    * If file for URN is not as either of the RDF types, then blame gleaner
+
 ### Got end-to-end expected [sparql](standard/qry1.txt)-to->[df](standard/queryResults1.csv)/[URNs](https://github.com/MBcode/ec/blob/master/test/standard/milled/geocodes_demo_datasets/URNs.txt), for 1st comparison below
 next I use diff in df to find missing URNs, and look in LD-cache for them (bc of gleaner naming)
 Check both jsonld and other rdf, with standard values
