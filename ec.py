@@ -275,7 +275,8 @@ def list_diff_not_in(li1,li2):
  #will get from live workflow one we are sure it will be up during testing ;can be reset from script
 
 def find_urn_diffs(endpoint="http://ideational.ddns.net:3030/geocodes_demo_datasets/sparql", 
-        gold="https://raw.githubusercontent.com/MBcode/ec/master/test/standard/milled/geocodes_demo_datasets/URNs.txt"):
+        gold="https://raw.githubusercontent.com/earthcube/GeoCODES-Metadata/mb_sample/metadata/Dataset/standard/milled/geocodes_demo_datasets/URNs.txt"):
+       #gold="https://raw.githubusercontent.com/MBcode/ec/master/test/standard/milled/geocodes_demo_datasets/URNs.txt"):
     "get_graphs_list and saved gold-list, and diff" #~do a set diff
     print("in find_urn_diffs,read_sd gold")
     #df_gold=read_sd(gold)
@@ -306,7 +307,8 @@ def find_urn_diffs(endpoint="http://ideational.ddns.net:3030/geocodes_demo_datas
 
 def check_urn_rdf(urn,
         test_bucket="https://oss.geocodes-dev.earthcube.org/citesting/milled/geocodes_demo_datasets/",
-        gold="https://raw.githubusercontent.com/MBcode/ec/master/test/standard/milled/geocodes_demo_datasets/"):
+        gold="https://raw.githubusercontent.com/earthcube/GeoCODES-Metadata/mb_sample/metadata/Dataset/standard/milled/geocodes_demo_datasets/"):
+       #gold="https://raw.githubusercontent.com/MBcode/ec/master/test/standard/milled/geocodes_demo_datasets/"):
     "check a URNs milled-rdf diff btw urls for current+gold-stnd buckets"
     import pandas as pd
     #gold_rdf=f'{test_bucket}{urn}.rdf' #test_rdf=f'{milled_bucket}{urn}.rdf'
@@ -320,7 +322,8 @@ def check_urn_rdf(urn,
 
 def check_urn_jsonld(urn,
         test_bucket="https://oss.geocodes-dev.earthcube.org/citesting/summoned/geocodes_demo_datasets/",
-        gold="https://raw.githubusercontent.com/MBcode/ec/master/test/standard/summoned/geocodes_demo_datasets/"):
+        gold="https://raw.githubusercontent.com/earthcube/GeoCODES-Metadata/mb_sample/metadata/Dataset/standard/summoned/geocodes_demo_datasets/"):
+       #gold="https://raw.githubusercontent.com/MBcode/ec/master/test/standard/summoned/geocodes_demo_datasets/"):
     "check a URNs summonded-jsonld diff btw urls for current+gold-stnd buckets"
     #rm urn: if necessary
     gold_rdf=f'{gold}{urn}.jsonld'
@@ -350,7 +353,8 @@ def check_urn_ld_cache(urn,bucket="citesting",test_set="geocodes_demo_datasets",
 
 #endpoint loaded like nabu, to work on all this functionality, then can make sure it keeps it up like the ld-cache
 def get_urn_diffs(endpoint="http://ideational.ddns.net:3030/geocodes_demo_datasets/sparql", 
-        gold="https://raw.githubusercontent.com/MBcode/ec/master/test/standard/milled/geocodes_demo_datasets/"):
+        gold="https://raw.githubusercontent.com/earthcube/GeoCODES-Metadata/mb_sample/metadata/Dataset/standard/milled/geocodes_demo_datasets/"):
+       #gold="https://raw.githubusercontent.com/MBcode/ec/master/test/standard/milled/geocodes_demo_datasets/"):
     "see which URN/graphs are in endpoint, and compare with expected"
     gold_URNs= gold + "URNs.txt"
     print(f'find_urn_diffs:{endpoint},{gold_URNs}')
@@ -360,7 +364,8 @@ def get_urn_diffs(endpoint="http://ideational.ddns.net:3030/geocodes_demo_datase
 #'validation'  ;check consituent fncs before switch over to this one
 def check_urn_diffs(endpoint="http://ideational.ddns.net:3030/geocodes_demo_datasets/sparql", 
         test_bucket="https://oss.geocodes-dev.earthcube.org/citesting/milled/geocodes_demo_datasets/",
-        gold="https://raw.githubusercontent.com/MBcode/ec/master/test/standard/milled/geocodes_demo_datasets/"):
+        gold="https://raw.githubusercontent.com/earthcube/GeoCODES-Metadata/mb_sample/metadata/Dataset/standard/milled/geocodes_demo_datasets/"):
+       #gold="https://raw.githubusercontent.com/MBcode/ec/master/test/standard/milled/geocodes_demo_datasets/"):
     dfu=get_urn_diffs(endpoint,gold)
     #ld_checks= list(map(lambda urn: check_urn_ld_cache(urn,test_bucket),dfu)) #could send more or less:
     ld_checks= list(map(check_urn_ld_cache,dfu))
@@ -369,7 +374,8 @@ def check_urn_diffs(endpoint="http://ideational.ddns.net:3030/geocodes_demo_data
 #'validation'
 def check_urn_diffs_(endpoint="http://ideational.ddns.net:3030/geocodes_demo_datasets/sparql", 
         test_bucket="https://oss.geocodes-dev.earthcube.org/citesting/milled/geocodes_demo_datasets/",
-        gold="https://raw.githubusercontent.com/MBcode/ec/master/test/standard/milled/geocodes_demo_datasets/"):
+        gold="https://raw.githubusercontent.com/earthcube/GeoCODES-Metadata/mb_sample/metadata/Dataset/standard/milled/geocodes_demo_datasets/"):
+       #gold="https://raw.githubusercontent.com/MBcode/ec/master/test/standard/milled/geocodes_demo_datasets/"):
     "find_urn_diffs and for each missing check_urn_rdf|jsonld" #get_graphs diff w/expected URNs, then check each missing
     gold_URNs= gold + "URNs.txt"
     print(f'find_urn_diffs:{endpoint},{gold_URNs}')
