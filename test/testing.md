@@ -48,7 +48,7 @@ Basic Data loading flight testing:
 
 ```mermaid
 flowchart LR
-   subgraph S3Minio
+   subgraph LD_Cache
       subgraph BUCKET
          RDF(Quads or Triples)
          JsonLD
@@ -73,6 +73,7 @@ flowchart LR
        end
         DLQUERY(Run queries from manifest )
   end
+  DLQUERY -- gives --> GSGraphCOUNT
   JsonLD --> GLNRCOUNT
   JsonLD --> RDF
   RDF --> RC
