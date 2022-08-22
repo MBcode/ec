@@ -7,10 +7,15 @@ Here are the parts that the doc was broken into:
 2) Then from the original cut of spot testing, but [now just new code and img below](https://github.com/MBcode/ec/blob/master/test/testing.md)=this page, is getting a rewrite to just focus on that
 3) How to best [sample](https://github.com/MBcode/ec/blob/master/test/sample.md) from the sitemaps, which has become a test set, w/the hash naming in ec/test/standard/ summoned&milled
 
-### Sec2: spot testing.md
+### Sec2: CI spot testing.md
+
+Everything below is done against a gold-standard to test the workflow, has the same function
+
+Different checks will be used for production, where we only have expected [counts](counts.md)
 
 ## what gets passed into the Notebook
 This should be read from/passed to the notebook. Suggest as a JSON structure. Needs to be short and Hashcoded url
+
 Though would like it if gleaner/nabu could be run w/o having to touch so many places.
 
 |  Name | Description                                                           |
@@ -39,6 +44,12 @@ Basic Data loading flight testing:
     * Testing is done with earthcube_utils, that check the endpoint graphs against the expected, and check cache for missing
     * If ntriples in cache, but not in endpoint, then blame 'nabu' for not syncing it
     * If file for URN is not as either of the RDF types, then blame gleaner
+
+### Report
+* EC-Testing report of what made it through the Gleaner then nabu stages
+* Endpoint comparison can give more than URN diffs.  We can track any value changes as well
+* Any graph that changes, when found can be diff'd with it's gold-standard version. To report those changes
+* SCHACL Validation reports [(TBD)](repo-dashboard)
 
 ### Got end-to-end expected [sparql](standard/qry1.txt)-to->[df](standard/queryResults1.csv)/[URNs](https://github.com/MBcode/ec/blob/master/test/standard/milled/geocodes_demo_datasets/URNs.txt), for 1st comparison below
 next I use diff in df to find missing URNs, and look in LD-cache for them (bc of gleaner naming)
