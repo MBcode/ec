@@ -43,7 +43,8 @@ Basic Data loading flight testing:
     * Gleaner & 'nabu' to get  sitemap to 'endpoint', and be able to find if all the expected graphs made it
     * Testing is done with earthcube_utils, that check the endpoint graphs against the expected, and check cache for missing
     * If ntriples in cache, but not in endpoint, then blame 'nabu' for not syncing it
-    * If file for URN is not as either of the RDF types, then blame gleaner
+    * If the file for the URN is not in the LD-cache as .rdf, then blame nabu
+    * If the file for the URN is not in the LD-cache as .jsonld, then blame gleaner
 
 ### Report
 * EC-Testing report of what made it through the Gleaner then nabu stages
