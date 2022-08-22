@@ -80,8 +80,9 @@ flowchart LR
   JsonLD --> Nabu --> NGRPH(Named Graphs) --> QUADS
   TESTMAN --> TESTQUERY[[SPARQL-Query ]]  --> DLQUERY
 ```
-This diagram changes a lot in: [testing.md](testing.md) 
-The others also differ from present flow, but could be made to work more that way
+This diagram changes a lot in: [testing.md](testing.md).  
+The others also differ from present flow, but could be made to work more that way.
+Though might have some gleaner/nabu errors
  
 ## Gleaner
 ## Gleaner Tests
