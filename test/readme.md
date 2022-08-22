@@ -13,6 +13,200 @@ next I use diff in df to find missing URNs, and look in LD-cache for them (bc of
 Check both jsonld and other rdf, with standard values
 in [ingestTesting.md](https://github.com/MBcode/ec/blob/master/test/ingestTesting.md) sec 2, still have dictdiff and rdflib graph cmp
 but now also have output from [blabel](https://github.com/aidhog/blabel/) that removes BlankNodes+some dups, for easier nt file comparison
+
+## what gets passed into the Notebook
+This should be read from/passed to the notebook. Suggest as a JSON structure. Needs to be short and Hashcoded url
+
+
+|  Name | Description                                                           |
+| ---------- |-----------------------------------------------------------------------|
+| config name | name of config directory from glcon                                   |
+| org        | short name or repo                                                    |
+| sitemap | url of sitemap                                                        |
+| s3 base | base of s3 url |
+| graph base | base url of graph endpoint |
+| s2 bucket | name of bucket |
+| graph namespace | name of graph namespace |
+| expected results | for testing we might pass in a set of (counts, etc) in json structure |
+| pointer to csv | for CI testing  has queries, expected urn's |
+
+## Data Loading 
+Basic Data loading flight testing:
+* Count 1.0 - Do counts match
+    * Does the gleaner count match the sitemap count
+    * Does the Named Graph Count match the JsonLD Count
+* Identify missing information
+  *  are there missing files between the steps?
+      * This can be done as part of gleaner/nabu test scopes
+### Report
+* Gelaner Report
+* Nabu Report
+* SCHACL Validation reports (TBD) 
+* count history if we have that in the provenance
+ 
+```mermaid
+flowchart LR
+   subgraph S3Minio 
+      subgraph BUCKET 
+         RDF(Quads or Triples)
+         JsonLD
+
+      end
+   end
+   subgraph Config
+        Repository-Information
+      SG(sitemapgh-URLs)
+      TESTMAN([ Manifest config for Repo ])
+   end
+  SG --> gleaner 
+  gleaner -- creates from summoned json --> RDF 
+  JsonLD -- reads  summoned --> gleaner
+  gleaner -- summon  --> JsonLD 
+  SG(sitemapgh-URLs) --> SMC( SItemap Count )
+  subgraph TEST
+      subgraph count
+        SMC( SItemap Count )
+
+        GLNRCOUNT(JSONLD Count)
+        GSGraphCOUNT(Named Graph count) 
+       end
+        DLQUERY(Run queries from manifest ) 
+  end
+  JsonLD --> GLNRCOUNT
+  subgraph Graphstore  
+      subgraph NAMESPACE 
+         QUADS
+      end
+   end     
+  QUADS --> GSGraphCOUNT
+  JsonLD --> Nabu --> NGRPH(Named Graphs) --> QUADS
+  TESTMAN --> TESTQUERY[[SPARQL-Query ]]  --> DLQUERY
+```
+
+ 
+## Gleaner
+## Gleaner Tests
+* Did we get as many as expected --> Does the gleaner count match the sitemap count
+* Are the UUID generated as expected - Does the UUID Match the expected
+* Did is summon correctly -- JSONLD  == Golden JSONLD
+* If as CI Test Dataload, Run Queries from Manifest -- Do we get expected results
+## Reporting:
+* Sitemap URL
+* Org Information
+* sitemap count
+* JSONLD Count
+* Bucket name
+* stats on summon
+    * (jsonld count/ sitemap count)
+* not harvested records from sitemap
+* 
+```mermaid
+flowchart TD
+   subgraph GitHub GeocodesMetadata 
+      subgraph Files 
+         manifestUUID
+         GoldenJSONLD
+         GoldenRDF
+
+      end
+   end
+   subgraph S3Minio 
+      subgraph BUCKET 
+          subgraph path/summon 
+             JsonLD       
+          end
+         subgraph path/milled
+             RDF(Quads or Triples)
+          end
+      end 
+   end
+  SG(sitemapgh-URLs) --> gleaner  -- summon --> GenerateUUID 
+  SG(sitemapgh-URLs)  --> SMC[[SItemap Count ]]
+  subgraph Test
+    GLNRUUID[[UUID Equals manifestUUID ]]
+    GLNRJSON[[ JSONLD == Golden JSONLD]]
+    GLNRCOUNT[[ Sitemap count == JSONLD count ]]
+  end
+  GoldenJSONLD <-- test-eequals --> JsonLD
+  GenerateUUID -- Store-File-by_UUID --> JsonLD 
+  GenerateUUID --> GLNRCTRIPLES[[convert to triples]] -- Store-File-by_UUID --> RDF 
+  JsonLD --> GLNRCOUNT
+  SMC --> GLNRCOUNT
+  manifestUUID <-- test-equals --> GLNRUUID
+  JsonLD -- file-uuid --> GLNRUUID 
+
+  JsonLD -->  GLNRJSON 
+```
+
+
+## Nabu
+### Nabu Tests
+* Did we get as many as expected --> Does the json count == named graph count
+* Are the UUID generated as expected - Does the UUID Match the expected
+* Did they transform as expected -- Named Graph Triples == Golden Triples
+* dupes: when loaded twice are there duplicate triples
+### Reporting:
+* Org Information
+* Converted Count
+* Graph namespace and endpoint
+* stats on nabu
+* (named graph count/jsonld count)
+* not converted records
+```mermaid
+flowchart TD
+
+  nabu --> NABUCONVERT[[TRANSFORM ]] --> NABUGRAPHSTORE[[ upload Named Graph  ]]  --> QUADS
+
+  subgraph GitHub GeocodesMetadata 
+      subgraph Files 
+         manifestUUID
+         GoldenJSONLD
+         GoldenRDF
+
+      end
+   end
+   subgraph S3Minio 
+      subgraph BUCKET 
+          subgraph path-summon/repo 
+             JsonLD       
+          end
+         subgraph path-milled/repo
+             RDF(Quads or Triples)
+          end
+      end 
+   end
+
+   subgraph Graphstore  
+      subgraph NAMESPACE 
+         subgraph QUADS
+             AQuad
+             AnotherQuad
+             NthQuad
+         end 
+      end
+   end 
+
+  subgraph Test
+    NABUGRAPHCOUNT( JSONLD Count == Named Graph Count )
+    NABUTRIPLES( TRIPLES IN NAMED GRAPH == GOLDENRDF )
+    NABUNAMEDGRAPH( UUID is as expected)
+    NABUNDuplicated( Load twice No Duplicates)
+  end
+  nabu  -- reads bucket --> JsonLD
+  JsonLD  --> S3Count[[count using S3]] --> NABUGRAPHCOUNT
+  QUADS --> GRAPHCOUNT[[Count Loaded Graphs]] --> NABUGRAPHCOUNT
+  GoldenRDF <-- test--> NABUTRIPLES
+  GoldenRDF <-- indentical --> AQuad
+  AQuad --> NABUTRIPLES
+  manifestUUID --> NABUNAMEDGRAPH
+  AQuad -- graph-is-uuid --> NABUNAMEDGRAPH 
+  JsonLD -- filename-is-uuid --> NABUNAMEDGRAPH 
+
+```
+
+
+
+## Functional  Conversion Testing
 ```mermaid
 flowchart TD
 U[sitemap gh-URLs] -- crawl --> J[jsonLD file] -- convert --> G[.nt or .nq version] -- load --> T[test_endpoint];
