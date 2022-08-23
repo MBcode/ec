@@ -1838,23 +1838,25 @@ def bucket_files2(url):
 def bucket_files2diff(url,URNs=None):
     "list_diff_dropoff summoned milled, URNs"
     sm=bucket_files2(url)
-    sf=list(map(path_leaf,sm[0]))
-    su=list(map(file_base,sf))
+    #sf=list(map(path_leaf,sm[0]))
+    #su=list(map(file_base,sf))
+    #mf=list(map(path_leaf,sm[1]))
+    #mu=list(map(file_base,mf))
+    su=list(map(lambda f: file_base(path_leaf(f)),sm[0]))
+    mu=list(map(lambda f: file_base(path_leaf(f)),sm[1]))
     print(f'summoned-URNs:{su}')
-    mf=list(map(path_leaf,sm[1]))
-    mu=list(map(file_base,mf))
     print(f'milled-URNs:{mu}')
     sl=len(su)
     ml=len(mu)
     dsm=sl-ml
     print(f's:{sl}/m:{ml} diff:{dsm}')
-    lose_s2m=list_diff_dropoff(sf,mf)
+    lose_s2m=list_diff_dropoff(su,mu)
     if URNs:
         ul=len(URNs)
         dmu=ml-ul
         print(f'expected-URNs:{URNs}')
         print(f'm:{ml}/u:{ul} diff:{dmu}')
-        lose_m2u=list_diff_dropoff(mf,URNs) #should work
+        lose_m2u=list_diff_dropoff(mu,URNs) 
         return lose_s2m, lose_m2u
     else:
         return lose_s2m
