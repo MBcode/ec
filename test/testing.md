@@ -86,7 +86,7 @@ flowchart LR
   RDF --> Nabu --> NGRPH(Named Graphs) --> QUADS
   TESTMAN --> TESTQUERY[[SPARQL-Query ]]  --> DLQUERY
 ```
-### Present overlapping scopes of workflow elements:
+#### Present overlapping scopes of workflow elements:
 
 Gleaner/nabu are more the verbs transitioning the data-objects
 
@@ -97,6 +97,13 @@ Only spot testing of the workflow has expected results
 The spot testing comparisons give the change in counts when compared with expected
 
 normal crawls with no expected results need to use the [counts.md](counts.md) utils
+
+spot tests, can still run this counts checking code, even though the comparison w/test set will give it
+
+## Crawl-workflow (gleaner/nabu) spot tests
+* Run query on test-endpoint to get graph-URNs and other expected values
+* Compare retrieved URNs with expected, then use missing-URNs to look them up in the LD-Cache
+* Look up both RDF formats (jsonld and ntriples) and compare with gold standard, return any diffs
 ```mermaid
 flowchart LR
    subgraph LD_Cache
@@ -126,11 +133,20 @@ flowchart LR
    CLD --> ELD
    CLD --> LD_Cache
  ```
+ * cmp_URNs gives count of (missing) in the last stage
+   * retrieved_URNs - expected_URNs = missing_URNs
+   * count(missing_URNs) = sitemap_count - count(retrieved_URNs) 
+* cmp_LD give count of (missing) from intermediate stages
+   * Assume if made it into graph that cached LD was ok, but can still do [counts.md](counts.md)
+   * If not in graph, either missing or broken, so determine this with cmp_LD routines
+      * returns True for each format if ok
+      * returns diff if differs, incl if missing or can just return 'missing'
 
 ### Report
 * EC-Testing report of what made it through the Gleaner then nabu stages
-* Endpoint comparison can give more than URN diffs.  We can track any value changes as well
-* Any graph that changes, when found can be diff'd with it's gold-standard version. To report those changes
+   * Report counts at each stage, and for spot-testing can report any diffs
+      * Endpoint comparison can give more than URN diffs.  We can track any value changes as well
+      * Any graph that changes, when found can be diff'd with it's gold-standard version. To report those changes
 * SCHACL Validation reports [(TBD)](repo-dashboard)
 
 ### Got end-to-end expected [sparql](standard/qry1.txt)-to->[df](standard/queryResults1.csv)/[URNs](https://github.com/MBcode/ec/blob/master/test/standard/milled/geocodes_demo_datasets/URNs.txt), for 1st comparison below
