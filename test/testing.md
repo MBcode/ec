@@ -86,7 +86,46 @@ flowchart LR
   RDF --> Nabu --> NGRPH(Named Graphs) --> QUADS
   TESTMAN --> TESTQUERY[[SPARQL-Query ]]  --> DLQUERY
 ```
+### Present overlapping scopes of workflow elements:
 
+Gleaner/nabu are more the verbs transitioning the data-objects
+
+The Config for normal crawls and spot testing each have a sitemap
+
+Only spot testing of the workflow has expected results
+
+The spot testing comparisons give the change in counts when compared with expected
+
+normal crawls with no expected results need to use the [counts.md](counts.md) utils
+```mermaid
+flowchart LR
+   subgraph LD_Cache
+      RDF(Quads or Triples)
+      JsonLD
+   end
+   subgraph Graphstore
+      subgraph NAMESPACE
+         QUADS
+      end
+   end
+   subgraph config
+      SG(sitemapgh-URLs)
+      subgraph expected_results
+         EU(expected URNs)  
+         ELD(expected LD)
+      end
+   end
+   SG -- gleaner --> JsonLD
+   JsonLD -- nabu --> RDF
+   RDF -- nabu --> QUADS
+   subgraph testing utils
+       CU(cmp_URNs)  -- use_missing --> CLD(cmp_LD)
+   end
+   CU --> EU
+   CU -- query --> QUADS
+   CLD --> ELD
+   CLD --> LD_Cache
+ ```
 
 ### Report
 * EC-Testing report of what made it through the Gleaner then nabu stages
