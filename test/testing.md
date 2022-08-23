@@ -136,11 +136,13 @@ flowchart LR
  * cmp_URNs gives count of (missing) in the last stage
    * retrieved_URNs - expected_URNs = missing_URNs
    * count(missing_URNs) = sitemap_count - count(retrieved_URNs) 
+* use_missing that didn't make it into the graph to call cmp_LD to find out their state
 * cmp_LD give count of (missing) from intermediate stages
    * Assume if made it into graph that cached LD was ok, but can still do [counts.md](counts.md)
    * If not in graph, either missing or broken, so determine this with cmp_LD routines
       * returns True for each format if ok
       * returns diff if differs, incl if missing or can just return 'missing'
+   * LD_cache count = sitemap_count - count(missing_URNs) + count(cmp_LD say are ok)
 
 ### Report
 * EC-Testing report of what made it through the Gleaner then nabu stages
