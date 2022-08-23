@@ -1,5 +1,9 @@
 # GeoCODES ingest pipeline testing:
 
+Update: Might be able to get which URNs went missing along with counts, btw all stages w/files names with the URN=shah UUID
+
+Also, looks like can get some listings w/o depending on s3fs, wich is in utils now; from test/[counts](http://geocodes.ddns.net/ec/test/counts/)/bucket_files.py
+
 Be able to 1) check how many of the expected datasets from the sitemap make it to differt stages
 then 2) go back and see that some of what made it are correct/valid and similar to expected/saved test-set values  3) best way to get a test set sample
 
