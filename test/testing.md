@@ -143,6 +143,7 @@ flowchart LR
       * returns True for each format if ok
       * returns diff if differs, incl if missing or can just return 'missing'
    * LD_cache count = sitemap_count - count(missing_URNs) + count(cmp_LD say are ok)
+      * so spot-testing can be a little more detailed with count of broken = count(cmp_LD say have diffs)
 
 ### Report
 * EC-Testing report of what made it through the Gleaner then nabu stages
