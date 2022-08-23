@@ -87,7 +87,7 @@ flowchart LR
   TESTMAN --> TESTQUERY[[SPARQL-Query ]]  --> DLQUERY
 ```
 #### Scopes of workflow elements: Gleaner/nabu are the verbs transitioning the data-objects, that we can test for
-We can always get the [counts.md](counts.md) fall off, but we can best tell if the intermediate data files are broken by diffs with expected results during workflow spot testing. Though with URN listing from each stage we could better check them in prod.
+We can always get the [counts.md](counts.md) fall off, but we can best tell if the intermediate data files are broken by diffs with expected results during workflow spot testing. Though with URN listing from each stage we could [better check them in prod](http://geocodes.ddns.net/ec/test/counts/bucket_files.py).
 
 The Config for normal crawls and spot testing each have a sitemap
 
