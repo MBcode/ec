@@ -124,15 +124,24 @@ def file_leaf_base(path):
     pl=path_leaf(path)
     return file_base(pl)
 
+#sparql.ipynb:    "ds_url=ec.collect_ext(ds_urls,ext)\n",
 def collect_ext(l,ext):
   return list(filter(lambda x: file_ext(x)==ext,flatten(l)))
 
+def collect_ext_(l,ext):
+  return list(filter(lambda x: file_ext(x)==ext,l))
+
 def collect_pre(l,pre):
+  return list(filter(lambda x: x.startswith(pre),flatten(l)))
+
+def collect_pre_(l,pre):
   return list(filter(lambda x: x.startswith(pre),l))
-  #return list(filter(lambda x: x.startswith(pre),flatten(l)))
 
 def collect_str(l,s):
   return list(filter(lambda x: s in x ,flatten(l)))
+
+def collect_str_(l,s):
+  return list(filter(lambda x: s in x ,l))
 
 #could think a file w/'.'s in it's name, had an .ext
  #so improve if possible; hopefully not by having a list of exts
@@ -1813,6 +1822,6 @@ def bucket_files(url):
 def bucket_files2(url):
     "url to tuple of summoned+milled lists"
     fi=bucket_files(url)
-    s=collect_pre(fi,"summoned")
-    m=collect_pre(fi,"milled")
+    s=collect_pre_(fi,"summoned")
+    m=collect_pre_(fi,"milled")
     return s,m
