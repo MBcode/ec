@@ -281,6 +281,15 @@ def list_diff_not_in(li1,li2):
     "those in l1 not in l2"
     s = set(li2)
     return [x for x in li1 if x not in s]
+#>>> list_diff_not_in(["a","b","c"],["a","b"])
+#['c']
+def list_diff_dropoff(li1,li2):
+    ldiff= list_diff_not_in(li1,li2)
+    #print(f'li1={li1}')
+    #print(f'li2={li2}')
+    #print(f'ldiff={ldiff}')
+    return ldiff
+    #return list_diff_not_in(li1,li2)
 
 #testing cmp w/gold-stnd should now comes from github 
  #also can send alt bucket ..., now citesting, but be able to set: testing_bucket
@@ -1825,3 +1834,27 @@ def bucket_files2(url):
     s=collect_pre_(fi,"summoned")
     m=collect_pre_(fi,"milled")
     return s,m
+
+def bucket_files2diff(url,URNs=None):
+    "list_diff_dropoff summoned milled, URNs"
+    sm=bucket_files2(url)
+    sf=list(map(path_leaf,sm[0]))
+    su=list(map(file_base,sf))
+    print(f'summoned-URNs:{su}')
+    mf=list(map(path_leaf,sm[1]))
+    mu=list(map(file_base,mf))
+    print(f'milled-URNs:{mu}')
+    sl=len(su)
+    ml=len(mu)
+    dsm=sl-ml
+    print(f's:{sl}/m:{ml} diff:{dsm}')
+    lose_s2m=list_diff_dropoff(sf,mf)
+    if URNs:
+        ul=len(URNs)
+        dmu=ml-ul
+        print(f'expected-URNs:{URNs}')
+        print(f'm:{ml}/u:{ul} diff:{dmu}')
+        lose_m2u=list_diff_dropoff(mf,URNs) #should work
+        return lose_s2m, lose_m2u
+    else:
+        return lose_s2m
