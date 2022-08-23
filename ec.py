@@ -127,6 +127,10 @@ def file_leaf_base(path):
 def collect_ext(l,ext):
   return list(filter(lambda x: file_ext(x)==ext,flatten(l)))
 
+def collect_pre(l,pre):
+  return list(filter(lambda x: x.startswith(pre),l))
+  #return list(filter(lambda x: x.startswith(pre),flatten(l)))
+
 def collect_str(l,s):
   return list(filter(lambda x: s in x ,flatten(l)))
 
@@ -366,10 +370,11 @@ def check_urn_diffs(endpoint="http://ideational.ddns.net:3030/geocodes_demo_data
         test_bucket="https://oss.geocodes-dev.earthcube.org/citesting/milled/geocodes_demo_datasets/",
         gold="https://raw.githubusercontent.com/earthcube/GeoCODES-Metadata/mb_sample/metadata/Dataset/standard/milled/geocodes_demo_datasets/"):
        #gold="https://raw.githubusercontent.com/MBcode/ec/master/test/standard/milled/geocodes_demo_datasets/"):
-    dfu=get_urn_diffs(endpoint,gold)
-    #ld_checks= list(map(lambda urn: check_urn_ld_cache(urn,test_bucket),dfu)) #could send more or less:
-    ld_checks= list(map(check_urn_ld_cache,dfu))
-    return ld_checks
+       "looks at endpoint for missing URNs, then check LD-cache for each"
+       dfu=get_urn_diffs(endpoint,gold)
+       #ld_checks= list(map(lambda urn: check_urn_ld_cache(urn,test_bucket),dfu)) #could send more or less:
+       ld_checks= list(map(check_urn_ld_cache,dfu))
+       return ld_checks
 #vs
 #'validation'
 def check_urn_diffs_(endpoint="http://ideational.ddns.net:3030/geocodes_demo_datasets/sparql", 
@@ -715,7 +720,8 @@ def url2nq(url):
     return append2everyline(fn, apptxt)
 
 def setup_s3fs(): #do this by hand for now
-    cs='pip install s3fs' #assume done rarely, once/session 
+    #cs='pip install s3fs' #assume done rarely, once/session 
+    cs='pip install s3fs xmltodict' #want to switch to just request of url&parse xml:bucket_files.py
     os_system(cs)
 
 def setup_sitemap(): #do this by hand for now
@@ -1778,3 +1784,35 @@ def fn2nq(fn):
                 fd_out.write(line_out)
     return fn2
 
+#==bucket_files.py to get (minio) files list from a bucket path
+ci_url="https://oss.geocodes-dev.earthcube.org/citesting"
+def bucket_xml(url):
+    "given bucket url ret raw xml listing"
+    import requests
+    r=requests.get(url)
+    test_xml=r.content
+    #print(test_xml)
+    return test_xml
+
+def bucket_xml2dict(test_xml):
+    "bucket url to list of dicts, w/file in key"
+    import xmltodict
+    d=xmltodict.parse(test_xml)
+    #print(d)
+    lbr=d.get("ListBucketResult")
+    c=lbr.get("Contents")
+    return c
+
+def bucket_files(url):
+    "bucket_url to file listing"
+    test_xml=bucket_xml(url)
+    c=bucket_xml2dict(test_xml)
+    files=map(lambda kd: kd.get('Key'), c)
+    return list(files)
+
+def bucket_files2(url):
+    "url to tuple of summoned+milled lists"
+    fi=bucket_files(url)
+    s=collect_pre(fi,"summoned")
+    m=collect_pre(fi,"milled")
+    return s,m
