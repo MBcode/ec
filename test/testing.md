@@ -156,7 +156,7 @@ flowchart LR
    * count(QUADs missing) assigned to nabu, if earlier stage was there
       * (sitemap_count == spot expected URN_count) - (count_graphs(endpoint) == count(spot URNs expected)) == missing graphs/URNs
       * Can always get count.md number, but can only get diffs of broken by comparing with spot test gold standard
-* SCHACL Validation reports [(TBD)](repo-dashboard)
+* SCHACL Validation reports [(TBD) for a repo_dashboard](repo-dashboard.md)
 
 ## Example of config spot-testing standards and comparisons
 #### Got end-to-end expected [sparql](standard/qry1.txt)-to->[df](standard/queryResults1.csv)/[URNs](https://github.com/MBcode/ec/blob/master/test/standard/milled/geocodes_demo_datasets/URNs.txt), for 1st comparison below
