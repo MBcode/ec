@@ -144,12 +144,14 @@ flowchart LR
 
 ### Report
 * EC-Testing report of what made it through the Gleaner then nabu stages
-   * Report counts at each stage, and for spot-testing can report any diffs
+   * Report counts at each stage
+   * For workflow spot-testing can report any diffs as well
       * Endpoint comparison can give more than URN diffs.  We can track any value changes as well
       * Any graph that changes, when found can be diff'd with it's gold-standard version. To report those changes
 * SCHACL Validation reports [(TBD)](repo-dashboard)
 
-### Got end-to-end expected [sparql](standard/qry1.txt)-to->[df](standard/queryResults1.csv)/[URNs](https://github.com/MBcode/ec/blob/master/test/standard/milled/geocodes_demo_datasets/URNs.txt), for 1st comparison below
+## Example of config spot-testing standards and comparisons
+#### Got end-to-end expected [sparql](standard/qry1.txt)-to->[df](standard/queryResults1.csv)/[URNs](https://github.com/MBcode/ec/blob/master/test/standard/milled/geocodes_demo_datasets/URNs.txt), for 1st comparison below
 next I use diff in df to find missing URNs, and look in LD-cache for them (bc of gleaner naming)
 Check both jsonld and other rdf, with standard values
 in [ingestTesting.md](https://github.com/MBcode/ec/blob/master/test/ingestTesting.md) sec 2, still have dictdiff and rdflib graph cmp
