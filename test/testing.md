@@ -151,6 +151,12 @@ flowchart LR
    * For workflow spot-testing can report any diffs as well
       * Endpoint comparison can give more than URN diffs.  We can track any value changes as well
       * Any graph that changes, when found can be diff'd with it's gold-standard version. To report those changes
+* Count/diffs given with view of the scope of the workflow software
+   * count(LD_cache jsonld missing or broken) assigned to gleaner
+   * count(LD_cache ntriples missing or broken) assigned to nabu, if gleaner had the jsonld
+   * count(QUADs missing) assigned to nabu, if earlier stage was there
+      * (sitemap_count == spot expected URN_count) - (count_graphs(endpoint) == count(spot URNs expected)) == missing graphs/URNs
+      * Can always get count.md number, but can only get diffs of broken by comparing with spot test gold standard
 * SCHACL Validation reports [(TBD)](repo-dashboard)
 
 ## Example of config spot-testing standards and comparisons
