@@ -83,6 +83,10 @@ flowchart LR
 This diagram changes a lot in: [testing.md](testing.md).  
 The others also differ from present flow, but could be made to work more that way.
 Though might have some gleaner/nabu errors
+
+See [testing.md](testing.md) for a data focused spot testing flow, that shows the falloff from expected results
+
+See [counts.md](counts.md) for falloff when there are not expected results to compare (regular crawl)
  
 ## Gleaner
 ## Gleaner Tests
