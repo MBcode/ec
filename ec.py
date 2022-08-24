@@ -1554,7 +1554,8 @@ def get_graphs():
     "return all the g URNs"
     return v4qry("","graphs")
 
-def get_graphs_list(endpoint=None):
+#def get_graphs_list(endpoint=None):
+def get_graphs_list(endpoint=None,dump_file=None):
     "get URNs as list, can send in alt endpoint"
     global dflt_endpoint
     if not endpoint:
@@ -1564,7 +1565,17 @@ def get_graphs_list(endpoint=None):
         dflt_endpoint = endpoint
         dfg=get_graphs()
         dflt_endpoint = save
+    if dump_file:
+        dfg.to_csv(dump_file)
     return dfg['g'].tolist()
+
+def get_graph_per_repo(grep="milled",endpoint=None,dump_file="graphs.csv"):
+    "dump a file and sort|uniq -c out the repo counts"
+    gl=get_graphs_list(endpoint,dump_file)
+    gn=len(gl)
+    print(f'got:{gn} graphs')
+    cs=f"cut -d':' -f3,4 {dump_file} | grep milled | sort | uniq -c |sort -n"
+    return os_system_(cs)
 
 #should get graph.geo.. from https://dev.geocodes.earthcube.org/#/config dynamically
  #incl the default path for each of those other queries, ecrr, ;rdf location as well
