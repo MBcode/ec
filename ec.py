@@ -1866,19 +1866,22 @@ def bucket_files3(url=None):
     m=collect_pre_(fi,"milled")
     p=collect_pre_(fi,"prov")
     pu=list(map(lambda fp: f'{url}/{fp}', p))
-    sm2m=None
+    sitemap2urn=None
     try:
-        sm2m=prov2mappings(pu)
+        pul=len(pu)
+        print(f'prov2mapping for:{pul}')
+        sitemap2urn,urn2sitemap=prov2mappings(pu)
+        #print("got the mappings")
     except:
         print("bad prov2mappings")
-    if sm2m:
-        return s,m,sm2m
+    if sitemap2urn: 
+        return s,m,sitemap2urn,urn2sitemap
     else:
         return s,m,p
 
 def prov2mapping(url): #use url from p above
     import json
-    print(f'prov2mapping:{url}')
+    #print(f'prov2mapping:{url}')
     j=url2json(url)
     d=json.loads(j)
     #print(d)
@@ -1888,6 +1891,8 @@ def prov2mapping(url): #use url from p above
         smd=g[1] #assume 1 past the context, 1st thing being from sitemap
         sm=smd.get("@id") #gi[0]
         u=collect_pre_(gi,"urn:")
+        u0=u[0]
+        #print(f'{sm}=>{u0}')
         #return sm, u #if expect >1
         return sm, u[0]
     else:
@@ -1895,20 +1900,19 @@ def prov2mapping(url): #use url from p above
 
 def prov2mappings(urls): #use urls from p above
     sitemap2urn={}
+    urn2sitemap={} #might need this more
     for url in urls:
         key,value=prov2mapping(url)
         sitemap2urn[key]=value
-    return sitemap2urn
+        urn2sitemap[value]=key
+    return sitemap2urn, urn2sitemap
 
 def bucket_files2diff(url,URNs=None):
     "list_diff_dropoff summoned milled, URNs"
-    sm=bucket_files2(url)
-    #sf=list(map(path_leaf,sm[0]))
-    #su=list(map(file_base,sf))
-    #mf=list(map(path_leaf,sm[1]))
-    #mu=list(map(file_base,mf))
-    su=list(map(lambda f: file_base(path_leaf(f)),sm[0]))
-    mu=list(map(lambda f: file_base(path_leaf(f)),sm[1]))
+    summoned,milled=bucket_files2(url) #now have bucket_files3
+    #summoned,milled,sitemap2urn,urn2sitemap=bucket_files3(url) 
+    su=list(map(lambda f: file_base(path_leaf(f)),summoned))
+    mu=list(map(lambda f: file_base(path_leaf(f)),milled))
     print(f'summoned-URNs:{su}')
     print(f'milled-URNs:{mu}')
     sl=len(su)
@@ -1932,11 +1936,14 @@ def bucket_files2diff(url,URNs=None):
         #return lose_s2m
         return dropoff,lose_s2m
 
+#don't need to have a diff version, bc bucket_files3 looks up PROV even w/o a sitemap
+#def bucket_files3diff(sitemap,url,URNs=None):
+
 def crawl_dropoff(sitemap,bucket_url,endpoint):
     "show counts at each stage, and URN diffs when can"
     URNs=get_graphs_list(endpoint)
-    sml=sitemap_len(sitemap)
     dropoff2,lose_s2m, lose_m2u = bucket_files2diff(bucket_url,URNs)
+    sml=sitemap_len(sitemap) #can now use sitemap2urn to get sitemap into same ID space
     dropoff=f'sitemap:{sml} =>{dropoff2}'  #pull sl, to calc dss=sml-sl
     #dropoff=f'sitemap:{sml}-{dss}=>{dropoff2}' #can't get lose_s2s w/o PROV sitemap URLs to UUID mapping  
     return dropoff,lose_s2m, lose_m2u
