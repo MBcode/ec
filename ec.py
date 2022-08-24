@@ -326,6 +326,8 @@ def find_urn_diffs(endpoint="http://ideational.ddns.net:3030/geocodes_demo_datas
 
 #check_urn_ rdf|jsonld look up from LD-cache of latest run, and compare w/gold-stnd in github
   #tested separately, &ok on 1st pass;  ret True if ok=the same as gold-stnd
+  #if the file was not there, might send whole file back as diff, or fail/check, but would like it2say not there/finish
+   #might also call from spot_crawl_dropoff, which would already know that the file was there for sure
 
 def check_urn_rdf(urn,
         test_bucket="https://oss.geocodes-dev.earthcube.org/citesting/milled/geocodes_demo_datasets/",
@@ -1849,14 +1851,51 @@ def bucket_files2diff(url,URNs=None):
     sl=len(su)
     ml=len(mu)
     dsm=sl-ml
-    print(f's:{sl}/m:{ml} diff:{dsm}')
     lose_s2m=list_diff_dropoff(su,mu)
     if URNs:
         ul=len(URNs)
         dmu=ml-ul
         print(f'expected-URNs:{URNs}')
-        print(f'm:{ml}/u:{ul} diff:{dmu}')
+        #dropoff=f's:{sl}/m:{ml}/u:{ul} diff:{dmu}'
+        dropoff=f'summoned:{sl}-{dsm}=>milled:{ml}-{dmu}=>graph:{ul}'
+        print(dropoff)
         lose_m2u=list_diff_dropoff(mu,URNs) 
-        return lose_s2m, lose_m2u
+        #return lose_s2m, lose_m2u
+        return dropoff,lose_s2m, lose_m2u
     else:
-        return lose_s2m
+        #dropoff=f's:{sl}/m:{ml} diff:{dsm}')
+        dropoff=f'summoned:{sl}-{dsm}=>milled:{ml}'
+        print(dropoff)
+        #return lose_s2m
+        return dropoff,lose_s2m
+
+def crawl_dropoff(sitemap,bucket_url,endpoint):
+    "show counts at each stage, and URN diffs when can"
+    URNs=get_graphs_list(endpoint)
+    sml=sitemap_len(sitemap)
+    dropoff2,lose_s2m, lose_m2u = bucket_files2diff(bucket_url,URNs)
+    dropoff=f'sitemap:{sml} =>{dropoff2}'  #pull sl, to calc dss=sml-sl
+    #dropoff=f'sitemap:{sml}-{dss}=>{dropoff2}' #can't get lose_s2s w/o PROV sitemap URLs to UUID mapping  
+    return dropoff,lose_s2m, lose_m2u
+
+#could then take these loss lists, and map over w/ check_urn_ jsonld|rdf
+ #lose_s2m would only still have summoned, so could check_urn_jsonld
+ #lose_m2u would only still have milled, so could check_urn_rdf
+def spot_crawl_dropoff(sitemap,bucket_url,endpoint):
+    "when have spot gold stnd, can also check on that"
+    dropoff,lose_s2m, lose_m2u = crawl_dropoff(sitemap,bucket_url,endpoint)
+    s_check=list(map(check_urn_jsonld,lose_s2m))
+    m_check=list(map(check_urn_rdf,lose_m2u))
+    return dropoff,lose_s2m, s_check, lose_m2u, m_check 
+    #could have map interleave URN w/True=ok or diff
+    #return dropoff,lose_s2m, lose_m2u
+
+def tsc(sitemap="http://geocodes.ddns.net/ec/test/sitemap.xml",bucket_url=None,endpoint=None):
+    "test spot_crawl_dropoff"
+    if not endpoint:
+        global testing_endpoint
+        endpoint = testing_endpoint
+    if not bucket_url:
+        global ci_url
+        bucket_url = ci_url
+    return spot_crawl_dropoff(sitemap,bucket_url,endpoint)
