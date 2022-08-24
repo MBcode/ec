@@ -1865,10 +1865,20 @@ def bucket_files3(url=None):
     s=collect_pre_(fi,"summoned")
     m=collect_pre_(fi,"milled")
     p=collect_pre_(fi,"prov")
-    return s,m,p
+    pu=list(map(lambda fp: f'{url}/{fp}', p))
+    sm2m=None
+    try:
+        sm2m=prov2mappings(pu)
+    except:
+        print("bad prov2mappings")
+    if sm2m:
+        return s,m,sm2m
+    else:
+        return s,m,p
 
-def prov2mapping(url): #use urls from p above
+def prov2mapping(url): #use url from p above
     import json
+    print(f'prov2mapping:{url}')
     j=url2json(url)
     d=json.loads(j)
     #print(d)
@@ -1882,6 +1892,13 @@ def prov2mapping(url): #use urls from p above
         return sm, u[0]
     else:
         return f'no graph for:{url}'
+
+def prov2mappings(urls): #use urls from p above
+    sitemap2urn={}
+    for url in urls:
+        key,value=prov2mapping(url)
+        sitemap2urn[key]=value
+    return sitemap2urn
 
 def bucket_files2diff(url,URNs=None):
     "list_diff_dropoff summoned milled, URNs"
