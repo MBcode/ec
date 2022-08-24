@@ -36,6 +36,7 @@ def os_system(cs):
     os.system(cs)
     add2log(cs)
 #=
+#works when tested, but check w/chron/at/. runs, even though seems to get key
 def add2slack(s):
     #cs='source ~/mb/.ssh/.ck'
     #os.system(cs)
@@ -71,6 +72,7 @@ def get_sc(url):
         #add2slack(e) #pass str
         os.system(cs)
 
+#more just check that the endpoint is there
 get_sc(url2)
 #getting ok while it is having problems, bc not hitting that part of the store?
 #might load ec.py and do an actual query, and start to log timings as well
@@ -133,9 +135,10 @@ def query_timeout(local=None):
         add2log(f'elapse={elapse}') 
     except FunctionTimedOut:
         add2log("norway query > 45 sec, so restart_endpoint")
+        add2slack("norway query > 45 sec, so auto-restarting")
         restart_endpoint()
     except Exception as exc:
-        add2log("norway query > 35 sec")
+        add2log("norway query exception")
         print(exc)
         add2log(exc) #pass str
         #add2slack(exc) #pass str #don't have to tell us on slack if had to restart, just log it
@@ -144,4 +147,5 @@ def query_timeout(local=None):
 #right now the timings are hourly, strange the diff in endpoints, will be good to see
  #and even better finally getting the time to work on it, which it is being tracked(for timing..)
 
+#use this w/timeout, to decide to restart the endpoint
 query_timeout(True) #use local version w/diff endpoint for now
