@@ -9,6 +9,8 @@ Here are the parts that the doc was broken into:
 
 
 ### Starting to split all content below into the [new-way](testing2.md) and the [old-way](testing1.md)
+* [Old-way](testing1.md) was written first for spot testing
+* [New-way](testing2.md) makes it more natural to do more testing all the time, and get a little more during spot testing
 
 ### Sec2: CI spot testing.md
 
