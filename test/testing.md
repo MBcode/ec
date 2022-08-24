@@ -7,6 +7,9 @@ Here are the parts that the doc was broken into:
 2) Then from the original cut of spot testing, but [now just new code and img below](https://github.com/MBcode/ec/blob/master/test/testing.md)=this page, is getting a rewrite to just focus on that
 3) How to best [sample](https://github.com/MBcode/ec/blob/master/test/sample.md) from the sitemaps, which has become a test set, w/the hash naming in ec/test/standard/ summoned&milled
 
+
+### Starting to split all content below into the [new-way](testing2.md) and the [old-way](testing1.md)
+
 ### Sec2: CI spot testing.md
 
 Everything below is done against a gold-standard to test the workflow, has the same function
