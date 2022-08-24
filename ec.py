@@ -1314,13 +1314,15 @@ def viz(fn=".all.nt"): #might call this rdf_viz once we get some other type of v
  #maybe, but this is easiest way to get the file locally to have to use
   #though if we use a kglab/sublib or other that puts right to graph, could dump from that too
 host = "http://141.142.218.86:3031"
-import requests
+#import requests
 
 def alive():
+    import requests
     r = requests.get(f'{host}/alive')
     return r
 
 def log_msg(url): #in mknb.py logbad routed expects 'url' but can encode things
+    import requests
     r = requests.get(f'{host}/logbad/?url={url}')
     return r 
 
@@ -1815,6 +1817,12 @@ def fn2nq(fn):
                 fd_out.write(line_out)
     return fn2
 
+#some bucket/gen-urls will be json(ld)
+def url2json(url):
+    import requests
+    r=requests.get(url)
+    return r.content
+
 #==bucket_files.py to get (minio) files list from a bucket path
 ci_url="https://oss.geocodes-dev.earthcube.org/citesting"
 def bucket_xml(url):
@@ -1858,6 +1866,22 @@ def bucket_files3(url=None):
     m=collect_pre_(fi,"milled")
     p=collect_pre_(fi,"prov")
     return s,m,p
+
+def prov2mapping(url): #use urls from p above
+    import json
+    j=url2json(url)
+    d=json.loads(j)
+    #print(d)
+    g=d.get('@graph')
+    if g:
+        gi=list(map(lambda g: g.get("@id"), g))
+        smd=g[1] #assume 1 past the context, 1st thing being from sitemap
+        sm=smd.get("@id") #gi[0]
+        u=collect_pre_(gi,"urn:")
+        #return sm, u #if expect >1
+        return sm, u[0]
+    else:
+        return f'no graph for:{url}'
 
 def bucket_files2diff(url,URNs=None):
     "list_diff_dropoff summoned milled, URNs"
