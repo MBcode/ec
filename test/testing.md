@@ -286,7 +286,10 @@ ld_checks
 #all the above is wrapped into one validation function, 
 #that will be called with papermill to make sure workflow stages still ok=True
 
-
+## [counts.md](counts.md) now has crawl_dropoff() which can be done each time, and shows count-drop and URNs of files lost
+### _when many sitemaps run, it can report from each names repo: in the quad store graphs, with: get_graph_per_repo()_
+## It also has a spot_crawl_dropoff() that for a test-sitemap will also call all the check_urn_ jsonld|rdf if lost in next step
+### _This is an alternate way of doing the counts & checking in the example just above_ So I will incl/replace this soon
 
 ### the expected_urls.csv or dataset_tests.csv will get finer grain, incl all the tests a dataset will go through
 Right now I think most in standard will complete, but need to know which don't and why; will look at SR's look at this
