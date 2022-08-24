@@ -99,6 +99,33 @@ normal crawls with no expected results need to use the [counts.md](counts.md) ut
 
 spot tests, can still run this counts checking code, even though the comparison w/test set will give it
 
+## Example of config spot-testing standards and comparisons
+```mermaid
+flowchart TD
+N[step_N] --transition--> N1[step_N+1]
+CMP[compare_listed_UUIDs] --> N
+CMP --> N1
+CMP -- diff_list --> CL[check_list]
+CL -- apply_best_cmp --> N
+```
+## During a standard run best_compare will check worthiness for the transition
+## During spot_testing of the workflow, we can also compare with the expected gold standard
+
+
+### Report
+* EC-Testing report of what made it through the Gleaner then nabu stages
+   * Report counts at each stage
+   * For workflow spot-testing can report any diffs as well
+      * Endpoint comparison can give more than URN diffs.  We can track any value changes as well
+      * Any graph that changes, when found can be diff'd with it's gold-standard version. To report those changes
+* Count/diffs given with view of the scope of the workflow software
+   * count(LD_cache jsonld missing or broken) assigned to gleaner
+   * count(LD_cache ntriples missing or broken) assigned to nabu, if gleaner had the jsonld
+   * count(QUADs missing) assigned to nabu, if earlier stage was there
+      * (sitemap_count == spot expected URN_count) - (count_graphs(endpoint) == count(spot URNs expected)) == missing graphs/URNs
+      * Can always get count.md number, but can only get diffs of broken by comparing with spot test gold standard
+* SCHACL Validation reports [(TBD) for a repo_dashboard](repo-dashboard.md)
+
 ## Crawl-workflow (gleaner/nabu) spot tests
 * Run query on test-endpoint to get graph-URNs and other expected values
 * Compare retrieved URNs with expected, then use missing-URNs to look them up in the LD-Cache
@@ -143,22 +170,14 @@ flowchart LR
       * returns diff if differs, incl if missing or can just return 'missing'
    * LD_cache count = sitemap_count - count(missing_URNs) + count(cmp_LD say are ok)
       * so spot-testing can be a little more detailed with count of broken = count(cmp_LD say have diffs)
-
-### Report
-* EC-Testing report of what made it through the Gleaner then nabu stages
-   * Report counts at each stage
-   * For workflow spot-testing can report any diffs as well
-      * Endpoint comparison can give more than URN diffs.  We can track any value changes as well
-      * Any graph that changes, when found can be diff'd with it's gold-standard version. To report those changes
-* Count/diffs given with view of the scope of the workflow software
-   * count(LD_cache jsonld missing or broken) assigned to gleaner
-   * count(LD_cache ntriples missing or broken) assigned to nabu, if gleaner had the jsonld
-   * count(QUADs missing) assigned to nabu, if earlier stage was there
-      * (sitemap_count == spot expected URN_count) - (count_graphs(endpoint) == count(spot URNs expected)) == missing graphs/URNs
-      * Can always get count.md number, but can only get diffs of broken by comparing with spot test gold standard
-* SCHACL Validation reports [(TBD) for a repo_dashboard](repo-dashboard.md)
-
+      
 ## Example of config spot-testing standards and comparisons
+
+## [counts.md](counts.md) now has crawl_dropoff() which can be done each time, and shows count-drop and URNs of files lost
+### _when many sitemaps run, it can report from each names repo: in the quad store graphs, with: get_graph_per_repo()_
+## It also has a spot_crawl_dropoff() that for a test-sitemap will also call all the check_urn_ jsonld|rdf if lost in next step
+### _This is an alternate way of doing the counts & checking in the example just below_ So I will incl/replace this soon
+
 #### Got end-to-end expected [sparql](standard/qry1.txt)-to->[df](standard/queryResults1.csv)/[URNs](https://github.com/MBcode/ec/blob/master/test/standard/milled/geocodes_demo_datasets/URNs.txt), for 1st comparison below
 next I use diff in df to find missing URNs, and look in LD-cache for them (bc of gleaner naming)
 Check both jsonld and other rdf, with standard values
