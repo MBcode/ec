@@ -1848,6 +1848,17 @@ def bucket_files2(url):
     m=collect_pre_(fi,"milled")
     return s,m
 
+def bucket_files3(url=None):
+    "url to summoned+milled,prov lists"
+    if not url:
+        global ci_url
+        url = ci_url
+    fi=bucket_files(url)
+    s=collect_pre_(fi,"summoned")
+    m=collect_pre_(fi,"milled")
+    p=collect_pre_(fi,"prov")
+    return s,m,p
+
 def bucket_files2diff(url,URNs=None):
     "list_diff_dropoff summoned milled, URNs"
     sm=bucket_files2(url)
