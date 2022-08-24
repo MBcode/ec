@@ -19,7 +19,7 @@ ec.setup_sitemap()
 ec.setup_s3fs() #now sets up web based access
 ```
 
-Now can get web based count dropoffs all in one call:
+## Now can get web based count dropoffs all in one call:
 
 
 ```python
@@ -38,7 +38,7 @@ Now can get web based count dropoffs all in one call:
     sitemap:10 =>summoned:25-0=>milled:25--1=>graph:26
 
 
-and to spot_check the workflow against a gold standard, can also include those checks:
+## and to spot_check the workflow against a gold standard, can also include those checks:
 ```python
 dropoff,lose_s2m, s_check, lose_m2u, m_check= ec.spot_crawl_dropoff("https://raw.githubusercontent.com/earthcube/GeoCODES-Metadata/mb_sample/metadata/Dataset/standard/sitemap.xml",
                     "https://oss.geocodes-dev.earthcube.org/citesting","http://ideational.ddns.net:3030/geocodes_demo_datasets/sparql")
@@ -113,9 +113,11 @@ print(f'check those that did not make it from milled to graph:{m_check}')
     check those that did not make it from milled to graph:[True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True]
 
 
-This above can be done over every sitemap, and m_check will still work
+### This above can be done over every sitemap, and m_check will still work
 
-If many sitemaps go into the same graph in one run, use the last part of this section to split them out:
+also just added pulling the prov to get the sitemap mapped to the same UUID/urn space, so all stages will git URN diffs
+
+## If many sitemaps go into the same graph in one run, use the last part of this section to split them out:
 
 
 ```python
