@@ -51,6 +51,46 @@ Basic Data loading flight testing:
     * If ntriples in cache, but not in endpoint, then blame 'nabu' for not syncing it
     * If the file for the URN is not in the LD-cache as .rdf, then blame nabu
     * If the file for the URN is not in the LD-cache as .jsonld, then blame gleaner
+```mermaid
+flowchart LR
+   subgraph LD_Cache
+      subgraph BUCKET
+         RDF(Quads or Triples)
+         JsonLD
+
+      end
+   end
+   subgraph Config
+        Repository-Information
+      SG(sitemapgh-URLs)
+      TESTMAN([ Manifest config for Repo ])
+   end
+  SG --> gleaner
+  
+  gleaner -- summon  --> JsonLD
+  SG(sitemapgh-URLs) --> SMC( SItemap Count )
+  subgraph TEST
+      subgraph count
+        SMC( SItemap Count )
+        RC( .rdf count )
+        GLNRCOUNT(JSONLD Count)
+        GSGraphCOUNT(Named Graph count)
+       end
+        DLQUERY(Run queries from manifest )
+  end
+  DLQUERY -- gives --> GSGraphCOUNT
+  JsonLD --> GLNRCOUNT
+  JsonLD --> RDF
+  RDF --> RC
+  subgraph Graphstore
+      subgraph NAMESPACE
+         QUADS
+      end
+   end
+  QUADS --> GSGraphCOUNT
+  RDF --> Nabu --> NGRPH(Named Graphs) --> QUADS
+  TESTMAN --> TESTQUERY[[SPARQL-Query ]]  --> DLQUERY
+```
     
 #### Scopes of workflow elements: Gleaner/nabu are the verbs transitioning the data-objects, that we can test for
 We can always get the [counts.md](counts.md) fall off, but we can best tell if the intermediate data files are broken by diffs with expected results during workflow spot testing. Though with URN listing from each stage we could [better check them in prod](http://geocodes.ddns.net/ec/test/counts/bucket_files.py).
