@@ -87,6 +87,7 @@ flowchart LR
   RDF --> Nabu --> NGRPH(Named Graphs) --> QUADS
   TESTMAN --> TESTQUERY[[SPARQL-Query ]]  --> DLQUERY
 ```
+even this diagram will get a little more simple, not needing all the test info
 #### Scopes of workflow elements: Gleaner/nabu are the verbs transitioning the data-objects, that we can test for
 * We always had the [counts.md](counts.md) fall off, but [now](http://geocodes.ddns.net/ec/test/counts/bucket_files.py) we can tell which of the intermediate data files are broken by diffs with expected listing, 
 * then we can check the step before to see the transition worthiness of it
@@ -109,7 +110,7 @@ flowchart TD
 N[step_N] --transition--> N1[step_N+1]
 CMP[compare_listed_UUIDs] --> N
 CMP --> N1
-CMP -- diff_list --> CL[check_list]
+CMP -- gives:diff_list --> CL[check_list]
 CL -- apply_best_cmp --> N
 ```
 ## During a standard run best_compare will check worthiness for the transition
