@@ -13,11 +13,12 @@ Here are the parts that the doc was broken into:
 * [New-way](testing2.md) makes it more natural to do more testing all the time, and get a little more during spot testing
 
 ### Some differences
-* new won't need expected URNs/sparql-results necessarily, because it only test the new fall-off from the stage before
+* New won't need expected URNs/sparql-results necessarily, because it only test the new fall-off from the stage before
 * New has much better integration with non spot testing; which could have done counts as a backup
 * New, non spot testing could have done more than just count falloff, always worth IDing which files got lost
    * and can do some integrity checks w/o having a gold stnd to compare against
 * New still uses the old's check_urn_ jsonld|rdf but does it only when the next step is missing
+* Old did a web check of LD, New does a web listing, so even easier to fill in extruct/riot backup for gleaner/nabu
 
 ### Below is the new way then the old way, which I will delete in favor of the 2 links above
 
