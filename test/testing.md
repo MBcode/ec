@@ -21,6 +21,13 @@ Here are the parts that the doc was broken into:
 
 ### Below is the new way then the old way, which I will delete in favor of the 2 links above
 
+### .
+### .
+### .
+### .
+### .
+### .
+
 ### Sec2: CI spot testing.md
 
 Everything below is done against a gold-standard to test the workflow, has the same function
@@ -156,7 +163,13 @@ Here for a test-sitemap will also call all the check_urn_ jsonld|rdf if lost in 
 #### spot checks are done with one sitemap, while general runs can have many
  _when many sitemaps run, it can report from each names repo: in the quad store graphs, with: get_graph_per_repo()_
  
+### .
+### .
+ 
  _Above is an alternate way of doing the counts & checking compared to  below_ So I will incl/replace this soon
+
+### .
+### .
 
 ## Everything below here is starting with end to end testing, 
 ### where it goes back and checking the 2 middle stages if a problem
