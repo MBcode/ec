@@ -19,6 +19,7 @@ Here are the parts that the doc was broken into:
    * and can do some integrity checks w/o having a gold stnd to compare against
 * New still uses the old's check_urn_ jsonld|rdf but does it only when the next step is missing
 * Old did a web check of LD, New does a web listing, so even easier to fill in extruct/riot backup for gleaner/nabu
+  * Would like python to kick off gleaner|extruct then riot|nabu incl serving final quad, so less manual yaml setup
 
 ### Below is the new way then the old way, which I will delete in favor of the 2 links above
 
