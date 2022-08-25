@@ -12,6 +12,9 @@ Here are the parts that the doc was broken into:
 * [Old-way](testing1.md) was written first for spot testing
 * [New-way](testing2.md) makes it more natural to do more testing all the time, and get a little more during spot testing
 
+### Some differences
+* new won't need expected URNs/sparql-results necessarily, because it only test the new fall-off from the stage before
+
 ### Sec2: CI spot testing.md
 
 Everything below is done against a gold-standard to test the workflow, has the same function
