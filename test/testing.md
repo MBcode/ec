@@ -14,6 +14,9 @@ Here are the parts that the doc was broken into:
 
 ### Some differences
 * new won't need expected URNs/sparql-results necessarily, because it only test the new fall-off from the stage before
+* New has much better integration with non spot testing; which could have done counts as a backup
+* New, non spot testing could have done more than just count falloff, always worth IDing which files got lost
+   * and can do some integrity checks w/o having a gold stnd to compare against
 
 ### Sec2: CI spot testing.md
 
