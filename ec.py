@@ -1864,6 +1864,7 @@ def url2json(url):
  #so it can be swapped out for my web LD-cache when missing
 #==bucket_files.py to get (minio) files list from a bucket path
 ci_url="https://oss.geocodes-dev.earthcube.org/citesting"
+#ci_url2="https://oss.geocodes-dev.earthcube.org/citesting2"
 def bucket_xml(url):
     "given bucket url ret raw xml listing"
     import requests
@@ -1941,7 +1942,8 @@ def bucket_files2diff(url,URNs=None):
         lose_m2u=list_diff_dropoff(mu,URNs) 
         #return lose_s2m, lose_m2u
         #return dropoff,lose_s2m, lose_m2u
-        return dropoff,lose_s2m, lose_m2u , sitemap2urn
+        #return dropoff,lose_s2m, lose_m2u , sitemap2urn
+        return dropoff,lose_s2m, lose_m2u , sitemap2urn, su
     else:
         #dropoff=f's:{sl}/m:{ml} diff:{dsm}')
         dropoff=f'summoned:{sl}-{dsm}=>milled:{ml}'
@@ -1956,18 +1958,24 @@ def crawl_dropoff(sitemap,bucket_url,endpoint):
     "show counts at each stage, and URN diffs when can"
     URNs=get_graphs_list(endpoint)  #that are in the endpoint, not the expected
     #dropoff2,lose_s2m, lose_m2u = bucket_files2diff(bucket_url,URNs)
-    dropoff2,lose_s2m, lose_m2u, sitemap2urn = bucket_files2diff(bucket_url,URNs)
+    #dropoff2,lose_s2m, lose_m2u, sitemap2urn = bucket_files2diff(bucket_url,URNs)
+    dropoff2,lose_s2m, lose_m2u, sitemap2urn, su = bucket_files2diff(bucket_url,URNs)
     #sml=sitemap_len(sitemap) #can now use sitemap2urn to get sitemap into same ID space
     sm=sitemap_list(sitemap) #can now use sitemap2urn to get sitemap into same ID space
-    print(f'sitemap:{sm}')
+    #print(f'sitemap:{sm}')
     sml=len(sm)
-    print(f'will get:{sml} urn2urn w/:{sitemap2urn}') #dbg
+    #print(f'will get:{sml} urn2urn w/:{sitemap2urn}') #dbg
     #smu=list(map(lambda s: sitemap2urn[s], sm))
-    smu=list(map(lambda s: sitemap2urn.get(s), sm)) #not getting any lookups yet/check.data2
+    smu=list(map(lambda s: sitemap2urn.get(s), sm)) #used prov mapping to gen test sitemap
     print(f'URN/UUIDs for sitemaps:{smu}')             #need to get same sitemap, &use map for cmp:
-    #lose_s2s=list_diff_dropoff(smu,su) 
+    smu2=list(map(lambda s: s.split(':')[-1],smu))
+    print(f'URN/UUIDs for sitemaps:{smu2}')             #need to get same sitemap, &use map for cmp:
+    lose_s2s=list_diff_dropoff(smu2,su) 
+    lsl=len(lose_s2s) #should= sml- ml from above
+    print(f'lose_s2s:{lose_s2s}')
     ##lose_s2m=list_diff_dropoff(su,mu), from above
-    dropoff=f'sitemap:{sml} =>{dropoff2}'  #pull sl, to calc dss=sml-sl
+    #dropoff=f'sitemap:{sml} =>{dropoff2}'  #pull sl, to calc dss=sml-sl
+    dropoff=f'sitemap:{sml}-{lsl}:{lose_s2s} =>{dropoff2}'  
     #dropoff=f'sitemap:{sml}-{dss}=>{dropoff2}' #can't get lose_s2s w/o PROV sitemap URLs to UUID mapping  
     return dropoff,lose_s2m, lose_m2u
 
