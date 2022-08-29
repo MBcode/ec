@@ -114,7 +114,9 @@ CMP -- gives:diff_list --> CL[check_list]
 CL -- apply_best_cmp --> N
 ```
 ## During a standard run best_compare will check worthiness for the transition
+As we are focusing on spot-checks 1st, we can start w/gold-stnd compares, but should always do simple/eg. integrity checks
 ## During spot_testing of the workflow, we can also compare with the expected gold standard
+Each stage can show the count, off from the start, but has to focus on those available at the start of the step that didn't make it to the end
 
 
 ### Report
