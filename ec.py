@@ -781,6 +781,11 @@ def sitemaps_all_loc(sitemaps):
     return map(sitemap_all_pages,sitemaps)
     #also be able to work w/dictionaries,  repo_name sitmap in, count out
 
+def sitemap_list(url):
+    pages=sitemap_all_pages(url)
+    pl=list(pages)
+    return pl
+
 def sitemap_len(url):
     "for counts" # maybe allow filtering types later
     pages=sitemap_all_pages(url)
@@ -1817,12 +1822,46 @@ def fn2nq(fn):
                 fd_out.write(line_out)
     return fn2
 
+#sitemap url to LD-cache filenames
+ #in mine it is BASE_URL + file_leaf(ur)
+ #gleaner needs a mapping from it's PROV:
+
+def prov2mapping(url): #use url from p above
+    import json
+    #print(f'prov2mapping:{url}')
+    j=url2json(url)
+    d=json.loads(j)
+    #print(d)
+    g=d.get('@graph')
+    if g:
+        gi=list(map(lambda g: g.get("@id"), g))
+        smd=g[1] #assume 1 past the context, 1st thing being from sitemap
+        sm=smd.get("@id") #gi[0]
+        u=collect_pre_(gi,"urn:")
+        u0=u[0]
+        #print(f'{sm}=>{u0}')
+        #return sm, u #if expect >1
+        return sm, u[0]
+    else:
+        return f'no graph for:{url}'
+
+def prov2mappings(urls): #use urls from p above
+    sitemap2urn={}
+    urn2sitemap={} #might need this more
+    for url in urls:
+        key,value=prov2mapping(url)
+        sitemap2urn[key]=value
+        urn2sitemap[value]=key
+    return sitemap2urn, urn2sitemap
+
 #some bucket/gen-urls will be json(ld)
 def url2json(url):
     import requests
     r=requests.get(url)
     return r.content
 
+#testing, where we look at gleaner's mino ld-cache via web
+ #so it can be swapped out for my web LD-cache when missing
 #==bucket_files.py to get (minio) files list from a bucket path
 ci_url="https://oss.geocodes-dev.earthcube.org/citesting"
 def bucket_xml(url):
@@ -1879,56 +1918,30 @@ def bucket_files3(url=None):
     else:
         return s,m,p
 
-def prov2mapping(url): #use url from p above
-    import json
-    #print(f'prov2mapping:{url}')
-    j=url2json(url)
-    d=json.loads(j)
-    #print(d)
-    g=d.get('@graph')
-    if g:
-        gi=list(map(lambda g: g.get("@id"), g))
-        smd=g[1] #assume 1 past the context, 1st thing being from sitemap
-        sm=smd.get("@id") #gi[0]
-        u=collect_pre_(gi,"urn:")
-        u0=u[0]
-        #print(f'{sm}=>{u0}')
-        #return sm, u #if expect >1
-        return sm, u[0]
-    else:
-        return f'no graph for:{url}'
-
-def prov2mappings(urls): #use urls from p above
-    sitemap2urn={}
-    urn2sitemap={} #might need this more
-    for url in urls:
-        key,value=prov2mapping(url)
-        sitemap2urn[key]=value
-        urn2sitemap[value]=key
-    return sitemap2urn, urn2sitemap
-
 def bucket_files2diff(url,URNs=None):
     "list_diff_dropoff summoned milled, URNs"
-    summoned,milled=bucket_files2(url) #now have bucket_files3
-    #summoned,milled,sitemap2urn,urn2sitemap=bucket_files3(url) 
+    #summoned,milled=bucket_files2(url) #now have bucket_files3
+    summoned,milled,sitemap2urn,urn2sitemap=bucket_files3(url) 
     su=list(map(lambda f: file_base(path_leaf(f)),summoned))
     mu=list(map(lambda f: file_base(path_leaf(f)),milled))
     print(f'summoned-URNs:{su}')
     print(f'milled-URNs:{mu}')
     sl=len(su)
     ml=len(mu)
-    dsm=sl-ml
+    dsm=sl-ml #diff summoned&milled= datasets lost in this step
     lose_s2m=list_diff_dropoff(su,mu)
     if URNs:
         ul=len(URNs)
         dmu=ml-ul
-        print(f'expected-URNs:{URNs}')
+        #print(f'expected-URNs:{URNs}')
+        print(f'endpoint-URNs:{URNs}')
         #dropoff=f's:{sl}/m:{ml}/u:{ul} diff:{dmu}'
         dropoff=f'summoned:{sl}-{dsm}=>milled:{ml}-{dmu}=>graph:{ul}'
         print(dropoff)
         lose_m2u=list_diff_dropoff(mu,URNs) 
         #return lose_s2m, lose_m2u
-        return dropoff,lose_s2m, lose_m2u
+        #return dropoff,lose_s2m, lose_m2u
+        return dropoff,lose_s2m, lose_m2u , sitemap2urn
     else:
         #dropoff=f's:{sl}/m:{ml} diff:{dsm}')
         dropoff=f'summoned:{sl}-{dsm}=>milled:{ml}'
@@ -1941,9 +1954,19 @@ def bucket_files2diff(url,URNs=None):
 
 def crawl_dropoff(sitemap,bucket_url,endpoint):
     "show counts at each stage, and URN diffs when can"
-    URNs=get_graphs_list(endpoint)
-    dropoff2,lose_s2m, lose_m2u = bucket_files2diff(bucket_url,URNs)
-    sml=sitemap_len(sitemap) #can now use sitemap2urn to get sitemap into same ID space
+    URNs=get_graphs_list(endpoint)  #that are in the endpoint, not the expected
+    #dropoff2,lose_s2m, lose_m2u = bucket_files2diff(bucket_url,URNs)
+    dropoff2,lose_s2m, lose_m2u, sitemap2urn = bucket_files2diff(bucket_url,URNs)
+    #sml=sitemap_len(sitemap) #can now use sitemap2urn to get sitemap into same ID space
+    sm=sitemap_list(sitemap) #can now use sitemap2urn to get sitemap into same ID space
+    print(f'sitemap:{sm}')
+    sml=len(sm)
+    print(f'will get:{sml} urn2urn w/:{sitemap2urn}') #dbg
+    #smu=list(map(lambda s: sitemap2urn[s], sm))
+    smu=list(map(lambda s: sitemap2urn.get(s), sm)) #not getting any lookups yet/check.data2
+    print(f'URN/UUIDs for sitemaps:{smu}')             #need to get same sitemap, &use map for cmp:
+    #lose_s2s=list_diff_dropoff(smu,su) 
+    ##lose_s2m=list_diff_dropoff(su,mu), from above
     dropoff=f'sitemap:{sml} =>{dropoff2}'  #pull sl, to calc dss=sml-sl
     #dropoff=f'sitemap:{sml}-{dss}=>{dropoff2}' #can't get lose_s2s w/o PROV sitemap URLs to UUID mapping  
     return dropoff,lose_s2m, lose_m2u
