@@ -311,7 +311,8 @@ def find_urn_diffs(endpoint="http://ideational.ddns.net:3030/geocodes_demo_datas
         test_endpoint=endpoint
     else: #use global so can set by script
         test_endpoint=testing_endpoint
-    test_list=get_graphs_list(test_endpoint)
+    #test_list=get_graphs_list(test_endpoint)
+    test_list=get_graphs_tails(test_endpoint)
     print(f'test:{test_list}')
     gold_list=df_gold['g'].tolist()
     print(f'gold:{gold_list}')
@@ -1578,7 +1579,7 @@ def get_graphs_list(endpoint=None,dump_file=None):
 
 def get_graph_per_repo(grep="milled",endpoint=None,dump_file="graphs.csv"):
     "dump a file and sort|uniq -c out the repo counts"
-    gl=get_graphs_list(endpoint,dump_file)
+    gl=get_graphs_list(endpoint,dump_file) #this needs full URN to get counts for the same 'repo:' s
     gn=len(gl)
     print(f'got:{gn} graphs')
     cs=f"cut -d':' -f3,4 {dump_file} | grep milled | sort | uniq -c |sort -n"
@@ -1984,6 +1985,17 @@ def bucket_files2diff(url,URNs=None):
 #don't need to have a diff version, bc bucket_files3 looks up PROV even w/o a sitemap
 #def bucket_files3diff(sitemap,url,URNs=None):
 
+def urn_tail(urn):
+    return  urn if not urn else urn.split(':')[-1]
+
+def urn_tails(URNs):
+    return list(map(lambda s: s if not s else s.split(':')[-1],URNs))
+    #return list(map(urn_tail,URNs))
+
+def get_graphs_tails(endpoint):
+    URNs=get_graphs_list(endpoint)
+    return urn_tails(URNs)
+
 #break out all the code in crawl_dropoff that deals w/sitemap to summoned w/mapping
 #def drop1mapping(sm,sitemap2urn):
 def drop1mapping(sm,sitemap2urn,su):
@@ -1994,7 +2006,7 @@ def drop1mapping(sm,sitemap2urn,su):
     smu=list(map(lambda s: sitemap2urn.get(s), sm)) #used prov mapping to gen test sitemap
     print(f'URN/UUIDs for sitemaps:{smu}')             #need to get same sitemap, &use map for cmp:
     #smu2=list(map(lambda s: s.split(':')[-1],smu))
-    smu2=list(map(lambda s: s if not s else s.split(':')[-1],smu))
+    smu2=list(map(lambda s: s if not s else s.split(':')[-1],smu)) #=urn_tails(smu)
     print(f'URN/UUIDs for sitemaps:{smu2}')             #need to get same sitemap, &use map for cmp:
     lose_s2s=list_diff_dropoff(smu2,su) 
     lsl=len(lose_s2s) #should= sml- ml from above
@@ -2010,7 +2022,8 @@ def drop1mapping(sm,sitemap2urn,su):
 
 def crawl_dropoff_(sitemap,bucket_url,endpoint):
     "show counts at each stage, and URN diffs when can"
-    URNs=get_graphs_list(endpoint)  #that are in the endpoint, not the expected
+    #URNs=get_graphs_list(endpoint)  #that are in the endpoint, not the expected
+    URNs=get_graphs_tails(endpoint)  #that are in the endpoint, not the expected
     #dropoff2,lose_s2m, lose_m2u = bucket_files2diff(bucket_url,URNs)
     #dropoff2,lose_s2m, lose_m2u, sitemap2urn = bucket_files2diff(bucket_url,URNs)
     dropoff2,lose_s2m, lose_m2u, sitemap2urn, su = bucket_files2diff(bucket_url,URNs)
@@ -2033,7 +2046,8 @@ def is_str(v):
 
 def crawl_dropoff(sitemap,bucket_url,endpoint):
     "show counts at each stage, and URN diffs when can"
-    URNs=get_graphs_list(endpoint)  #that are in the endpoint, not the expected
+    #URNs=get_graphs_list(endpoint)  #that are in the endpoint, not the expected
+    URNs=get_graphs_tails(endpoint)  #that are in the endpoint, not the expected
     #dropoff2,lose_s2m, lose_m2u = bucket_files2diff(bucket_url,URNs)
     #dropoff2,lose_s2m, lose_m2u, sitemap2urn = bucket_files2diff(bucket_url,URNs)
     dropoff2,lose_s2m, lose_m2u, sitemap2urn, su = bucket_files2diff(bucket_url,URNs)
