@@ -1910,13 +1910,16 @@ def prov2sitemap(bucket_url,pu=None):
     sitemap=None
     try:
         pul=len(pu)
-        print(f'prov2mapping for:{pul}')
+        #print(f'prov2mapping for:{pul}')
+        print(f'prov2sitemap_mapping for:{pul}')
         sitemap2urn,urn2sitemap,sitemap=prov2mappings(pu)
         #print("got the mappings")
     except:
-        print("bad prov2mappings sitemap")
+        #print("bad prov2mappings sitemap")
+        print("bad prov2sitemap_mappings, on the:{pul}")
     return sitemap #for now
 
+#if ret more could use in fnc below
 
 def bucket_files3(url=None):
     "url to summoned+milled,prov lists"
@@ -1932,7 +1935,8 @@ def bucket_files3(url=None):
     try:
         pul=len(pu)
         print(f'prov2mapping for:{pul}')
-        sitemap2urn,urn2sitemap=prov2mappings(pu)
+        #sitemap2urn,urn2sitemap=prov2mappings(pu)
+        sitemap2urn,urn2sitemap,sitemap=prov2mappings(pu)
         #print("got the mappings")
     except:
         print("bad prov2mappings")
@@ -1941,6 +1945,8 @@ def bucket_files3(url=None):
     else:
         #return s,m,p #mostly expect mappings below, &not prov
         return s,m, None, None
+
+#could also pass sitemap, in case used later from:
 
 def bucket_files2diff(url,URNs=None):
     "list_diff_dropoff summoned milled, URNs"
@@ -1966,19 +1972,21 @@ def bucket_files2diff(url,URNs=None):
         #return lose_s2m, lose_m2u
         #return dropoff,lose_s2m, lose_m2u
         #return dropoff,lose_s2m, lose_m2u , sitemap2urn
-        return dropoff,lose_s2m, lose_m2u , sitemap2urn, su
+        return dropoff,lose_s2m, lose_m2u , sitemap2urn, su #last is summoned
     else:
         #dropoff=f's:{sl}/m:{ml} diff:{dsm}')
         dropoff=f'summoned:{sl}-{dsm}=>milled:{ml}'
         print(dropoff)
         #return lose_s2m
-        return dropoff,lose_s2m
+        #return dropoff,lose_s2m
+        return dropoff,lose_s2m, None, None, None
 
 #don't need to have a diff version, bc bucket_files3 looks up PROV even w/o a sitemap
 #def bucket_files3diff(sitemap,url,URNs=None):
 
 #break out all the code in crawl_dropoff that deals w/sitemap to summoned w/mapping
-def drop1mapping(sm,sitemap2urn):
+#def drop1mapping(sm,sitemap2urn):
+def drop1mapping(sm,sitemap2urn,su):
     "break out all the code in crawl_dropoff that deals w/sitemap to summoned w/mapping"
     sml=len(sm)
     #print(f'will get:{sml} urn2urn w/:{sitemap2urn}') #dbg
@@ -2011,7 +2019,7 @@ def crawl_dropoff_(sitemap,bucket_url,endpoint):
     #print(f'sitemap:{sm}')
     sml=len(sm)
     if sitemap2urn:
-        dropoff1,lose_s2s=drop1mapping(sm,sitemap2urn)
+        dropoff1,lose_s2s=drop1mapping(sm,sitemap2urn,su)
         dropoff=f'{dropoff1} =>{dropoff2}'  
         return dropoff,lose_s2s, lose_s2m, lose_m2u
     else:
@@ -2037,7 +2045,7 @@ def crawl_dropoff(sitemap,bucket_url,endpoint):
     #print(f'sitemap:{sm}')
     sml=len(sm)
     if sitemap2urn:
-        dropoff,lose_s2s=drop1mapping(sm,sitemap2urn)
+      # dropoff,lose_s2s=drop1mapping(sm,sitemap2urn) #only call in variant above where code below goes away
         #print(f'will get:{sml} urn2urn w/:{sitemap2urn}') #dbg
         #smu=list(map(lambda s: sitemap2urn[s], sm))
         smu=list(map(lambda s: sitemap2urn.get(s), sm)) #used prov mapping to gen test sitemap
@@ -2073,7 +2081,8 @@ def spot_crawl_dropoff(sitemap,bucket_url,endpoint):
     #return dropoff,lose_s2m, lose_m2u
 
 #turns out reading PROV to get sitemap<->UUID's in summoned, also gives us the sitemap run
-def tsc(sitemap=None,bucket_url=None,endpoint=None):
+#def tsc(sitemap=None,bucket_url=None,endpoint=None):
+def tsc(sitemap=None,bucket_url=None,endpoint="https://graph.geocodes-dev.earthcube.org/blazegraph/namespace/citesting/sparql"):
     "test spot_crawl_dropoff"
     if not endpoint:
         global testing_endpoint
