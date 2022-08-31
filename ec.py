@@ -1870,7 +1870,7 @@ def url2json(url):
  #so it can be swapped out for my web LD-cache when missing
 #==bucket_files.py to get (minio) files list from a bucket path
 ci_url="https://oss.geocodes-dev.earthcube.org/citesting"
-#ci_url2="https://oss.geocodes-dev.earthcube.org/citesting2"
+ci_url2="https://oss.geocodes-dev.earthcube.org/citesting2"
 def bucket_xml(url):
     "given bucket url ret raw xml listing"
     import requests
@@ -1885,15 +1885,23 @@ def bucket_xml2dict(test_xml):
     d=xmltodict.parse(test_xml)
     #print(d)
     lbr=d.get("ListBucketResult")
-    c=lbr.get("Contents")
-    return c
+    if lbr:
+        c=lbr.get("Contents")
+        return c
+    else:
+        print(f'no ListBucketResult, for:{test_xml}')
+        return None
 
 def bucket_files(url):
     "bucket_url to file listing"
     test_xml=bucket_xml(url)
     c=bucket_xml2dict(test_xml)
-    files=map(lambda kd: kd.get('Key'), c)
-    return list(files)
+    if c:
+        files=map(lambda kd: kd.get('Key'), c)
+        return list(files)
+    else:
+        print(f'no bucket xml for files:{url}')
+        return None
 
 def bucket_files2(url):
     "url to tuple of summoned+milled lists"
@@ -1928,6 +1936,9 @@ def bucket_files3(url=None):
         global ci_url
         url = ci_url
     fi=bucket_files(url)
+    if not fi:
+        print(f'bucket_files 3,nothing for:{url}')
+        return None
     s=collect_pre_(fi,"summoned")
     m=collect_pre_(fi,"milled")
     p=collect_pre_(fi,"prov")
@@ -2112,6 +2123,13 @@ def tsc(sitemap=None,bucket_url=None,endpoint="https://graph.geocodes-dev.earthc
         sitemap="http://geocodes.ddns.net/ec/test/sep/sitemap.xml"
     return spot_crawl_dropoff(sitemap,bucket_url,endpoint)
 
-def tsc2(sitemap2="http://geocodes.ddns.net/ec/test/sitemap.xml",bucket_url2=None,endpoint2=None):
+def tsc2_(sitemap2="http://geocodes.ddns.net/ec/test/sitemap.xml",bucket_url2=None,endpoint2=None):
     "same test but send in sitemap vs get it from prov"
     tsc(sitemap=sitemap2,bucket_url=bucket_url2,endpoint=endpoint2)
+
+def tsc2(bucket_url=None,endpoint2="https://graph.geocodes-dev.earthcube.org/blazegraph/namespace/citesting2/sparql"):
+    "for mb_ci setup which uses unused citesting2 bucket&endpoint"
+    if not bucket_url:
+        global ci_url2
+        bucket_url = ci_url2
+    tsc(None,bucket_url,endpoint=endpoint2)
