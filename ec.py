@@ -1914,6 +1914,9 @@ def bucket_files2(url):
 def prov2sitemap(bucket_url,pu=None):
     "parse bucket prov2get sitemap&it's mappings"
     fi=bucket_files(bucket_url)
+    if not fi:
+        print(f'prov2sitemap, no bucket_files:{bucket_url}')
+        return None
     p=collect_pre_(fi,"prov")
     pu=list(map(lambda fp: f'{bucket_url}/{fp}', p))
     sitemap=None
@@ -2055,21 +2058,29 @@ def crawl_dropoff_(sitemap,bucket_url,endpoint):
 def is_str(v):
     return type(v) is str
 
+#should be setup w/o sitemap, to get it from PROV
+
 def crawl_dropoff(sitemap,bucket_url,endpoint):
     "show counts at each stage, and URN diffs when can"
+    if not sitemap:
+        sitemap=prov2sitemap(bucket_url) #this gives the list of them, which most fncs expect the sitemap_url
     #URNs=get_graphs_list(endpoint)  #that are in the endpoint, not the expected
     URNs=get_graphs_tails(endpoint)  #that are in the endpoint, not the expected
     #dropoff2,lose_s2m, lose_m2u = bucket_files2diff(bucket_url,URNs)
     #dropoff2,lose_s2m, lose_m2u, sitemap2urn = bucket_files2diff(bucket_url,URNs)
     dropoff2,lose_s2m, lose_m2u, sitemap2urn, su = bucket_files2diff(bucket_url,URNs)
     #sml=sitemap_len(sitemap) #can now use sitemap2urn to get sitemap into same ID space
-    if is_str(sitemap):
+    #if not sitemap: #could warn here
+    if not sitemap: 
+        print(f'crawl_dropoff, no sitemap for:{bucket_url}')
+        return None
+    elif is_str(sitemap): #could be a sep if
         sm=sitemap_list(sitemap) #can now use sitemap2urn to get sitemap into same ID space
     else:
         sm=sitemap #if from prov2sitemap
     #print(f'sitemap:{sm}')
     sml=len(sm)
-    if sitemap2urn:
+    if sitemap2urn: #was able to get PROV..
       # dropoff,lose_s2s=drop1mapping(sm,sitemap2urn) #only call in variant above where code below goes away
         #print(f'will get:{sml} urn2urn w/:{sitemap2urn}') #dbg
         #smu=list(map(lambda s: sitemap2urn[s], sm))
@@ -2115,9 +2126,9 @@ def tsc(sitemap=None,bucket_url=None,endpoint="https://graph.geocodes-dev.earthc
     if not bucket_url:
         global ci_url
         bucket_url = ci_url
-    if not sitemap:
-        #sitemap2urn, urn2sitemap, sitemap=prov2mappings(..)
-        sitemap=prov2sitemap(bucket_url) #this gives the list of them, which most fncs expect the sitemap_url
+   #if not sitemap: #moved into crawl_dropoff
+   #    #sitemap2urn, urn2sitemap, sitemap=prov2mappings(..)
+   #    sitemap=prov2sitemap(bucket_url) #this gives the list of them, which most fncs expect the sitemap_url
     if not sitemap:
         print("did not get sitemap from prov so go w/deflt")
         sitemap="http://geocodes.ddns.net/ec/test/sep/sitemap.xml"
