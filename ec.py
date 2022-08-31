@@ -1940,8 +1940,8 @@ def bucket_files3(url=None):
         url = ci_url
     fi=bucket_files(url)
     if not fi:
-        print(f'bucket_files 3,nothing for:{url}')
-        return None
+        print(f'bucket_files 3,nothings for:{url}')
+        return None, None, None, None
     s=collect_pre_(fi,"summoned")
     m=collect_pre_(fi,"milled")
     p=collect_pre_(fi,"prov")
@@ -1959,6 +1959,7 @@ def bucket_files3(url=None):
         return s,m,sitemap2urn,urn2sitemap
     else:
         #return s,m,p #mostly expect mappings below, &not prov
+        print(f'bucket_files3 no map so send Nones, for:{url}')
         return s,m, None, None
 
 #could also pass sitemap, in case used later from:
@@ -1967,6 +1968,9 @@ def bucket_files2diff(url,URNs=None):
     "list_diff_dropoff summoned milled, URNs"
     #summoned,milled=bucket_files2(url) #now have bucket_files3
     summoned,milled,sitemap2urn,urn2sitemap=bucket_files3(url) 
+    if not summoned:
+        print(f'bucket_files3 2diff, nones for bad:{url}') 
+        return None, None, None, None, None
     su=list(map(lambda f: file_base(path_leaf(f)),summoned))
     mu=list(map(lambda f: file_base(path_leaf(f)),milled))
     print(f'summoned-URNs:{su}')
@@ -2074,9 +2078,12 @@ def crawl_dropoff(sitemap,bucket_url,endpoint):
     if not sitemap: 
         print(f'crawl_dropoff, no sitemap for:{bucket_url}')
         return None
-    elif is_str(sitemap): #could be a sep if
+    #elif is_str(sitemap): #could be a sep if
+    if is_str(sitemap): 
+        print(f'using sitemap str:{sitemap}')
         sm=sitemap_list(sitemap) #can now use sitemap2urn to get sitemap into same ID space
     else:
+        print(f'using sitemap list:{sitemap}')
         sm=sitemap #if from prov2sitemap
     #print(f'sitemap:{sm}')
     sml=len(sm)
@@ -2109,6 +2116,9 @@ def spot_crawl_dropoff(sitemap,bucket_url,endpoint):
     "when have spot gold stnd, can also check on that"
     #dropoff,lose_s2m, lose_m2u = crawl_dropoff(sitemap,bucket_url,endpoint)
     dropoff,lose_s2s,lose_s2m, lose_m2u = crawl_dropoff(sitemap,bucket_url,endpoint)
+    if not lose_s2m:
+        print(f'spot_ crawl_dropoff, none4lose, bad:{bucket_url}')
+        return None, None, None, None, None, None
     s_check=list(map(check_urn_jsonld,lose_s2m))
     m_check=list(map(check_urn_rdf,lose_m2u))
     #return dropoff,lose_s2m, s_check, lose_m2u, m_check 
