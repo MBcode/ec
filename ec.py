@@ -2062,6 +2062,9 @@ def crawl_dropoff_(sitemap,bucket_url,endpoint):
 def is_str(v):
     return type(v) is str
 
+def is_list(v):
+    return type(v) is list
+
 #should be setup w/o sitemap, to get it from PROV
 
 def crawl_dropoff(sitemap,bucket_url,endpoint):
@@ -2116,7 +2119,7 @@ def spot_crawl_dropoff(sitemap,bucket_url,endpoint):
     "when have spot gold stnd, can also check on that"
     #dropoff,lose_s2m, lose_m2u = crawl_dropoff(sitemap,bucket_url,endpoint)
     dropoff,lose_s2s,lose_s2m, lose_m2u = crawl_dropoff(sitemap,bucket_url,endpoint)
-    if not lose_s2m:
+    if not is_list(lose_s2m): #empty list would trip this off
         print(f'spot_ crawl_dropoff, none4lose, bad:{bucket_url}')
         return None, None, None, None, None, None
     s_check=list(map(check_urn_jsonld,lose_s2m))
@@ -2136,9 +2139,9 @@ def tsc(sitemap=None,bucket_url=None,endpoint="https://graph.geocodes-dev.earthc
     if not bucket_url:
         global ci_url
         bucket_url = ci_url
-   #if not sitemap: #moved into crawl_dropoff
-   #    #sitemap2urn, urn2sitemap, sitemap=prov2mappings(..)
-   #    sitemap=prov2sitemap(bucket_url) #this gives the list of them, which most fncs expect the sitemap_url
+    if not sitemap: #moved into crawl_dropoff, keep here/in case
+        #sitemap2urn, urn2sitemap, sitemap=prov2mappings(..)
+        sitemap=prov2sitemap(bucket_url) #this gives the list of them, which most fncs expect the sitemap_url
     if not sitemap:
         print("did not get sitemap from prov so go w/deflt")
         sitemap="http://geocodes.ddns.net/ec/test/sep/sitemap.xml"
