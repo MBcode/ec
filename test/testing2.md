@@ -22,7 +22,7 @@ Though would like it if gleaner/nabu could be run w/o having to touch so many pl
 | ---------- |-----------------------------------------------------------------------|
 | config name | name of config directory from glcon                                   |
 | org        | short name or repo                                                    |
-| sitemap | url of sitemap                                                        |
+| sitemap | url of sitemap, but can parse this out of PROV as well                      |
 | LD-cache base | base of s3 url |
 |  bucket | name of bucket |
 | graph base | base url of graph endpoint |
