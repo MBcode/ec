@@ -40,7 +40,8 @@ def os_system(cs):
 def add2slack(s):
     #cs='source ~/mb/.ssh/.ck'
     #os.system(cs)
-    key=os.getenv("nagioslack") #make sure works for su/crontab too
+    #key=os.getenv("nagioslack") #make sure works for su/crontab too
+    key=os.getenv("ec_tech_slack") #make sure works for su/crontab too
     #change to requests, and use getenv, if I actually use this part
     if key:
         add2log(f'try:{s}')
@@ -50,7 +51,8 @@ def add2slack(s):
         rs=requests.post(f'https://hooks.slack.com/services/{key}', json={"text": f'"{s}"'})
         sc=rs.status_code
         add2log(f'get:{sc}')
-        os_system(cs)
+        #print(f'skip:{cs}')
+        #os_system(cs) #no longer needed
         add2log(s)
     else:
         print("no key for logging")
@@ -108,6 +110,7 @@ def handler(signum, frame):
     raise Exception("norway query > 35 sec")
 
 def try_query_time(local=None):
+    "not used"
     import signal
     #signal.alarm(35)
     signal.alarm(35) #for testing
@@ -125,6 +128,7 @@ def try_query_time(local=None):
 #try_query_time(True) #use local version w/diff endpoint for now
 
 def query_timeout(local=None):
+    "using this one"
     from func_timeout import func_timeout, FunctionTimedOut
     try:
         #elapse=get_query_time(local)
