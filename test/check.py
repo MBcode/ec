@@ -41,7 +41,8 @@ def add2slack(s):
     #cs='source ~/mb/.ssh/.ck'
     #os.system(cs)
     #key=os.getenv("nagioslack") #make sure works for su/crontab too
-    key=os.getenv("ec_tech_slack") #make sure works for su/crontab too
+    #key=os.getenv("ec_tech_slack") #make sure works for su/crontab too
+    key=os.getenv("ec_prod_slack") #make sure works for su/crontab too
     #change to requests, and use getenv, if I actually use this part
     if key:
         add2log(f'try:{s}')
