@@ -2065,7 +2065,27 @@ def is_str(v):
 def is_list(v):
     return type(v) is list
 
-#should be setup w/o sitemap, to get it from PROV
+#should be setup w/o sitemap, to get it from PROV ;no bc won't necc have mapping for something that didn't parse
+
+#Will want to send in sitemap(url) and compare w/that gleaned from prov, so whatever prov didn't get was is a url to be checked
+def sitemap_dropoff(sitemap_url=None,bucket_url=None): #bucket to get prov's version
+    "figure out which sitemap URLs that need checking"
+    if sitemap_url:
+        sm=sitemap_list(sitemap_url) #can now use sitemap2urn to get sitemap into same ID space
+    else:
+        print(f'sitemap_dropoff no sitemap_url:{sitemap_url}')
+        sm=[]
+    if bucket_url:
+        sitemap_l=prov2sitemap(bucket_url) #this gives the list of them, which most fncs expect the sitemap_url
+    else:
+        print(f'sitemap_dropoff no bucket_url:{bucket_url}')
+        sitemap_l=[]
+    lose_s2s=list_diff_dropoff(sitemap_l,sm) #check_sm_urls
+    sml=len(sm)
+    lsl=len(lose_s2s) #should= sml- ml from above
+    dropoff1=f'sitemap:{sml}-{lsl}:{lose_s2s}'  
+    print(f'use this dropoff1:{dropoff1}')
+    return sitemap_l, sm, dropoff1
 
 def crawl_dropoff(sitemap,bucket_url,endpoint):
     "show counts at each stage, and URN diffs when can"
@@ -2139,9 +2159,11 @@ def tsc(sitemap=None,bucket_url=None,endpoint="https://graph.geocodes-dev.earthc
     if not bucket_url:
         global ci_url
         bucket_url = ci_url
+    sitemap_l, sm, dropoff1 = sitemap_dropoff(sitemap,bucket_url) #will still get sitemap_l if no sitemap url given
     if not sitemap: #moved into crawl_dropoff, keep here/in case
-        #sitemap2urn, urn2sitemap, sitemap=prov2mappings(..)
-        sitemap=prov2sitemap(bucket_url) #this gives the list of them, which most fncs expect the sitemap_url
+        ##sitemap2urn, urn2sitemap, sitemap=prov2mappings(..)
+        #sitemap=prov2sitemap(bucket_url) #this gives the list of them, which most fncs expect the sitemap_url
+        sitemap=sitemap_l
     if not sitemap:
         print("did not get sitemap from prov so go w/deflt")
         sitemap="http://geocodes.ddns.net/ec/test/sep/sitemap.xml"
