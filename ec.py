@@ -1988,12 +1988,15 @@ def bucket_files2diff(url,URNs=None):
     if URNs:
         ul=len(URNs)
         dmu=ml-ul
+        #print(f'=Summoned-count:{sl}, Error count:{dsm}, missing:{lose_s2s}') #below
+        print(f'=Milled-count:{ml}, Error count:{dmu}, missing:{lose_s2m}')
         #print(f'expected-URNs:{URNs}')
         print(f'endpoint-URNs:{URNs}')
         #dropoff=f's:{sl}/m:{ml}/u:{ul} diff:{dmu}'
         dropoff=f'summoned:{sl}-{dsm}=>milled:{ml}-{dmu}=>graph:{ul}'
         print(dropoff)
         lose_m2u=list_diff_dropoff(mu,URNs) 
+        print(f'=Graph-count:{ul}, Error count:{dmu}, missing:{lose_m2u}')
         #return lose_s2m, lose_m2u
         #return dropoff,lose_s2m, lose_m2u
         #return dropoff,lose_s2m, lose_m2u , sitemap2urn
@@ -2038,6 +2041,7 @@ def drop1mapping(sm,sitemap2urn,su):
     ##lose_s2m=list_diff_dropoff(su,mu), from above
     #dropoff=f'sitemap:{sml} =>{dropoff2}'  #pull sl, to calc dss=sml-sl
     #dropoff=f'sitemap:{sml}-{lsl}:{lose_s2s} =>{dropoff2}'  
+    print(f'=Summoned-count:{sl}, Error count:{ls1}, missing:{lose_s2s}')
     dropoff=f'sitemap:{sml}-{lsl}:{lose_s2s} =>'  
     #dropoff=f'sitemap:{sml}-{dss}=>{dropoff2}' #can't get lose_s2s w/o PROV sitemap URLs to UUID mapping  
     #return dropoff,lose_s2m, lose_m2u
@@ -2130,7 +2134,8 @@ def crawl_dropoff(sitemap,bucket_url,endpoint):
         print(f'lose_s2s:{lose_s2s}') #will need to map this back to the sitemap url ;if it was in prov
         ##lose_s2m=list_diff_dropoff(su,mu), from above
         #dropoff=f'sitemap:{sml} =>{dropoff2}'  #pull sl, to calc dss=sml-sl
-        print('sitemap-count:{sml}, Error count:{ls1}, missing:{loose_s2s}')
+        #print(f'=Sitemap-count:{sml}, Error count:{ls1}, missing:{loose_s2s}') #dropoff should be in the next one
+        print(f'=Sitemap-count:{sml}') #dropoff should be in the next one
         dropoff=f'sitemap:{sml}-{lsl}:{lose_s2s} =>{dropoff2}'  
         #dropoff=f'sitemap:{sml}-{dss}=>{dropoff2}' #can't get lose_s2s w/o PROV sitemap URLs to UUID mapping  
         #return dropoff,lose_s2m, lose_m2u
