@@ -19,6 +19,12 @@ def local():
     #put in a binder version of sparql_nb template, for now
     local=laptop()
 
+def now():
+    from datetime import datetime
+    now = datetime.now()
+    dt_string = now.strftime("%Y/%m/%d %H:%M:%S")
+    return dt_string
+
 #pagemil parameterized colab/gist can get this code via:
 #with httpimport.github_repo('MBcode', 'ec'):   
 #  import ec
@@ -2124,6 +2130,7 @@ def crawl_dropoff(sitemap,bucket_url,endpoint):
         print(f'lose_s2s:{lose_s2s}') #will need to map this back to the sitemap url ;if it was in prov
         ##lose_s2m=list_diff_dropoff(su,mu), from above
         #dropoff=f'sitemap:{sml} =>{dropoff2}'  #pull sl, to calc dss=sml-sl
+        print('sitemap-count:{sml}, Error count:{ls1}, missing:{loose_s2s}')
         dropoff=f'sitemap:{sml}-{lsl}:{lose_s2s} =>{dropoff2}'  
         #dropoff=f'sitemap:{sml}-{dss}=>{dropoff2}' #can't get lose_s2s w/o PROV sitemap URLs to UUID mapping  
         #return dropoff,lose_s2m, lose_m2u
@@ -2169,13 +2176,17 @@ def tsc(sitemap=None,bucket_url=None,endpoint="https://graph.geocodes-dev.earthc
         sitemap="http://geocodes.ddns.net/ec/test/sep/sitemap.xml"
     return spot_crawl_dropoff(sitemap,bucket_url,endpoint)
 
-def tsc2_(sitemap2="http://geocodes.ddns.net/ec/test/sitemap.xml",bucket_url2=None,endpoint2=None):
+def tsc2__(sitemap2="http://geocodes.ddns.net/ec/test/sitemap.xml",bucket_url2=None,endpoint2=None):
     "same test but send in sitemap vs get it from prov"
     tsc(sitemap=sitemap2,bucket_url=bucket_url2,endpoint=endpoint2)
 
-def tsc2(bucket_url=None,endpoint2="https://graph.geocodes-dev.earthcube.org/blazegraph/namespace/citesting2/sparql"):
+def tsc2_(bucket_url=None,endpoint2="https://graph.geocodes-dev.earthcube.org/blazegraph/namespace/citesting2/sparql"):
     "for mb_ci setup which uses unused citesting2 bucket&endpoint"
     if not bucket_url:
         global ci_url2
         bucket_url = ci_url2
     tsc(None,bucket_url,endpoint=endpoint2)
+
+def tsc2(sitemap=None,bucket_url=None,endpoint="https://graph.geocodes-dev.earthcube.org/blazegraph/namespace/citesting2/sparql"):
+    "as is being used in spot_test/report on geocodes-dev now" #still need to deal w/milled dissapearing in a few places
+    return tsc(sitemap,bucket_url,endpoint)
