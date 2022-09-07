@@ -48,16 +48,22 @@ def r2():
     report2=ec.tsc(None,None,"https://graph.geocodes-dev.earthcube.org/blazegraph/namespace/citesting2/sparql")
     print(report2) 
 
-def all_new():
+def all_new(new=None):
+    import time
+    start_sec=time.time()
     start=ec.now()
     print(f'Start:{start}')
-    lb()
-    new_run()
+    if new:
+        lb()
+        new_run()
     lb()
     r1()
     lb()
     r2()
+    end_sec=time.time()
+    elapse_sec=end_sec - start_sec
     end=ec.now()
-    print(f'End:{end}') #get w/elapse Runtime, instead
+    #print(f'End:{end}') #get w/elapse Runtime, instead
+    print(f'Elapse:{elapse_sec} seconds') 
 
-#all_new()
+all_new()
