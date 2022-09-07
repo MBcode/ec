@@ -2125,7 +2125,7 @@ def crawl_dropoff(sitemap,bucket_url,endpoint):
     #elif is_str(sitemap): #could be a sep if
     if is_str(sitemap): 
         if dbg:
-            print(f'using sitemap str:{sitemap}')
+            print(f'=using sitemap str:{sitemap}')
         else:
             print(f'using sitemap str')
         sm=sitemap_list(sitemap) #can now use sitemap2urn to get sitemap into same ID space
@@ -2194,6 +2194,8 @@ def tsc(sitemap=None,bucket_url=None,endpoint="https://graph.geocodes-dev.earthc
     if not bucket_url:
         global ci_url
         bucket_url = ci_url
+    print(f'=s3_endpoint:{bucket_url}')
+    print(f'=graph_endpoint:{endpoint}')
     sitemap_l, sm, dropoff1 = sitemap_dropoff(sitemap,bucket_url) #will still get sitemap_l if no sitemap url given
     if not sitemap: #moved into crawl_dropoff, keep here/in case
         ##sitemap2urn, urn2sitemap, sitemap=prov2mappings(..)
@@ -2202,12 +2204,13 @@ def tsc(sitemap=None,bucket_url=None,endpoint="https://graph.geocodes-dev.earthc
     if not sitemap:
         print("did not get sitemap from prov so go w/deflt")
         sitemap="http://geocodes.ddns.net/ec/test/sep/sitemap.xml"
+    print(f'=sitemap:{sitemap}')
     return spot_crawl_dropoff(sitemap,bucket_url,endpoint)
 
 def tsc2__(sitemap2="http://geocodes.ddns.net/ec/test/sitemap.xml",bucket_url2=None,endpoint2=None):
     "same test but send in sitemap vs get it from prov"
     tsc(sitemap=sitemap2,bucket_url=bucket_url2,endpoint=endpoint2)
-
+#old get rid of
 def tsc2_(bucket_url=None,endpoint2="https://graph.geocodes-dev.earthcube.org/blazegraph/namespace/citesting2/sparql"):
     "for mb_ci setup which uses unused citesting2 bucket&endpoint"
     if not bucket_url:
@@ -2216,5 +2219,11 @@ def tsc2_(bucket_url=None,endpoint2="https://graph.geocodes-dev.earthcube.org/bl
     tsc(None,bucket_url,endpoint=endpoint2)
 
 def tsc2(sitemap=None,bucket_url=None,endpoint="https://graph.geocodes-dev.earthcube.org/blazegraph/namespace/citesting2/sparql"):
+    "as is being used in spot_test/report on geocodes-dev now" #still need to deal w/milled dissapearing in a few places
+    return tsc(sitemap,bucket_url,endpoint)
+
+#def tsc3(sitemap="http://geocodes.ddns.net/ec/test/sep/sitemap.xml",bucket_url=None,
+def tsc3(sitemap="https://raw.githubusercontent.com/MBcode/ec/master/test/sitemap.xml",bucket_url=None,
+        endpoint="https://graph.geocodes-dev.earthcube.org/blazegraph/namespace/citesting2/sparql"):
     "as is being used in spot_test/report on geocodes-dev now" #still need to deal w/milled dissapearing in a few places
     return tsc(sitemap,bucket_url,endpoint)
