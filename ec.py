@@ -2025,7 +2025,7 @@ def get_graphs_tails(endpoint):
 
 #break out all the code in crawl_dropoff that deals w/sitemap to summoned w/mapping
 #def drop1mapping(sm,sitemap2urn):
-def drop1mapping(sm,sitemap2urn,su):
+def drop1mapping(sm,sitemap2urn,su): #want to but not used yet; still in crawl_dropoff
     "break out all the code in crawl_dropoff that deals w/sitemap to summoned w/mapping"
     sml=len(sm)
     #print(f'will get:{sml} urn2urn w/:{sitemap2urn}') #dbg
@@ -2041,7 +2041,7 @@ def drop1mapping(sm,sitemap2urn,su):
     ##lose_s2m=list_diff_dropoff(su,mu), from above
     #dropoff=f'sitemap:{sml} =>{dropoff2}'  #pull sl, to calc dss=sml-sl
     #dropoff=f'sitemap:{sml}-{lsl}:{lose_s2s} =>{dropoff2}'  
-    print(f'=Summoned-count:{sl}, Error count:{ls1}, missing:{lose_s2s}')
+  # print(f'=Summoned-count:{sl}, Error count:{ls1}, missing:{lose_s2s}')
     dropoff=f'sitemap:{sml}-{lsl}:{lose_s2s} =>'  
     #dropoff=f'sitemap:{sml}-{dss}=>{dropoff2}' #can't get lose_s2s w/o PROV sitemap URLs to UUID mapping  
     #return dropoff,lose_s2m, lose_m2u
@@ -2136,6 +2136,8 @@ def crawl_dropoff(sitemap,bucket_url,endpoint):
         #dropoff=f'sitemap:{sml} =>{dropoff2}'  #pull sl, to calc dss=sml-sl
         #print(f'=Sitemap-count:{sml}, Error count:{ls1}, missing:{loose_s2s}') #dropoff should be in the next one
         print(f'=Sitemap-count:{sml}') #dropoff should be in the next one
+        sl=len(smu) #url we get from prov are once it gets run into summoned
+        print(f'=Summoned-count:{sl}, Error count:{lsl}, missing:{lose_s2s}')
         dropoff=f'sitemap:{sml}-{lsl}:{lose_s2s} =>{dropoff2}'  
         #dropoff=f'sitemap:{sml}-{dss}=>{dropoff2}' #can't get lose_s2s w/o PROV sitemap URLs to UUID mapping  
         #return dropoff,lose_s2m, lose_m2u
