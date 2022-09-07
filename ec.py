@@ -2,6 +2,7 @@
 # some on (new)direction(s) at: https://mbcode.github.io/ec
 #=this is also at gitlab now, but won't get autoloaded until in github or allow for gitlab_repo
  #but for cutting edge can just get the file from the test server, so can use: get_ec()
+dbg=None
 rdf_inited,rdflib_inited,sparql_inited=None,None,None
 endpoint=None
 testing_endpoint="http://ideational.ddns.net:3030/geocodes_demo_datasets/sparql"
@@ -216,7 +217,8 @@ def read_sd_(fn):
 def read_sd(fn):
     "read_file space delimited"
     fn_=fn.replace("urn:","")
-    print(f'read_sd:{fn_}')
+    if dbg:
+        print(f'read_sd:{fn_}')
     #return read_file(fn_,".txt")
     import pandas as pd
     try:
@@ -237,7 +239,8 @@ def read_json(urn):
     import urllib.request
     import json
     url=urn.replace("urn:","")
-    print(f'read_json:{url}')
+    if dbg:
+        print(f'read_json:{url}')
     with urllib.request.urlopen(url) as response:
         #try:
         res = response.read()
@@ -1862,7 +1865,8 @@ def prov2mappings(urls): #use urls from p above
         sitemap2urn[key]=value
         urn2sitemap[value]=key
     sitemap=list(sitemap2urn.keys())
-    print(f'prov-sitemap:{sitemap}')
+    if dbg:
+        print(f'prov-sitemap:{sitemap}')
     #return sitemap2urn, urn2sitemap
     return sitemap2urn, urn2sitemap, sitemap
 
@@ -1979,8 +1983,9 @@ def bucket_files2diff(url,URNs=None):
         return None, None, None, None, None
     su=list(map(lambda f: file_base(path_leaf(f)),summoned))
     mu=list(map(lambda f: file_base(path_leaf(f)),milled))
-    print(f'summoned-URNs:{su}')
-    print(f'milled-URNs:{mu}')
+    if dbg:
+        print(f'summoned-URNs:{su}')
+        print(f'milled-URNs:{mu}')
     sl=len(su)
     ml=len(mu)
     dsm=sl-ml #diff summoned&milled= datasets lost in this step
@@ -1991,10 +1996,12 @@ def bucket_files2diff(url,URNs=None):
         #print(f'=Summoned-count:{sl}, Error count:{dsm}, missing:{lose_s2s}') #below
         print(f'=Milled-count:{ml}, Error count:{dmu}, missing:{lose_s2m}')
         #print(f'expected-URNs:{URNs}')
-        print(f'endpoint-URNs:{URNs}')
+        if dbg:
+            print(f'endpoint-URNs:{URNs}')
         #dropoff=f's:{sl}/m:{ml}/u:{ul} diff:{dmu}'
         dropoff=f'summoned:{sl}-{dsm}=>milled:{ml}-{dmu}=>graph:{ul}'
-        print(dropoff)
+        if dbg:
+            print(dropoff)
         lose_m2u=list_diff_dropoff(mu,URNs) 
         print(f'=Graph-count:{ul}, Error count:{dmu}, missing:{lose_m2u}')
         #return lose_s2m, lose_m2u
@@ -2004,7 +2011,8 @@ def bucket_files2diff(url,URNs=None):
     else:
         #dropoff=f's:{sl}/m:{ml} diff:{dsm}')
         dropoff=f'summoned:{sl}-{dsm}=>milled:{ml}'
-        print(dropoff)
+        if dbg:
+            print(dropoff)
         #return lose_s2m
         #return dropoff,lose_s2m
         return dropoff,lose_s2m, None, None, None
@@ -2031,10 +2039,12 @@ def drop1mapping(sm,sitemap2urn,su): #want to but not used yet; still in crawl_d
     #print(f'will get:{sml} urn2urn w/:{sitemap2urn}') #dbg
     #smu=list(map(lambda s: sitemap2urn[s], sm))
     smu=list(map(lambda s: sitemap2urn.get(s), sm)) #used prov mapping to gen test sitemap
-    print(f'URN/UUIDs for sitemaps:{smu}')             #need to get same sitemap, &use map for cmp:
+    if dbg:
+        print(f'URN/UUIDs for sitemaps:{smu}')             #need to get same sitemap, &use map for cmp:
     #smu2=list(map(lambda s: s.split(':')[-1],smu))
     smu2=list(map(lambda s: s if not s else s.split(':')[-1],smu)) #=urn_tails(smu)
-    print(f'URN/UUIDs for sitemaps:{smu2}')             #need to get same sitemap, &use map for cmp:
+    if dbg:
+        print(f'URN/UUIDs for sitemaps:{smu2}')             #need to get same sitemap, &use map for cmp:
     lose_s2s=list_diff_dropoff(smu2,su) 
     lsl=len(lose_s2s) #should= sml- ml from above
     print(f'lose_s2s:{lose_s2s}') #will need to map this back to the sitemap url ;if it was in prov
@@ -2094,7 +2104,8 @@ def sitemap_dropoff(sitemap_url=None,bucket_url=None): #bucket to get prov's ver
     sml=len(sm)
     lsl=len(lose_s2s) #should= sml- ml from above
     dropoff1=f'sitemap:{sml}-{lsl}:{lose_s2s}'  
-    print(f'use this dropoff1:{dropoff1}')
+    if dbg:
+        print(f'use this dropoff1:{dropoff1}')
     return sitemap_l, sm, dropoff1
 
 def crawl_dropoff(sitemap,bucket_url,endpoint):
@@ -2113,10 +2124,17 @@ def crawl_dropoff(sitemap,bucket_url,endpoint):
         return None
     #elif is_str(sitemap): #could be a sep if
     if is_str(sitemap): 
-        print(f'using sitemap str:{sitemap}')
+        if dbg:
+            print(f'using sitemap str:{sitemap}')
+        else:
+            print(f'using sitemap str')
         sm=sitemap_list(sitemap) #can now use sitemap2urn to get sitemap into same ID space
     else:
-        print(f'using sitemap list:{sitemap}')
+        if dbg:
+            print(f'using sitemap list:{sitemap}')
+        else:
+            smul=len(sitemap)
+            print(f'using sitemap list:{smul}')
         sm=sitemap #if from prov2sitemap
     #print(f'sitemap:{sm}')
     sml=len(sm)
@@ -2125,13 +2143,16 @@ def crawl_dropoff(sitemap,bucket_url,endpoint):
         #print(f'will get:{sml} urn2urn w/:{sitemap2urn}') #dbg
         #smu=list(map(lambda s: sitemap2urn[s], sm))
         smu=list(map(lambda s: sitemap2urn.get(s), sm)) #used prov mapping to gen test sitemap
-        print(f'URN/UUIDs for sitemaps:{smu}')             #need to get same sitemap, &use map for cmp:
+        if dbg:
+            print(f'URN/UUIDs for sitemaps:{smu}')             #need to get same sitemap, &use map for cmp:
         #smu2=list(map(lambda s: s.split(':')[-1],smu))
         smu2=list(map(lambda s: s if not s else s.split(':')[-1],smu))
-        print(f'URN/UUIDs for sitemaps:{smu2}')             #need to get same sitemap, &use map for cmp:
+        if dbg:
+            print(f'URN/UUIDs for sitemaps:{smu2}')             #need to get same sitemap, &use map for cmp:
         lose_s2s=list_diff_dropoff(smu2,su) 
         lsl=len(lose_s2s) #should= sml- ml from above
-        print(f'lose_s2s:{lose_s2s}') #will need to map this back to the sitemap url ;if it was in prov
+        if dbg:
+            print(f'lose_s2s:{lose_s2s}') #will need to map this back to the sitemap url ;if it was in prov
         ##lose_s2m=list_diff_dropoff(su,mu), from above
         #dropoff=f'sitemap:{sml} =>{dropoff2}'  #pull sl, to calc dss=sml-sl
         #print(f'=Sitemap-count:{sml}, Error count:{ls1}, missing:{loose_s2s}') #dropoff should be in the next one
