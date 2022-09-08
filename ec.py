@@ -117,6 +117,13 @@ def path_leaf(path):
     head, tail = ntpath.split(path)
     return tail or ntpath.basename(head)
 
+def path_base_leaf(path):
+    import ntpath
+    head, tail = ntpath.split(path)
+    if not tail:
+        tail = ntpath.basename(head)
+    return head, tail
+
 def file_ext(fn):
     st=os.path.splitext(fn)
     add2log(f'fe:st={st}')
@@ -1913,6 +1920,29 @@ def bucket_files(url):
         print(f'no bucket xml for files:{url}')
         return None
 
+LD_cache_files=None
+LD_cache_types=None
+#output: {'milled/geocodes_demo_datasets': 25, 'orgs': 1, 'prov/geocodes_demo_datasets': 31, 'results/runX': 1, 'summoned/geocodes_demo_datasets': 25}
+#if folders where different, maybe layer that over for different buckets, someday
+def set_bucket_files(bucket=None):
+    "get+set LD_cache_ files array and types dict"
+    if not bucket:
+        global ci_url
+        bucket=ci_url
+    global LD_cache_files
+    global LD_cache_types
+    LD_cache_files=bucket_files(bucket)
+    LD_cache_types={}
+    for fn in LD_cache_files:
+        base,leaf = path_base_leaf(fn)
+        count=LD_cache_types.get(base)
+        if count:
+            count += 1
+        else:
+            count = 1
+        LD_cache_types[base] = count
+    return LD_cache_types
+
 def bucket_files2(url):
     "url to tuple of summoned+milled lists"
     fi=bucket_files(url)
@@ -2224,6 +2254,12 @@ def tsc2(sitemap=None,bucket_url=None,endpoint="https://graph.geocodes-dev.earth
 
 #def tsc3(sitemap="http://geocodes.ddns.net/ec/test/sep/sitemap.xml",bucket_url=None,
 def tsc3(sitemap="https://raw.githubusercontent.com/MBcode/ec/master/test/sitemap.xml",bucket_url=None,
+        endpoint="https://graph.geocodes-dev.earthcube.org/blazegraph/namespace/citesting2/sparql"):
+    "as is being used in spot_test/report on geocodes-dev now" #still need to deal w/milled dissapearing in a few places
+    return tsc(sitemap,bucket_url,endpoint)
+
+#this has the sitemap from the gSpreadsheet 'sources'
+def tsc4(sitemap="https://earthcube.github.io/GeoCODES-Metadata/metadata/Dataset/allgood/sitemap.xml",bucket_url=None,
         endpoint="https://graph.geocodes-dev.earthcube.org/blazegraph/namespace/citesting2/sparql"):
     "as is being used in spot_test/report on geocodes-dev now" #still need to deal w/milled dissapearing in a few places
     return tsc(sitemap,bucket_url,endpoint)
