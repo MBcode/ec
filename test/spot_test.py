@@ -6,22 +6,34 @@
 # from present compact return format: dropoff=f'sitemap:{sml}-{lsl}:{lose_s2s} =>{dropoff2}'
 cfg="mb_ci"
 import ec
+import logging
+import os
+
+logging.basicConfig(format='%(asctime)s | %(levelname)s : %(message)s', level=os.environ.get("LOGLEVEL", "INFO"), stream=sys.stdout)
+
+reportfile = logging.getLogger("reports")
+log = logging.getLogger()
+
 ec.local()
 def g_cmd(cmd):
     cs=f'./glcon {cmd} --cfgName {cfg}'
-    ec.os_system(cs)
+    log.debug( ec.os_system(cs) )
 
 def g_cfg_gen(cmd="config generate"):
+    log.info("calling cibfug generate")
     g_cmd(cmd)
 
 def gleaner(gcmd="batch"):
     cmd=f'gleaner {gcmd}'
+    log.info("calling gleaner batch")
     g_cmd(cmd)
 
 def gleaner_setup(gcmd="setup"):
+    log.info("calling gleaner setup")
     gleaner(gcmd)
 
 def nabu(gcmd="prefix"):
+    log.info("calling nabu prefix")
     cmd=f'nabu {gcmd}'
     g_cmd(cmd)
 
@@ -38,21 +50,21 @@ def new_run(new_cfg=None):
     nabu()
 
 def lb():
-    print("=================================================")
+    reportfile.info("=================================================")
 
 def r1():
     report=ec.tsc()
-    print(report) #archival, then cmp w/new run's endpoint
+    reportfile.info(report) #archival, then cmp w/new run's endpoint
 
 def r2():
     report2=ec.tsc(None,None,"https://graph.geocodes-dev.earthcube.org/blazegraph/namespace/citesting2/sparql")
-    print(report2) 
+    reportfile.info(report2)
 
 def all_new(new=None):
     import time
     start_sec=time.time()
     start=ec.now()
-    print(f'Start:{start}')
+    reportfile.info(f'Start:{start}')
     if new:
         lb()
         new_run()
@@ -64,6 +76,6 @@ def all_new(new=None):
     elapse_sec=end_sec - start_sec
     end=ec.now()
     #print(f'End:{end}') #get w/elapse Runtime, instead
-    print(f'Elapse:{elapse_sec} seconds') 
+    reportfile.info(f'Elapse:{elapse_sec} seconds')
 
 all_new()

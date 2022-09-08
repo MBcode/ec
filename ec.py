@@ -2,7 +2,16 @@
 # some on (new)direction(s) at: https://mbcode.github.io/ec
 #=this is also at gitlab now, but won't get autoloaded until in github or allow for gitlab_repo
  #but for cutting edge can just get the file from the test server, so can use: get_ec()
-dbg=None
+import logging, os, sys
+
+#logging.basicConfig(format='%(asctime)s | %(levelname)s : %(message)s', level=os.environ.get("LOGLEVEL", "INFO"), stream=sys.stdout)
+logging.basicConfig(format='%(levelname)s : %(message)s', level=os.environ.get("LOGLEVEL", "INFO"), stream=sys.stdout)
+
+
+log = logging.getLogger()
+
+#dbg=None
+
 rdf_inited,rdflib_inited,sparql_inited=None,None,None
 endpoint=None
 testing_endpoint="http://ideational.ddns.net:3030/geocodes_demo_datasets/sparql"
@@ -47,7 +56,7 @@ def ndtq(name=None,datasets=None,queries=None,tools=None):
     Q=json.loads(queries)
   else:
     ds = ipyparams.params['collection']
-    print(ds)
+    log.info(ds)
     dso = json.loads(ds)
     # if this cell fails the first run.
     #run a second time, and it works.
@@ -55,7 +64,7 @@ def ndtq(name=None,datasets=None,queries=None,tools=None):
     d=dso.get('datasets')
     t=dso.get('tools')
     Q=dso.get('queries')
-  print(f'n={n},d={d},q={Q},t={t}')
+  log.info(f'n={n},d={d},q={Q},t={t}')
   return n,d,t,Q
 
 #more loging
@@ -224,8 +233,7 @@ def read_sd_(fn):
 def read_sd(fn):
     "read_file space delimited"
     fn_=fn.replace("urn:","")
-    if dbg:
-        print(f'read_sd:{fn_}')
+    log.debug(f'read_sd:{fn_}')
     #return read_file(fn_,".txt")
     import pandas as pd
     try:
@@ -246,8 +254,7 @@ def read_json(urn):
     import urllib.request
     import json
     url=urn.replace("urn:","")
-    if dbg:
-        print(f'read_json:{url}')
+    log.debug(f'read_json:{url}')
     with urllib.request.urlopen(url) as response:
         #try:
         res = response.read()
@@ -281,9 +288,9 @@ def get_json_eq(fn1,fn2):
     d1=read_json(fn1)
     d2=read_json(fn2)
     if not d1:
-        print("d1 missing")
+        log.info("d1 missing")
     if not d2:
-        print("d2 missing")
+        log.info("d2 missing")
     return d1 == d2
 
 def get_json_diff(fn1,fn2):
@@ -301,9 +308,9 @@ def list_diff_not_in(li1,li2):
 #['c']
 def list_diff_dropoff(li1,li2):
     ldiff= list_diff_not_in(li1,li2)
-    #print(f'li1={li1}')
-    #print(f'li2={li2}')
-    #print(f'ldiff={ldiff}')
+    #log.info(f'li1={li1}')
+    #log.info(f'li2={li2}')
+    #log.info(f'ldiff={ldiff}')
     return ldiff
     #return list_diff_not_in(li1,li2)
 
@@ -316,10 +323,10 @@ def find_urn_diffs(endpoint="http://ideational.ddns.net:3030/geocodes_demo_datas
         gold="https://raw.githubusercontent.com/earthcube/GeoCODES-Metadata/mb_sample/metadata/Dataset/standard/milled/geocodes_demo_datasets/URNs.txt"):
        #gold="https://raw.githubusercontent.com/MBcode/ec/master/test/standard/milled/geocodes_demo_datasets/URNs.txt"):
     "get_graphs_list and saved gold-list, and diff" #~do a set diff
-    print("in find_urn_diffs,read_sd gold")
+    log.info("in find_urn_diffs,read_sd gold")
     #df_gold=read_sd(gold)
     df_gold=read_file(gold,".txt")
-    print(f'gold:{df_gold}')
+    log.info(f'gold:{df_gold}')
     #get_graphs w/convience gives list
     #return df_diff(df_gold, )
     global testing_endpoint
@@ -329,12 +336,12 @@ def find_urn_diffs(endpoint="http://ideational.ddns.net:3030/geocodes_demo_datas
         test_endpoint=testing_endpoint
     #test_list=get_graphs_list(test_endpoint)
     test_list=get_graphs_tails(test_endpoint)
-    print(f'test:{test_list}')
+    log.info(f'test:{test_list}')
     gold_list=df_gold['g'].tolist()
-    print(f'gold:{gold_list}')
+    log.info(f'gold:{gold_list}')
     tl=len(test_list)
     tg=len(gold_list)
-    print(f'got:{tl},expected:{tg}') #consider also listing sitmap counts
+    log.info(f'got:{tl},expected:{tg}') #consider also listing sitmap counts
     #return list_diff(test_list,gold_list)
     return list_diff_not_in(gold_list,test_list)
 
@@ -369,7 +376,7 @@ def check_urn_jsonld(urn,
     #rm urn: if necessary
     gold_rdf=f'{gold}{urn}.jsonld'
     test_rdf=f'{test_bucket}{urn}.jsonld'
-    print(f'check_urn_jsonld:{urn}')
+    log.info(f'check_urn_jsonld:{urn}')
     #return diff_sd(gold_rdf,test_rdf)
     #return diff_flat_json(gold_rdf,test_rdf)
     return get_json_eq(gold_rdf,test_rdf) #if not= then use dict-diff lib to show the diffs
@@ -383,11 +390,11 @@ def check_urn_ld_cache(urn,bucket="citesting",test_set="geocodes_demo_datasets",
     else:
         test_bucket=bucket
     test_rdf=f'{test_base}{test_bucket}/milled/{test_set}/' #{urn}.rdf added later
-    print(f'new rdf:{test_rdf}')
+    log.info(f'new rdf:{test_rdf}')
     #rdf_check= list(check_urn_rdf(urn,test_rdf)) #bool not iterable
     rdf_check= check_urn_rdf(urn,test_rdf)
     test_jsonld=f'{test_base}{test_bucket}/summoned/{test_set}/' #{urn}.jsonld added later
-    print(f'new jsonld:{test_jsonld}')
+    log.info(f'new jsonld:{test_jsonld}')
     jsonld_check= check_urn_jsonld(urn,test_jsonld) 
     #return rdf_check.append(jsonld_check) #mapping over these, they would come back in pairs
     return rdf_check, jsonld_check 
@@ -398,7 +405,7 @@ def get_urn_diffs(endpoint="http://ideational.ddns.net:3030/geocodes_demo_datase
        #gold="https://raw.githubusercontent.com/MBcode/ec/master/test/standard/milled/geocodes_demo_datasets/"):
     "see which URN/graphs are in endpoint, and compare with expected"
     gold_URNs= gold + "URNs.txt"
-    print(f'find_urn_diffs:{endpoint},{gold_URNs}')
+    log.info(f'find_urn_diffs:{endpoint},{gold_URNs}')
     dfu=find_urn_diffs(endpoint,gold_URNs)
     return dfu
 
@@ -420,30 +427,30 @@ def check_urn_diffs_(endpoint="http://ideational.ddns.net:3030/geocodes_demo_dat
        #gold="https://raw.githubusercontent.com/MBcode/ec/master/test/standard/milled/geocodes_demo_datasets/"):
     "find_urn_diffs and for each missing check_urn_rdf|jsonld" #get_graphs diff w/expected URNs, then check each missing
     gold_URNs= gold + "URNs.txt"
-    print(f'find_urn_diffs:{endpoint},{gold_URNs}')
+    log.info(f'find_urn_diffs:{endpoint},{gold_URNs}')
     dfu=find_urn_diffs(endpoint,gold_URNs)
     #dfu=find_urn_diffs(endpoint) #use it's default for a bit, bc read_sd prob w/github raw right now ;change2 read_file
     global testing_bucket
     if(testing_bucket != "citesting"): #to change test_bucket ...
         use_test_bucket=test_bucket.replace("citesting",testing_bucket)
-        print(f'need2setup2pass changed test_bucket:{use_test_bucket}')
+        log.info(f'need2setup2pass changed test_bucket:{use_test_bucket}')
         #maybe have test_ url made of test_base + bucket + (summonde4.jsonld,milled4.rdf) + test_set
         test_base="https://oss.geocodes-dev.earthcube.org/"
         test_set="geocodes_demo_datasets" #could set this as a global as well
         test_rdf=f'{test_base}{use_test_bucket}/milled/{test_set}/'
-        print(f'new rdf:{test_rdf}')
+        log.info(f'new rdf:{test_rdf}')
         test_jsonld=f'{test_base}{use_test_bucket}/summoned/{test_set}/'
-        print(f'new jsonld:{test_jsonld}')
+        log.info(f'new jsonld:{test_jsonld}')
         #rdf_checks= list(map(lambda urn: check_urn_rdf(urn,endpoint,rdf_checks),dfu))
         rdf_checks= list(map(lambda urn: check_urn_rdf(urn,test_rdf),dfu))
         #jsonld_checks= list(map(lambda urn: check_urn_jsonld(urn,endpoint,jsonld_checks),dfu)) 
         jsonld_checks= list(map(lambda urn: check_urn_jsonld(urn,test_jsonld),dfu)) 
     else: # the other way   #got similar output w/missing bucket,so needs more test situations/closer look
         #will need lambdas if want to pass any change to the defaults on
-        print(f'check_urn_rdf of:{dfu}')
+        log.info(f'check_urn_rdf of:{dfu}')
         rdf_checks= list(map(check_urn_rdf,dfu))
         jsonld_checks= list(map(check_urn_jsonld,dfu)) #could do after, only if a problem, or just check them all now
-        print(f'get:{rdf_checks}')
+        log.info(f'get:{rdf_checks}')
     return rdf_checks.append(jsonld_checks) 
     #return rdf_checks #test the check fncs w/any (array of) URNs that exist
 
@@ -472,12 +479,12 @@ def repos2counts(repos):
     for repo_num in repo_fnum_list:
         repo_num_list=repo_num.split(' ')
         if len(repo_num_list)>1:
-            #print(repo_num_list)
+            #log.info(repo_num_list)
             repo_=repo_num_list[0]
             fnum=repo_num_list[1]
             rl=repo_.split('/')
             if len(rl)>2:
-                #print(rl)
+                #log.info(rl)
                 rn=rl[2]
                 repo_ld_counts[rn]=fnum
     #for now on final-counts: #next from graph.csv and run system cmd on it,then strip extra spaces
@@ -487,7 +494,7 @@ def repos2counts(repos):
     for  rl2 in rl2_list:
         num_repo=rl2.split(' ')
         if len(num_repo)>1:
-            #print(num_repo)
+            #log.debug(num_repo)
             count=num_repo[0]
             repo=num_repo[1].lstrip('milled:').lstrip('summoned:') #in case either
             final_counts[repo]=count
@@ -630,9 +637,9 @@ def url2jsonLD(url):
     if md: #still geting as if all MetaData, so select out json-ld
         #ld = md.get('json-ld')
         lda = md.get('json-ld')
-        #print(f'lda={lda}')
+        #log.debug(f'lda={lda}')
         ld=lda[0] #ret first here
-        #print(f'ld={ld}')
+        #log.debug(f'ld={ld}')
     else: 
         ld =""
     add2log(ld)
@@ -659,21 +666,21 @@ def fn2jsonld(fn, base_url=None):
     import re
 #   if not base_url:
 #       base_url = os.getenv('BASE_URL')
-    #print(base_url)
-    #print(fn)
+    #log.debug(base_url)
+    #log.debug(fn)
 #    url= base_url + fn
     url=fn
-    #print(url)
+    #log.debug(url)
     #ld=url2jsonLD(url)
     md=url2jsonLD(url)
     if md:
         ld = md.get('json-ld')
     else: 
         ld =""
-    #print(len(ld))
+    #log.debug(len(ld))
     cfn=re.sub(r'(\n\s*)+\n+', '\n', fn.strip())
     fn = cfn + ".jsonld"
-    #print(fn)
+    #log.debug(fn)
     if ld:
         with open(fn  ,'w') as f:
             #pp.pprint(ld,f)
@@ -747,7 +754,7 @@ def append2everyline(fn,aptxt,fn2=None):
     with open(fn2, "w") as fp:
         for line in lines:
             line= line.strip('.') #get rid of this from triples
-            print(line + " " + aptxt, file=fp)
+            log.info(line + " " + aptxt, file=fp)
     return fn2
 
 def url2nq(url):
@@ -769,7 +776,7 @@ def setup_sitemap(): #do this by hand for now
 
 def sitemap_tree(url): #will depricate
     "len .all_pages for count"
-    #print("assume: setup_sitemap()")
+    #log.debug("assume: setup_sitemap()")
     from usp.tree import sitemap_tree_for_homepage
     tree = sitemap_tree_for_homepage(url)
     return tree
@@ -813,7 +820,7 @@ def sitemaps_count(sitemaps):
     sitemap_count = {}
     for sitemap in sitemaps:
         count=sitemap_len(sitemap)
-        print(f'{sitemap} has {count} records')
+        log.info(f'{sitemap} has {count} records')
         sitemap_count[sitemap]=count
     return sitemap_count
 
@@ -825,7 +832,7 @@ def crawl_sitemap(url):
     for page in pages:
         url2nq(page)
         #url2nq(page.url)
-        #print(f'url2nq({page.url})') #dbg
+        #log.debug(f'url2nq({page.url})') #dbg
 
 #if already crawled and just need to convert
 
@@ -835,7 +842,7 @@ def nt2nq(fn,dir=""): #use this dflt in ec.py in case no ./nt
     import os
     base_url= os.getenv('BASE_URL')
     if (not base_url):
-        print("for now, need to: setenv BASE_URL ...")
+        log.info("for now, need to: setenv BASE_URL ...")
     fnb=file_base(fn)
     #url=base_url + fnb.lstrip("nt") + "/" #hard coded 'dir'
     url=base_url + fnb.lstrip(dir) + "/"
@@ -848,7 +855,7 @@ def all_nt2nq(dir):
     ntfiles = glob.glob(get)
     for fn in ntfiles:
         #nt2nq(fn)
-        print(nt2nq(fn))
+        log.info(nt2nq(fn))
 
 #https://stackoverflow.com/questions/39274216/visualize-an-rdflib-graph-in-python
 def rdflib_viz(url,ft=None): #or have it default to ntriples ;'turtle'
@@ -1105,7 +1112,7 @@ def rget(pp,fn=1):
     #r=sq_file(s1 + ":spatialCoverage/:geo/:box" + s2,dfn)
     pps=pp_l2s(pp)
     qs=s1 + pps + s2
-    print(qs)
+    log.info(qs)
     #add2log(f'rget:{qs}')
     add2log(f'rget:{qs},{fnt}')
     r=sq_file(qs,fnt)
@@ -1146,7 +1153,7 @@ def urn2accessURL(urn,fnt=None):
     "get access/content url from urn/it's .nt file"
     if not fnt:
         fnt=urn2fnt(urn) #should be same as f_nt
-    print(f'grep2obj:{fnt}')
+    log.info(f'grep2obj:{fnt}')
     return grep2obj('accessURL|contentUrl',fnt)
 #to iterate over this could have a getDatasetURLs &either give URNs or  ROWs&dfSPARQL
 def getDatasetURLs(IDs,dfS=None):
@@ -1230,7 +1237,7 @@ def diff_nt_g(fn1,fn2):
 
 def dump_nt_sorted(g):
     for l in sorted(g.serialize(format='nt').splitlines()):
-        if l: print(l.decode('ascii'))
+        if l: log.info(l.decode('ascii'))
 
 #fix: rdflib/plugins/serializers/nt.py:28: UserWarning: NTSerializer does not use custom encoding.
  #warnings.warn("NTSerializer does not use custom encoding.")
@@ -1238,13 +1245,13 @@ def dump_nt_sorted(g):
 def diff_nt(fn1,fn2):
     in_both, in_first, in_second = diff_nt_g(fn1,fn2)
     if in_both:
-        print(f'in_both:{in_both}')
+        log.info(f'in_both:{in_both}')
         dump_nt_sorted(in_both)
     if in_first:
-        print(f'in_first:{in_first}')
+        log.info(f'in_first:{in_first}')
         dump_nt_sorted(in_first)
     if in_second:
-        print(f'in_second:{in_second}')
+        log.info(f'in_second:{in_second}')
         dump_nt_sorted(in_second)
     return in_both, in_first, in_second 
 
@@ -1447,7 +1454,7 @@ def read_file(fnp, ext=None):  #download url and ext/filetype
             pass
     elif ft=='.json' or re.search('js',ext,re.IGNORECASE):
         try:
-            print(f'read_json({nf}')
+            log.info(f'read_json({nf}')
             df=pd.read_json(fn)
         except:
             df = str(sys.exc_info()[0])
@@ -1498,11 +1505,11 @@ def crawl_sources_urls(): #work on sitemap lib to handle non-stnd ones
     import re
     s=get_sources_df()
     for url in s['URL']:
-        print(f'sitemap:({url})') #dbg
+        log.debug(f'sitemap:({url})') #dbg
         #urlb=re.sub('\/site*.xml','',url)
         urlb=re.sub('sitemap.xml','',url)
         #crawl_sitemap(urlb)
-        print(f'crawl_sitemap({urlb})') #dbg
+        log.debug(f'crawl_sitemap({urlb})') #dbg
 #----
 def qs2graph(q,sqs):
     return sqs.replace('${q}',q)
@@ -1597,7 +1604,7 @@ def get_graph_per_repo(grep="milled",endpoint=None,dump_file="graphs.csv"):
     "dump a file and sort|uniq -c out the repo counts"
     gl=get_graphs_list(endpoint,dump_file) #this needs full URN to get counts for the same 'repo:' s
     gn=len(gl)
-    print(f'got:{gn} graphs')
+    log.info(f'got:{gn} graphs')
     cs=f"cut -d':' -f3,4 {dump_file} | grep milled | sort | uniq -c |sort -n"
     return os_system_(cs)
 
@@ -1626,7 +1633,7 @@ def txt_query(qry_str,sqs=None): #a generalized version would take pairs/eg. <${
     add2log(q)
     #q=qs.replace('norway',qry_str) #just in case that is still around
     #q=qs
-    #print(f'q:{q}')
+    #log.debug(f'q:{q}')
     df = sparqldataframe.query(endpoint, q)
     #df.describe()
     return df
@@ -1650,7 +1657,7 @@ def combine_features(row):
     try:
         return row['kw'] +" "+row['name']+" "+row["description"]+" "+row["pubname"]
     except:
-        print("Error:", row)
+        log.erro("Error:", row)
 
 def get_related(likes):
     global cosine_sim
@@ -1665,7 +1672,7 @@ def get_related(likes):
     ## Step 8: Print subjs of first 50 movies
     i=0
     for element in sorted_similar_datasets:
-        print(get_subj_from_index(element[0]))
+        log.info(get_subj_from_index(element[0]))
         i=i+1
         if i>50:
             break
@@ -1692,7 +1699,7 @@ def dfCombineFeaturesSimilary(df, features = ['kw','name','description','pubname
     count_matrix = cv.fit_transform(df["combined_features"])
     terms=cv.get_feature_names() #new for topic-modeling
     tl=len(terms)
-    print(f'topic-terms:{tl}')
+    log.info(f'topic-terms:{tl}')
     ##Step 5: Compute the Cosine Similarity based on the count_matrix
     cosine_sim = cosine_similarity(count_matrix) 
 
@@ -1708,13 +1715,13 @@ def test_related(q,row=0): #eg "Norway"
  #then call get_related_indices for each dataset/row you want to look at, or can now use:
 def show_related(df,row):  #after dfCombineFeaturesSimilary is run on your df 'sparql results'
     #main=df['description'][row].strip() #this should be in the related-df
-    #print(f'related to row={row},{main}')
+    #log.debug(f'related to row={row},{main}')
     related=get_related_indices(row)
     if len(df)<4:
-        print("not many to compare with")
+        log.info("not many to compare with")
     for ri in related:
         des=df['description'][ri].strip()
-        print(f'{ri}:{des}')
+        log.info(f'{ri}:{des}')
 
 #-------------------------------------------------------------
 #convert a jsonld record to a minimal crate ;started in j2c.py
@@ -1766,17 +1773,17 @@ def get_idd(d):
 #jsonld to minimal ro-crate
 #started by iterativly changing the distribution, then get IDs out for hasPart
 def jld2crate(fn):
-    print(crate_top)
+    log.info(crate_top)
     #d=get_distribution(fn)
     dl=get_distr_dicts(fn)
     #for d in dl: #needs a comma btwn
-    #    print(json.dumps(d))
+    #    log.debug(json.dumps(d))
     dl2=list(map(add_id,dl))
     ids=list(map(get_idd,dl))
-    print(json.dumps(ids))
-    print(crate_middle)
-    print(json.dumps(dl2))
-    print(crate_bottom)
+    log.info(json.dumps(ids))
+    log.info(crate_middle)
+    log.info(json.dumps(dl2))
+    log.info(crate_bottom)
 
 def jld2crate_(fn):
     mkdir("roc") #for now
@@ -1846,10 +1853,10 @@ def fn2nq(fn):
 def prov2mapping(url): #use url from p above
     "read&parse 1 PROV record"
     import json
-    #print(f'prov2mapping:{url}')
+    #log.debug(f'prov2mapping:{url}')
     j=url2json(url)
     d=json.loads(j)
-    #print(d)
+    #log.debug(d)
     g=d.get('@graph')
     if g:
         gi=list(map(lambda g: g.get("@id"), g))
@@ -1857,7 +1864,7 @@ def prov2mapping(url): #use url from p above
         sm=smd.get("@id") #gi[0]
         u=collect_pre_(gi,"urn:")
         u0=u[0]
-        #print(f'{sm}=>{u0}')
+        #log.debug(f'{sm}=>{u0}')
         #return sm, u #if expect >1
         return sm, u[0]
     else:
@@ -1872,8 +1879,7 @@ def prov2mappings(urls): #use urls from p above
         sitemap2urn[key]=value
         urn2sitemap[value]=key
     sitemap=list(sitemap2urn.keys())
-    if dbg:
-        print(f'prov-sitemap:{sitemap}')
+    log.debug(f'prov-sitemap:{sitemap}')
     #return sitemap2urn, urn2sitemap
     return sitemap2urn, urn2sitemap, sitemap
 
@@ -1893,20 +1899,20 @@ def bucket_xml(url):
     import requests
     r=requests.get(url)
     test_xml=r.content
-    #print(test_xml)
+    #log.debug(test_xml)
     return test_xml
 
 def bucket_xml2dict(test_xml):
     "bucket url to list of dicts, w/file in key"
     import xmltodict
     d=xmltodict.parse(test_xml)
-    #print(d)
+    #log.debug(d)
     lbr=d.get("ListBucketResult")
     if lbr:
         c=lbr.get("Contents")
         return c
     else:
-        print(f'no ListBucketResult, for:{test_xml}')
+        log.info(f'no ListBucketResult, for:{test_xml}')
         return None
 
 def bucket_files(url):
@@ -1917,7 +1923,7 @@ def bucket_files(url):
         files=map(lambda kd: kd.get('Key'), c)
         return list(files)
     else:
-        print(f'no bucket xml for files:{url}')
+        log.info(f'no bucket xml for files:{url}')
         return None
 
 LD_cache_base=None
@@ -1985,20 +1991,20 @@ def prov2sitemap(bucket_url,pu=None):
     "parse bucket prov2get sitemap&it's mappings"
     fi=bucket_files(bucket_url)
     if not fi:
-        print(f'prov2sitemap, no bucket_files:{bucket_url}')
+        log.info(f'prov2sitemap, no bucket_files:{bucket_url}')
         return None
     p=collect_pre_(fi,"prov")
     pu=list(map(lambda fp: f'{bucket_url}/{fp}', p))
     sitemap=None
     try:
         pul=len(pu)
-        #print(f'prov2mapping for:{pul}')
-        print(f'prov2sitemap_mapping for:{pul}')
+        #log.debug(f'prov2mapping for:{pul}')
+        log.info(f'prov2sitemap_mapping for:{pul}')
         sitemap2urn,urn2sitemap,sitemap=prov2mappings(pu)
-        #print("got the mappings")
+        #log.debug("got the mappings")
     except:
-        #print("bad prov2mappings sitemap")
-        print("bad prov2sitemap_mappings, on the:{pul}")
+        #log.debug("bad prov2mappings sitemap")
+        log.info("bad prov2sitemap_mappings, on the:{pul}")
     return sitemap #for now
 
 #if ret more could use in fnc below
@@ -2010,7 +2016,7 @@ def bucket_files3(url=None):
         url = ci_url
     fi=bucket_files(url)
     if not fi:
-        print(f'bucket_files 3,nothings for:{url}')
+        log.info(f'bucket_files 3,nothings for:{url}')
         return None, None, None, None
     s=collect_pre_(fi,"summoned")
     m=collect_pre_(fi,"milled")
@@ -2019,17 +2025,17 @@ def bucket_files3(url=None):
     sitemap2urn=None
     try:
         pul=len(pu)
-        print(f'prov2mapping for:{pul}')
+        log.info(f'prov2mapping for:{pul}')
         #sitemap2urn,urn2sitemap=prov2mappings(pu)
         sitemap2urn,urn2sitemap,sitemap=prov2mappings(pu)
-        #print("got the mappings")
+        #log.debug("got the mappings")
     except:
-        print("bad prov2mappings")
+        log.error("bad prov2mappings")
     if sitemap2urn: 
         return s,m,sitemap2urn,urn2sitemap
     else:
         #return s,m,p #mostly expect mappings below, &not prov
-        print(f'bucket_files3 no map so send Nones, for:{url}')
+        log.info(f'bucket_files3 no map so send Nones, for:{url}')
         return s,m, None, None
 
 #could also pass sitemap, in case used later from:
@@ -2039,13 +2045,13 @@ def bucket_files2diff(url,URNs=None):
     #summoned,milled=bucket_files2(url) #now have bucket_files3
     summoned,milled,sitemap2urn,urn2sitemap=bucket_files3(url) 
     if not summoned:
-        print(f'bucket_files3 2diff, nones for bad:{url}') 
+        log.info(f'bucket_files3 2diff, nones for bad:{url}')
         return None, None, None, None, None
     su=list(map(lambda f: file_base(path_leaf(f)),summoned))
     mu=list(map(lambda f: file_base(path_leaf(f)),milled))
-    if dbg:
-        print(f'summoned-URNs:{su}')
-        print(f'milled-URNs:{mu}')
+
+    log.debug(f'summoned-URNs:{su}')
+    log.debug(f'milled-URNs:{mu}')
     sl=len(su)
     ml=len(mu)
     dsm=sl-ml #diff summoned&milled= datasets lost in this step
@@ -2053,17 +2059,15 @@ def bucket_files2diff(url,URNs=None):
     if URNs:
         ul=len(URNs)
         dmu=ml-ul
-        #print(f'=Summoned-count:{sl}, Error count:{dsm}, missing:{lose_s2s}') #below
-        print(f'=Milled-count:{ml}, Error count:{dmu}, missing:{lose_s2m}')
-        #print(f'expected-URNs:{URNs}')
-        if dbg:
-            print(f'endpoint-URNs:{URNs}')
+        #log.info(f'=Summoned-count:{sl}, Error count:{dsm}, missing:{lose_s2s}') #below
+        log.info(f'=Milled-count:{ml}, Error count:{dmu}, missing:{lose_s2m}')
+        #log.info(f'expected-URNs:{URNs}')
+        log.debug(f'endpoint-URNs:{URNs}')
         #dropoff=f's:{sl}/m:{ml}/u:{ul} diff:{dmu}'
         dropoff=f'summoned:{sl}-{dsm}=>milled:{ml}-{dmu}=>graph:{ul}'
-        if dbg:
-            print(dropoff)
+        log.debug(dropoff)
         lose_m2u=list_diff_dropoff(mu,URNs) 
-        print(f'=Graph-count:{ul}, Error count:{dmu}, missing:{lose_m2u}')
+        log.info(f'=Graph-count:{ul}, Error count:{dmu}, missing:{lose_m2u}')
         #return lose_s2m, lose_m2u
         #return dropoff,lose_s2m, lose_m2u
         #return dropoff,lose_s2m, lose_m2u , sitemap2urn
@@ -2071,8 +2075,7 @@ def bucket_files2diff(url,URNs=None):
     else:
         #dropoff=f's:{sl}/m:{ml} diff:{dsm}')
         dropoff=f'summoned:{sl}-{dsm}=>milled:{ml}'
-        if dbg:
-            print(dropoff)
+        log.debug(dropoff)
         #return lose_s2m
         #return dropoff,lose_s2m
         return dropoff,lose_s2m, None, None, None
@@ -2096,22 +2099,20 @@ def get_graphs_tails(endpoint):
 def drop1mapping(sm,sitemap2urn,su): #want to but not used yet; still in crawl_dropoff
     "break out all the code in crawl_dropoff that deals w/sitemap to summoned w/mapping"
     sml=len(sm)
-    #print(f'will get:{sml} urn2urn w/:{sitemap2urn}') #dbg
+    #log.debug(f'will get:{sml} urn2urn w/:{sitemap2urn}') #dbg
     #smu=list(map(lambda s: sitemap2urn[s], sm))
     smu=list(map(lambda s: sitemap2urn.get(s), sm)) #used prov mapping to gen test sitemap
-    if dbg:
-        print(f'URN/UUIDs for sitemaps:{smu}')             #need to get same sitemap, &use map for cmp:
+    log.debug(f'URN/UUIDs for sitemaps:{smu}')             #need to get same sitemap, &use map for cmp:
     #smu2=list(map(lambda s: s.split(':')[-1],smu))
     smu2=list(map(lambda s: s if not s else s.split(':')[-1],smu)) #=urn_tails(smu)
-    if dbg:
-        print(f'URN/UUIDs for sitemaps:{smu2}')             #need to get same sitemap, &use map for cmp:
+    log.debug(f'URN/UUIDs for sitemaps:{smu2}')             #need to get same sitemap, &use map for cmp:
     lose_s2s=list_diff_dropoff(smu2,su) 
     lsl=len(lose_s2s) #should= sml- ml from above
-    print(f'lose_s2s:{lose_s2s}') #will need to map this back to the sitemap url ;if it was in prov
+    log.info(f'lose_s2s:{lose_s2s}') #will need to map this back to the sitemap url ;if it was in prov
     ##lose_s2m=list_diff_dropoff(su,mu), from above
     #dropoff=f'sitemap:{sml} =>{dropoff2}'  #pull sl, to calc dss=sml-sl
     #dropoff=f'sitemap:{sml}-{lsl}:{lose_s2s} =>{dropoff2}'  
-  # print(f'=Summoned-count:{sl}, Error count:{ls1}, missing:{lose_s2s}')
+  # log.debug(f'=Summoned-count:{sl}, Error count:{ls1}, missing:{lose_s2s}')
     dropoff=f'sitemap:{sml}-{lsl}:{lose_s2s} =>'  
     #dropoff=f'sitemap:{sml}-{dss}=>{dropoff2}' #can't get lose_s2s w/o PROV sitemap URLs to UUID mapping  
     #return dropoff,lose_s2m, lose_m2u
@@ -2127,7 +2128,7 @@ def crawl_dropoff_(sitemap,bucket_url,endpoint):
     dropoff2,lose_s2m, lose_m2u, sitemap2urn, su = bucket_files2diff(bucket_url,URNs)
     #sml=sitemap_len(sitemap) #can now use sitemap2urn to get sitemap into same ID space
     sm=sitemap_list(sitemap) #can now use sitemap2urn to get sitemap into same ID space
-    #print(f'sitemap:{sm}')
+    #log.debug(f'sitemap:{sm}')
     sml=len(sm)
     if sitemap2urn:
         dropoff1,lose_s2s=drop1mapping(sm,sitemap2urn,su)
@@ -2135,7 +2136,7 @@ def crawl_dropoff_(sitemap,bucket_url,endpoint):
         return dropoff,lose_s2s, lose_s2m, lose_m2u
     else:
         return dropoff2, lose_s2m, lose_m2u
-    #print(f'will get:{sml} urn2urn w/:{sitemap2urn}') #dbg
+    #log.debug(f'will get:{sml} urn2urn w/:{sitemap2urn}') #dbg
     #smu=list(map(lambda s: sitemap2urn[s], sm))
     #rest in drop1mapping now
 
@@ -2153,19 +2154,18 @@ def sitemap_dropoff(sitemap_url=None,bucket_url=None): #bucket to get prov's ver
     if sitemap_url:
         sm=sitemap_list(sitemap_url) #can now use sitemap2urn to get sitemap into same ID space
     else:
-        print(f'sitemap_dropoff no sitemap_url:{sitemap_url}')
+        log.info(f'sitemap_dropoff no sitemap_url:{sitemap_url}')
         sm=[]
     if bucket_url:
         sitemap_l=prov2sitemap(bucket_url) #this gives the list of them, which most fncs expect the sitemap_url
     else:
-        print(f'sitemap_dropoff no bucket_url:{bucket_url}')
+        log.info(f'sitemap_dropoff no bucket_url:{bucket_url}')
         sitemap_l=[]
     lose_s2s=list_diff_dropoff(sitemap_l,sm) #check_sm_urls
     sml=len(sm)
     lsl=len(lose_s2s) #should= sml- ml from above
     dropoff1=f'sitemap:{sml}-{lsl}:{lose_s2s}'  
-    if dbg:
-        print(f'use this dropoff1:{dropoff1}')
+    log.debug(f'use this dropoff1:{dropoff1}')
     return sitemap_l, sm, dropoff1
 
 def crawl_dropoff(sitemap,bucket_url,endpoint):
@@ -2180,45 +2180,39 @@ def crawl_dropoff(sitemap,bucket_url,endpoint):
     #sml=sitemap_len(sitemap) #can now use sitemap2urn to get sitemap into same ID space
     #if not sitemap: #could warn here
     if not sitemap: 
-        print(f'crawl_dropoff, no sitemap for:{bucket_url}')
+        log.info(f'crawl_dropoff, no sitemap for:{bucket_url}')
         return None
     #elif is_str(sitemap): #could be a sep if
     if is_str(sitemap): 
-        if dbg:
-            print(f'=using sitemap str:{sitemap}')
-        else:
-            print(f'using sitemap str')
+        log.debug(f'=using sitemap str:{sitemap}')
+        log.info(f'using sitemap str')
         sm=sitemap_list(sitemap) #can now use sitemap2urn to get sitemap into same ID space
     else:
-        if dbg:
-            print(f'using sitemap list:{sitemap}')
-        else:
-            smul=len(sitemap)
-            print(f'using sitemap list:{smul}')
+        log.debug(f'using sitemap list:{sitemap}')
+
+        smul=len(sitemap)
+        log.info(f'using sitemap list:{smul}')
         sm=sitemap #if from prov2sitemap
-    #print(f'sitemap:{sm}')
+    log.debug(f'sitemap:{sm}')
     sml=len(sm)
     if sitemap2urn: #was able to get PROV..
       # dropoff,lose_s2s=drop1mapping(sm,sitemap2urn) #only call in variant above where code below goes away
-        #print(f'will get:{sml} urn2urn w/:{sitemap2urn}') #dbg
+        #log.debug(f'will get:{sml} urn2urn w/:{sitemap2urn}') #dbg
         #smu=list(map(lambda s: sitemap2urn[s], sm))
         smu=list(map(lambda s: sitemap2urn.get(s), sm)) #used prov mapping to gen test sitemap
-        if dbg:
-            print(f'URN/UUIDs for sitemaps:{smu}')             #need to get same sitemap, &use map for cmp:
+        log.debug(f'URN/UUIDs for sitemaps:{smu}')             #need to get same sitemap, &use map for cmp:
         #smu2=list(map(lambda s: s.split(':')[-1],smu))
         smu2=list(map(lambda s: s if not s else s.split(':')[-1],smu))
-        if dbg:
-            print(f'URN/UUIDs for sitemaps:{smu2}')             #need to get same sitemap, &use map for cmp:
+        log.debug(f'URN/UUIDs for sitemaps:{smu2}')             #need to get same sitemap, &use map for cmp:
         lose_s2s=list_diff_dropoff(smu2,su) 
         lsl=len(lose_s2s) #should= sml- ml from above
-        if dbg:
-            print(f'lose_s2s:{lose_s2s}') #will need to map this back to the sitemap url ;if it was in prov
+        log.debug(f'lose_s2s:{lose_s2s}') #will need to map this back to the sitemap url ;if it was in prov
         ##lose_s2m=list_diff_dropoff(su,mu), from above
         #dropoff=f'sitemap:{sml} =>{dropoff2}'  #pull sl, to calc dss=sml-sl
-        #print(f'=Sitemap-count:{sml}, Error count:{ls1}, missing:{loose_s2s}') #dropoff should be in the next one
-        print(f'=Sitemap-count:{sml}') #dropoff should be in the next one
+        #log.debug(f'=Sitemap-count:{sml}, Error count:{ls1}, missing:{loose_s2s}') #dropoff should be in the next one
+        log.info(f'=Sitemap-count:{sml}') #dropoff should be in the next one
         sl=len(smu) #url we get from prov are once it gets run into summoned
-        print(f'=Summoned-count:{sl}, Error count:{lsl}, missing:{lose_s2s}')
+        log.info(f'=Summoned-count:{sl}, Error count:{lsl}, missing:{lose_s2s}')
         dropoff=f'sitemap:{sml}-{lsl}:{lose_s2s} =>{dropoff2}'  
         #dropoff=f'sitemap:{sml}-{dss}=>{dropoff2}' #can't get lose_s2s w/o PROV sitemap URLs to UUID mapping  
         #return dropoff,lose_s2m, lose_m2u
@@ -2235,7 +2229,7 @@ def spot_crawl_dropoff(sitemap,bucket_url,endpoint):
     #dropoff,lose_s2m, lose_m2u = crawl_dropoff(sitemap,bucket_url,endpoint)
     dropoff,lose_s2s,lose_s2m, lose_m2u = crawl_dropoff(sitemap,bucket_url,endpoint)
     if not is_list(lose_s2m): #empty list would trip this off
-        print(f'spot_ crawl_dropoff, none4lose, bad:{bucket_url}')
+        log.info(f'spot_ crawl_dropoff, none4lose, bad:{bucket_url}')
         return None, None, None, None, None, None
     s_check=list(map(check_urn_jsonld,lose_s2m))
     m_check=list(map(check_urn_rdf,lose_m2u))
@@ -2254,17 +2248,17 @@ def tsc(sitemap=None,bucket_url=None,endpoint="https://graph.geocodes-dev.earthc
     if not bucket_url:
         global ci_url
         bucket_url = ci_url
-    print(f'=s3_endpoint:{bucket_url}')
-    print(f'=graph_endpoint:{endpoint}')
+    log.info(f'=s3_endpoint:{bucket_url}')
+    log.info(f'=graph_endpoint:{endpoint}')
     sitemap_l, sm, dropoff1 = sitemap_dropoff(sitemap,bucket_url) #will still get sitemap_l if no sitemap url given
     if not sitemap: #moved into crawl_dropoff, keep here/in case
         ##sitemap2urn, urn2sitemap, sitemap=prov2mappings(..)
         #sitemap=prov2sitemap(bucket_url) #this gives the list of them, which most fncs expect the sitemap_url
         sitemap=sitemap_l
     if not sitemap:
-        print("did not get sitemap from prov so go w/deflt")
+        log.info("did not get sitemap from prov so go w/deflt")
         sitemap="http://geocodes.ddns.net/ec/test/sep/sitemap.xml"
-    print(f'=sitemap:{sitemap}')
+    log.info(f'=sitemap:{sitemap}')
     return spot_crawl_dropoff(sitemap,bucket_url,endpoint)
 
 def tsc2__(sitemap2="http://geocodes.ddns.net/ec/test/sitemap.xml",bucket_url2=None,endpoint2=None):
