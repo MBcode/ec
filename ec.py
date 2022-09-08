@@ -1962,6 +1962,24 @@ def bucket_files2(url):
     m=collect_pre_(fi,"milled")
     return s,m
 
+site_urls2UUIDs=None
+UUIDs2site_urls=None
+prov_sitemap=None
+def prov2site_mappings():
+    #global LD_cache_base, LD_cache_files, LD_cache_types
+    pu=get_bucket_files("prov")
+    if pu:
+        global UUIDs2site_urls, UUIDs2site_urls, prov_sitemap
+        #return prov2mappings(pu)
+        #sitemap2urn,urn2sitemap,sitemap=prov2mappings(pu)
+        site_urls2UUIDs,UUIDs2site_urls,prov_sitemap=prov2mappings(pu)
+        l1=len(UUIDs2site_urls)
+        l2=len(UUIDs2site_urls)
+        l3=len(prov_sitemap)
+        print(f'set:{l1} UUIDs2site_urls,{l2} UUIDs2site_urls,{l3} prov_sitemap')
+    else:
+        print(f'no prov for site_mappings')
+
 #def prov2sitemap(bucket_url):
 def prov2sitemap(bucket_url,pu=None):
     "parse bucket prov2get sitemap&it's mappings"
