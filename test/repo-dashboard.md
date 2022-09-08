@@ -15,3 +15,7 @@ F -- our --> FWF[fix workflow];
 F -- their --> RD;
 ```
 We could also make some fixes for their breaks (eg. I've made context fixes), and inform them
+
+#### Validation by data of the workflow software
+Had a mockup [here](https://github.com/earthcube/geocodes_documentation/wiki/DataValidationReportMockup)
+Which is mostly in the utils that can be called by [spot_test.py](https://github.com/MBcode/ec/blob/master/test/spot_test.py#L62) and just needs a little cleaning up

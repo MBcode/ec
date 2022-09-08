@@ -36,10 +36,13 @@ def os_system(cs):
     os.system(cs)
     add2log(cs)
 #=
+#works when tested, but check w/chron/at/. runs, even though seems to get key
 def add2slack(s):
     #cs='source ~/mb/.ssh/.ck'
     #os.system(cs)
-    key=os.getenv("nagioslack") #make sure works for su/crontab too
+    #key=os.getenv("nagioslack") #make sure works for su/crontab too
+    #key=os.getenv("ec_tech_slack") #make sure works for su/crontab too
+    key=os.getenv("ec_prod_slack") #make sure works for su/crontab too
     #change to requests, and use getenv, if I actually use this part
     if key:
         add2log(f'try:{s}')
@@ -49,7 +52,8 @@ def add2slack(s):
         rs=requests.post(f'https://hooks.slack.com/services/{key}', json={"text": f'"{s}"'})
         sc=rs.status_code
         add2log(f'get:{sc}')
-        os_system(cs)
+        #print(f'skip:{cs}')
+        #os_system(cs) #no longer needed
         add2log(s)
     else:
         print("no key for logging")
@@ -71,6 +75,7 @@ def get_sc(url):
         #add2slack(e) #pass str
         os.system(cs)
 
+#more just check that the endpoint is there
 get_sc(url2)
 #getting ok while it is having problems, bc not hitting that part of the store?
 #might load ec.py and do an actual query, and start to log timings as well
@@ -106,6 +111,7 @@ def handler(signum, frame):
     raise Exception("norway query > 35 sec")
 
 def try_query_time(local=None):
+    "not used"
     import signal
     #signal.alarm(35)
     signal.alarm(35) #for testing
@@ -123,6 +129,7 @@ def try_query_time(local=None):
 #try_query_time(True) #use local version w/diff endpoint for now
 
 def query_timeout(local=None):
+    "using this one"
     from func_timeout import func_timeout, FunctionTimedOut
     try:
         #elapse=get_query_time(local)
@@ -133,9 +140,10 @@ def query_timeout(local=None):
         add2log(f'elapse={elapse}') 
     except FunctionTimedOut:
         add2log("norway query > 45 sec, so restart_endpoint")
+        add2slack("norway query > 45 sec, so auto-restarting")
         restart_endpoint()
     except Exception as exc:
-        add2log("norway query > 35 sec")
+        add2log("norway query exception")
         print(exc)
         add2log(exc) #pass str
         #add2slack(exc) #pass str #don't have to tell us on slack if had to restart, just log it
@@ -144,4 +152,5 @@ def query_timeout(local=None):
 #right now the timings are hourly, strange the diff in endpoints, will be good to see
  #and even better finally getting the time to work on it, which it is being tracked(for timing..)
 
+#use this w/timeout, to decide to restart the endpoint
 query_timeout(True) #use local version w/diff endpoint for now

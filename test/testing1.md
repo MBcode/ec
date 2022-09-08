@@ -1,4 +1,4 @@
-# From [ingestTesting.md](https://github.com/MBcode/ec/blob/master/test/ingestTesting.md) sec2: on (CI spot) testing
+# From [ingestTesting.md](https://github.com/MBcode/ec/blob/master/test/ingestTesting.md) sec2: on (CI) spot testing
 ### The .md version derived from [.ipynb](ingesttesting.ipynb) version, with a focus on documentation only, and adding diagrams
 
 Here are the parts that the doc was broken into:
@@ -6,30 +6,6 @@ Here are the parts that the doc was broken into:
 1) How the [counts](https://github.com/MBcode/ec/blob/master/test/counts.md) from the repo-sitemaps sometimes fall off in the LD-cache (jsonld&ntriples), then also not getting into the endpoint
 2) Then from the original cut of spot testing, but [now just new code and img below](https://github.com/MBcode/ec/blob/master/test/testing.md)=this page, is getting a rewrite to just focus on that
 3) How to best [sample](https://github.com/MBcode/ec/blob/master/test/sample.md) from the sitemaps, which has become a test set, w/the hash naming in ec/test/standard/ summoned&milled
-
-
-### Starting to split all content below into the [new-way](testing2.md) and the [old-way](testing1.md)
-* [Old-way](testing1.md) was written first for spot testing
-* [New-way](testing2.md) makes it more natural to do more testing all the time, and get a little more during spot testing
-
-### Some differences
-* New won't need expected URNs/sparql-results necessarily, because it only test the new fall-off from the stage before
-* New has much better integration with non spot testing; which could have done counts as a backup
-* New, non spot testing could have done more than just count falloff, always worth IDing which files got lost
-   * and can do some integrity checks w/o having a gold stnd to compare against
-* New still uses the old's check_urn_ jsonld|rdf but does it only when the next step is missing
-* Old did a web check of LD, New does a web listing, so even easier to fill in extruct/riot backup for gleaner/nabu
-  * Would like python to kick off gleaner|extruct then riot|nabu incl serving final quad, so less manual yaml setup
-* New parses PROV to get sitemap URLs run and UUIDs generated, so sitemap optional, and can find falloff in that step now too
-
-### Below is the new way then the old way, which I will delete in favor of the 2 links above
-
-### .
-### .
-### .
-### .
-### .
-### .
 
 ### Sec2: CI spot testing.md
 
@@ -54,23 +30,27 @@ Though would like it if gleaner/nabu could be run w/o having to touch so many pl
 | expected results | for testing we might pass in a set of (counts, etc) in json structure |
 | pointer to csv | for CI testing  has queries, expected urn's |
 
+
+
+## Everything below here is starting with end to end testing, 
+### where it goes back and checking the 2 middle stages if a problem
+But [now](http://geocodes.ddns.net/ec/test/counts/bucket_files.py) we can always do a step by step check, that just gets better if we have standard data to compare with
+
 ## Data Loading: 
 ### Run end to end, show missing, check in cache, then know count at every stage
 Basic Data loading flight testing:
-* After each workflow stages transition
-    * Get the UUID based IDs for the elements on each side of the transition
-    * Get both the change in counts, and specifically which IDs might have been lost
-* Use UUID/URN for filename is missing start to check the version just before the transition
-    * Check the tranistion worthiness of the earlir vesion
-    * If workflow spot testing is being done against a standard, also compare with that
+* Run end to end, sitemap to endpoint
+    * Query endpoint to get graph/filename URN names that might be missing
+    * Gives you counts for the last step, and an easier way to lookup middle steps
+* Use URN for filename in LD-cache to check to see if missing there as well
+    * Check LD-cache for both types of RDF: summoned jsonld and milled ntriples
+    * Will give us both the counts for these stages, and any diffs, to help debug process
 * Scoped software use / blame
-    * Gleaner does the crawl into the LD-Cache & 'nabu' transforms the format to put it into 'endpoint'
-    * Testing is done with earthcube_utils that use the config info to get the state on both sides of a transition
-      * and if spot testing also have the standard comparison data around for closer check
+    * Gleaner & 'nabu' to get  sitemap to 'endpoint', and be able to find if all the expected graphs made it
+    * Testing is done with earthcube_utils, that check the endpoint graphs against the expected, and check cache for missing
     * If ntriples in cache, but not in endpoint, then blame 'nabu' for not syncing it
     * If the file for the URN is not in the LD-cache as .rdf, then blame nabu
     * If the file for the URN is not in the LD-cache as .jsonld, then blame gleaner
-
 ```mermaid
 flowchart LR
    subgraph LD_Cache
@@ -111,88 +91,6 @@ flowchart LR
   RDF --> Nabu --> NGRPH(Named Graphs) --> QUADS
   TESTMAN --> TESTQUERY[[SPARQL-Query ]]  --> DLQUERY
 ```
-#### Scopes of workflow elements: Gleaner/nabu are the verbs transitioning the data-objects, that we can test for
-* We always had the [counts.md](counts.md) fall off, but [now](http://geocodes.ddns.net/ec/test/counts/bucket_files.py) we can tell which of the intermediate data files are broken by diffs with expected listing, 
-* then we can check the step before to see the transition worthiness of it
-* and when we have expected results during workflow spot testing, we can also compare with that
-
-The Config for normal crawls and spot testing each have a sitemap
-
-Only spot testing of the workflow has expected results
-
-The spot testing comparisons give the change in counts when compared with expected
-
-normal crawls with no expected results need to use the [counts.md](counts.md) utils
-
-spot tests, can still run this counts checking code, even though the comparison w/test set will give it
-
-## How each workflow stage can be checked
-given the available (data for) checks
-```mermaid
-flowchart TD
-N[step_N] --transition--> N1[step_N+1]
-CMP[compare_listed_UUIDs] --> N
-CMP --> N1
-CMP -- diff_list --> CL[check_list]
-CL -- apply_best_cmp --> N
-```
-## During a standard run best_compare will check worthiness for the transition
-## During spot_testing of the workflow, we can also compare with the expected gold standard
-
-
-### Report
-* EC-Testing report of what made it through the Gleaner then nabu stages
-   * Report counts at each stage
-   * For workflow spot-testing can report any diffs as well
-      * Endpoint comparison can give more than URN diffs.  We can track any value changes as well
-      * Any graph that changes, when found can be diff'd with it's gold-standard version. To report those changes
-* Count/diffs given with view of the scope of the workflow software
-   * count(LD_cache jsonld missing or broken) assigned to gleaner
-   * count(LD_cache ntriples missing or broken) assigned to nabu, if gleaner had the jsonld
-   * count(QUADs missing) assigned to nabu, if earlier stage was there
-      * (sitemap_count == spot expected URN_count) - (count_graphs(endpoint) == count(spot URNs expected)) == missing graphs/URNs
-      * Can always get count.md number, but can only get diffs of broken by comparing with spot test gold standard
-* SCHACL Validation reports [(TBD) for a repo_dashboard](repo-dashboard.md)
-
-## Example of testing stages 
-### where checks just get better during workflow spot check with standard data to compare with
-
-### [counts.md](counts.md) now has crawl_dropoff() which can be done each time, 
-It shows count-drop and URNs of files lost, and could do basic check for tranistion worthiness
-
-### For spot checking a workflow, spot_crawl_dropoff() does all the above and checks with saved standard data
-Here for a test-sitemap will also call all the check_urn_ jsonld|rdf if lost in next step
- 
-#### spot checks are done with one sitemap, while general runs can have many
- _when many sitemaps run, it can report from each names repo: in the quad store graphs, with: get_graph_per_repo()_
- 
-### .
-### .
- 
- _Above is an alternate way of doing the counts & checking compared to  below_ So I will incl/replace this soon
-
-### .
-### .
-
-## Everything below here is starting with end to end testing, 
-### where it goes back and checking the 2 middle stages if a problem
-But [now](http://geocodes.ddns.net/ec/test/counts/bucket_files.py) we can always do a step by step check, that just gets better if we have standard data to compare with
-
-## Data Loading: 
-### Run end to end, show missing, check in cache, then know count at every stage
-Basic Data loading flight testing:
-* Run end to end, sitemap to endpoint
-    * Query endpoint to get graph/filename URN names that might be missing
-    * Gives you counts for the last step, and an easier way to lookup middle steps
-* Use URN for filename in LD-cache to check to see if missing there as well
-    * Check LD-cache for both types of RDF: summoned jsonld and milled ntriples
-    * Will give us both the counts for these stages, and any diffs, to help debug process
-* Scoped software use / blame
-    * Gleaner & 'nabu' to get  sitemap to 'endpoint', and be able to find if all the expected graphs made it
-    * Testing is done with earthcube_utils, that check the endpoint graphs against the expected, and check cache for missing
-    * If ntriples in cache, but not in endpoint, then blame 'nabu' for not syncing it
-    * If the file for the URN is not in the LD-cache as .rdf, then blame nabu
-    * If the file for the URN is not in the LD-cache as .jsonld, then blame gleaner
     
 #### Scopes of workflow elements: Gleaner/nabu are the verbs transitioning the data-objects, that we can test for
 We can always get the [counts.md](counts.md) fall off, but we can best tell if the intermediate data files are broken by diffs with expected results during workflow spot testing. Though with URN listing from each stage we could [better check them in prod](http://geocodes.ddns.net/ec/test/counts/bucket_files.py).
@@ -252,6 +150,21 @@ flowchart LR
    * LD_cache count = sitemap_count - count(missing_URNs) + count(cmp_LD say are ok)
       * so spot-testing can be a little more detailed with count of broken = count(cmp_LD say have diffs)
       
+
+### Report
+* EC-Testing report of what made it through the Gleaner then nabu stages
+   * Report counts at each stage
+   * For workflow spot-testing can report any diffs as well
+      * Endpoint comparison can give more than URN diffs.  We can track any value changes as well
+      * Any graph that changes, when found can be diff'd with it's gold-standard version. To report those changes
+* Count/diffs given with view of the scope of the workflow software
+   * count(LD_cache jsonld missing or broken) assigned to gleaner
+   * count(LD_cache ntriples missing or broken) assigned to nabu, if gleaner had the jsonld
+   * count(QUADs missing) assigned to nabu, if earlier stage was there
+      * (sitemap_count == spot expected URN_count) - (count_graphs(endpoint) == count(spot URNs expected)) == missing graphs/URNs
+      * Can always get count.md number, but can only get diffs of broken by comparing with spot test gold standard
+* SCHACL Validation reports [(TBD) for a repo_dashboard](repo-dashboard.md)
+
 ## Example of config spot-testing standards and comparisons
 
 

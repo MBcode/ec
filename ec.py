@@ -2,6 +2,7 @@
 # some on (new)direction(s) at: https://mbcode.github.io/ec
 #=this is also at gitlab now, but won't get autoloaded until in github or allow for gitlab_repo
  #but for cutting edge can just get the file from the test server, so can use: get_ec()
+dbg=None
 rdf_inited,rdflib_inited,sparql_inited=None,None,None
 endpoint=None
 testing_endpoint="http://ideational.ddns.net:3030/geocodes_demo_datasets/sparql"
@@ -18,6 +19,12 @@ def local():
     "do in binder till can autoset if not in colab"
     #put in a binder version of sparql_nb template, for now
     local=laptop()
+
+def now():
+    from datetime import datetime
+    now = datetime.now()
+    dt_string = now.strftime("%Y/%m/%d %H:%M:%S")
+    return dt_string
 
 #pagemil parameterized colab/gist can get this code via:
 #with httpimport.github_repo('MBcode', 'ec'):   
@@ -124,11 +131,24 @@ def file_leaf_base(path):
     pl=path_leaf(path)
     return file_base(pl)
 
+#sparql.ipynb:    "ds_url=ec.collect_ext(ds_urls,ext)\n",
 def collect_ext(l,ext):
   return list(filter(lambda x: file_ext(x)==ext,flatten(l)))
 
+def collect_ext_(l,ext):
+  return list(filter(lambda x: file_ext(x)==ext,l))
+
+def collect_pre(l,pre):
+  return list(filter(lambda x: x.startswith(pre),flatten(l)))
+
+def collect_pre_(l,pre):
+  return list(filter(lambda x: x.startswith(pre),l))
+
 def collect_str(l,s):
   return list(filter(lambda x: s in x ,flatten(l)))
+
+def collect_str_(l,s):
+  return list(filter(lambda x: s in x ,l))
 
 #could think a file w/'.'s in it's name, had an .ext
  #so improve if possible; hopefully not by having a list of exts
@@ -197,7 +217,8 @@ def read_sd_(fn):
 def read_sd(fn):
     "read_file space delimited"
     fn_=fn.replace("urn:","")
-    print(f'read_sd:{fn_}')
+    if dbg:
+        print(f'read_sd:{fn_}')
     #return read_file(fn_,".txt")
     import pandas as pd
     try:
@@ -218,7 +239,8 @@ def read_json(urn):
     import urllib.request
     import json
     url=urn.replace("urn:","")
-    print(f'read_json:{url}')
+    if dbg:
+        print(f'read_json:{url}')
     with urllib.request.urlopen(url) as response:
         #try:
         res = response.read()
@@ -268,6 +290,15 @@ def list_diff_not_in(li1,li2):
     "those in l1 not in l2"
     s = set(li2)
     return [x for x in li1 if x not in s]
+#>>> list_diff_not_in(["a","b","c"],["a","b"])
+#['c']
+def list_diff_dropoff(li1,li2):
+    ldiff= list_diff_not_in(li1,li2)
+    #print(f'li1={li1}')
+    #print(f'li2={li2}')
+    #print(f'ldiff={ldiff}')
+    return ldiff
+    #return list_diff_not_in(li1,li2)
 
 #testing cmp w/gold-stnd should now comes from github 
  #also can send alt bucket ..., now citesting, but be able to set: testing_bucket
@@ -275,7 +306,8 @@ def list_diff_not_in(li1,li2):
  #will get from live workflow one we are sure it will be up during testing ;can be reset from script
 
 def find_urn_diffs(endpoint="http://ideational.ddns.net:3030/geocodes_demo_datasets/sparql", 
-        gold="https://raw.githubusercontent.com/MBcode/ec/master/test/standard/milled/geocodes_demo_datasets/URNs.txt"):
+        gold="https://raw.githubusercontent.com/earthcube/GeoCODES-Metadata/mb_sample/metadata/Dataset/standard/milled/geocodes_demo_datasets/URNs.txt"):
+       #gold="https://raw.githubusercontent.com/MBcode/ec/master/test/standard/milled/geocodes_demo_datasets/URNs.txt"):
     "get_graphs_list and saved gold-list, and diff" #~do a set diff
     print("in find_urn_diffs,read_sd gold")
     #df_gold=read_sd(gold)
@@ -288,7 +320,8 @@ def find_urn_diffs(endpoint="http://ideational.ddns.net:3030/geocodes_demo_datas
         test_endpoint=endpoint
     else: #use global so can set by script
         test_endpoint=testing_endpoint
-    test_list=get_graphs_list(test_endpoint)
+    #test_list=get_graphs_list(test_endpoint)
+    test_list=get_graphs_tails(test_endpoint)
     print(f'test:{test_list}')
     gold_list=df_gold['g'].tolist()
     print(f'gold:{gold_list}')
@@ -303,10 +336,13 @@ def find_urn_diffs(endpoint="http://ideational.ddns.net:3030/geocodes_demo_datas
 
 #check_urn_ rdf|jsonld look up from LD-cache of latest run, and compare w/gold-stnd in github
   #tested separately, &ok on 1st pass;  ret True if ok=the same as gold-stnd
+  #if the file was not there, might send whole file back as diff, or fail/check, but would like it2say not there/finish
+   #might also call from spot_crawl_dropoff, which would already know that the file was there for sure
 
 def check_urn_rdf(urn,
         test_bucket="https://oss.geocodes-dev.earthcube.org/citesting/milled/geocodes_demo_datasets/",
-        gold="https://raw.githubusercontent.com/MBcode/ec/master/test/standard/milled/geocodes_demo_datasets/"):
+        gold="https://raw.githubusercontent.com/earthcube/GeoCODES-Metadata/mb_sample/metadata/Dataset/standard/milled/geocodes_demo_datasets/"):
+       #gold="https://raw.githubusercontent.com/MBcode/ec/master/test/standard/milled/geocodes_demo_datasets/"):
     "check a URNs milled-rdf diff btw urls for current+gold-stnd buckets"
     import pandas as pd
     #gold_rdf=f'{test_bucket}{urn}.rdf' #test_rdf=f'{milled_bucket}{urn}.rdf'
@@ -320,7 +356,8 @@ def check_urn_rdf(urn,
 
 def check_urn_jsonld(urn,
         test_bucket="https://oss.geocodes-dev.earthcube.org/citesting/summoned/geocodes_demo_datasets/",
-        gold="https://raw.githubusercontent.com/MBcode/ec/master/test/standard/summoned/geocodes_demo_datasets/"):
+        gold="https://raw.githubusercontent.com/earthcube/GeoCODES-Metadata/mb_sample/metadata/Dataset/standard/summoned/geocodes_demo_datasets/"):
+       #gold="https://raw.githubusercontent.com/MBcode/ec/master/test/standard/summoned/geocodes_demo_datasets/"):
     "check a URNs summonded-jsonld diff btw urls for current+gold-stnd buckets"
     #rm urn: if necessary
     gold_rdf=f'{gold}{urn}.jsonld'
@@ -350,7 +387,8 @@ def check_urn_ld_cache(urn,bucket="citesting",test_set="geocodes_demo_datasets",
 
 #endpoint loaded like nabu, to work on all this functionality, then can make sure it keeps it up like the ld-cache
 def get_urn_diffs(endpoint="http://ideational.ddns.net:3030/geocodes_demo_datasets/sparql", 
-        gold="https://raw.githubusercontent.com/MBcode/ec/master/test/standard/milled/geocodes_demo_datasets/"):
+        gold="https://raw.githubusercontent.com/earthcube/GeoCODES-Metadata/mb_sample/metadata/Dataset/standard/milled/geocodes_demo_datasets/"):
+       #gold="https://raw.githubusercontent.com/MBcode/ec/master/test/standard/milled/geocodes_demo_datasets/"):
     "see which URN/graphs are in endpoint, and compare with expected"
     gold_URNs= gold + "URNs.txt"
     print(f'find_urn_diffs:{endpoint},{gold_URNs}')
@@ -360,16 +398,19 @@ def get_urn_diffs(endpoint="http://ideational.ddns.net:3030/geocodes_demo_datase
 #'validation'  ;check consituent fncs before switch over to this one
 def check_urn_diffs(endpoint="http://ideational.ddns.net:3030/geocodes_demo_datasets/sparql", 
         test_bucket="https://oss.geocodes-dev.earthcube.org/citesting/milled/geocodes_demo_datasets/",
-        gold="https://raw.githubusercontent.com/MBcode/ec/master/test/standard/milled/geocodes_demo_datasets/"):
-    dfu=get_urn_diffs(endpoint,gold)
-    #ld_checks= list(map(lambda urn: check_urn_ld_cache(urn,test_bucket),dfu)) #could send more or less:
-    ld_checks= list(map(check_urn_ld_cache,dfu))
-    return ld_checks
+        gold="https://raw.githubusercontent.com/earthcube/GeoCODES-Metadata/mb_sample/metadata/Dataset/standard/milled/geocodes_demo_datasets/"):
+       #gold="https://raw.githubusercontent.com/MBcode/ec/master/test/standard/milled/geocodes_demo_datasets/"):
+       "looks at endpoint for missing URNs, then check LD-cache for each"
+       dfu=get_urn_diffs(endpoint,gold)
+       #ld_checks= list(map(lambda urn: check_urn_ld_cache(urn,test_bucket),dfu)) #could send more or less:
+       ld_checks= list(map(check_urn_ld_cache,dfu))
+       return ld_checks
 #vs
 #'validation'
 def check_urn_diffs_(endpoint="http://ideational.ddns.net:3030/geocodes_demo_datasets/sparql", 
         test_bucket="https://oss.geocodes-dev.earthcube.org/citesting/milled/geocodes_demo_datasets/",
-        gold="https://raw.githubusercontent.com/MBcode/ec/master/test/standard/milled/geocodes_demo_datasets/"):
+        gold="https://raw.githubusercontent.com/earthcube/GeoCODES-Metadata/mb_sample/metadata/Dataset/standard/milled/geocodes_demo_datasets/"):
+       #gold="https://raw.githubusercontent.com/MBcode/ec/master/test/standard/milled/geocodes_demo_datasets/"):
     "find_urn_diffs and for each missing check_urn_rdf|jsonld" #get_graphs diff w/expected URNs, then check each missing
     gold_URNs= gold + "URNs.txt"
     print(f'find_urn_diffs:{endpoint},{gold_URNs}')
@@ -709,7 +750,8 @@ def url2nq(url):
     return append2everyline(fn, apptxt)
 
 def setup_s3fs(): #do this by hand for now
-    cs='pip install s3fs' #assume done rarely, once/session 
+    #cs='pip install s3fs' #assume done rarely, once/session 
+    cs='pip install s3fs xmltodict' #want to switch to just request of url&parse xml:bucket_files.py
     os_system(cs)
 
 def setup_sitemap(): #do this by hand for now
@@ -748,6 +790,11 @@ def sitemaps_all_loc(sitemaps):
     "list(iterable) to get all DFs of LOCs"
     return map(sitemap_all_pages,sitemaps)
     #also be able to work w/dictionaries,  repo_name sitmap in, count out
+
+def sitemap_list(url):
+    pages=sitemap_all_pages(url)
+    pl=list(pages)
+    return pl
 
 def sitemap_len(url):
     "for counts" # maybe allow filtering types later
@@ -1282,13 +1329,15 @@ def viz(fn=".all.nt"): #might call this rdf_viz once we get some other type of v
  #maybe, but this is easiest way to get the file locally to have to use
   #though if we use a kglab/sublib or other that puts right to graph, could dump from that too
 host = "http://141.142.218.86:3031"
-import requests
+#import requests
 
 def alive():
+    import requests
     r = requests.get(f'{host}/alive')
     return r
 
 def log_msg(url): #in mknb.py logbad routed expects 'url' but can encode things
+    import requests
     r = requests.get(f'{host}/logbad/?url={url}')
     return r 
 
@@ -1522,7 +1571,8 @@ def get_graphs():
     "return all the g URNs"
     return v4qry("","graphs")
 
-def get_graphs_list(endpoint=None):
+#def get_graphs_list(endpoint=None):
+def get_graphs_list(endpoint=None,dump_file=None):
     "get URNs as list, can send in alt endpoint"
     global dflt_endpoint
     if not endpoint:
@@ -1532,7 +1582,17 @@ def get_graphs_list(endpoint=None):
         dflt_endpoint = endpoint
         dfg=get_graphs()
         dflt_endpoint = save
+    if dump_file:
+        dfg.to_csv(dump_file)
     return dfg['g'].tolist()
+
+def get_graph_per_repo(grep="milled",endpoint=None,dump_file="graphs.csv"):
+    "dump a file and sort|uniq -c out the repo counts"
+    gl=get_graphs_list(endpoint,dump_file) #this needs full URN to get counts for the same 'repo:' s
+    gn=len(gl)
+    print(f'got:{gn} graphs')
+    cs=f"cut -d':' -f3,4 {dump_file} | grep milled | sort | uniq -c |sort -n"
+    return os_system_(cs)
 
 #should get graph.geo.. from https://dev.geocodes.earthcube.org/#/config dynamically
  #incl the default path for each of those other queries, ecrr, ;rdf location as well
@@ -1772,3 +1832,398 @@ def fn2nq(fn):
                 fd_out.write(line_out)
     return fn2
 
+#sitemap url to LD-cache filenames
+ #in mine it is BASE_URL + file_leaf(ur)
+ #gleaner needs a mapping from it's PROV:
+
+def prov2mapping(url): #use url from p above
+    "read&parse 1 PROV record"
+    import json
+    #print(f'prov2mapping:{url}')
+    j=url2json(url)
+    d=json.loads(j)
+    #print(d)
+    g=d.get('@graph')
+    if g:
+        gi=list(map(lambda g: g.get("@id"), g))
+        smd=g[1] #assume 1 past the context, 1st thing being from sitemap
+        sm=smd.get("@id") #gi[0]
+        u=collect_pre_(gi,"urn:")
+        u0=u[0]
+        #print(f'{sm}=>{u0}')
+        #return sm, u #if expect >1
+        return sm, u[0]
+    else:
+        return f'no graph for:{url}'
+
+def prov2mappings(urls): #use urls from p above
+    "get sitemap<->UUID in summoned,&sitemap"
+    sitemap2urn={}
+    urn2sitemap={} #might need this more
+    for url in urls:
+        key,value=prov2mapping(url)
+        sitemap2urn[key]=value
+        urn2sitemap[value]=key
+    sitemap=list(sitemap2urn.keys())
+    if dbg:
+        print(f'prov-sitemap:{sitemap}')
+    #return sitemap2urn, urn2sitemap
+    return sitemap2urn, urn2sitemap, sitemap
+
+#some bucket/gen-urls will be json(ld)
+def url2json(url):
+    import requests
+    r=requests.get(url)
+    return r.content
+
+#testing, where we look at gleaner's mino ld-cache via web
+ #so it can be swapped out for my web LD-cache when missing
+#==bucket_files.py to get (minio) files list from a bucket path
+ci_url="https://oss.geocodes-dev.earthcube.org/citesting"
+ci_url2="https://oss.geocodes-dev.earthcube.org/citesting2"
+def bucket_xml(url):
+    "given bucket url ret raw xml listing"
+    import requests
+    r=requests.get(url)
+    test_xml=r.content
+    #print(test_xml)
+    return test_xml
+
+def bucket_xml2dict(test_xml):
+    "bucket url to list of dicts, w/file in key"
+    import xmltodict
+    d=xmltodict.parse(test_xml)
+    #print(d)
+    lbr=d.get("ListBucketResult")
+    if lbr:
+        c=lbr.get("Contents")
+        return c
+    else:
+        print(f'no ListBucketResult, for:{test_xml}')
+        return None
+
+def bucket_files(url):
+    "bucket_url to file listing"
+    test_xml=bucket_xml(url)
+    c=bucket_xml2dict(test_xml)
+    if c:
+        files=map(lambda kd: kd.get('Key'), c)
+        return list(files)
+    else:
+        print(f'no bucket xml for files:{url}')
+        return None
+
+def bucket_files2(url):
+    "url to tuple of summoned+milled lists"
+    fi=bucket_files(url)
+    s=collect_pre_(fi,"summoned")
+    m=collect_pre_(fi,"milled")
+    return s,m
+
+#def prov2sitemap(bucket_url):
+def prov2sitemap(bucket_url,pu=None):
+    "parse bucket prov2get sitemap&it's mappings"
+    fi=bucket_files(bucket_url)
+    if not fi:
+        print(f'prov2sitemap, no bucket_files:{bucket_url}')
+        return None
+    p=collect_pre_(fi,"prov")
+    pu=list(map(lambda fp: f'{bucket_url}/{fp}', p))
+    sitemap=None
+    try:
+        pul=len(pu)
+        #print(f'prov2mapping for:{pul}')
+        print(f'prov2sitemap_mapping for:{pul}')
+        sitemap2urn,urn2sitemap,sitemap=prov2mappings(pu)
+        #print("got the mappings")
+    except:
+        #print("bad prov2mappings sitemap")
+        print("bad prov2sitemap_mappings, on the:{pul}")
+    return sitemap #for now
+
+#if ret more could use in fnc below
+
+def bucket_files3(url=None):
+    "url to summoned+milled,prov lists"
+    if not url:
+        global ci_url
+        url = ci_url
+    fi=bucket_files(url)
+    if not fi:
+        print(f'bucket_files 3,nothings for:{url}')
+        return None, None, None, None
+    s=collect_pre_(fi,"summoned")
+    m=collect_pre_(fi,"milled")
+    p=collect_pre_(fi,"prov")
+    pu=list(map(lambda fp: f'{url}/{fp}', p))
+    sitemap2urn=None
+    try:
+        pul=len(pu)
+        print(f'prov2mapping for:{pul}')
+        #sitemap2urn,urn2sitemap=prov2mappings(pu)
+        sitemap2urn,urn2sitemap,sitemap=prov2mappings(pu)
+        #print("got the mappings")
+    except:
+        print("bad prov2mappings")
+    if sitemap2urn: 
+        return s,m,sitemap2urn,urn2sitemap
+    else:
+        #return s,m,p #mostly expect mappings below, &not prov
+        print(f'bucket_files3 no map so send Nones, for:{url}')
+        return s,m, None, None
+
+#could also pass sitemap, in case used later from:
+
+def bucket_files2diff(url,URNs=None):
+    "list_diff_dropoff summoned milled, URNs"
+    #summoned,milled=bucket_files2(url) #now have bucket_files3
+    summoned,milled,sitemap2urn,urn2sitemap=bucket_files3(url) 
+    if not summoned:
+        print(f'bucket_files3 2diff, nones for bad:{url}') 
+        return None, None, None, None, None
+    su=list(map(lambda f: file_base(path_leaf(f)),summoned))
+    mu=list(map(lambda f: file_base(path_leaf(f)),milled))
+    if dbg:
+        print(f'summoned-URNs:{su}')
+        print(f'milled-URNs:{mu}')
+    sl=len(su)
+    ml=len(mu)
+    dsm=sl-ml #diff summoned&milled= datasets lost in this step
+    lose_s2m=list_diff_dropoff(su,mu)
+    if URNs:
+        ul=len(URNs)
+        dmu=ml-ul
+        #print(f'=Summoned-count:{sl}, Error count:{dsm}, missing:{lose_s2s}') #below
+        print(f'=Milled-count:{ml}, Error count:{dmu}, missing:{lose_s2m}')
+        #print(f'expected-URNs:{URNs}')
+        if dbg:
+            print(f'endpoint-URNs:{URNs}')
+        #dropoff=f's:{sl}/m:{ml}/u:{ul} diff:{dmu}'
+        dropoff=f'summoned:{sl}-{dsm}=>milled:{ml}-{dmu}=>graph:{ul}'
+        if dbg:
+            print(dropoff)
+        lose_m2u=list_diff_dropoff(mu,URNs) 
+        print(f'=Graph-count:{ul}, Error count:{dmu}, missing:{lose_m2u}')
+        #return lose_s2m, lose_m2u
+        #return dropoff,lose_s2m, lose_m2u
+        #return dropoff,lose_s2m, lose_m2u , sitemap2urn
+        return dropoff,lose_s2m, lose_m2u , sitemap2urn, su #last is summoned
+    else:
+        #dropoff=f's:{sl}/m:{ml} diff:{dsm}')
+        dropoff=f'summoned:{sl}-{dsm}=>milled:{ml}'
+        if dbg:
+            print(dropoff)
+        #return lose_s2m
+        #return dropoff,lose_s2m
+        return dropoff,lose_s2m, None, None, None
+
+#don't need to have a diff version, bc bucket_files3 looks up PROV even w/o a sitemap
+#def bucket_files3diff(sitemap,url,URNs=None):
+
+def urn_tail(urn):
+    return  urn if not urn else urn.split(':')[-1]
+
+def urn_tails(URNs):
+    return list(map(lambda s: s if not s else s.split(':')[-1],URNs))
+    #return list(map(urn_tail,URNs))
+
+def get_graphs_tails(endpoint):
+    URNs=get_graphs_list(endpoint)
+    return urn_tails(URNs)
+
+#break out all the code in crawl_dropoff that deals w/sitemap to summoned w/mapping
+#def drop1mapping(sm,sitemap2urn):
+def drop1mapping(sm,sitemap2urn,su): #want to but not used yet; still in crawl_dropoff
+    "break out all the code in crawl_dropoff that deals w/sitemap to summoned w/mapping"
+    sml=len(sm)
+    #print(f'will get:{sml} urn2urn w/:{sitemap2urn}') #dbg
+    #smu=list(map(lambda s: sitemap2urn[s], sm))
+    smu=list(map(lambda s: sitemap2urn.get(s), sm)) #used prov mapping to gen test sitemap
+    if dbg:
+        print(f'URN/UUIDs for sitemaps:{smu}')             #need to get same sitemap, &use map for cmp:
+    #smu2=list(map(lambda s: s.split(':')[-1],smu))
+    smu2=list(map(lambda s: s if not s else s.split(':')[-1],smu)) #=urn_tails(smu)
+    if dbg:
+        print(f'URN/UUIDs for sitemaps:{smu2}')             #need to get same sitemap, &use map for cmp:
+    lose_s2s=list_diff_dropoff(smu2,su) 
+    lsl=len(lose_s2s) #should= sml- ml from above
+    print(f'lose_s2s:{lose_s2s}') #will need to map this back to the sitemap url ;if it was in prov
+    ##lose_s2m=list_diff_dropoff(su,mu), from above
+    #dropoff=f'sitemap:{sml} =>{dropoff2}'  #pull sl, to calc dss=sml-sl
+    #dropoff=f'sitemap:{sml}-{lsl}:{lose_s2s} =>{dropoff2}'  
+  # print(f'=Summoned-count:{sl}, Error count:{ls1}, missing:{lose_s2s}')
+    dropoff=f'sitemap:{sml}-{lsl}:{lose_s2s} =>'  
+    #dropoff=f'sitemap:{sml}-{dss}=>{dropoff2}' #can't get lose_s2s w/o PROV sitemap URLs to UUID mapping  
+    #return dropoff,lose_s2m, lose_m2u
+    #return dropoff,lose_s2s, lose_s2m, lose_m2u
+    return dropoff,lose_s2s
+
+def crawl_dropoff_(sitemap,bucket_url,endpoint):
+    "show counts at each stage, and URN diffs when can"
+    #URNs=get_graphs_list(endpoint)  #that are in the endpoint, not the expected
+    URNs=get_graphs_tails(endpoint)  #that are in the endpoint, not the expected
+    #dropoff2,lose_s2m, lose_m2u = bucket_files2diff(bucket_url,URNs)
+    #dropoff2,lose_s2m, lose_m2u, sitemap2urn = bucket_files2diff(bucket_url,URNs)
+    dropoff2,lose_s2m, lose_m2u, sitemap2urn, su = bucket_files2diff(bucket_url,URNs)
+    #sml=sitemap_len(sitemap) #can now use sitemap2urn to get sitemap into same ID space
+    sm=sitemap_list(sitemap) #can now use sitemap2urn to get sitemap into same ID space
+    #print(f'sitemap:{sm}')
+    sml=len(sm)
+    if sitemap2urn:
+        dropoff1,lose_s2s=drop1mapping(sm,sitemap2urn,su)
+        dropoff=f'{dropoff1} =>{dropoff2}'  
+        return dropoff,lose_s2s, lose_s2m, lose_m2u
+    else:
+        return dropoff2, lose_s2m, lose_m2u
+    #print(f'will get:{sml} urn2urn w/:{sitemap2urn}') #dbg
+    #smu=list(map(lambda s: sitemap2urn[s], sm))
+    #rest in drop1mapping now
+
+def is_str(v):
+    return type(v) is str
+
+def is_list(v):
+    return type(v) is list
+
+#should be setup w/o sitemap, to get it from PROV ;no bc won't necc have mapping for something that didn't parse
+
+#Will want to send in sitemap(url) and compare w/that gleaned from prov, so whatever prov didn't get was is a url to be checked
+def sitemap_dropoff(sitemap_url=None,bucket_url=None): #bucket to get prov's version
+    "figure out which sitemap URLs that need checking"
+    if sitemap_url:
+        sm=sitemap_list(sitemap_url) #can now use sitemap2urn to get sitemap into same ID space
+    else:
+        print(f'sitemap_dropoff no sitemap_url:{sitemap_url}')
+        sm=[]
+    if bucket_url:
+        sitemap_l=prov2sitemap(bucket_url) #this gives the list of them, which most fncs expect the sitemap_url
+    else:
+        print(f'sitemap_dropoff no bucket_url:{bucket_url}')
+        sitemap_l=[]
+    lose_s2s=list_diff_dropoff(sitemap_l,sm) #check_sm_urls
+    sml=len(sm)
+    lsl=len(lose_s2s) #should= sml- ml from above
+    dropoff1=f'sitemap:{sml}-{lsl}:{lose_s2s}'  
+    if dbg:
+        print(f'use this dropoff1:{dropoff1}')
+    return sitemap_l, sm, dropoff1
+
+def crawl_dropoff(sitemap,bucket_url,endpoint):
+    "show counts at each stage, and URN diffs when can"
+    if not sitemap:
+        sitemap=prov2sitemap(bucket_url) #this gives the list of them, which most fncs expect the sitemap_url
+    #URNs=get_graphs_list(endpoint)  #that are in the endpoint, not the expected
+    URNs=get_graphs_tails(endpoint)  #that are in the endpoint, not the expected
+    #dropoff2,lose_s2m, lose_m2u = bucket_files2diff(bucket_url,URNs)
+    #dropoff2,lose_s2m, lose_m2u, sitemap2urn = bucket_files2diff(bucket_url,URNs)
+    dropoff2,lose_s2m, lose_m2u, sitemap2urn, su = bucket_files2diff(bucket_url,URNs)
+    #sml=sitemap_len(sitemap) #can now use sitemap2urn to get sitemap into same ID space
+    #if not sitemap: #could warn here
+    if not sitemap: 
+        print(f'crawl_dropoff, no sitemap for:{bucket_url}')
+        return None
+    #elif is_str(sitemap): #could be a sep if
+    if is_str(sitemap): 
+        if dbg:
+            print(f'=using sitemap str:{sitemap}')
+        else:
+            print(f'using sitemap str')
+        sm=sitemap_list(sitemap) #can now use sitemap2urn to get sitemap into same ID space
+    else:
+        if dbg:
+            print(f'using sitemap list:{sitemap}')
+        else:
+            smul=len(sitemap)
+            print(f'using sitemap list:{smul}')
+        sm=sitemap #if from prov2sitemap
+    #print(f'sitemap:{sm}')
+    sml=len(sm)
+    if sitemap2urn: #was able to get PROV..
+      # dropoff,lose_s2s=drop1mapping(sm,sitemap2urn) #only call in variant above where code below goes away
+        #print(f'will get:{sml} urn2urn w/:{sitemap2urn}') #dbg
+        #smu=list(map(lambda s: sitemap2urn[s], sm))
+        smu=list(map(lambda s: sitemap2urn.get(s), sm)) #used prov mapping to gen test sitemap
+        if dbg:
+            print(f'URN/UUIDs for sitemaps:{smu}')             #need to get same sitemap, &use map for cmp:
+        #smu2=list(map(lambda s: s.split(':')[-1],smu))
+        smu2=list(map(lambda s: s if not s else s.split(':')[-1],smu))
+        if dbg:
+            print(f'URN/UUIDs for sitemaps:{smu2}')             #need to get same sitemap, &use map for cmp:
+        lose_s2s=list_diff_dropoff(smu2,su) 
+        lsl=len(lose_s2s) #should= sml- ml from above
+        if dbg:
+            print(f'lose_s2s:{lose_s2s}') #will need to map this back to the sitemap url ;if it was in prov
+        ##lose_s2m=list_diff_dropoff(su,mu), from above
+        #dropoff=f'sitemap:{sml} =>{dropoff2}'  #pull sl, to calc dss=sml-sl
+        #print(f'=Sitemap-count:{sml}, Error count:{ls1}, missing:{loose_s2s}') #dropoff should be in the next one
+        print(f'=Sitemap-count:{sml}') #dropoff should be in the next one
+        sl=len(smu) #url we get from prov are once it gets run into summoned
+        print(f'=Summoned-count:{sl}, Error count:{lsl}, missing:{lose_s2s}')
+        dropoff=f'sitemap:{sml}-{lsl}:{lose_s2s} =>{dropoff2}'  
+        #dropoff=f'sitemap:{sml}-{dss}=>{dropoff2}' #can't get lose_s2s w/o PROV sitemap URLs to UUID mapping  
+        #return dropoff,lose_s2m, lose_m2u
+        return dropoff,lose_s2s, lose_s2m, lose_m2u
+    else:
+        #return dropoff2, lose_s2m, lose_m2u
+        return dropoff2, None, lose_s2m, lose_m2u
+
+#could then take these loss lists, and map over w/ check_urn_ jsonld|rdf
+ #lose_s2m would only still have summoned, so could check_urn_jsonld
+ #lose_m2u would only still have milled, so could check_urn_rdf
+def spot_crawl_dropoff(sitemap,bucket_url,endpoint):
+    "when have spot gold stnd, can also check on that"
+    #dropoff,lose_s2m, lose_m2u = crawl_dropoff(sitemap,bucket_url,endpoint)
+    dropoff,lose_s2s,lose_s2m, lose_m2u = crawl_dropoff(sitemap,bucket_url,endpoint)
+    if not is_list(lose_s2m): #empty list would trip this off
+        print(f'spot_ crawl_dropoff, none4lose, bad:{bucket_url}')
+        return None, None, None, None, None, None
+    s_check=list(map(check_urn_jsonld,lose_s2m))
+    m_check=list(map(check_urn_rdf,lose_m2u))
+    #return dropoff,lose_s2m, s_check, lose_m2u, m_check 
+    return dropoff,lose_s2s, lose_s2m, s_check, lose_m2u, m_check 
+    #could have map interleave URN w/True=ok or diff
+    #return dropoff,lose_s2m, lose_m2u
+
+#turns out reading PROV to get sitemap<->UUID's in summoned, also gives us the sitemap run
+#def tsc(sitemap=None,bucket_url=None,endpoint=None):
+def tsc(sitemap=None,bucket_url=None,endpoint="https://graph.geocodes-dev.earthcube.org/blazegraph/namespace/citesting/sparql"):
+    "test spot_crawl_dropoff"
+    if not endpoint:
+        global testing_endpoint
+        endpoint = testing_endpoint
+    if not bucket_url:
+        global ci_url
+        bucket_url = ci_url
+    print(f'=s3_endpoint:{bucket_url}')
+    print(f'=graph_endpoint:{endpoint}')
+    sitemap_l, sm, dropoff1 = sitemap_dropoff(sitemap,bucket_url) #will still get sitemap_l if no sitemap url given
+    if not sitemap: #moved into crawl_dropoff, keep here/in case
+        ##sitemap2urn, urn2sitemap, sitemap=prov2mappings(..)
+        #sitemap=prov2sitemap(bucket_url) #this gives the list of them, which most fncs expect the sitemap_url
+        sitemap=sitemap_l
+    if not sitemap:
+        print("did not get sitemap from prov so go w/deflt")
+        sitemap="http://geocodes.ddns.net/ec/test/sep/sitemap.xml"
+    print(f'=sitemap:{sitemap}')
+    return spot_crawl_dropoff(sitemap,bucket_url,endpoint)
+
+def tsc2__(sitemap2="http://geocodes.ddns.net/ec/test/sitemap.xml",bucket_url2=None,endpoint2=None):
+    "same test but send in sitemap vs get it from prov"
+    tsc(sitemap=sitemap2,bucket_url=bucket_url2,endpoint=endpoint2)
+#old get rid of
+def tsc2_(bucket_url=None,endpoint2="https://graph.geocodes-dev.earthcube.org/blazegraph/namespace/citesting2/sparql"):
+    "for mb_ci setup which uses unused citesting2 bucket&endpoint"
+    if not bucket_url:
+        global ci_url2
+        bucket_url = ci_url2
+    tsc(None,bucket_url,endpoint=endpoint2)
+
+def tsc2(sitemap=None,bucket_url=None,endpoint="https://graph.geocodes-dev.earthcube.org/blazegraph/namespace/citesting2/sparql"):
+    "as is being used in spot_test/report on geocodes-dev now" #still need to deal w/milled dissapearing in a few places
+    return tsc(sitemap,bucket_url,endpoint)
+
+#def tsc3(sitemap="http://geocodes.ddns.net/ec/test/sep/sitemap.xml",bucket_url=None,
+def tsc3(sitemap="https://raw.githubusercontent.com/MBcode/ec/master/test/sitemap.xml",bucket_url=None,
+        endpoint="https://graph.geocodes-dev.earthcube.org/blazegraph/namespace/citesting2/sparql"):
+    "as is being used in spot_test/report on geocodes-dev now" #still need to deal w/milled dissapearing in a few places
+    return tsc(sitemap,bucket_url,endpoint)

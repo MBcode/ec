@@ -1,17 +1,16 @@
-# From [ingestTesting.md](https://github.com/MBcode/ec/blob/master/test/ingestTesting.md) 
-### .md version derived from .ipynb version, with a focus on documentation only, and adding diagrams
+# From [ingestTesting.md](https://github.com/MBcode/ec/blob/master/test/ingestTesting.md) now split out and focusing on [testing.md](testing.md) 
+### These .md version derived from [.ipynb](ingesttesting.ipynb) version, with a focus on documentation only, and adding diagrams
 
-Has a few parts, that the doc could be broken into:
+Here are the parts that the doc was broken into:
 
-1) How the [counts.md](https://github.com/MBcode/ec/blob/master/test/counts.md) [code](http://geocodes.ddns.net/ec/test/counts/?C=M;O=D) from the repo-sitemaps sometimes fall off in the LD-cache jsonld&ntriples, then also not getting into the endpoint
-2) Then from the original cut of spot testing, but [now just new code and img below=testing.md](https://github.com/MBcode/ec/blob/master/test/testing.md); w/rewrite to just focus on that
+1) See how the [counts.md](https://github.com/MBcode/ec/blob/master/test/counts.md) [code](http://geocodes.ddns.net/ec/test/counts/?C=M;O=D) from the repo-sitemaps can fall off in the LD-cache(jsonld&ntriples), then while getting into the endpoint
+2) Then from the original cut out spot testing [sec2.md](sec2.md), then reworked with [just new code and img below = testing.md](https://github.com/MBcode/ec/blob/master/test/testing.md); w/rewrite to just focus on that
 3) How to best [sample.md](https://github.com/MBcode/ec/blob/master/test/sample.md) from the sitemaps, which has become a test set, w/the hash naming in ec/test/standard/ summoned&milled
 
-### Got end-to-end expected [sparql](standard/qry1.txt)-to->[df](standard/queryResults1.csv)/[URNs](https://github.com/MBcode/ec/blob/master/test/standard/milled/geocodes_demo_datasets/URNs.txt), for 1st comparison below
-next I use diff in df to find missing URNs, and look in LD-cache for them (bc of gleaner naming)
-Check both jsonld and other rdf, with standard values
-in [testing.md](https://github.com/MBcode/ec/blob/master/test/ingestTesting.md) sec 2, still have dictdiff and rdflib graph cmp
-but now also have output from [blabel](https://github.com/aidhog/blabel/) that removes BlankNodes+some dups, for easier nt file comparison
+
+### Below is an overview that is mostly on CI spot testing: 
+being reworked in  [testing.md](testing.md) to better fit actual flow
+
 
 ## what gets passed into the Notebook
 This should be read from/passed to the notebook. Suggest as a JSON structure. Needs to be short and Hashcoded url
@@ -81,7 +80,13 @@ flowchart LR
   JsonLD --> Nabu --> NGRPH(Named Graphs) --> QUADS
   TESTMAN --> TESTQUERY[[SPARQL-Query ]]  --> DLQUERY
 ```
+This diagram changes a lot in: [testing.md](testing.md).  
+The others also differ from present flow, but could be made to work more that way.
+Though might have some gleaner/nabu errors
 
+See [testing.md](testing.md) for a data focused spot testing flow, that shows the falloff from expected results
+
+See [counts.md](counts.md) for falloff when there are not expected results to compare (regular crawl)
  
 ## Gleaner
 ## Gleaner Tests
@@ -206,6 +211,14 @@ flowchart TD
 
 
 ## Functional  Conversion Testing
+
+### Also in [Sec2](sec2.md): spot [testing.md)(testing.md)
+### Got end-to-end expected [sparql](standard/qry1.txt)-to->[df](standard/queryResults1.csv)/[URNs](https://github.com/MBcode/ec/blob/master/test/standard/milled/geocodes_demo_datasets/URNs.txt), for 1st comparison below
+next I use diff in df to find missing URNs, and look in LD-cache for them (bc of gleaner naming)
+Check both jsonld and other rdf, with standard values
+in [ingestTesting.md](https://github.com/MBcode/ec/blob/master/test/ingestTesting.md) sec 2, still have dictdiff and rdflib graph cmp
+but now also have output from [blabel](https://github.com/aidhog/blabel/) that removes BlankNodes+some dups, for easier nt file comparison
+
 ```mermaid
 flowchart TD
 U[sitemap gh-URLs] -- crawl --> J[jsonLD file] -- convert --> G[.nt or .nq version] -- load --> T[test_endpoint];
@@ -229,6 +242,8 @@ We have a few test jsonld instances in
  
 ### it also mentions monitoring, incl. crontab restarts and a more frequent check+log with check.py
 Added slack app w/webhook url, so nagios can be sent to ecotech channel so we have more eyes on it
+
+### Re-worked diagrams with more on the gleaner calls from [here](https://github.com/earthcube/ec/tree/dev_dv/test), [working in](http://geocodes.ddns.net/ec/test/a22) soon
 
 
 ### other docs started [here](https://github.com/MBcode/ec/tree/master/doc)
