@@ -1920,6 +1920,7 @@ def bucket_files(url):
         print(f'no bucket xml for files:{url}')
         return None
 
+LD_cache_base=None
 LD_cache_files=None
 LD_cache_types=None
 #output: {'milled/geocodes_demo_datasets': 25, 'orgs': 1, 'prov/geocodes_demo_datasets': 31, 'results/runX': 1, 'summoned/geocodes_demo_datasets': 25}
@@ -1929,8 +1930,8 @@ def set_bucket_files(bucket=None):
     if not bucket:
         global ci_url
         bucket=ci_url
-    global LD_cache_files
-    global LD_cache_types
+    global LD_cache_base, LD_cache_files, LD_cache_types
+    LD_cache_base=bucket
     LD_cache_files=bucket_files(bucket)
     LD_cache_types={}
     for fn in LD_cache_files:
@@ -1942,6 +1943,17 @@ def set_bucket_files(bucket=None):
             count = 1
         LD_cache_types[base] = count
     return LD_cache_types
+
+def get_bucket_files(base_type):
+    "ask for base_type= summoned,milled,prov,.. get all full file paths"
+    global LD_cache_base, LD_cache_files, LD_cache_types
+    if not LD_cache_files:
+        set_bucket_files()
+    fk = next(k for k,v in LD_cache_types.items() if base_type in k) #full key
+    print(f'get:{base_type} has {fk}')
+    fe=collect_pre_(LD_cache_files,base_type) #end of file paths
+    ff=list(map(lambda f: f'{LD_cache_base}/{f}', fe)) #full file paths
+    return ff
 
 def bucket_files2(url):
     "url to tuple of summoned+milled lists"
