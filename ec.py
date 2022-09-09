@@ -2,7 +2,7 @@
 # some on (new)direction(s) at: https://mbcode.github.io/ec
 #=this is also at gitlab now, but won't get autoloaded until in github or allow for gitlab_repo
  #but for cutting edge can just get the file from the test server, so can use: get_ec()
-dbg=None
+dbg=None #can use w/logging as well soon, once there is more need&time
 rdf_inited,rdflib_inited,sparql_inited=None,None,None
 endpoint=None
 testing_endpoint="http://ideational.ddns.net:3030/geocodes_demo_datasets/sparql"
@@ -401,6 +401,9 @@ def get_urn_diffs(endpoint="http://ideational.ddns.net:3030/geocodes_demo_datase
     print(f'find_urn_diffs:{endpoint},{gold_URNs}')
     dfu=find_urn_diffs(endpoint,gold_URNs)
     return dfu
+
+#spot_ crawl_dropoff below, will use new LD_cache_ .. files and call these helper functions in the end
+ #non spot will still need integrity checks like in original ingestTesting.md &some shacl
 
 #'validation'  ;check consituent fncs before switch over to this one
 def check_urn_diffs(endpoint="http://ideational.ddns.net:3030/geocodes_demo_datasets/sparql", 
@@ -1920,6 +1923,7 @@ def bucket_files(url):
         print(f'no bucket xml for files:{url}')
         return None
 
+#once I need this for >1 bucket I will turn it into a class, and make instances
 LD_cache_base=None
 LD_cache_files=None
 LD_cache_types=None
@@ -1976,9 +1980,12 @@ def prov2site_mappings():
         l1=len(UUIDs2site_urls)
         l2=len(UUIDs2site_urls)
         l3=len(prov_sitemap)
-        print(f'set:{l1} UUIDs2site_urls,{l2} UUIDs2site_urls,{l3} prov_sitemap')
+        ss=f'set:{l1} UUIDs2site_urls,{l2} UUIDs2site_urls,{l3} prov_sitemap'
+        print(ss)
+        return ss
     else:
         print(f'no prov for site_mappings')
+        return None #so can skip out of dependcies
 
 #def prov2sitemap(bucket_url):
 def prov2sitemap(bucket_url,pu=None):
