@@ -8,6 +8,9 @@ endpoint=None
 testing_endpoint="http://ideational.ddns.net:3030/geocodes_demo_datasets/sparql"
 testing_bucket="citesting"
 dflt_endpoint = "https://graph.geocodes.earthcube.org/blazegraph/namespace/earthcube/sparql"
+#from 'sources' gSheet: can use for repo:file_leaf naming/printing
+base_url2repo ={"https://raw.githubusercontent.com/earthcube/GeoCODES-Metadata/main/metadata/Dataset/json": 
+        "geocodes_demo_datasets"}
 local=None
 def laptop(): #could call: in_binder
     "already have libs installed"
@@ -71,6 +74,7 @@ def ndtq(name=None,datasets=None,queries=None,tools=None):
 #install_recipy()
 #import recipy
 def first(l):
+    "get the first in an iterable"
     from collections.abc import Iterable
     if isinstance(l,list):
         return l[0]
@@ -80,34 +84,40 @@ def first(l):
         return l
 
 def flatten(xss): #stackoverflow
+    "make list of lists into 1 flat list"
     return [x for xs in xss for x in xs]
 
 #from qry.py
 def get_txtfile(fn):
+    "ret str from file"
     with open(fn, "r") as f:
         return f.read()
 
 def get_jsfile2dict(fn):
+    "get jsonfile as dict"
     #s=get_txtfile(fn)
     #return json.loads(s)
     with open(fn, "r") as f:
         return json.load(f)
 
 def put_txtfile(fn,s,wa="w"):
+    "filename to dump string to"
     #with open(fn, "w") as f:
     with open(fn, "a") as f:
         return f.write(s)
 
-def date2log():
+def date2log(): #could use now to put on same line, but this breaks it apart
     cs="date>>log"
     os.system(cs)
 
 def add2log(s):
+    "logging" #will use lib
     date2log()
     fs=f'[{s}]\n'
     put_txtfile("log",fs,"a")
 
 def os_system(cs):
+    "run w/o needing ret value"
     os.system(cs)
     add2log(cs)
 
@@ -119,28 +129,42 @@ def os_system_(cs):
 
 #start adding more utils, can use to: fn=read_file.path_leaf(url) then: !head fn
 def path_leaf(path):
+    "everything after the last /"
     import ntpath
     head, tail = ntpath.split(path)
     return tail or ntpath.basename(head)
 
 def path_base_leaf(path):
+    "like path_leaf but gives base 1st"
     import ntpath
     head, tail = ntpath.split(path)
     if not tail:
         tail = ntpath.basename(head)
     return head, tail
 
+def replace_base(path,mydict=base_url2repo,sep=":"):
+    "use URI to context:, eg. repo:leaf.rdf"
+    base,leaf=path_base_leaf(path)
+    new_base=mydict.get(base)
+    if new_base:
+        return f'{new_base}{sep}{leaf}'
+    else:
+        return path
+
 def file_ext(fn):
+    "the ._part of the filename"
     st=os.path.splitext(fn)
     add2log(f'fe:st={st}')
     return st[-1]
 
 def file_base(fn):
+    "the base part of base.txt"
     st=os.path.splitext(fn)
     add2log(f'fb:st={st}')
     return st[0]
 
 def file_leaf_base(path):
+    "base of the leaf file"
     pl=path_leaf(path)
     return file_base(pl)
 
@@ -1891,6 +1915,8 @@ def prov2mappings(urls): #use urls from p above
         key,value=prov2mapping(url)
         sitemap2urn[key]=value
         urn2sitemap[value]=key
+        value2=value.split(':')[-1]   #so can also lookup form UUID w/o urn:... before it
+        urn2sitemap[value2]=key #will be in same dict, so can lookup by either
     sitemap=list(sitemap2urn.keys())
     if dbg:
         print(f'prov-sitemap:{sitemap}')
@@ -1965,6 +1991,12 @@ def set_bucket_files(bucket=None):
         LD_cache_types[base] = count
     return LD_cache_types
 
+def get_full_key(partial_key,mydict):
+    "get key that has str in it"
+    #fk = next(k for k,v in LD_cache_types.items() if base_type in k) #full key
+    fk = next(k for k,v in mydict.items() if partial_key in k) #full key
+    return fk
+
 def get_bucket_files(base_type):
     "ask for base_type= summoned,milled,prov,.. get all full file paths"
     global LD_cache_base, LD_cache_files, LD_cache_types
@@ -1979,8 +2011,25 @@ def get_bucket_files(base_type):
 site_urls2UUIDs=None
 UUIDs2site_urls=None
 prov_sitemap=None
+
+def uuid2url(uuid):
+    "map from uuid alone to crawl url"
+    url=UUIDs2site_urls.get(uuid)
+    return url
+
+def uuid2repo_url(uuid):
+    "uuid2url w/shorter repo:leaf.json"
+    url=uuid2url(uuid)
+    if url:
+        return replace_base(url)
+    else:
+        return url
+#uuid2repo_url("09517b808d22d1e828221390c845b6edef7e7a40")
+#'geocodes_demo_datasets:MB_amgeo_data-01-06-2013-17-30-00.json'
+
 #def prov2site_mappings():
 def set_prov2site_mappings():
+    "use cached PROV to make mappings"
     #global LD_cache_base, LD_cache_files, LD_cache_types
     pu=get_bucket_files("prov")
     if pu:
