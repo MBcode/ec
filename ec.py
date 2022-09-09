@@ -127,6 +127,11 @@ def os_system_(cs):
     add2log(cs)
     return s
 
+def urn_leaf(s):
+    "last part of : sep string" 
+    leaf = s if not s else s.split(':')[-1]
+    return leaf
+
 #start adding more utils, can use to: fn=read_file.path_leaf(url) then: !head fn
 def path_leaf(path):
     "everything after the last /"
@@ -2012,6 +2017,13 @@ site_urls2UUIDs=None
 UUIDs2site_urls=None
 prov_sitemap=None
 
+#def URLsUUID(url):
+def urn2uuid(url):
+    "pull out the UUID from w/in the URL" 
+    s=urn_leaf(url)
+    leaf_base = s if not s else file_base(s)
+    return leaf_base
+
 def uuid2url(uuid):
     "map from uuid alone to crawl url"
     url=UUIDs2site_urls.get(uuid)
@@ -2024,8 +2036,21 @@ def uuid2repo_url(uuid):
         return replace_base(url)
     else:
         return url
+
 #uuid2repo_url("09517b808d22d1e828221390c845b6edef7e7a40")
 #'geocodes_demo_datasets:MB_amgeo_data-01-06-2013-17-30-00.json'
+
+def is_urn(u):
+    if not is_str(u):
+        print("might need to set LD_cache")
+        return None
+    return u.startswith("urn:")
+
+def to_repo_url(u):
+    "uuid or urn to repo_url"
+    if is_urn(u):
+        u=urn2uuid(u)
+    return uuid2repo_url(u)
 
 #def prov2site_mappings():
 def set_prov2site_mappings():
