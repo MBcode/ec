@@ -1998,8 +1998,16 @@ def set_prov2site_mappings():
         print(f'no prov for site_mappings')
         return None #so can skip out of dependcies
 
+#def prov2sitemap(bucket_url,pu=None):
+def prov2sitemap(bucket_url=None,pu=None): #backward compat4a bit
+    "return prov_sitemap, parse prov if not there"
+    if not prov_sitemap:
+        set_prov2site_mappings()
+    return prov_sitemap
+
 #def prov2sitemap(bucket_url):
-def prov2sitemap(bucket_url,pu=None):
+#def prov2sitemap(bucket_url,pu=None):
+def prov2sitemap_(bucket_url,pu=None):
     "parse bucket prov2get sitemap&it's mappings"
     fi=bucket_files(bucket_url)
     if not fi:
@@ -2043,9 +2051,17 @@ def bucket_files3(url=None): #might try using above w/this for just a bit
     p=get_bucket_files("prov")
     #pu=list(map(lambda fp: f'{url}/{fp}', p))
     global site_urls2UUIDs, UUIDs2site_urls, prov_sitemap
+    if not prov_sitemap:
+        #prov_sitemap=prov2sitemap()
+        prov2sitemap()
+    psl=len(prov_sitemap)
+    print(f'bf3,prov_sitemap:{psl}')
     sitemap2urn=site_urls2UUIDs
     urn2sitemap=UUIDs2site_urls
     return s,m,sitemap2urn,urn2sitemap #not sending prov_sitemap yet
+
+#going fwd, focus on being able2keep each stage in assoc, so after list_diff still know which original url started it off
+ #this is in the metadata for the file, but also in the prov mappings
 
 #def bucket_files3(url=None):
 def bucket_files3_(url=None):
