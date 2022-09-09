@@ -26,6 +26,12 @@ def now():
     dt_string = now.strftime("%Y/%m/%d %H:%M:%S")
     return dt_string
 
+def is_str(v):
+    return type(v) is str
+
+def is_list(v):
+    return type(v) is list
+
 #pagemil parameterized colab/gist can get this code via:
 #with httpimport.github_repo('MBcode', 'ec'):   
 #  import ec
@@ -1604,6 +1610,17 @@ def get_graph_per_repo(grep="milled",endpoint=None,dump_file="graphs.csv"):
     cs=f"cut -d':' -f3,4 {dump_file} | grep milled | sort | uniq -c |sort -n"
     return os_system_(cs)
 
+def urn_tail(urn):
+    return  urn if not urn else urn.split(':')[-1]
+
+def urn_tails(URNs):
+    return list(map(lambda s: s if not s else s.split(':')[-1],URNs))
+    #return list(map(urn_tail,URNs))
+
+def get_graphs_tails(endpoint):
+    URNs=get_graphs_list(endpoint)
+    return urn_tails(URNs)
+
 #should get graph.geo.. from https://dev.geocodes.earthcube.org/#/config dynamically
  #incl the default path for each of those other queries, ecrr, ;rdf location as well
 #=========append fnc from filtereSPARQLdataframe.ipynb
@@ -1959,13 +1976,6 @@ def get_bucket_files(base_type):
     ff=list(map(lambda f: f'{LD_cache_base}/{f}', fe)) #full file paths
     return ff
 
-def bucket_files2(url):
-    "url to tuple of summoned+milled lists"
-    fi=bucket_files(url)
-    s=collect_pre_(fi,"summoned")
-    m=collect_pre_(fi,"milled")
-    return s,m
-
 site_urls2UUIDs=None
 UUIDs2site_urls=None
 prov_sitemap=None
@@ -2008,7 +2018,20 @@ def prov2sitemap(bucket_url,pu=None):
         print("bad prov2sitemap_mappings, on the:{pul}")
     return sitemap #for now
 
-#if ret more could use in fnc below
+#if ret more could use in fnc/s below
+
+#will not need these other bucket_ fncs soon
+ #will make spot_ crawl_dropoff something that could more easily fit
+ #into a workflow check, alongside each stage, just accessing the state
+ #on each side and getting the diff, for a report
+ #incl. a (dbg) version aligned as a csv/spreadsheet
+
+def bucket_files2(url):
+    "url to tuple of summoned+milled lists"
+    fi=bucket_files(url)
+    s=collect_pre_(fi,"summoned")
+    m=collect_pre_(fi,"milled")
+    return s,m
 
 def bucket_files3(url=None):
     "url to summoned+milled,prov lists"
@@ -2087,17 +2110,6 @@ def bucket_files2diff(url,URNs=None):
 #don't need to have a diff version, bc bucket_files3 looks up PROV even w/o a sitemap
 #def bucket_files3diff(sitemap,url,URNs=None):
 
-def urn_tail(urn):
-    return  urn if not urn else urn.split(':')[-1]
-
-def urn_tails(URNs):
-    return list(map(lambda s: s if not s else s.split(':')[-1],URNs))
-    #return list(map(urn_tail,URNs))
-
-def get_graphs_tails(endpoint):
-    URNs=get_graphs_list(endpoint)
-    return urn_tails(URNs)
-
 #break out all the code in crawl_dropoff that deals w/sitemap to summoned w/mapping
 #def drop1mapping(sm,sitemap2urn):
 def drop1mapping(sm,sitemap2urn,su): #want to but not used yet; still in crawl_dropoff
@@ -2145,12 +2157,6 @@ def crawl_dropoff_(sitemap,bucket_url,endpoint):
     #print(f'will get:{sml} urn2urn w/:{sitemap2urn}') #dbg
     #smu=list(map(lambda s: sitemap2urn[s], sm))
     #rest in drop1mapping now
-
-def is_str(v):
-    return type(v) is str
-
-def is_list(v):
-    return type(v) is list
 
 #should be setup w/o sitemap, to get it from PROV ;no bc won't necc have mapping for something that didn't parse
 
