@@ -127,7 +127,7 @@ def os_system_(cs):
     add2log(cs)
     return s
 
-def urn_leaf(s):
+def urn_leaf(s): #like urn_tail
     "last part of : sep string" 
     leaf = s if not s else s.split(':')[-1]
     return leaf
@@ -1640,6 +1640,7 @@ def get_graph_per_repo(grep="milled",endpoint=None,dump_file="graphs.csv"):
     return os_system_(cs)
 
 def urn_tail(urn):
+    "like urn_leaf"
     return  urn if not urn else urn.split(':')[-1]
 
 def urn_tails(URNs):
@@ -1647,6 +1648,7 @@ def urn_tails(URNs):
     #return list(map(urn_tail,URNs))
 
 def get_graphs_tails(endpoint):
+    "just the UUIDs of the URNs in the graph"
     URNs=get_graphs_list(endpoint)
     return urn_tails(URNs)
 
@@ -2052,6 +2054,47 @@ def to_repo_url(u):
         u=urn2uuid(u)
     return uuid2repo_url(u)
 
+def fill_repo_url(url,mydict,val="ok"):
+    "url w/uuid ->repo:leaf as key in dict"
+    key=to_repo_url(url) 
+    mydict[key]=val
+
+def fill_repo_urls(urls,mydict,val="ok"):
+    map(lambda u: fill_repo_url(u,mydict,val), urls)
+
+def get_vals(key,dl):
+    "lookup key in a list of dicts"
+    return list(map(lambda d: d.get(key), dl))
+
+#use this as the key for a dict for every saved state of the workflow
+ #so can put out a csv, starting w/this, as it is made from the starting sitemap-url
+ #but then for summoned, and if there milled, and then quads in the graph
+ #for the ones that don't get filled in, just ret a comma
+#So from the processed sitemap-url's xml, get the long form, then make short if possible
+ #use this as the 1st column, and iterate over the list the same way; 
+  #after that states dict has been filled up as much as possilbe
+#have s m, then get_graphs  for the other saved states ;can do list-diff but csv will show missing already
+#def csv_dropoff(sitemap_url): #maybe add spot test output later
+#this needs LD_cache full 1st, can run bucket_files3 or..
+def csv_dropoff(sitemap_url="https://earthcube.github.io/GeoCODES-Metadata/metadata/Dataset/allgood/sitemap.xml",
+        endpoint="https://graph.geocodes-dev.earthcube.org/blazegraph/namespace/citesting2/sparql"):
+    sm=sitemap_list(sitemap_url) #can now use sitemap2urn to get sitemap into same ID space
+    sm_ru=list(map(to_repo_url,sm)) #acts as key for each dict
+    sd={}
+    md={}
+    gd={}
+    dl=[sd,md,gd]
+    s=get_bucket_files("summoned")
+    m=get_bucket_files("milled")
+    #p=get_bucket_files("prov")
+    g=get_graphs_tails(endpoint)
+    fill_repo_urls(s,sd)
+    fill_repo_urls(m,md)
+    fill_repo_urls(g,gd)
+    return list(map(lambda k: get_vals(k, dl), sm_ru))
+#right now missing something/finish:
+#[[None, None, None], [None, None, None], [None, None, None], [None, None, None], [None, None, None], [None, None, None], [None, None, None], [None, None, None], [None, None, None]]
+
 #def prov2site_mappings():
 def set_prov2site_mappings():
     "use cached PROV to make mappings"
@@ -2107,7 +2150,7 @@ def prov2sitemap_(bucket_url,pu=None):
  #will make spot_ crawl_dropoff something that could more easily fit
  #into a workflow check, alongside each stage, just accessing the state
  #on each side and getting the diff, for a report
- #incl. a (dbg) version aligned as a csv/spreadsheet
+ #incl. a (dbg) version aligned as a csv/spreadsheet ;algo above
 
 def bucket_files2(url):
     "url to tuple of summoned+milled lists"
