@@ -2058,9 +2058,36 @@ def fill_repo_url(url,mydict,val="ok"):
     "url w/uuid ->repo:leaf as key in dict"
     key=to_repo_url(url) 
     mydict[key]=val
+    print(mydict)
+    return mydict
 
 def fill_repo_urls(urls,mydict,val="ok"):
+    ul=len(urls)
+    print(f'frus:{ul}')
     map(lambda u: fill_repo_url(u,mydict,val), urls)
+    print(mydict)
+    return mydict
+#csv_dropoff was missing something ;bc not pass by ref
+#[[None, None, None], [None, None, None], [None, None, None], [None, None, None], [None, None, None], [None, None, None], [None, None, None], [None, None, None], [None, None, None]]
+
+def urls2idict(urls,val="ok"):
+    mydict={}
+    ul=len(urls)
+    print(f'u2d:{ul}')
+    for url in urls:
+        key=to_repo_url(url) 
+        mydict[key]=val
+    print(mydict)
+    return mydict
+#csv_ states,sm:25,s:25,m:25,g:6
+#u2d:25
+#{None: 'ok'}
+#u2d:25
+#{None: 'ok'}
+#u2d:6
+#{None: 'ok'}
+#[['ok', 'ok', 'ok'], ['ok', 'ok', 'ok'], ['ok', 'ok', 'ok'], ['ok', 'ok', 'ok'], ['ok', 'ok', 'ok'], ['ok', 'ok', 'ok'], ['ok', 'ok', 'ok'], ['ok', 'ok', 'ok'], ['ok', 'ok', 'ok']]
+#better, but not getting the key/find/fix that
 
 def get_vals(key,dl):
     "lookup key in a list of dicts"
@@ -2080,20 +2107,30 @@ def csv_dropoff(sitemap_url="https://earthcube.github.io/GeoCODES-Metadata/metad
         endpoint="https://graph.geocodes-dev.earthcube.org/blazegraph/namespace/citesting2/sparql"):
     sm=sitemap_list(sitemap_url) #can now use sitemap2urn to get sitemap into same ID space
     sm_ru=list(map(to_repo_url,sm)) #acts as key for each dict
-    sd={}
-    md={}
-    gd={}
-    dl=[sd,md,gd]
+    #sd={}
+    #md={}
+    #gd={}
+    #dl=[sd,md,gd]
     s=get_bucket_files("summoned")
     m=get_bucket_files("milled")
     #p=get_bucket_files("prov")
     g=get_graphs_tails(endpoint)
-    fill_repo_urls(s,sd)
-    fill_repo_urls(m,md)
-    fill_repo_urls(g,gd)
+    sml=len(s)
+    sl=len(s)
+    ml=len(m)
+    gl=len(g)
+    print(f'csv_ states,sm:{sml},s:{sl},m:{ml},g:{gl}')
+    sd=urls2idict(s)
+    md=urls2idict(m)
+    gd=urls2idict(g)
+    #fill_repo_urls(s,sd)
+    #print(sd)
+    #fill_repo_urls(m,md)
+    #print(md)
+    #fill_repo_urls(g,gd)
+    #print(gd)
+    dl=[sd,md,gd]
     return list(map(lambda k: get_vals(k, dl), sm_ru))
-#right now missing something/finish:
-#[[None, None, None], [None, None, None], [None, None, None], [None, None, None], [None, None, None], [None, None, None], [None, None, None], [None, None, None], [None, None, None]]
 
 #def prov2site_mappings():
 def set_prov2site_mappings():
