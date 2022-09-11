@@ -1647,7 +1647,7 @@ def urn_tails(URNs):
     return list(map(lambda s: s if not s else s.split(':')[-1],URNs))
     #return list(map(urn_tail,URNs))
 
-def get_graphs_tails(endpoint):
+def gdet_graphs_tails(endpoint):
     "just the UUIDs of the URNs in the graph"
     URNs=get_graphs_list(endpoint)
     return urn_tails(URNs)
@@ -2032,6 +2032,7 @@ def uuid2url(uuid):
     url=UUIDs2site_urls.get(uuid)
     if not url:
         print(f'bad uuid2url:{uuid}')
+        return uuid
     return url
 
 def uuid2repo_url(uuid):
@@ -2041,7 +2042,7 @@ def uuid2repo_url(uuid):
         return replace_base(url)
     else:
         print(f'bad uuid2repo_url:{uuid}')
-        return url
+        return uuid
 #not getting this below now
 #uuid2repo_url("09517b808d22d1e828221390c845b6edef7e7a40")
 #'geocodes_demo_datasets:MB_amgeo_data-01-06-2013-17-30-00.json'
@@ -2094,15 +2095,13 @@ def fill_repo_url(url,mydict,val="ok"):
     mydict[key]=val
     print(mydict)
     return mydict
-
+#skip these, as not by ref/rm soon
 def fill_repo_urls(urls,mydict,val="ok"):
     ul=len(urls)
     print(f'frus:{ul}')
     map(lambda u: fill_repo_url(u,mydict,val), urls)
     print(mydict)
     return mydict
-#csv_dropoff was missing something ;bc not pass by ref
-#[[None, None, None], [None, None, None], [None, None, None], [None, None, None], [None, None, None], [None, None, None], [None, None, None], [None, None, None], [None, None, None]]
 
 def urls2idict(urls,val="ok"):
     mydict={}
@@ -2141,14 +2140,11 @@ def csv_dropoff(sitemap_url="https://earthcube.github.io/GeoCODES-Metadata/metad
         endpoint="https://graph.geocodes-dev.earthcube.org/blazegraph/namespace/citesting2/sparql"):
     sm=sitemap_list(sitemap_url) #can now use sitemap2urn to get sitemap into same ID space
     sm_ru=list(map(to_repo_url,sm)) #acts as key for each dict
-    #sd={}
-    #md={}
-    #gd={}
-    #dl=[sd,md,gd]
     s=get_bucket_files("summoned")
     m=get_bucket_files("milled")
     #p=get_bucket_files("prov")
-    g=get_graphs_tails(endpoint)
+    #g=get_graphs_tails(endpoint)
+    g=get_graphs_list(endpoint) #will strip ..urn: to uuid anyway
     #print(f'csv_ states,sm:{sm},s:{s},m:{m},g:{g}')
     print(f'sm:{sm}')
     print(f's:{s}')
@@ -2162,12 +2158,11 @@ def csv_dropoff(sitemap_url="https://earthcube.github.io/GeoCODES-Metadata/metad
     sd=urls2idict(s)
     md=urls2idict(m)
     gd=urls2idict(g)
-    #fill_repo_urls(s,sd)
-    #print(sd)
-    #fill_repo_urls(m,md)
-    #print(md)
-    #fill_repo_urls(g,gd)
-    #print(gd)
+    #these are getting set w/uuid keys, and want to_repo_url keys
+     #though UUIDs2site_urls should help map them ;whatever2 uuid, to_repo_url
+    print(f'sd:{sd}')
+    print(f'md:{md}')
+    print(f'gd:{gd}')
     dl=[sd,md,gd]
     return list(map(lambda k: get_vals(k, dl), sm_ru))
 
