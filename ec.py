@@ -2016,7 +2016,8 @@ def get_bucket_files(base_type):
     return ff
 
 site_urls2UUIDs=None
-UUIDs2site_urls=None
+urn2site_urls=None
+UUIDs2site_urls={} #uuid part of urn as key
 prov_sitemap=None
 
 #def URLsUUID(url):
@@ -2029,6 +2030,8 @@ def urn2uuid(url):
 def uuid2url(uuid):
     "map from uuid alone to crawl url"
     url=UUIDs2site_urls.get(uuid)
+    if not url:
+        print(f'bad uuid2url:{uuid}')
     return url
 
 def uuid2repo_url(uuid):
@@ -2037,10 +2040,17 @@ def uuid2repo_url(uuid):
     if url:
         return replace_base(url)
     else:
+        print(f'bad uuid2repo_url:{uuid}')
         return url
-
+#not getting this below now
 #uuid2repo_url("09517b808d22d1e828221390c845b6edef7e7a40")
 #'geocodes_demo_datasets:MB_amgeo_data-01-06-2013-17-30-00.json'
+
+def is_http(u):
+    if not is_str(u):
+        print("might need to set LD_cache")
+        return None
+    return u.startswith("http")
 
 def is_urn(u):
     if not is_str(u):
@@ -2048,11 +2058,35 @@ def is_urn(u):
         return None
     return u.startswith("urn:")
 
+def leaf(u):
+    if is_http(u):
+        return path_leaf(u)
+    elif is_urn:
+        return urn_leaf(u)
+    else:
+        print('no leaf:{u}')
+        return u
+
+def leaf_base(u):
+    lf=leaf(u)
+    if lf:
+        return file_base(lf)
+    else:
+        print('no leaf_base:{u}')
+        return lf
+
 def to_repo_url(u):
+    uuid=leaf_base(u)
+    return uuid2repo_url(uuid)
+
+def to_repo_url_(u):
     "uuid or urn to repo_url"
     if is_urn(u):
         u=urn2uuid(u)
     return uuid2repo_url(u)
+#this isn't ret anything
+#there are UUIDs from graph that should just go through
+ #though might want get.graphs w/ urn: returns
 
 def fill_repo_url(url,mydict,val="ok"):
     "url w/uuid ->repo:leaf as key in dict"
@@ -2115,6 +2149,11 @@ def csv_dropoff(sitemap_url="https://earthcube.github.io/GeoCODES-Metadata/metad
     m=get_bucket_files("milled")
     #p=get_bucket_files("prov")
     g=get_graphs_tails(endpoint)
+    #print(f'csv_ states,sm:{sm},s:{s},m:{m},g:{g}')
+    print(f'sm:{sm}')
+    print(f's:{s}')
+    print(f'm:{m}')
+    print(f'g:{g}')
     sml=len(s)
     sl=len(s)
     ml=len(m)
@@ -2138,12 +2177,22 @@ def set_prov2site_mappings():
     #global LD_cache_base, LD_cache_files, LD_cache_types
     pu=get_bucket_files("prov")
     if pu:
-        global site_urls2UUIDs, UUIDs2site_urls, prov_sitemap
+        global site_urls2UUIDs, urn2site_urls, UUIDs2site_urls, prov_sitemap
         #return prov2mappings(pu)
         #sitemap2urn,urn2sitemap,sitemap=prov2mappings(pu)
-        site_urls2UUIDs,UUIDs2site_urls,prov_sitemap=prov2mappings(pu)
+        #site_urls2UUIDs,UUIDs2site_urls,prov_sitemap=prov2mappings(pu)
+        site_urls2UUIDs,urn2site_urls,prov_sitemap=prov2mappings(pu)
+       #UUIDs2site_urls from urn2site_urls ;needs is_urn
+       #UUIDs2site_urls=list(map(urn2uuid,urn2site_urls));needs is_urn ;use next/or
+        for k,v in urn2site_urls.items(): #=list(map(urn2uuid,urn2site_urls));needs is_urn
+            k2=urn2uuid(k)
+            if k2:
+                UUIDs2site_urls[k2]=v
+            else:
+                print('bad k2 for:{k},{v}')
         l1=len(site_urls2UUIDs)
-        l2=len(UUIDs2site_urls)
+        #l2=len(UUIDs2site_urls)
+        l2=len(urn2site_urls)
         l3=len(prov_sitemap)
         ss=f'set:{l1} site_urls2UUIDs,{l2} UUIDs2site_urls,{l3} prov_sitemap'
         print(ss)
