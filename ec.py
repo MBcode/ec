@@ -9,8 +9,9 @@ testing_endpoint="http://ideational.ddns.net:3030/geocodes_demo_datasets/sparql"
 testing_bucket="citesting"
 dflt_endpoint = "https://graph.geocodes.earthcube.org/blazegraph/namespace/earthcube/sparql"
 #from 'sources' gSheet: can use for repo:file_leaf naming/printing
-base_url2repo ={"https://raw.githubusercontent.com/earthcube/GeoCODES-Metadata/main/metadata/Dataset/json": 
-        "geocodes_demo_datasets"}
+base_url2repo ={"https://raw.githubusercontent.com/earthcube/GeoCODES-Metadata/main/metadata/Dataset/json": "geocodes_demo_datasets",
+        "https://raw.githubusercontent.com/earthcube/GeoCODES-Metadata/main/metadata/Dataset/allgood": "geocodes_demo_datasets"
+        }
 local=None
 def laptop(): #could call: in_binder
     "already have libs installed"
@@ -2112,19 +2113,14 @@ def urls2idict(urls,val="ok"):
         mydict[key]=val
     print(mydict)
     return mydict
-#csv_ states,sm:25,s:25,m:25,g:6
-#u2d:25
-#{None: 'ok'}
-#u2d:25
-#{None: 'ok'}
-#u2d:6
-#{None: 'ok'}
-#[['ok', 'ok', 'ok'], ['ok', 'ok', 'ok'], ['ok', 'ok', 'ok'], ['ok', 'ok', 'ok'], ['ok', 'ok', 'ok'], ['ok', 'ok', 'ok'], ['ok', 'ok', 'ok'], ['ok', 'ok', 'ok'], ['ok', 'ok', 'ok']]
 #better, but not getting the key/find/fix that
 
 def get_vals(key,dl):
     "lookup key in a list of dicts"
-    return list(map(lambda d: d.get(key), dl))
+    rl= list(map(lambda d: d.get(key), dl))
+    rl.insert(0,key)
+    return rl
+#[['geocodes_demo_datasets:MB_amgeo_data-01-06-2013-17-30-00.json', 'ok', 'ok', None], ['geocodes_demo_datasets:MB_iris_syngine.json', 'ok', 'ok', None], ['geocodes_demo_datasets:MB_lipdverse_HypkanaHajkova2016.json', None, None, None], ['geocodes_demo_datasets:argo-20220707.json', 'ok', 'ok', None], ['geocodes_demo_datasets:argoSimple-v1Shapes.json', None, None, None], ['geocodes_demo_datasets:bcodmo1-20220707.json', 'ok', 'ok', None], ['geocodes_demo_datasets:bcodmo1.json', 'ok', 'ok', None], ['geocodes_demo_datasets:earthchem_1572.json', None, None, None], ['geocodes_demo_datasets:opentopo1.json', 'ok', 'ok', None]]
 
 #use this as the key for a dict for every saved state of the workflow
  #so can put out a csv, starting w/this, as it is made from the starting sitemap-url
@@ -2139,7 +2135,9 @@ def get_vals(key,dl):
 def csv_dropoff(sitemap_url="https://earthcube.github.io/GeoCODES-Metadata/metadata/Dataset/allgood/sitemap.xml",
         endpoint="https://graph.geocodes-dev.earthcube.org/blazegraph/namespace/citesting2/sparql"):
     sm=sitemap_list(sitemap_url) #can now use sitemap2urn to get sitemap into same ID space
-    sm_ru=list(map(to_repo_url,sm)) #acts as key for each dict
+    #sm_ru=list(map(to_repo_url,sm)) #acts as key for each dict #this goes2uuid but sm doens't have that
+    #sm_ru=list(map(replace_base,sm)) #acts as key for each dict ;need v of replace_base w/base_url2repo, but for url
+    sm_ru=list(map(replace_base,sm)) #acts as key for each dict ;need v of replace_base w/base_url2repo, but for url
     s=get_bucket_files("summoned")
     m=get_bucket_files("milled")
     #p=get_bucket_files("prov")
@@ -2147,6 +2145,7 @@ def csv_dropoff(sitemap_url="https://earthcube.github.io/GeoCODES-Metadata/metad
     g=get_graphs_list(endpoint) #will strip ..urn: to uuid anyway
     #print(f'csv_ states,sm:{sm},s:{s},m:{m},g:{g}')
     print(f'sm:{sm}')
+    #print(f'sm:{sm_ru}')
     print(f's:{s}')
     print(f'm:{m}')
     print(f'g:{g}')
@@ -2164,10 +2163,12 @@ def csv_dropoff(sitemap_url="https://earthcube.github.io/GeoCODES-Metadata/metad
     print(f'md:{md}')
     print(f'gd:{gd}')
     dl=[sd,md,gd]
+    print(f'now lookup by:{sm_ru}')
     return list(map(lambda k: get_vals(k, dl), sm_ru))
+#[['ok', 'ok', None], ['ok', 'ok', None], [None, None, None], ['ok', 'ok', None], [None, None, None], ['ok', 'ok', None], ['ok', 'ok', None], [None, None, None], ['ok', 'ok', None]]
 
 #def prov2site_mappings():
-def set_prov2site_mappings():
+def set_prov2site_mappings():  #make sure it is run, to get mappings
     "use cached PROV to make mappings"
     #global LD_cache_base, LD_cache_files, LD_cache_types
     pu=get_bucket_files("prov")
