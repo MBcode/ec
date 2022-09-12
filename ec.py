@@ -1940,7 +1940,8 @@ def url2json(url):
 #testing, where we look at gleaner's mino ld-cache via web
  #so it can be swapped out for my web LD-cache when missing
 #==bucket_files.py to get (minio) files list from a bucket path
-ci_url="https://oss.geocodes-dev.earthcube.org/citesting"
+#ci_url="https://oss.geocodes-dev.earthcube.org/citesting"
+ci_url="https://oss.geocodes-dev.earthcube.org/test3"
 ci_url2="https://oss.geocodes-dev.earthcube.org/citesting2"
 def bucket_xml(url):
     "given bucket url ret raw xml listing"
@@ -2010,8 +2011,11 @@ def get_bucket_files(base_type):
     global LD_cache_base, LD_cache_files, LD_cache_types
     if not LD_cache_files:
         set_bucket_files()
-    fk = next(k for k,v in LD_cache_types.items() if base_type in k) #full key
-    print(f'get:{base_type} has {fk}')
+    print(f'get_bucket_files:{base_type}')
+  # fk = next(k for k,v in LD_cache_types.items() if base_type in k) #full key
+   #ks=LD_cache_types.keys()
+   #fkl=collect_pre_(ks,base_type)
+   #print(f'get:{base_type} has {fk}')
     fe=collect_pre_(LD_cache_files,base_type) #end of file paths
     ff=list(map(lambda f: f'{LD_cache_base}/{f}', fe)) #full file paths
     return ff
@@ -2140,6 +2144,7 @@ def csv_dropoff(sitemap_url="https://earthcube.github.io/GeoCODES-Metadata/metad
         if bucket_url != ci_url:
             print(f'reset from:{ci_url} to:{bucket_url}')
             ci_url = bucket_url 
+    print(f'csv_dropoff,bucket:{bucket_url}')
     if not urn2site_urls:
         set_prov2site_mappings()
     sm=sitemap_list(sitemap_url) #can now use sitemap2urn to get sitemap into same ID space
@@ -2567,8 +2572,9 @@ def tsc4_(sitemap="https://earthcube.github.io/GeoCODES-Metadata/metadata/Datase
     "as is being used in spot_test/report on geocodes-dev now" #still need to deal w/milled dissapearing in a few places
     return tsc(sitemap,bucket_url,endpoint)
 
-#this has the sitemap from the gSpreadsheet 'sources'  ;keep bucket in sync w/endpnt etc
-def tsc4(sitemap="https://earthcube.github.io/GeoCODES-Metadata/metadata/Dataset/allgood/sitemap.xml",bucket_url=ci_url2,
+#this has the sitemap from the gSpreadsheet 'sources'  ;keep bucket in sync w/endpnt etc #bucket_url=ci_url2,
+def tsc4(sitemap="https://earthcube.github.io/GeoCODES-Metadata/metadata/Dataset/allgood/sitemap.xml", 
+        bucket_url="https://oss.geocodes-dev.earthcube.org/citesting2",
         endpoint="https://graph.geocodes-dev.earthcube.org/blazegraph/namespace/citesting2/sparql"):
     "as is being used in spot_test/report on geocodes-dev now" #still need to deal w/milled dissapearing in a few places
     return tsc(sitemap,bucket_url,endpoint)
