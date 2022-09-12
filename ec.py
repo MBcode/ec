@@ -2134,6 +2134,8 @@ def get_vals(key,dl):
 #this needs LD_cache full 1st, can run bucket_files3 or..
 def csv_dropoff(sitemap_url="https://earthcube.github.io/GeoCODES-Metadata/metadata/Dataset/allgood/sitemap.xml",
         endpoint="https://graph.geocodes-dev.earthcube.org/blazegraph/namespace/citesting2/sparql"):
+    if not urn2site_urls:
+        set_prov2site_mappings()
     sm=sitemap_list(sitemap_url) #can now use sitemap2urn to get sitemap into same ID space
     #sm_ru=list(map(to_repo_url,sm)) #acts as key for each dict #this goes2uuid but sm doens't have that
     #sm_ru=list(map(replace_base,sm)) #acts as key for each dict ;need v of replace_base w/base_url2repo, but for url
@@ -2149,7 +2151,7 @@ def csv_dropoff(sitemap_url="https://earthcube.github.io/GeoCODES-Metadata/metad
     print(f's:{s}')
     print(f'm:{m}')
     print(f'g:{g}')
-    sml=len(s)
+    sml=len(sm_ru)
     sl=len(s)
     ml=len(m)
     gl=len(g)
@@ -2164,8 +2166,24 @@ def csv_dropoff(sitemap_url="https://earthcube.github.io/GeoCODES-Metadata/metad
     print(f'gd:{gd}')
     dl=[sd,md,gd]
     print(f'now lookup by:{sm_ru}')
-    return list(map(lambda k: get_vals(k, dl), sm_ru))
-#[['ok', 'ok', None], ['ok', 'ok', None], [None, None, None], ['ok', 'ok', None], [None, None, None], ['ok', 'ok', None], ['ok', 'ok', None], [None, None, None], ['ok', 'ok', None]]
+    r= list(map(lambda k: get_vals(k, dl), sm_ru))
+    lr=len(r)
+    print(f'{sml}={lr}')
+    import pandas as pd
+    df = pd.DataFrame.from_dict(r)
+    return df
+#turn this into html-table &/or dataframe
+#9=9
+#                                                   0     1     2     3
+#0  geocodes_demo_datasets:MB_amgeo_data-01-06-201...    ok    ok  None
+#1        geocodes_demo_datasets:MB_iris_syngine.json    ok    ok  None
+#2  geocodes_demo_datasets:MB_lipdverse_HypkanaHaj...  None  None  None
+#3          geocodes_demo_datasets:argo-20220707.json    ok    ok  None
+#4    geocodes_demo_datasets:argoSimple-v1Shapes.json  None  None  None
+#5       geocodes_demo_datasets:bcodmo1-20220707.json    ok    ok  None
+#6                geocodes_demo_datasets:bcodmo1.json    ok    ok  None
+#7         geocodes_demo_datasets:earthchem_1572.json  None  None  None
+#8              geocodes_demo_datasets:opentopo1.json    ok    ok  None
 
 #def prov2site_mappings():
 def set_prov2site_mappings():  #make sure it is run, to get mappings
