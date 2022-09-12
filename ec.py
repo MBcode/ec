@@ -1648,7 +1648,7 @@ def urn_tails(URNs):
     return list(map(lambda s: s if not s else s.split(':')[-1],URNs))
     #return list(map(urn_tail,URNs))
 
-def gdet_graphs_tails(endpoint):
+def get_graphs_tails(endpoint):
     "just the UUIDs of the URNs in the graph"
     URNs=get_graphs_list(endpoint)
     return urn_tails(URNs)
@@ -2493,6 +2493,9 @@ def crawl_dropoff(sitemap,bucket_url,endpoint):
  #lose_m2u would only still have milled, so could check_urn_rdf
 def spot_crawl_dropoff(sitemap,bucket_url,endpoint):
     "when have spot gold stnd, can also check on that"
+    print("csv_ then spot_crawl_ dropoffs")
+    df=crawl_dropoff(sitemap,bucket_url,endpoint)
+    print(df)
     #dropoff,lose_s2m, lose_m2u = crawl_dropoff(sitemap,bucket_url,endpoint)
     dropoff,lose_s2s,lose_s2m, lose_m2u = crawl_dropoff(sitemap,bucket_url,endpoint)
     if not is_list(lose_s2m): #empty list would trip this off
@@ -2501,7 +2504,8 @@ def spot_crawl_dropoff(sitemap,bucket_url,endpoint):
     s_check=list(map(check_urn_jsonld,lose_s2m))
     m_check=list(map(check_urn_rdf,lose_m2u))
     #return dropoff,lose_s2m, s_check, lose_m2u, m_check 
-    return dropoff,lose_s2s, lose_s2m, s_check, lose_m2u, m_check 
+    #return dropoff,lose_s2s, lose_s2m, s_check, lose_m2u, m_check 
+    return dropoff,lose_s2s, lose_s2m, s_check, lose_m2u, m_check, df
     #could have map interleave URN w/True=ok or diff
     #return dropoff,lose_s2m, lose_m2u
 
