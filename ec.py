@@ -2111,7 +2111,8 @@ def urls2idict(urls,val="ok"):
     for url in urls:
         key=to_repo_url(url) 
         mydict[key]=val
-    print(mydict)
+    if(dbg):
+        print(mydict)
     return mydict
 #better, but not getting the key/find/fix that
 
@@ -2133,7 +2134,12 @@ def get_vals(key,dl):
 #def csv_dropoff(sitemap_url): #maybe add spot test output later
 #this needs LD_cache full 1st, can run bucket_files3 or..
 def csv_dropoff(sitemap_url="https://earthcube.github.io/GeoCODES-Metadata/metadata/Dataset/allgood/sitemap.xml",
-        endpoint="https://graph.geocodes-dev.earthcube.org/blazegraph/namespace/citesting2/sparql"):
+        bucket_url=None, endpoint="https://graph.geocodes-dev.earthcube.org/blazegraph/namespace/citesting2/sparql"):
+    if bucket_url:
+        global ci_url
+        if bucket_url != ci_url:
+            print(f'reset from:{ci_url} to:{bucket_url}')
+            ci_url = bucket_url 
     if not urn2site_urls:
         set_prov2site_mappings()
     sm=sitemap_list(sitemap_url) #can now use sitemap2urn to get sitemap into same ID space
@@ -2163,7 +2169,7 @@ def csv_dropoff(sitemap_url="https://earthcube.github.io/GeoCODES-Metadata/metad
      #though UUIDs2site_urls should help map them ;whatever2 uuid, to_repo_url
     print(f'sd:{sd}')
     print(f'md:{md}')
-    print(f'gd:{gd}')
+    print(f'gd:{gd}') #this needs repo:file keys instead of uuids
     dl=[sd,md,gd]
     print(f'now lookup by:{sm_ru}')
     r= list(map(lambda k: get_vals(k, dl), sm_ru))
@@ -2173,7 +2179,9 @@ def csv_dropoff(sitemap_url="https://earthcube.github.io/GeoCODES-Metadata/metad
     df = pd.DataFrame.from_dict(r)
     return df
 #turn this into html-table &/or dataframe
-#9=9
+  #see what is up w/graph's comparison/fix that; bad uuid2url: 
+   #so might have other crawl in graph? look for similar name/urls there
+#9=9  aslo check on 3 that didn't summon
 #                                                   0     1     2     3
 #0  geocodes_demo_datasets:MB_amgeo_data-01-06-201...    ok    ok  None
 #1        geocodes_demo_datasets:MB_iris_syngine.json    ok    ok  None
@@ -2494,7 +2502,7 @@ def crawl_dropoff(sitemap,bucket_url,endpoint):
 def spot_crawl_dropoff(sitemap,bucket_url,endpoint):
     "when have spot gold stnd, can also check on that"
     print("csv_ then spot_crawl_ dropoffs")
-    df=crawl_dropoff(sitemap,bucket_url,endpoint)
+    df=csv_dropoff(sitemap,bucket_url,endpoint)
     print(df)
     #dropoff,lose_s2m, lose_m2u = crawl_dropoff(sitemap,bucket_url,endpoint)
     dropoff,lose_s2s,lose_s2m, lose_m2u = crawl_dropoff(sitemap,bucket_url,endpoint)
@@ -2554,7 +2562,13 @@ def tsc3(sitemap="https://raw.githubusercontent.com/MBcode/ec/master/test/sitema
     return tsc(sitemap,bucket_url,endpoint)
 
 #this has the sitemap from the gSpreadsheet 'sources'
-def tsc4(sitemap="https://earthcube.github.io/GeoCODES-Metadata/metadata/Dataset/allgood/sitemap.xml",bucket_url=None,
+def tsc4_(sitemap="https://earthcube.github.io/GeoCODES-Metadata/metadata/Dataset/allgood/sitemap.xml",bucket_url=None,
+        endpoint="https://graph.geocodes-dev.earthcube.org/blazegraph/namespace/citesting2/sparql"):
+    "as is being used in spot_test/report on geocodes-dev now" #still need to deal w/milled dissapearing in a few places
+    return tsc(sitemap,bucket_url,endpoint)
+
+#this has the sitemap from the gSpreadsheet 'sources'  ;keep bucket in sync w/endpnt etc
+def tsc4(sitemap="https://earthcube.github.io/GeoCODES-Metadata/metadata/Dataset/allgood/sitemap.xml",bucket_url=ci_url2,
         endpoint="https://graph.geocodes-dev.earthcube.org/blazegraph/namespace/citesting2/sparql"):
     "as is being used in spot_test/report on geocodes-dev now" #still need to deal w/milled dissapearing in a few places
     return tsc(sitemap,bucket_url,endpoint)
