@@ -19,6 +19,7 @@ def laptop(): #could call: in_binder
     "already have libs installed"
     global rdf_inited,rdflib_inited,sparql_inited
     rdf_inited,rdflib_inited,sparql_inited=True,True,True
+    print("rdf_inited,rdflib_inited,sparql_inited=True,True,True")
     return "rdf_inited,rdflib_inited,sparql_inited=True,True,True"
 
 def local():
@@ -56,7 +57,8 @@ def not_true(val):
 #if not_true(IN_COLAB):
 if falsep(IN_COLAB):
     print("not IN_COLAB")
-    local()
+    #local()
+    laptop()
 
 def ndtq(name=None,datasets=None,queries=None,tools=None):
   "get collection args for colab or binder"
@@ -657,7 +659,7 @@ def wget_ft(fn,ft):
 #           os_system(cs)
     return fs
 
-rdflib_inited=None
+#rdflib_inited=None
 def init_rdflib():
     #cs='pip install rdflib networkx'
     #cs='pip install rdflib networkx extruct' 
@@ -1099,7 +1101,7 @@ def wget_rdf(urn,viz=None):
     else:
         return f'bad-urn:{urn}'
 
-rdf_inited=None
+#rdf_inited=None
 def init_rdf():
     #cs='apt-get install raptor2-utils graphviz'
     cs='apt-get install raptor2-utils graphviz libmagic-dev' #can add jq yourself
@@ -1108,7 +1110,7 @@ def init_rdf():
 
 #should just put sparql init in w/rdf _init, as not that much more work
 
-sparql_inited=None
+#sparql_inited=None
 def init_sparql():
     #cs='pip install sparqldataframe simplejson'
     cs='pip install sparqldataframe simplejson owlready2'
@@ -2220,6 +2222,7 @@ def set_prov2site_mappings():  #make sure it is run, to get mappings
     "use cached PROV to make mappings"
     #global LD_cache_base, LD_cache_files, LD_cache_types
     pu=get_bucket_files("prov")
+    #would be great to only send the (sitemap len) newest files
     if pu:
         global site_urls2UUIDs, urn2site_urls, UUIDs2site_urls, prov_sitemap
         #return prov2mappings(pu)
