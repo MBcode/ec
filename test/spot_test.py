@@ -4,7 +4,8 @@
 # https://github.com/earthcube/geocodes_documentation/wiki/DataValidationReportMockup
 #will split out lines like this: print('sitemap-count:{sml}, Error count:{ls1}, missing:{loose_s2s}')
 # from present compact return format: dropoff=f'sitemap:{sml}-{lsl}:{lose_s2s} =>{dropoff2}'
-cfg="mb_ci"
+#cfg="mb_ci"
+cfg="mb_ci3"
 import ec
 ec.local()
 def g_cmd(cmd):
@@ -41,7 +42,8 @@ def lb():
     print("=================================================")
 
 def r1():
-    report=ec.tsc()
+    #report=ec.tsc()
+    report=ec.tscg() #should send in the params from yml or make it
     print(report) #archival, then cmp w/new run's endpoint
 
 def r2():
@@ -52,18 +54,19 @@ def all_new(new=None):
     import time
     start_sec=time.time()
     start=ec.now()
-    print(f'Start:{start}')
+    ec.print2log(f'Start:{start}')
     if new:
         lb()
         new_run()
     lb()
     r1()
     lb()
-    r2()
+    #r2() #no longer needed, 
     end_sec=time.time()
     elapse_sec=end_sec - start_sec
     end=ec.now()
     #print(f'End:{end}') #get w/elapse Runtime, instead
-    print(f'Elapse:{elapse_sec} seconds') 
+    ec.print2log(f'Elapse:{elapse_sec} seconds')
 
-all_new()
+#all_new()
+all_new(True)
