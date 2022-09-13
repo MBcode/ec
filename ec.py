@@ -5,8 +5,10 @@
 dbg=None #can use w/logging as well soon, once there is more need&time
 rdf_inited,rdflib_inited,sparql_inited=None,None,None
 endpoint=None
+testing_bucket="citesting" #or bucket_name
+#bucket_url="https://oss.geocodes-dev.earthcube.org/{testing_bucket}",
 testing_endpoint="http://ideational.ddns.net:3030/geocodes_demo_datasets/sparql"
-testing_bucket="citesting"
+#testing_endpoint="https://graph.geocodes-dev.earthcube.org/blazegraph/namespace/{besting_bucket}/sparql"
 dflt_endpoint = "https://graph.geocodes.earthcube.org/blazegraph/namespace/earthcube/sparql"
 #from 'sources' gSheet: can use for repo:file_leaf naming/printing
 base_url2repo ={"https://raw.githubusercontent.com/earthcube/GeoCODES-Metadata/main/metadata/Dataset/json": "geocodes_demo_datasets",
@@ -1970,14 +1972,17 @@ def bucket_files(url):
     c=bucket_xml2dict(test_xml)
     if c:
         files=map(lambda kd: kd.get('Key'), c)
-        return list(files)
+        dates=map(lambda kd: kd.get('LastModified'), c) #or when get prov look at file dates before the parse?
+         #AttributeError: 'int' object has no attribute 'get'
+        return list(files),list(dates)
     else:
         print(f'no bucket xml for files:{url}')
-        return None
+        return None, None
 
 #once I need this for >1 bucket I will turn it into a class, and make instances
 LD_cache_base=None
 LD_cache_files=None
+LD_cache_dates=None
 LD_cache_types=None
 #output: {'milled/geocodes_demo_datasets': 25, 'orgs': 1, 'prov/geocodes_demo_datasets': 31, 'results/runX': 1, 'summoned/geocodes_demo_datasets': 25}
 #if folders where different, maybe layer that over for different buckets, someday
@@ -1988,7 +1993,7 @@ def set_bucket_files(bucket=None):
         bucket=ci_url
     global LD_cache_base, LD_cache_files, LD_cache_types
     LD_cache_base=bucket
-    LD_cache_files=bucket_files(bucket)
+    LD_cache_files,LD_cache_dates=bucket_files(bucket)
     LD_cache_types={}
     for fn in LD_cache_files:
         base,leaf = path_base_leaf(fn)
@@ -2575,6 +2580,18 @@ def tsc4_(sitemap="https://earthcube.github.io/GeoCODES-Metadata/metadata/Datase
 #this has the sitemap from the gSpreadsheet 'sources'  ;keep bucket in sync w/endpnt etc #bucket_url=ci_url2,
 def tsc4(sitemap="https://earthcube.github.io/GeoCODES-Metadata/metadata/Dataset/allgood/sitemap.xml", 
         bucket_url="https://oss.geocodes-dev.earthcube.org/citesting2",
-        endpoint="https://graph.geocodes-dev.earthcube.org/blazegraph/namespace/citesting2/sparql"):
+        endpoint="http://ideational.ddns.net:3030/geocodes_demo_datasets/sparql"):
+       #endpoint="https://graph.geocodes-dev.earthcube.org/blazegraph/namespace/citesting2/sparql"): #nabu was not run here
     "as is being used in spot_test/report on geocodes-dev now" #still need to deal w/milled dissapearing in a few places
     return tsc(sitemap,bucket_url,endpoint)
+#9=9 #this got the graph to show up, milled was skiped by gleaner, &had similar summoned
+#                                                   0     1     2     3
+#0  geocodes_demo_datasets:MB_amgeo_data-01-06-201...  None  None    ok
+#1        geocodes_demo_datasets:MB_iris_syngine.json  None  None    ok
+#2  geocodes_demo_datasets:MB_lipdverse_HypkanaHaj...  None  None  None
+#3          geocodes_demo_datasets:argo-20220707.json  None  None    ok
+#4    geocodes_demo_datasets:argoSimple-v1Shapes.json  None  None    ok
+#5       geocodes_demo_datasets:bcodmo1-20220707.json  None  None    ok
+#6                geocodes_demo_datasets:bcodmo1.json  None  None    ok
+#7         geocodes_demo_datasets:earthchem_1572.json  None  None  None
+#8              geocodes_demo_datasets:opentopo1.json  None  None    ok
