@@ -5,9 +5,11 @@
 dbg=None #can use w/logging as well soon, once there is more need&time
 rdf_inited,rdflib_inited,sparql_inited=None,None,None
 endpoint=None
+repo_name="geocodes_demo_datasets" #for testing
 testing_bucket="citesting" #or bucket_name
 #bucket_url="https://oss.geocodes-dev.earthcube.org/{testing_bucket}",
-testing_endpoint="http://ideational.ddns.net:3030/geocodes_demo_datasets/sparql"
+#testing_endpoint="http://ideational.ddns.net:3030/geocodes_demo_datasets/sparql"
+testing_endpoint=f'http://ideational.ddns.net:3030/{repo_name}/sparql'
 #testing_endpoint="https://graph.geocodes-dev.earthcube.org/blazegraph/namespace/{besting_bucket}/sparql"
 dflt_endpoint = "https://graph.geocodes.earthcube.org/blazegraph/namespace/earthcube/sparql"
 #from 'sources' gSheet: can use for repo:file_leaf naming/printing
@@ -1999,6 +2001,8 @@ LD_cache_files=None
 LD_cache_dates=None
 LD_cache_types=None
 #output: {'milled/geocodes_demo_datasets': 25, 'orgs': 1, 'prov/geocodes_demo_datasets': 31, 'results/runX': 1, 'summoned/geocodes_demo_datasets': 25}
+#{'orgs': 4, 'prov/geocodes_demo_datasets': 45, 'prov/magic': 951} #so key prov/bucket_name
+
 #if folders where different, maybe layer that over for different buckets, someday
 def set_bucket_files(bucket=None):
     "get+set LD_cache_ files array and types dict"
@@ -2221,7 +2225,8 @@ def csv_dropoff(sitemap_url="https://earthcube.github.io/GeoCODES-Metadata/metad
 def set_prov2site_mappings():  #make sure it is run, to get mappings
     "use cached PROV to make mappings"
     #global LD_cache_base, LD_cache_files, LD_cache_types
-    pu=get_bucket_files("prov")
+    #pu=get_bucket_files("prov") #only the ones for the repo_name being run
+    pu=get_bucket_files(f'prov/{repo_name}') #only the ones for the repo_name being run
     #would be great to only send the (sitemap len) newest files
     if pu:
         global site_urls2UUIDs, urn2site_urls, UUIDs2site_urls, prov_sitemap
@@ -2263,7 +2268,7 @@ def prov2sitemap_(bucket_url,pu=None):
     if not fi:
         print(f'prov2sitemap, no bucket_files:{bucket_url}')
         return None
-    p=collect_pre_(fi,"prov")
+    p=collect_pre_(fi,"prov") #only the ones for the repo_name being run
     pu=list(map(lambda fp: f'{bucket_url}/{fp}', p))
     sitemap=None
     try:
