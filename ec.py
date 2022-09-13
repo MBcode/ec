@@ -1982,7 +1982,8 @@ def url_xml(url):
 def sitemap_xml2dict(test_xml): #libs don't work in diff places
     import xmltodict
     d=xmltodict.parse(test_xml)
-    print(d)
+    if(dbg):
+        print(d)
     lbr=d.get("urlset")
     if lbr:
         c=lbr.get("url")
@@ -2035,7 +2036,8 @@ def bucket_files(url):
 def endpoint_xml2dict(test_xml):
     import xmltodict
     d=xmltodict.parse(test_xml)
-    print(d)
+    if(dbg):
+        print(d)
     #lbr=d.get("rdf:Description")
     #if not lbr:
     #    lbr=d.get('rdf:RDF')
@@ -2219,8 +2221,13 @@ def get_vals(key,dl):
 #have s m, then get_graphs  for the other saved states ;can do list-diff but csv will show missing already
 #def csv_dropoff(sitemap_url): #maybe add spot test output later
 #this needs LD_cache full 1st, can run bucket_files3 or..
+csv_out=None
 def csv_dropoff(sitemap_url="https://earthcube.github.io/GeoCODES-Metadata/metadata/Dataset/allgood/sitemap.xml",
         bucket_url=None, endpoint="https://graph.geocodes-dev.earthcube.org/blazegraph/namespace/citesting2/sparql"):
+    global csv_out
+    if csv_out:
+        print("already have a csv_out")
+        return csv_out
     if bucket_url:
         global ci_url
         if bucket_url != ci_url:
@@ -2264,6 +2271,7 @@ def csv_dropoff(sitemap_url="https://earthcube.github.io/GeoCODES-Metadata/metad
     print(f'{sml}={lr}')
     import pandas as pd
     df = pd.DataFrame.from_dict(r)
+    csv_out=df #so we don't rerun uncessesarily
     return df
 #turn this into html-table &/or dataframe
   #see what is up w/graph's comparison/fix that; bad uuid2url: 
