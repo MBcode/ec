@@ -5,9 +5,12 @@
 dbg=None #can use w/logging as well soon, once there is more need&time
 rdf_inited,rdflib_inited,sparql_inited=None,None,None
 endpoint=None
+#keep these more in sync
 repo_name="geocodes_demo_datasets" #for testing
-testing_bucket="citesting" #or bucket_name
-#bucket_url="https://oss.geocodes-dev.earthcube.org/{testing_bucket}",
+#testing_bucket="citesting" #or bucket_name
+testing_bucket="test3" #or bucket_name
+ci_url=f'https://oss.geocodes-dev.earthcube.org/{testing_bucket}'
+bucket_url=f'https://oss.geocodes-dev.earthcube.org/{testing_bucket}'
 #testing_endpoint="http://ideational.ddns.net:3030/geocodes_demo_datasets/sparql"
 testing_endpoint=f'http://ideational.ddns.net:3030/{repo_name}/sparql'
 #testing_endpoint="https://graph.geocodes-dev.earthcube.org/blazegraph/namespace/{besting_bucket}/sparql"
@@ -131,6 +134,10 @@ def add2log(s):
     date2log()
     fs=f'[{s}]\n'
     put_txtfile("log",fs,"a")
+
+def print2log(s):
+    print(s)
+    add2log(s)
 
 def os_system(cs):
     "run w/o needing ret value"
@@ -1959,15 +1966,18 @@ def url2json(url):
  #so it can be swapped out for my web LD-cache when missing
 #==bucket_files.py to get (minio) files list from a bucket path
 #ci_url="https://oss.geocodes-dev.earthcube.org/citesting"
-ci_url="https://oss.geocodes-dev.earthcube.org/test3"
+#ci_url="https://oss.geocodes-dev.earthcube.org/test3"
 ci_url2="https://oss.geocodes-dev.earthcube.org/citesting2"
-def bucket_xml(url):
+def url_xml(url):
     "given bucket url ret raw xml listing"
     import requests
     r=requests.get(url)
     test_xml=r.content
     #print(test_xml)
     return test_xml
+
+def bucket_xml(url):
+    return url_xml(url)
 
 def bucket_xml2dict(test_xml):
     "bucket url to list of dicts, w/file in key"
@@ -1995,13 +2005,35 @@ def bucket_files(url):
         print(f'no bucket xml for files:{url}')
         return None, None
 
+def endpoint_xml2dict(test_xml):
+    import xmltodict
+    d=xmltodict.parse(test_xml)
+    print(d)
+    #lbr=d.get("rdf:Description")
+    #if not lbr:
+    #    lbr=d.get('rdf:RDF')
+    lbr=d.get('rdf:RDF')
+    return lbr
+
+def endpoint_description(url="https://graph.geocodes-dev.earthcube.org/blazegraph/namespace/citesting2/sparql"):
+    "get endpoint description xml to see that it is healthy"
+    test_xml=url_xml(url)
+    c=endpoint_xml2dict(test_xml)
+    lc=len(c) #2keys
+    print(f'endpoint w/{lc} descriptions')
+    des=c.get('rdf:Description')
+    return des
+#c.get('@xmlns:rdf')
+#'http://www.w3.org/1999/02/22-rdf-syntax-ns#'
+
 #once I need this for >1 bucket I will turn it into a class, and make instances
 LD_cache_base=None
 LD_cache_files=None
-LD_cache_dates=None
+LD_cache_dates=None #Might use, or as we query the file, also want to get files metadata
 LD_cache_types=None
 #output: {'milled/geocodes_demo_datasets': 25, 'orgs': 1, 'prov/geocodes_demo_datasets': 31, 'results/runX': 1, 'summoned/geocodes_demo_datasets': 25}
 #{'orgs': 4, 'prov/geocodes_demo_datasets': 45, 'prov/magic': 951} #so key prov/bucket_name
+ #so much prov here that get _files doesn't seem to have summoned though there/fix
 
 #if folders where different, maybe layer that over for different buckets, someday
 def set_bucket_files(bucket=None):
@@ -2303,7 +2335,8 @@ def bucket_files3(url=None): #might try using above w/this for just a bit
         ci_url=url
     s=get_bucket_files("summoned")
     m=get_bucket_files("milled")
-    p=get_bucket_files("prov")
+    #p=get_bucket_files("prov")
+    p=get_bucket_files(f'prov/{repo_name}') #only the ones for the repo_name being run
     #pu=list(map(lambda fp: f'{url}/{fp}', p))
     global site_urls2UUIDs, UUIDs2site_urls, prov_sitemap
     if not prov_sitemap:
@@ -2615,3 +2648,8 @@ def tsc4(sitemap="https://earthcube.github.io/GeoCODES-Metadata/metadata/Dataset
 #6                geocodes_demo_datasets:bcodmo1.json  None  None    ok
 #7         geocodes_demo_datasets:earthchem_1572.json  None  None  None
 #8              geocodes_demo_datasets:opentopo1.json  None  None    ok
+def tscg(sitemap="https://earthcube.github.io/GeoCODES-Metadata/metadata/Dataset/allgood/sitemap.xml"): #rest are global
+    global bucket_url,testing_endpoint
+    endpoint=testing_endpoint
+    print(f'tscg:{sitemap},{bucket_url},{endpoint}')
+    return tsc(sitemap,bucket_url,endpoint)
