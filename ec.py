@@ -862,10 +862,13 @@ def sitemaps_all_loc(sitemaps):
     return map(sitemap_all_pages,sitemaps)
     #also be able to work w/dictionaries,  repo_name sitmap in, count out
 
-def sitemap_list(url):
+def sitemap_list_(url):
     pages=sitemap_all_pages(url)
     pl=list(pages)
-    return pl
+    return pl #get rid of need for these libs
+
+def sitemap_list(url):
+    return sitemap_urls(url)
 
 def sitemap_len(url):
     "for counts" # maybe allow filtering types later
@@ -1976,6 +1979,29 @@ def url_xml(url):
     #print(test_xml)
     return test_xml
 
+def sitemap_xml2dict(test_xml): #libs don't work in diff places
+    import xmltodict
+    d=xmltodict.parse(test_xml)
+    print(d)
+    lbr=d.get("urlset")
+    if lbr:
+        c=lbr.get("url")
+        return c
+    else:
+        print(f'no urlset, for:{test_xml}')
+        return None
+
+def sitemap_urls(url):
+    test_xml=url_xml(url)
+    c=sitemap_xml2dict(test_xml)
+    if c:
+        urls=list(map(lambda kd: kd.get('loc'), c))
+        return urls
+    else:
+        print(f'no sitemap_urls xml for urls:{url}')
+        return None
+
+
 def bucket_xml(url):
     return url_xml(url)
 
@@ -1999,11 +2025,12 @@ def bucket_files(url):
     if c:
         files=map(lambda kd: kd.get('Key'), c)
         dates=map(lambda kd: kd.get('LastModified'), c) #or when get prov look at file dates before the parse?
-         #AttributeError: 'int' object has no attribute 'get'
+         #AttributeError: 'int' object has no attribute 'get' #had taken this out
         return list(files),list(dates)
     else:
         print(f'no bucket xml for files:{url}')
         return None, None
+
 
 def endpoint_xml2dict(test_xml):
     import xmltodict
