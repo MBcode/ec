@@ -46,7 +46,16 @@ import os
 import sys
 import json
 IN_COLAB = 'google.colab' in sys.modules
-if not IN_COLAB:
+
+def falsep(val):
+    return val == False
+
+def not_true(val):
+  return val and (val != False)
+
+#if not_true(IN_COLAB):
+if falsep(IN_COLAB):
+    print("not IN_COLAB")
     local()
 
 def ndtq(name=None,datasets=None,queries=None,tools=None):
@@ -129,6 +138,9 @@ def os_system_(cs):
     s=os.popen(cs).read()
     add2log(cs)
     return s
+
+def whoami():
+    return os_system_("whoami")
 
 def urn_leaf(s): #like urn_tail
     "last part of : sep string" 
