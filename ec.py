@@ -430,7 +430,8 @@ def check_urn_rdf(urn,
 
 def check_urn_jsonld(urn,
      #test_bucket="https://oss.geocodes-dev.earthcube.org/citesting/summoned/geocodes_demo_datasets/", ;use testing_bucket fix
-        test_bucket="https://oss.geocodes-dev.earthcube.org/test3/summoned/geocodes_demo_datasets/",
+                     #test_bucket="https://oss.geocodes-dev.earthcube.org/test3/summoned/geocodes_demo_datasets/",
+        test_bucket=f'https://oss.geocodes-dev.earthcube.org/{testing_bucket}/summoned/geocodes_demo_datasets/',
         gold="https://raw.githubusercontent.com/earthcube/GeoCODES-Metadata/mb_sample/metadata/Dataset/standard/summoned/geocodes_demo_datasets/"):
        #gold="https://raw.githubusercontent.com/MBcode/ec/master/test/standard/summoned/geocodes_demo_datasets/"):
     "check a URNs summonded-jsonld diff btw urls for current+gold-stnd buckets"
