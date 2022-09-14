@@ -1941,7 +1941,8 @@ def replace_last(source_string, replace_what, replace_with):
     head, _sep, tail = source_string.rpartition(replace_what)
     return head + replace_with + tail
 
-def fn2nq(fn):
+#def fn2nq(fn):
+def nt_fn2nq(fn): #already a nt2nq
     "take a fn.* returns a fn.nq w/4th col urn:fn"
     fnb = file_base(fn)
     fn2 = fnb + ".nq"
@@ -1953,6 +1954,39 @@ def fn2nq(fn):
                 replace_with = f' <urn:{fnb}> .'
                 line_out = replace_last(line, " .", replace_with)
                 fd_out.write(line_out)
+    return fn2
+
+def riot2nq(fn):
+    "process .jsonld put out .nq"
+    fnb = file_base(fn)
+    fn2 = fnb + ".nq"
+    nts = os_system_(f'riot --stream=nt {fn}')
+    fd_in = nts.split("\n") 
+    lin=len(fd_in)
+    print(f'got {lin} lines')
+    with open(fn2,'w') as fd_out:
+        for line in fd_in:
+            replace_with = f' <urn:{fnb}> .'
+            line_out = replace_last(line, " .", replace_with)
+            fd_out.write(line_out)
+            fd_out.write('\n')
+    return fn2
+
+def fn2nq(fn): #if is_http wget and call self again/tranfrom input
+    "output fn as .nq"
+    if is_http(fn):
+        fn=wget(fn)
+    print(f'fn2nq on:{fn}')
+    ext = file_ext(fn)
+    print(f'2nq file_ext:{ext}')
+    fn2="Not Found"
+    if ext==".nt":
+        fn2=fn2nq(fn)
+    if ext==".jsonld":
+        fn2=riot2nq(fn)
+    else: #it might still work:
+        fn2=riot2nq(fn)
+    print(f'gives:{fn2}')
     return fn2
 
 #sitemap url to LD-cache filenames

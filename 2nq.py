@@ -13,6 +13,38 @@ def file_base(fn):
     #add2log(f'fb:st={st}')
     return st[0]
 
+def is_str(v):
+    return type(v) is str
+
+def is_http(u):
+    if not is_str(u):
+        print("might need to set LD_cache")
+        return None
+    return u.startswith("http")
+
+def os_system(cs):
+    "run w/o needing ret value"
+    os.system(cs)
+   #add2log(cs)
+
+def os_system_(cs):
+    "system call w/return value"
+    s=os.popen(cs).read()
+    #add2log(cs)
+    return s
+
+def path_leaf(path):
+    "everything after the last /"
+    import ntpath
+    head, tail = ntpath.split(path)
+    return tail or ntpath.basename(head)
+
+def wget(fn):
+    #cs= f'wget -a log {fn}'  #--quiet
+    cs= f'wget --tries=2 -a log {fn}' 
+    os_system(cs)
+    return path_leaf(fn) #new
+
 #DF's gleaner uses the shah of the jsonld to name the .rdf files which are actually .nt files
 # but then there are lots of .nq files that are actually .nt files, but should be able to get them w/this
 #maybe someplace in nabu this is done, but by then I can't have the files to load them
@@ -30,6 +62,7 @@ def replace_last(source_string, replace_what, replace_with):
     return head + replace_with + tail
 
 def fn2nq(fn):
+    "read in .nt put out .nq"
     fnb = file_base(fn)
     fn2 = fnb + ".nq"
     with open(fn2,'w') as fd_out:
@@ -42,10 +75,35 @@ def fn2nq(fn):
                 fd_out.write(line_out)
     return fn2
 
+def riot2nq(fn):
+    "process .jsonld put out .nq"
+    fnb = file_base(fn)
+    fn2 = fnb + ".nq"
+    nts = os_system_(f'riot --stream=nt {fn}')
+    fd_in = nts.split("\n") 
+    lin=len(fd_in)
+    print(f'got {lin} lines')
+    with open(fn2,'w') as fd_out:
+        for line in fd_in:
+            replace_with = f' <urn:{fnb}> .'
+            line_out = replace_last(line, " .", replace_with)
+            fd_out.write(line_out)
+            fd_out.write('\n')
+    return fn2
+
+#if .nt as before, if .jsonld then riot .jsonld to .nt 1st, then dump as .nq
 if __name__ == '__main__':
     import sys
     if(len(sys.argv)>1):
         fn = sys.argv[1]
+        if is_http(fn):
+            fn=wget(fn)
         print(f'fn2nq on:{fn}')
-        fn2=fn2nq(fn)
+        ext = file_ext(fn)
+        print(f'2nq file_ext:{ext}')
+        fn2="Not Found"
+        if ext==".nt":
+            fn2=fn2nq(fn)
+        if ext==".jsonld":
+            fn2=riot2nq(fn)
         print(f'gives:{fn2}')
