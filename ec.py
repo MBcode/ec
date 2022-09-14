@@ -151,6 +151,10 @@ def os_system_(cs):
     add2log(cs)
     return s
 
+def curl_url(url):
+    cs=f'curl {url}'
+    return os_system_(cs)
+
 def whoami():
     return os_system_("whoami")
 
@@ -340,6 +344,7 @@ def diff_flat_json(fn1,fn2):
     return df_diff(df1,df2) #or skip for:
 
 def get_json_eq(fn1,fn2):
+    print(f'get_json_eq:{fn1},{fn2}') #dbg
     d1=read_json(fn1)
     d2=read_json(fn2)
     if not d1:
@@ -424,7 +429,8 @@ def check_urn_rdf(urn,
     return diff_sd(gold_rdf,test_rdf) #the read should skip the header
 
 def check_urn_jsonld(urn,
-        test_bucket="https://oss.geocodes-dev.earthcube.org/citesting/summoned/geocodes_demo_datasets/",
+     #test_bucket="https://oss.geocodes-dev.earthcube.org/citesting/summoned/geocodes_demo_datasets/", ;use testing_bucket fix
+        test_bucket="https://oss.geocodes-dev.earthcube.org/test3/summoned/geocodes_demo_datasets/",
         gold="https://raw.githubusercontent.com/earthcube/GeoCODES-Metadata/mb_sample/metadata/Dataset/standard/summoned/geocodes_demo_datasets/"):
        #gold="https://raw.githubusercontent.com/MBcode/ec/master/test/standard/summoned/geocodes_demo_datasets/"):
     "check a URNs summonded-jsonld diff btw urls for current+gold-stnd buckets"
@@ -826,7 +832,7 @@ def setup_s3fs(): #do this by hand for now
     cs='pip install s3fs xmltodict' #want to switch to just request of url&parse xml:bucket_files.py
     os_system(cs)
 
-def get_oss(endpoint_url="https://oss.geocodes-dev.earthcube.org/"):
+def get_oss(minio_endpoint_url="https://oss.geocodes-dev.earthcube.org/"):
     import s3fs
     oss = s3fs.S3FileSystem(
           anon=True,
@@ -834,17 +840,22 @@ def get_oss(endpoint_url="https://oss.geocodes-dev.earthcube.org/"):
           secret="",
           #client_kwargs = {"endpoint_url":"https://oss.geodex.org"}
           #client_kwargs = {"endpoint_url":"https://oss.geocodes-dev.earthcube.org/"}
-          client_kwargs = {"endpoint_url": endpoint_url}
+          client_kwargs = {"endpoint_url": minio_endpoint_url}
        )
     return oss
 
-def oss_ls(path='test3/summoned'):
-    oss=get_oss() #global oss
+#def oss_ls(path='test3/summoned'):
+def oss_ls(path='test3/summoned',full_path=True,minio_endpoint_url="https://oss.geocodes-dev.earthcube.org/"):
+    oss=get_oss(minio_endpoint_url) #global oss
     import s3fs
-    return oss.ls(path)
-#>>> oss_ls()
+    epl= oss.ls(path)
+    if full_path:
+        return list(map(lambda ep: f'{minio_endpoint_url}{ep}', epl))
+    else:
+        return epl
+#>>> oss_ls('test3/summoned',False) #now need false to get this output
 #['test3/summoned/geocodes_demo_datasets', 'test3/summoned/opentopography']
-#>>> oss_ls('test3/summoned/geocodes_demo_datasets')
+#>>> oss_ls('test3/summoned/geocodes_demo_datasets') #did not have base of url, so fixed w/map above, as default output type
 #['test3/summoned/geocodes_demo_datasets/257108e0760f96ef7a480e1d357bcf8720cd11e4.jsonld', 'test3/summoned/geocodes_demo_datasets/261c022db9edea9e4fc025987f1826ee7a704f06.jsonld', 'test3/summoned/geocodes_demo_datasets/7435cba44745748adfe80192c389f77d66d0e909.jsonld', 'test3/summoned/geocodes_demo_datasets/9cf121358068c7e7f997de84fafc988083b72877.jsonld', 'test3/summoned/geocodes_demo_datasets/b2fb074695be7e40d5ad5d524d92bba32325249b.jsonld', 'test3/summoned/geocodes_demo_datasets/c752617ea91a725643d337a117bd13386eae3203.jsonld', 'test3/summoned/geocodes_demo_datasets/ce020471830dc75cb1639eae403a883f9072bb60.jsonld', 'test3/summoned/geocodes_demo_datasets/fcc47ef4c3b1d0429d00f6fb4be5e506a7a3b699.jsonld', 'test3/summoned/geocodes_demo_datasets/fe3c7c4f7ca08495b8962e079920c06676d5a166.jsonld']
 #>>> 
 
@@ -2359,8 +2370,8 @@ def csv_dropoff(sitemap_url="https://earthcube.github.io/GeoCODES-Metadata/metad
     #sm_ru=list(map(to_repo_url,sm)) #acts as key for each dict #this goes2uuid but sm doens't have that
     #sm_ru=list(map(replace_base,sm)) #acts as key for each dict ;need v of replace_base w/base_url2repo, but for url
     sm_ru=list(map(replace_base,sm)) #acts as key for each dict ;need v of replace_base w/base_url2repo, but for url
-    s=get_bucket_files("summoned")
-    #s=get_oss_files("summoned")
+    #s=get_bucket_files("summoned")
+    s=get_oss_files("summoned")
     m=get_bucket_files("milled")
     #p=get_bucket_files("prov")
     #g=get_graphs_tails(endpoint)
@@ -2488,8 +2499,8 @@ def bucket_files3(url=None): #might try using above w/this for just a bit
     if url: 
         global ci_url
         ci_url=url
-    s=get_bucket_files("summoned")
-    #s=get_oss_files("summoned")
+    #s=get_bucket_files("summoned")
+    s=get_oss_files("summoned")
     m=get_bucket_files("milled")
     #p=get_bucket_files("prov")
     p=get_bucket_files(f'prov/{repo_name}') #only the ones for the repo_name being run
@@ -2794,16 +2805,17 @@ def tsc4(sitemap="https://earthcube.github.io/GeoCODES-Metadata/metadata/Dataset
     "as is being used in spot_test/report on geocodes-dev now" #still need to deal w/milled dissapearing in a few places
     return tsc(sitemap,bucket_url,endpoint)
 #9=9 #this got the graph to show up, milled was skiped by gleaner, &had similar summoned
-#                                                   0     1     2     3
-#0  geocodes_demo_datasets:MB_amgeo_data-01-06-201...  None  None    ok
-#1        geocodes_demo_datasets:MB_iris_syngine.json  None  None    ok
+#0  geocodes_demo_datasets:MB_amgeo_data-01-06-201...    ok  None    ok
+#1        geocodes_demo_datasets:MB_iris_syngine.json    ok  None    ok
 #2  geocodes_demo_datasets:MB_lipdverse_HypkanaHaj...  None  None  None
-#3          geocodes_demo_datasets:argo-20220707.json  None  None    ok
-#4    geocodes_demo_datasets:argoSimple-v1Shapes.json  None  None    ok
-#5       geocodes_demo_datasets:bcodmo1-20220707.json  None  None    ok
-#6                geocodes_demo_datasets:bcodmo1.json  None  None    ok
+#3          geocodes_demo_datasets:argo-20220707.json    ok  None    ok
+#4    geocodes_demo_datasets:argoSimple-v1Shapes.json    ok  None    ok
+#5       geocodes_demo_datasets:bcodmo1-20220707.json    ok  None    ok
+#6                geocodes_demo_datasets:bcodmo1.json    ok  None    ok
 #7         geocodes_demo_datasets:earthchem_1572.json  None  None  None
-#8              geocodes_demo_datasets:opentopo1.json  None  None    ok
+#8              geocodes_demo_datasets:opentopo1.json    ok  None    ok
+#get_oss_files now gets summoned, but getting check_urn_jsonld error, that is new/but getting good urls from this fnc
+#it was the test data coming from citesting vs test3 fix above/and all works
 def tscg(sitemap="https://earthcube.github.io/GeoCODES-Metadata/metadata/Dataset/allgood/sitemap.xml"): #rest are global
     global bucket_url,testing_endpoint
     endpoint=testing_endpoint
