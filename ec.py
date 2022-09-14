@@ -5,7 +5,7 @@
 dbg=None #can use w/logging as well soon, once there is more need&time
 rdf_inited,rdflib_inited,sparql_inited=None,None,None
 endpoint=None
-#keep these more in sync
+#keep these more in sync ;could have a dict for each setup
 repo_name="geocodes_demo_datasets" #for testing
 #testing_bucket="citesting" #or bucket_name
 testing_bucket="test3" #or bucket_name
@@ -1971,7 +1971,49 @@ def url2json(url):
 #ci_url="https://oss.geocodes-dev.earthcube.org/citesting"
 #ci_url="https://oss.geocodes-dev.earthcube.org/test3"
 ci_url2="https://oss.geocodes-dev.earthcube.org/citesting2"
-def url_xml(url):
+def get_url(url): 
+    "request.get url"
+    import requests
+    r=requests.get(url)
+    return r.content
+#for LD_cache_files ..;if file_ext(url)==".xml" ret xmltodict, ;could d for htm but list nicer:
+#s=get_url(url) st=s.decode("utf-8"); if "<html>" in st: parse_html, w/listFD
+#from stackoverflow ;so can get ~bucket_files from each dir separately
+#url = 'http://mbobak.ncsa.illinois.edu/ec/minio/test3/summoned/geocodes_demo_datasets/'
+#ext = 'nq' ;might start using my ld_cache too; it seems more consistent
+def listFD(url, ext=''):
+    from bs4 import BeautifulSoup
+    import requests
+    page = requests.get(url).text
+    if(dbg):
+        print(page)
+    soup = BeautifulSoup(page, 'html.parser')
+    r= [url + '/' + node.get('href') for node in soup.find_all('a') if node.get('href').endswith(ext)]
+    #ftd=get_file_types(r)
+    #return r,ftd
+    return r
+
+def get_htm_dir(url,ext=None):
+    from bs4 import BeautifulSoup
+    import requests
+    page = requests.get(url).text
+    if(dbg):
+        print(page)
+    soup = BeautifulSoup(page, 'html.parser')
+    if ext:
+        return [url + '/' + node.get('href') for node in soup.find_all('a') if node.get('href').endswith(ext)]
+    else:
+        return [url + '/' + node.get('href') for node in soup.find_all('a')]
+#eg:
+#>>> files=get_htm_dir("http://mbobak.ncsa.illinois.edu/ec/minio/test3/summoned/geocodes_demo_datasets")
+#>>> get_file_ext_types(files)
+#{'': 5, '.jsonld': 9, '.nq': 9, '.nt': 9}
+#then can: 
+#>>> fj=get_htm_dir("http://mbobak.ncsa.illinois.edu/ec/minio/test3/summoned/geocodes_demo_datasets",".jsonld")
+#>>> len(fj)
+#9
+
+def url_xml(url): #could just be get_url
     "given bucket url ret raw xml listing"
     import requests
     r=requests.get(url)
@@ -2063,6 +2105,47 @@ LD_cache_types=None
 #output: {'milled/geocodes_demo_datasets': 25, 'orgs': 1, 'prov/geocodes_demo_datasets': 31, 'results/runX': 1, 'summoned/geocodes_demo_datasets': 25}
 #{'orgs': 4, 'prov/geocodes_demo_datasets': 45, 'prov/magic': 951} #so key prov/bucket_name
  #so much prov here that get _files doesn't seem to have summoned though there/fix
+
+
+def get_file_ext_types(file_list):
+    file_types={}
+    for fn in file_list:
+        base,leaf = path_base_leaf(fn)
+        ext=file_ext(leaf)
+        count=file_types.get(ext)
+        if count:
+            count += 1
+        else:
+            count = 1
+        file_types[ext] = count
+    return file_types #use w/get_htm_dir
+
+def get_file_leaf_types(file_list): 
+    "use to find duplicate files in a dir"
+    file_types={}
+    for fn in file_list:
+        base,leaf = path_base_leaf(fn)
+        #count=file_types.get(base)
+        count=file_types.get(leaf)
+        if count:
+            count += 1
+        else:
+            count = 1
+        #file_types[base] = count
+        file_types[leaf] = count
+    return file_types 
+
+def get_file_base_types(file_list):
+    file_types={}
+    for fn in file_list:
+        base,leaf = path_base_leaf(fn)
+        count=file_types.get(base)
+        if count:
+            count += 1
+        else:
+            count = 1
+        file_types[base] = count
+    return file_types #can use just below/?, and w/get_htm_dir
 
 #if folders where different, maybe layer that over for different buckets, someday
 def set_bucket_files(bucket=None):
