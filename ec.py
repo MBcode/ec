@@ -10,15 +10,16 @@ repo_name="geocodes_demo_datasets" #for testing
 #testing_bucket="citesting" #or bucket_name
 testing_bucket="test3" #or bucket_name
 ci_url=f'https://oss.geocodes-dev.earthcube.org/{testing_bucket}'
-bucket_url=f'https://oss.geocodes-dev.earthcube.org/{testing_bucket}'
+bucket_url=f'https://oss.geocodes-dev.earthcube.org/{testing_bucket}' #use in oss
 #testing_endpoint="http://ideational.ddns.net:3030/geocodes_demo_datasets/sparql"
 testing_endpoint=f'http://ideational.ddns.net:3030/{repo_name}/sparql'
 #testing_endpoint="https://graph.geocodes-dev.earthcube.org/blazegraph/namespace/{besting_bucket}/sparql"
 dflt_endpoint = "https://graph.geocodes.earthcube.org/blazegraph/namespace/earthcube/sparql"
 #from 'sources' gSheet: can use for repo:file_leaf naming/printing
 base_url2repo ={"https://raw.githubusercontent.com/earthcube/GeoCODES-Metadata/main/metadata/Dataset/json": "geocodes_demo_datasets",
-        "https://raw.githubusercontent.com/earthcube/GeoCODES-Metadata/main/metadata/Dataset/allgood": "geocodes_demo_datasets"
-        }
+        "https://raw.githubusercontent.com/earthcube/GeoCODES-Metadata/main/metadata/Dataset/allgood": "geocodes_demo_datasets",
+                "http://mbobak.ncsa.illinois.edu/ec/minio/test3/summoned/geocodes_demo_datasets": "test3"
+        } #won't match if '/' at end of key
 local=None
 def laptop(): #could call: in_binder
     "already have libs installed"
@@ -173,7 +174,7 @@ def path_base_leaf(path):
         tail = ntpath.basename(head)
     return head, tail
 
-def replace_base(path,mydict=base_url2repo,sep=":"):
+def replace_base(path,mydict=base_url2repo,sep=":"): #for context like: repo:filename
     "use URI to context:, eg. repo:leaf.rdf"
     base,leaf=path_base_leaf(path)
     new_base=mydict.get(base)
@@ -825,6 +826,28 @@ def setup_s3fs(): #do this by hand for now
     cs='pip install s3fs xmltodict' #want to switch to just request of url&parse xml:bucket_files.py
     os_system(cs)
 
+def get_oss(endpoint_url="https://oss.geocodes-dev.earthcube.org/"):
+    import s3fs
+    oss = s3fs.S3FileSystem(
+          anon=True,
+          key="",
+          secret="",
+          #client_kwargs = {"endpoint_url":"https://oss.geodex.org"}
+          #client_kwargs = {"endpoint_url":"https://oss.geocodes-dev.earthcube.org/"}
+          client_kwargs = {"endpoint_url": endpoint_url}
+       )
+    return oss
+
+def oss_ls(path='test3/summoned'):
+    oss=get_oss() #global oss
+    import s3fs
+    return oss.ls(path)
+#>>> oss_ls()
+#['test3/summoned/geocodes_demo_datasets', 'test3/summoned/opentopography']
+#>>> oss_ls('test3/summoned/geocodes_demo_datasets')
+#['test3/summoned/geocodes_demo_datasets/257108e0760f96ef7a480e1d357bcf8720cd11e4.jsonld', 'test3/summoned/geocodes_demo_datasets/261c022db9edea9e4fc025987f1826ee7a704f06.jsonld', 'test3/summoned/geocodes_demo_datasets/7435cba44745748adfe80192c389f77d66d0e909.jsonld', 'test3/summoned/geocodes_demo_datasets/9cf121358068c7e7f997de84fafc988083b72877.jsonld', 'test3/summoned/geocodes_demo_datasets/b2fb074695be7e40d5ad5d524d92bba32325249b.jsonld', 'test3/summoned/geocodes_demo_datasets/c752617ea91a725643d337a117bd13386eae3203.jsonld', 'test3/summoned/geocodes_demo_datasets/ce020471830dc75cb1639eae403a883f9072bb60.jsonld', 'test3/summoned/geocodes_demo_datasets/fcc47ef4c3b1d0429d00f6fb4be5e506a7a3b699.jsonld', 'test3/summoned/geocodes_demo_datasets/fe3c7c4f7ca08495b8962e079920c06676d5a166.jsonld']
+#>>> 
+
 def setup_sitemap(): #do this by hand for now
     cs='pip install ultimate_sitemap_parser' #assume done rarely, once/session 
     os_system(cs) #get rid of top one soon
@@ -1022,9 +1045,10 @@ def rows2collection(rows,collectionName): #redo above 1st
 
 #
 minio_backup= "http://141.142.218.86" #can also reset this global
-
+#use w/oss
 minio_prod= "https://oss.geodex.org" #minio
-minio_dev= "https://oss.geocodes.earthcube.org"
+minio_dev_= "https://oss.geocodes.earthcube.org"
+minio_dev="https://oss.geocodes-dev.earthcube.org/"
 minio=minio_prod #but need to reset for amgeo in dev, would rather have all in one space, eg.just above
 
 #summoned=jsonld milled=rdf=which is really .nt ;though gets asserted as quads /?
@@ -2012,6 +2036,7 @@ def get_htm_dir(url,ext=None):
 #>>> fj=get_htm_dir("http://mbobak.ncsa.illinois.edu/ec/minio/test3/summoned/geocodes_demo_datasets",".jsonld")
 #>>> len(fj)
 #9
+#>>> list(map(replace_base,fj)) #will replace the base above w/'test3' ;if not in global lambda w/{"base": "repo"}
 
 def url_xml(url): #could just be get_url
     "given bucket url ret raw xml listing"
@@ -2187,6 +2212,16 @@ def get_bucket_files(base_type):
     ff=list(map(lambda f: f'{LD_cache_base}/{f}', fe)) #full file paths
     return ff
 
+#>>> oss_ls('test3/summoned/geocodes_demo_datasets') == get_bucket_files
+  #not replacing yet, bc get error, even though doesn't get drowned out
+#repo_name="geocodes_demo_datasets" #for testing
+#testing_bucket="test3" #or bucket_name
+def get_oss_files(base_type):
+    path=f'{testing_bucket}/{base_type}/{repo_name}'
+    return oss_ls(path)
+#>>> get_oss_files("summoned")
+#['test3/summoned/geocodes_demo_datasets/257108e0760f96ef7a480e1d357bcf8720cd11e4.jsonld', 'test3/summoned/geocodes_demo_datasets/261c022db9edea9e4fc025987f1826ee7a704f06.jsonld', 'test3/summoned/geocodes_demo_datasets/7435cba44745748adfe80192c389f77d66d0e909.jsonld', 'test3/summoned/geocodes_demo_datasets/9cf121358068c7e7f997de84fafc988083b72877.jsonld', 'test3/summoned/geocodes_demo_datasets/b2fb074695be7e40d5ad5d524d92bba32325249b.jsonld', 'test3/summoned/geocodes_demo_datasets/c752617ea91a725643d337a117bd13386eae3203.jsonld', 'test3/summoned/geocodes_demo_datasets/ce020471830dc75cb1639eae403a883f9072bb60.jsonld', 'test3/summoned/geocodes_demo_datasets/fcc47ef4c3b1d0429d00f6fb4be5e506a7a3b699.jsonld', 'test3/summoned/geocodes_demo_datasets/fe3c7c4f7ca08495b8962e079920c06676d5a166.jsonld']
+
 site_urls2UUIDs=None
 urn2site_urls=None
 UUIDs2site_urls={} #uuid part of urn as key
@@ -2294,6 +2329,7 @@ def get_vals(key,dl):
     return rl
 #[['geocodes_demo_datasets:MB_amgeo_data-01-06-2013-17-30-00.json', 'ok', 'ok', None], ['geocodes_demo_datasets:MB_iris_syngine.json', 'ok', 'ok', None], ['geocodes_demo_datasets:MB_lipdverse_HypkanaHajkova2016.json', None, None, None], ['geocodes_demo_datasets:argo-20220707.json', 'ok', 'ok', None], ['geocodes_demo_datasets:argoSimple-v1Shapes.json', None, None, None], ['geocodes_demo_datasets:bcodmo1-20220707.json', 'ok', 'ok', None], ['geocodes_demo_datasets:bcodmo1.json', 'ok', 'ok', None], ['geocodes_demo_datasets:earthchem_1572.json', None, None, None], ['geocodes_demo_datasets:opentopo1.json', 'ok', 'ok', None]]
 
+
 #use this as the key for a dict for every saved state of the workflow
  #so can put out a csv, starting w/this, as it is made from the starting sitemap-url
  #but then for summoned, and if there milled, and then quads in the graph
@@ -2324,6 +2360,7 @@ def csv_dropoff(sitemap_url="https://earthcube.github.io/GeoCODES-Metadata/metad
     #sm_ru=list(map(replace_base,sm)) #acts as key for each dict ;need v of replace_base w/base_url2repo, but for url
     sm_ru=list(map(replace_base,sm)) #acts as key for each dict ;need v of replace_base w/base_url2repo, but for url
     s=get_bucket_files("summoned")
+    #s=get_oss_files("summoned")
     m=get_bucket_files("milled")
     #p=get_bucket_files("prov")
     #g=get_graphs_tails(endpoint)
@@ -2452,6 +2489,7 @@ def bucket_files3(url=None): #might try using above w/this for just a bit
         global ci_url
         ci_url=url
     s=get_bucket_files("summoned")
+    #s=get_oss_files("summoned")
     m=get_bucket_files("milled")
     #p=get_bucket_files("prov")
     p=get_bucket_files(f'prov/{repo_name}') #only the ones for the repo_name being run
