@@ -65,30 +65,34 @@ def fn2nq(fn):
     "read in .nt put out .nq"
     fnb = file_base(fn)
     fn2 = fnb + ".nq"
+    replace_with = f' <urn:{fnb}> .'
     with open(fn2,'w') as fd_out:
         with open(fn,'r') as fd_in:
             for line in fd_in:
                 #line_out = line.replace(" .",f' "urn:{fnb}" .')
                 #replace_with = f' "urn:{fnb}" .'
-                replace_with = f' <urn:{fnb}> .'
-                line_out = replace_last(line, " .", replace_with)
-                fd_out.write(line_out)
+                ll=len(line)
+                if ll>9:
+                    line_out = replace_last(line, " .", replace_with)
+                    fd_out.write(line_out)
     return fn2
 
 def riot2nq(fn):
     "process .jsonld put out .nq"
     fnb = file_base(fn)
     fn2 = fnb + ".nq"
+    replace_with = f' <urn:{fnb}> .'
     nts = os_system_(f'riot --stream=nt {fn}')
     fd_in = nts.split("\n") 
     lin=len(fd_in)
     print(f'got {lin} lines')
     with open(fn2,'w') as fd_out:
         for line in fd_in:
-            replace_with = f' <urn:{fnb}> .'
-            line_out = replace_last(line, " .", replace_with)
-            fd_out.write(line_out)
-            fd_out.write('\n')
+            ll=len(line)
+            if ll>9:
+                line_out = replace_last(line, " .", replace_with)
+                fd_out.write(line_out)
+                fd_out.write('\n')
     return fn2
 
 #if .nt as before, if .jsonld then riot .jsonld to .nt 1st, then dump as .nq

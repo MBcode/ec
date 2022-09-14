@@ -1941,35 +1941,39 @@ def replace_last(source_string, replace_what, replace_with):
     head, _sep, tail = source_string.rpartition(replace_what)
     return head + replace_with + tail
 
-#def fn2nq(fn):
+#def fn2nq(fn): #from 2nq.py
 def nt_fn2nq(fn): #already a nt2nq
     "take a fn.* returns a fn.nq w/4th col urn:fn"
     fnb = file_base(fn)
     fn2 = fnb + ".nq"
+    replace_with = f' <urn:{fnb}> .'
     with open(fn2,'w') as fd_out:
         with open(fn,'r') as fd_in:
             for line in fd_in:
                 #line_out = line.replace(" .",f' "urn:{fnb}" .')
                 #replace_with = f' "urn:{fnb}" .'
-                replace_with = f' <urn:{fnb}> .'
-                line_out = replace_last(line, " .", replace_with)
-                fd_out.write(line_out)
+                ll=len(line)
+                if ll>9:
+                    line_out = replace_last(line, " .", replace_with)
+                    fd_out.write(line_out)
     return fn2
 
 def riot2nq(fn):
     "process .jsonld put out .nq"
     fnb = file_base(fn)
     fn2 = fnb + ".nq"
+    replace_with = f' <urn:{fnb}> .'
     nts = os_system_(f'riot --stream=nt {fn}')
     fd_in = nts.split("\n") 
     lin=len(fd_in)
     print(f'got {lin} lines')
     with open(fn2,'w') as fd_out:
         for line in fd_in:
-            replace_with = f' <urn:{fnb}> .'
-            line_out = replace_last(line, " .", replace_with)
-            fd_out.write(line_out)
-            fd_out.write('\n')
+            ll=len(line)
+            if ll>9:
+                line_out = replace_last(line, " .", replace_with)
+                fd_out.write(line_out)
+                fd_out.write('\n')
     return fn2
 
 def fn2nq(fn): #if is_http wget and call self again/tranfrom input
@@ -1988,6 +1992,34 @@ def fn2nq(fn): #if is_http wget and call self again/tranfrom input
         fn2=riot2nq(fn)
     print(f'gives:{fn2}')
     return fn2
+
+def summoned2nq(s=None):
+    "list of jsonld to one nq file"
+    if not s:
+        s=get_oss_files("summoned")
+        sl=len(s)
+        print(f'summoned:{sl} 2nq')
+    fnout=f'{repo_name}.nq'
+    #os_system(f'yes|gzip {fnout}') #complains if not there
+    os_system(f'echo ""> {fnout}')
+    nql=list(map(fn2nq,s))
+    for nq in nql:
+        os_system(f'cat {nq}>>{fnout}')
+    return fnout
+
+def serve_nq(fn):
+    fnb=file_base(fn)
+    cs=f'nohup fuseki-server -file={fn} /{fnb} &'
+    print(f'assuming no fuseki process, check for this new one:{cs}')
+    os_system(cs)
+
+def summon2serve(s=None): #~nabu
+    "get jsonld and serve the quads"
+    fnout=summoned2nq(s)
+    #cs=f'nohup fuseki-server -file={fnout} /{repo_name} &'
+    #os_system(cs)
+    serve_nq(fnout)
+    return fnout
 
 #sitemap url to LD-cache filenames
  #in mine it is BASE_URL + file_leaf(ur)
