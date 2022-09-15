@@ -846,7 +846,7 @@ def mount_htm(ld_url="http://mbobak.ncsa.illinois.edu/ld",repo=None):
         repo = repo_name
     repo_cache=f'{ld_url}/{repo}'
     os_system(f'mkdir {repo}') #could mount higher so can mix repos
-    cs=f'nohup rehttps {repo_cache} {repo} &'
+    cs=f'nohup rehttpfs {repo_cache} {repo} &' #macfuse has a problem but works on linux
     print(cs) #dbg
     os_system(cs)
     l=ls(repo)
