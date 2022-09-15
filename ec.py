@@ -830,8 +830,36 @@ def url2nq(url):
 
 def setup_s3fs(): #do this by hand for now
     #cs='pip install s3fs' #assume done rarely, once/session 
-    cs='pip install s3fs xmltodict' #want to switch to just request of url&parse xml:bucket_files.py
+    #cs='pip install s3fs xmltodict' #want to switch to just request of url&parse xml:bucket_files.py
+    cs='pip install s3fs xmltodict htmllistparse' #last for rehttpfs
     os_system(cs)
+
+def ls(dir): #there are other py commands to do this
+    cs=f'ls {dir}'
+    return os_system_(cs)
+
+#def mount_htm(ld_url=f'http://mbobak.ncsa.illinois.edu/ld/{repo_name}'):
+def mount_htm(ld_url="http://mbobak.ncsa.illinois.edu/ld",repo=None):
+    "mount any htm url, but default to current repo"
+    if not repo:
+        global repo_name
+        repo = repo_name
+    repo_cache=f'{ld_url}/{repo}'
+    os_system(f'mkdir {repo}') #could mount higher so can mix repos
+    cs=f'nohup rehttps {repo_cache} {repo} &'
+    print(cs) #dbg
+    os_system(cs)
+    l=ls(repo)
+    print(f'ls:{l}')
+    return repo
+    
+def mount_repo(repo=None,ld_url="http://mbobak.ncsa.illinois.edu/ld"):
+    "mount repo from my ld_cache"
+    return mount_htm(ld_url,repo)
+
+def mount_ld(repo="ld",ld_url="http://mbobak.ncsa.illinois.edu"):
+    "mount ld_cache for all repos"
+    return mount_htm(ld_url,repo)
 
 def get_oss(minio_endpoint_url="https://oss.geocodes-dev.earthcube.org/"):
     import s3fs
@@ -844,6 +872,10 @@ def get_oss(minio_endpoint_url="https://oss.geocodes-dev.earthcube.org/"):
           client_kwargs = {"endpoint_url": minio_endpoint_url}
        )
     return oss
+#in nb got: 
+#ImportError: cannot import name 'PROTOCOL_TLS' from 'urllib3.util.ssl_' (/usr/local/lib/python3.7/dist-packages/urllib3/util/ssl_.py)
+#but mostly run on machine where crawl/insert is done w/ spot_test.py for reports
+
 
 #def oss_ls(path='test3/summoned'):
 def oss_ls(path='test3/summoned',full_path=True,minio_endpoint_url="https://oss.geocodes-dev.earthcube.org/"):
@@ -1958,6 +1990,9 @@ def nt_fn2nq(fn): #already a nt2nq
                     fd_out.write(line_out)
     return fn2
 
+#could do w/read_rdf then insert fn into 4th column
+ #then w/recipy could generate a shah that is tracked by it's prov like system
+
 def riot2nq(fn):
     "process .jsonld put out .nq"
     fnb = file_base(fn)
@@ -1992,6 +2027,13 @@ def fn2nq(fn): #if is_http wget and call self again/tranfrom input
         fn2=riot2nq(fn)
     print(f'gives:{fn2}')
     return fn2
+
+#this gets minio buckets but could do get_htm_dir
+ #or if run on machine w/crawl can do very quickly
+ #_think I considered something over a part of get_oss_files
+  #that could tell if minio or other html LD listing
+#there is also the ability to just read it all into rdflib and query that
+ #that might be easier in the notebook, but this fuseki:3030 can be shared
 
 def summoned2nq(s=None):
     "list of jsonld to one nq file"
@@ -2073,6 +2115,10 @@ def url2json(url):
 #ci_url="https://oss.geocodes-dev.earthcube.org/citesting"
 #ci_url="https://oss.geocodes-dev.earthcube.org/test3"
 ci_url2="https://oss.geocodes-dev.earthcube.org/citesting2"
+
+#https://pypi.org/project/htmllistparse/ rehttpfs does a fuse mount of a html dir
+#which allows for reading any of it like a file
+
 def get_url(url): 
     "request.get url"
     import requests
@@ -2164,7 +2210,7 @@ def bucket_xml2dict(test_xml):
         print(f'no ListBucketResult, for:{test_xml}')
         return None
 
-def bucket_files(url):
+def bucket_files(url): #need to get past: <MaxKeys>1000</MaxKeys>
     "bucket_url to file listing"
     test_xml=bucket_xml(url)
     c=bucket_xml2dict(test_xml)
@@ -2275,6 +2321,8 @@ def get_full_key(partial_key,mydict):
     #fk = next(k for k,v in LD_cache_types.items() if base_type in k) #full key
     fk = next(k for k,v in mydict.items() if partial_key in k) #full key
     return fk
+
+#conider getting listing from repo_name/base_type ;for bucket_files
 
 def get_bucket_files(base_type):
     "ask for base_type= summoned,milled,prov,.. get all full file paths"
