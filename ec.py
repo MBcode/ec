@@ -834,6 +834,8 @@ def setup_s3fs(): #do this by hand for now
     cs='pip install s3fs xmltodict htmllistparse' #last for rehttpfs
     os_system(cs)
 
+#if mounted minio like htm, that could have some benefits, incl getting over maxkeys, see what lib/s needed
+
 def ls(dir): #there are other py commands to do this
     cs=f'ls {dir}'
     return os_system_(cs)
@@ -2050,12 +2052,13 @@ def summoned2nq(s=None):
     return fnout
 
 def serve_nq(fn):
+    "serve file w/fuseki" #could also do w/blasegraph, for txt-test/final-run
     fnb=file_base(fn)
     cs=f'nohup fuseki-server -file={fn} /{fnb} &'
     print(f'assuming no fuseki process, check for this new one:{cs}')
     os_system(cs)
 
-def summon2serve(s=None): #~nabu
+def summon2serve(s=None): #~nabu like
     "get jsonld and serve the quads"
     fnout=summoned2nq(s)
     #cs=f'nohup fuseki-server -file={fnout} /{repo_name} &'
@@ -2575,7 +2578,7 @@ def prov2sitemap(bucket_url=None,pu=None): #backward compat4a bit
 
 #def prov2sitemap(bucket_url):
 #def prov2sitemap(bucket_url,pu=None):
-def prov2sitemap_(bucket_url,pu=None):
+def prov2sitemap_(bucket_url,pu=None): #do not use
     "parse bucket prov2get sitemap&it's mappings"
     fi=bucket_files(bucket_url)
     if not fi:
@@ -2596,6 +2599,12 @@ def prov2sitemap_(bucket_url,pu=None):
     return sitemap #for now
 
 #if ret more could use in fnc/s below
+
+#spot_ crawl_dropoff fnc below, ~being sucseeded by csv_dropoff fncs above
+#want2check on: =Graph-count:9, Error count:-9, missing:[]  ;but from older way
+ #I setup the old to get LD_cache info from the new; but might be better focusing on df grid a bit more now
+ #so can get some more bad data through that is expected and catch it
+ #s14 output mostly good, except 2not ok, not in summary../check
 
 #will not need these other bucket_ fncs soon
  #will make spot_ crawl_dropoff something that could more easily fit
@@ -2634,7 +2643,7 @@ def bucket_files3(url=None): #might try using above w/this for just a bit
  #this is in the metadata for the file, but also in the prov mappings
 
 #def bucket_files3(url=None):
-def bucket_files3_(url=None):
+def bucket_files3_(url=None): #do not use
     "url to summoned+milled,prov lists"
     if not url:
         global ci_url
@@ -2643,7 +2652,8 @@ def bucket_files3_(url=None):
     if not fi:
         print(f'bucket_files 3,nothings for:{url}')
         return None, None, None, None
-    s=collect_pre_(fi,"summoned")
+    #s=collect_pre_(fi,"summoned") #use other ;as fix
+    s=get_oss_files("summoned")
     m=collect_pre_(fi,"milled")
     p=collect_pre_(fi,"prov")
     pu=list(map(lambda fp: f'{url}/{fp}', p))
@@ -2684,6 +2694,7 @@ def bucket_files2diff(url,URNs=None):
     if URNs:
         ul=len(URNs)
         dmu=ml-ul
+        print(f'dmu:{dmu}=ml:{ml} - ul:{ul}') #dbg, negative if no milled
         #print(f'=Summoned-count:{sl}, Error count:{dsm}, missing:{lose_s2s}') #below
         print(f'=Milled-count:{ml}, Error count:{dmu}, missing:{lose_s2m}')
         #print(f'expected-URNs:{URNs}')
@@ -2738,7 +2749,7 @@ def drop1mapping(sm,sitemap2urn,su): #want to but not used yet; still in crawl_d
     #return dropoff,lose_s2s, lose_s2m, lose_m2u
     return dropoff,lose_s2s
 
-def crawl_dropoff_(sitemap,bucket_url,endpoint):
+def crawl_dropoff_(sitemap,bucket_url,endpoint): #do not use
     "show counts at each stage, and URN diffs when can"
     #URNs=get_graphs_list(endpoint)  #that are in the endpoint, not the expected
     URNs=get_graphs_tails(endpoint)  #that are in the endpoint, not the expected
@@ -2788,6 +2799,7 @@ def crawl_dropoff(sitemap,bucket_url,endpoint):
         sitemap=prov2sitemap(bucket_url) #this gives the list of them, which most fncs expect the sitemap_url
     #URNs=get_graphs_list(endpoint)  #that are in the endpoint, not the expected
     URNs=get_graphs_tails(endpoint)  #that are in the endpoint, not the expected
+    print(f'crawl_dropoff:URNs:{URNs}')
     #dropoff2,lose_s2m, lose_m2u = bucket_files2diff(bucket_url,URNs)
     #dropoff2,lose_s2m, lose_m2u, sitemap2urn = bucket_files2diff(bucket_url,URNs)
     dropoff2,lose_s2m, lose_m2u, sitemap2urn, su = bucket_files2diff(bucket_url,URNs)
@@ -2935,4 +2947,10 @@ def tscg(sitemap="https://earthcube.github.io/GeoCODES-Metadata/metadata/Dataset
     global bucket_url,testing_endpoint
     endpoint=testing_endpoint
     print(f'tscg:{sitemap},{bucket_url},{endpoint}')
+    return tsc(sitemap,bucket_url,endpoint)
+
+def mb_ci2(sitemap="https://earthcube.github.io/GeoCODES-Metadata/metadata/Dataset/allgood/sitemap.xml",
+           endpoint="https://graph.geocodes-dev.earthcube.org/blazegraph/namespace/mb_ci2/sparql",
+           bucket_url="https://oss.geocodes-dev.earthcube.org/mb_ci2"): 
+    print(f'mb_ci2:{sitemap},{bucket_url},{endpoint}')
     return tsc(sitemap,bucket_url,endpoint)
