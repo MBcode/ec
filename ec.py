@@ -2447,7 +2447,10 @@ def fill_repo_urls(urls,mydict,val="ok"):
 
 def urls2idict(urls,val="ok"):
     mydict={}
-    ul=len(urls)
+    if not urls:
+        print(f'urls2idict:no urls')
+        return mydict
+    ul=len(urls) if urls else 0
     print(f'u2d:{ul}')
     for url in urls:
         key=to_repo_url(url) 
@@ -2515,9 +2518,9 @@ def csv_dropoff(sitemap_url="https://earthcube.github.io/GeoCODES-Metadata/metad
     print(f'm:{m}')
     print(f'g:{g}')
     sml=len(sm_ru)
-    sl=len(s)
-    ml=len(m)
-    gl=len(g)
+    sl=len(s) if s else 0
+    ml=len(m) if m else 0
+    gl=len(g) if g else 0
     print(f'csv_ states,sm:{sml},s:{sl},m:{ml},g:{gl}')
     sd=urls2idict(s)
     md=urls2idict(m)
@@ -2701,7 +2704,11 @@ def bucket_files2diff(url,URNs=None):
         print(f'bucket_files3 2diff, nones for bad:{url}') 
         return None, None, None, None, None
     su=list(map(lambda f: file_base(path_leaf(f)),summoned))
-    mu=list(map(lambda f: file_base(path_leaf(f)),milled))
+    if not milled:
+        print(f'bucket_files3 2diff, no milled for bad:{url}') 
+        mu=[]
+    else:
+        mu=list(map(lambda f: file_base(path_leaf(f)),milled))
     if dbg:
         print(f'summoned-URNs:{su}')
         print(f'milled-URNs:{mu}')
@@ -2885,7 +2892,11 @@ def spot_crawl_dropoff(sitemap,bucket_url,endpoint):
         print(f'spot_ crawl_dropoff, none4lose, bad:{bucket_url}')
         return None, None, None, None, None, None
     s_check=list(map(check_urn_jsonld,lose_s2m))
-    m_check=list(map(check_urn_rdf,lose_m2u)) #can't do this if no milled,  can try the transformation though
+    if not lose_m2u:
+        print(f'scd:no milled:{lose_m2u}')
+        m_check=[] #..
+    else:
+        m_check=list(map(check_urn_rdf,lose_m2u)) #can't do this if no milled,  can try the transformation though
     #return dropoff,lose_s2m, s_check, lose_m2u, m_check 
     #return dropoff,lose_s2s, lose_s2m, s_check, lose_m2u, m_check 
     return dropoff,lose_s2s, lose_s2m, s_check, lose_m2u, m_check, df
