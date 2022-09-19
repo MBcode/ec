@@ -2239,7 +2239,7 @@ def endpoint_xml2dict(test_xml):
     return lbr
 
 def endpoint_description(url="https://graph.geocodes-dev.earthcube.org/blazegraph/namespace/citesting2/sparql"):
-    "get endpoint description xml to see that it is healthy"
+    "get/test endpoint description xml to see that it is healthy"
     test_xml=url_xml(url)
     c=endpoint_xml2dict(test_xml)
     lc=len(c) #2keys
@@ -2338,7 +2338,13 @@ def get_bucket_files(base_type):
    #fkl=collect_pre_(ks,base_type)
    #print(f'get:{base_type} has {fk}')
     fe=collect_pre_(LD_cache_files,base_type) #end of file paths
-    ff=list(map(lambda f: f'{LD_cache_base}/{f}', fe)) #full file paths
+    lfe=len(fe)
+    if lfe>0:
+        ff=list(map(lambda f: f'{LD_cache_base}/{f}', fe)) #full file paths
+    else:
+        print(f'WARN:no {base_type} in {LD_cache_base}:{fe}')
+        #ff=[]
+        ff=None
     return ff
 
 #>>> oss_ls('test3/summoned/geocodes_demo_datasets') == get_bucket_files
@@ -2473,6 +2479,8 @@ csv_out=None
 def csv_dropoff(sitemap_url="https://earthcube.github.io/GeoCODES-Metadata/metadata/Dataset/allgood/sitemap.xml",
         bucket_url=None, endpoint="https://graph.geocodes-dev.earthcube.org/blazegraph/namespace/citesting2/sparql"):
     global csv_out
+    print(f'==sitemap:{sitemap_url}')
+    print(f'==graph_endpoint:{endpoint}')
     if csv_out:
         print("already have a csv_out")
         return csv_out
@@ -2481,7 +2489,8 @@ def csv_dropoff(sitemap_url="https://earthcube.github.io/GeoCODES-Metadata/metad
         if bucket_url != ci_url:
             print(f'reset from:{ci_url} to:{bucket_url}')
             ci_url = bucket_url 
-    print(f'csv_dropoff,bucket:{bucket_url}')
+    print(f'==s3_endpoint:{bucket_url}')
+    #print(f'csv_dropoff,bucket:{bucket_url}')
     if not urn2site_urls:
         set_prov2site_mappings()
     sm=sitemap_list(sitemap_url) #can now use sitemap2urn to get sitemap into same ID space
@@ -2493,7 +2502,12 @@ def csv_dropoff(sitemap_url="https://earthcube.github.io/GeoCODES-Metadata/metad
     m=get_bucket_files("milled")
     #p=get_bucket_files("prov")
     #g=get_graphs_tails(endpoint)
-    g=get_graphs_list(endpoint) #will strip ..urn: to uuid anyway
+    ep_ok=endpoint_description(endpoint)
+    if ep_ok:
+        g=get_graphs_list(endpoint) #will strip ..urn: to uuid anyway
+    else:
+        print(f'cd:enpoing not ok:{endpoint}')
+        g=None
     #print(f'csv_ states,sm:{sm},s:{s},m:{m},g:{g}')
     print(f'sm:{sm}')
     #print(f'sm:{sm_ru}')
@@ -2637,6 +2651,10 @@ def bucket_files3(url=None): #might try using above w/this for just a bit
     print(f'bf3,prov_sitemap:{psl}')
     sitemap2urn=site_urls2UUIDs
     urn2sitemap=UUIDs2site_urls
+    if not s:
+        print("bf3:no summoned")
+    if not m:
+        print("bf3:no milled")
     return s,m,sitemap2urn,urn2sitemap #not sending prov_sitemap yet
 
 #going fwd, focus on being able2keep each stage in assoc, so after list_diff still know which original url started it off
@@ -2867,7 +2885,7 @@ def spot_crawl_dropoff(sitemap,bucket_url,endpoint):
         print(f'spot_ crawl_dropoff, none4lose, bad:{bucket_url}')
         return None, None, None, None, None, None
     s_check=list(map(check_urn_jsonld,lose_s2m))
-    m_check=list(map(check_urn_rdf,lose_m2u))
+    m_check=list(map(check_urn_rdf,lose_m2u)) #can't do this if no milled,  can try the transformation though
     #return dropoff,lose_s2m, s_check, lose_m2u, m_check 
     #return dropoff,lose_s2s, lose_s2m, s_check, lose_m2u, m_check 
     return dropoff,lose_s2s, lose_s2m, s_check, lose_m2u, m_check, df
