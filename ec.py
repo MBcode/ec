@@ -8,7 +8,8 @@ endpoint=None
 #keep these more in sync ;could have a dict for each setup
 repo_name="geocodes_demo_datasets" #for testing
 #testing_bucket="citesting" #or bucket_name
-testing_bucket="test3" #or bucket_name
+#testing_bucket="test3" #or bucket_name
+testing_bucket="mbci2" #using this vs what send in in places/fix this
 ci_url=f'https://oss.geocodes-dev.earthcube.org/{testing_bucket}'
 bucket_url=f'https://oss.geocodes-dev.earthcube.org/{testing_bucket}' #use in oss
 #testing_endpoint="http://ideational.ddns.net:3030/geocodes_demo_datasets/sparql"
@@ -2239,8 +2240,13 @@ def endpoint_xml2dict(test_xml):
     return lbr
 
 def endpoint_description(url="https://graph.geocodes-dev.earthcube.org/blazegraph/namespace/citesting2/sparql"):
-    "get/test endpoint description xml to see that it is healthy"
+    "get/test if endpoint ok, description xml to see that it is healthy"
     test_xml=url_xml(url)
+    ts=test_xml.decode("utf-8")
+    if is_html(ts):
+        return "html"
+    if ts.startswith("Service"):
+        return "service_description"
     c=endpoint_xml2dict(test_xml)
     lc=len(c) #2keys
     print(f'endpoint w/{lc} descriptions')
@@ -2389,9 +2395,12 @@ def uuid2repo_url(uuid):
 #uuid2repo_url("09517b808d22d1e828221390c845b6edef7e7a40")
 #'geocodes_demo_datasets:MB_amgeo_data-01-06-2013-17-30-00.json'
 
+def is_html(str):
+    return "<html>" in str
+
 def is_http(u):
     if not is_str(u):
-        print("might need to set LD_cache")
+        print("might need to set LD_cache") #have this where predicate called
         return None
     return u.startswith("http")
 
@@ -2502,9 +2511,11 @@ def csv_dropoff(sitemap_url="https://earthcube.github.io/GeoCODES-Metadata/metad
     sm_ru=list(map(replace_base,sm)) #acts as key for each dict ;need v of replace_base w/base_url2repo, but for url
     #s=get_bucket_files("summoned")
     s=get_oss_files("summoned")
-    m=get_bucket_files("milled")
+    #m=get_bucket_files("milled")
+    m=get_oss_files("milled")
     #p=get_bucket_files("prov")
     #g=get_graphs_tails(endpoint)
+    print(f'check,endpoint:{endpoint}')
     ep_ok=endpoint_description(endpoint)
     if ep_ok:
         g=get_graphs_list(endpoint) #will strip ..urn: to uuid anyway
@@ -2642,7 +2653,8 @@ def bucket_files3(url=None): #might try using above w/this for just a bit
         ci_url=url
     #s=get_bucket_files("summoned")
     s=get_oss_files("summoned")
-    m=get_bucket_files("milled")
+    #m=get_bucket_files("milled")
+    m=get_oss_files("milled")
     #p=get_bucket_files("prov")
     p=get_bucket_files(f'prov/{repo_name}') #only the ones for the repo_name being run
     #pu=list(map(lambda fp: f'{url}/{fp}', p))
@@ -2979,7 +2991,15 @@ def tscg(sitemap="https://earthcube.github.io/GeoCODES-Metadata/metadata/Dataset
     return tsc(sitemap,bucket_url,endpoint)
 
 def mb_ci2(sitemap="https://earthcube.github.io/GeoCODES-Metadata/metadata/Dataset/allgood/sitemap.xml",
-           endpoint="https://graph.geocodes-dev.earthcube.org/blazegraph/namespace/mb_ci2/sparql",
-           bucket_url="https://oss.geocodes-dev.earthcube.org/mb_ci2"): 
+          #endpoint="https://graph.geocodes-dev.earthcube.org/blazegraph/namespace/mb_ci2/sparql", #not being filled/fix
+           endpoint="http://ideational.ddns.net:3030/geocodes_demo_datasets/sparql",
+           bucket_url="https://oss.geocodes-dev.earthcube.org/mbci2"): 
+          #bucket_url="https://oss.geocodes-dev.earthcube.org/mb_ci2"): #can't name bucket this way 
     print(f'mb_ci2:{sitemap},{bucket_url},{endpoint}')
+    return tsc(sitemap,bucket_url,endpoint)
+
+def test5(sitemap="https://earthcube.github.io/GeoCODES-Metadata/metadata/Dataset/allgood/sitemap.xml",
+           endpoint="http://localhost:9999/blazegraph/namespace/nabu/sparql",
+           bucket_url="https://oss.geocodes-dev.earthcube.org/test5"): 
+    print(f'test5:{sitemap},{bucket_url},{endpoint}')
     return tsc(sitemap,bucket_url,endpoint)
