@@ -2036,6 +2036,8 @@ def fn2nq(fn): #if is_http wget and call self again/tranfrom input
  #_think I considered something over a part of get_oss_files
   #that could tell if minio or other html LD listing
 #there is also the ability to just read it all into rdflib and query that
+  #def xml2nt(fn,frmt="xml") takes json-ld as a format
+  #also: def riot2nq(fn): "process .jsonld put out .nq"
  #that might be easier in the notebook, but this fuseki:3030 can be shared
 
 def summoned2nq(s=None):
@@ -2822,6 +2824,8 @@ def sitemap_dropoff(sitemap_url=None,bucket_url=None): #bucket to get prov's ver
     else:
         print(f'sitemap_dropoff no bucket_url:{bucket_url}')
         sitemap_l=[]
+    if dbg: #if sitemap is malformed can get non flat list
+        print(f'sitemap_dropoff,_l:{sitemap_l},sm:{sm}') #dbg
     lose_s2s=list_diff_dropoff(sitemap_l,sm) #check_sm_urls
     sml=len(sm)
     lsl=len(lose_s2s) #should= sml- ml from above
@@ -2990,7 +2994,10 @@ def tscg(sitemap="https://earthcube.github.io/GeoCODES-Metadata/metadata/Dataset
     print(f'tscg:{sitemap},{bucket_url},{endpoint}')
     return tsc(sitemap,bucket_url,endpoint)
 
-def mb_ci2(sitemap="https://earthcube.github.io/GeoCODES-Metadata/metadata/Dataset/allgood/sitemap.xml",
+#def mb_ci2(sitemap="https://earthcube.github.io/GeoCODES-Metadata/metadata/Dataset/allgood/sitemap.xml",
+#made cp of sitemap, so could add bad tests, eg. a 404
+def mb_ci2(sitemap="https://raw.githubusercontent.com/MBcode/ec/master/test/sitemap.xml",
+   #def mb_ci2(sitemap="http://mbobak.ncsa.illinois.edu/ec/test/sitemap.xml", #before pushing to github
           #endpoint="https://graph.geocodes-dev.earthcube.org/blazegraph/namespace/mb_ci2/sparql", #not being filled/fix
            endpoint="http://ideational.ddns.net:3030/geocodes_demo_datasets/sparql",
            bucket_url="https://oss.geocodes-dev.earthcube.org/mbci2"): 
