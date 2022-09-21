@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 #generate a sitemap for all the datasets, via the clowder api
 # http://isda.ncsa.uiuc.edu/~mbobak
 import requests
