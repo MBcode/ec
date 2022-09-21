@@ -28,6 +28,8 @@ if __name__ == '__main__':
     #if >2 could set alt sitemap name
     if len(sys.argv) > 1:
         url = sys.argv[1]
+        if not "datasets" in url:
+            url = url + "/api/datasets" #so can just send in clowderurl
     else:
         url = "http://localhost:9000/api/datasets" 
     datasetlist2sitemap(url)
