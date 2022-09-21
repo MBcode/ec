@@ -27,9 +27,10 @@ def datasetlist2sitemap(url,sm="sitemap.xml"):
     if not ja:
         print("no text")
         return 0
-    if exists('sitemap.xml.gz'):
-        os.remove("sitemap.xml.gz")
-    if exists('sitemap.xml'):
+    fgz=f'{sm}.gz'
+    if exists(fgz):
+        os.remove(fgz)
+    if exists(sm):
         cs=f'yes|gzip {sm}'
         cr=subprocess.call(cs,shell=True)
         if cr != 0:
@@ -40,14 +41,19 @@ def datasetlist2sitemap(url,sm="sitemap.xml"):
         if(id):
             put_txtfile(sm,f'<url><loc>{URLb}/datasets/{id}</loc></url> ')
     put_txtfile(sm,"</urlset>")
-    return os.stat('sitemap.xml').st_size 
+    return os.stat(sm).st_size 
 
 if __name__ == '__main__':
     #if >2 could set alt sitemap name
+    if len(sys.argv) > 2:
+        sm = sys.argv[2]
+    else:
+        #sm = "sitemap.xml"
+        sm = "public/sitemap.xml" #use this default for clowder run
     if len(sys.argv) > 1:
         url = sys.argv[1]
         if not "datasets" in url: 
             url = url + "/api/datasets" #so can just send in clowderurl
     else:
         url = "http://localhost:9000/api/datasets" 
-    datasetlist2sitemap(url)
+    datasetlist2sitemap(url,sm)
