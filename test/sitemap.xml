@@ -35,6 +35,8 @@
 <url>
 <loc>https://raw.githubusercontent.com/earthcube/GeoCODES-Metadata/main/metadata/Dataset/allgood/opentopo1.json</loc>
 <lastmod>2022-08-18T16:01:03-07:00</lastmod>
+</url>
+<url>
 <loc>https://raw.githubusercontent.com/earthcube/GeoCODES-Metadata/main/metadata/Dataset/bad/not_there404.json</loc>
 <lastmod>2022-09-21:01:03-07:00</lastmod>
 </url>
