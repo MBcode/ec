@@ -25,11 +25,12 @@ Here are the parts that the doc was broken into:
 ### Below is the new way then the old way, which I will delete in favor of the 2 links above
 
 ### .
+### Have [expected_results.csv](https://github.com/MBcode/ec/blob/master/test/expected_results.csv) along w/a [sitemap.xml](https://github.com/MBcode/ec/blob/master/test/sitemap.xml) that we can add more bad cases to [compare](https://github.com/MBcode/ec/blob/master/ec.py#L2496)
+
 ### .
 ### .
 ### .
-### .
-### .
+### .delete everything below this
 
 ### Sec2: CI spot testing.md
 
