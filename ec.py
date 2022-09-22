@@ -1732,7 +1732,8 @@ def get_graphs_list(endpoint=None,dump_file=None):
         dfg.to_csv(dump_file)
     return dfg['g'].tolist()
 
-def get_graph_per_repo(grep="milled",endpoint=None,dump_file="graphs.csv"):
+#def get_graph_per_repo(grep="milled",endpoint=None,dump_file="graphs.csv"):
+def get_graph_per_repo(grep="milled",endpoint="https://graph.geodex.org/blazegraph/namespace/earthcube/sparql",dump_file="graphs.csv"):
     "dump a file and sort|uniq -c out the repo counts"
     gl=get_graphs_list(endpoint,dump_file) #this needs full URN to get counts for the same 'repo:' s
     gn=len(gl)
@@ -2360,6 +2361,14 @@ def get_bucket_files(base_type):
   #not replacing yet, bc get error, even though doesn't get drowned out
 #repo_name="geocodes_demo_datasets" #for testing
 #testing_bucket="test3" #or bucket_name
+def get_oss_files_(path=None, base_type=None, minio_endpoint_url="https://oss.geodex.org/" ,full_path=True,):
+    if not base_type:
+        base_type="summonded"
+    if not path:
+        global testing_bucket,repo_name
+        path=f'{testing_bucket}/{base_type}/{repo_name}'
+    return oss_ls(path, full_path, minio_endpoint_url)
+
 def get_oss_files(base_type):
     path=f'{testing_bucket}/{base_type}/{repo_name}'
     return oss_ls(path)
@@ -2498,6 +2507,10 @@ def cmp_expected_results(df=None,df2="https://raw.githubusercontent.com/MBcode/e
     global csv_out
     if not df and csv_out:
         df=csv_out
+    if is_http(df2):
+        import pandas as pd
+        df2=pd.read_csv(df2)
+    print(f'df1={df},df2={df2}')
     return df_diff(df,df2)
 #check/fix: ValueError: The truth value of a DataFrame is ambiguous. Use a.empty, a.bool(), a.item(), a.any() or a.all().
 
@@ -3015,6 +3028,7 @@ def mb_ci2(sitemap="https://raw.githubusercontent.com/MBcode/ec/master/test/site
            bucket_url="https://oss.geocodes-dev.earthcube.org/mbci2"): 
           #bucket_url="https://oss.geocodes-dev.earthcube.org/mb_ci2"): #can't name bucket this way 
     print(f'mb_ci2:{sitemap},{bucket_url},{endpoint}')
+    print(" ") #spot_crawl_dropoff has .. w/df at end, that needs a newline
     return tsc(sitemap,bucket_url,endpoint)
 
 def test5(sitemap="https://earthcube.github.io/GeoCODES-Metadata/metadata/Dataset/allgood/sitemap.xml",
