@@ -19,6 +19,7 @@ dflt_endpoint = "https://graph.geocodes.earthcube.org/blazegraph/namespace/earth
 #from 'sources' gSheet: can use for repo:file_leaf naming/printing
 base_url2repo ={"https://raw.githubusercontent.com/earthcube/GeoCODES-Metadata/main/metadata/Dataset/json": "geocodes_demo_datasets",
         "https://raw.githubusercontent.com/earthcube/GeoCODES-Metadata/main/metadata/Dataset/allgood": "geocodes_demo_datasets",
+        "https://raw.githubusercontent.com/earthcube/GeoCODES-Metadata/main/metadata/Dataset/bad": "geocodes_demo_bad",
                 "http://mbobak.ncsa.illinois.edu/ec/minio/test3/summoned/geocodes_demo_datasets": "test3"
         } #won't match if '/' at end of key
 local=None
@@ -2490,6 +2491,16 @@ def get_vals(key,dl):
 #def csv_dropoff(sitemap_url): #maybe add spot test output later
 #this needs LD_cache full 1st, can run bucket_files3 or..
 csv_out=None
+
+#def cmp_expected_results(df=None,df2="http://mbobak.ncsa.illinois.edu/ec/test/expected_results.csv"):
+def cmp_expected_results(df=None,df2="https://raw.githubusercontent.com/MBcode/ec/master/test/expected_results.csv"):
+    "just show where not expected" #so bad things can still be ok
+    global csv_out
+    if not df and csv_out:
+        df=csv_out
+    return df_diff(df,df2)
+#check/fix: ValueError: The truth value of a DataFrame is ambiguous. Use a.empty, a.bool(), a.item(), a.any() or a.all().
+
 def csv_dropoff(sitemap_url="https://earthcube.github.io/GeoCODES-Metadata/metadata/Dataset/allgood/sitemap.xml",
         bucket_url=None, endpoint="https://graph.geocodes-dev.earthcube.org/blazegraph/namespace/citesting2/sparql"):
     global csv_out
@@ -2550,8 +2561,9 @@ def csv_dropoff(sitemap_url="https://earthcube.github.io/GeoCODES-Metadata/metad
     print(f'{sml}={lr}')
     import pandas as pd
     df = pd.DataFrame.from_dict(r)
-    csv_out=df #so we don't rerun uncessesarily
-    return df
+    #csv_out=df #so we don't rerun uncessesarily
+    csv_out=df.set_axis(["repo:file_name",  "summoned", "milled", "graph"], axis=1, inplace=False)
+    return csv_out
 #turn this into html-table &/or dataframe
   #see what is up w/graph's comparison/fix that; bad uuid2url: 
    #so might have other crawl in graph? look for similar name/urls there
