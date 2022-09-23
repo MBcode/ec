@@ -57,6 +57,20 @@ def wget(fn):
 #_:bcbhdkms5s8cef2c4s7j0 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://schema.org/Dataset> "urn:09517b808d22d1e828221390c845b6edef7e7a40".
 #fn = "09517b808d22d1e828221390c845b6edef7e7a40.rdf"
 
+#this should be used to check lines that have already gone through riot
+def no_error(line):
+    ll = len(line)
+    if ll < 9:
+        print(f'skipping {ll}<9: {line}')
+        return False
+    if "ERROR riot" in line:
+        print(f'skipping: error-line:{line}')
+        return False
+    return True 
+
+#also have:
+#if ll>9: #to skip ~empty lines, but ..
+
 #https://stackoverflow.com/questions/3675318/how-to-replace-the-some-characters-from-the-end-of-a-string
 def replace_last(source_string, replace_what, replace_with):
     head, _sep, tail = source_string.rpartition(replace_what)
@@ -74,8 +88,8 @@ def fn2nq(fn):
             for line in fd_in:
                 #line_out = line.replace(" .",f' "urn:{fnb}" .')
                 #replace_with = f' "urn:{fnb}" .'
-                ll=len(line)
-                if ll>9:
+                #ll=len(line)
+                if no_error(line):
                     line_out = replace_last(line, " .", replace_with)
                     fd_out.write(line_out)
     return fn2
@@ -93,8 +107,8 @@ def riot2nq(fn):
     print(f'got {lin} lines')
     with open(fn2,'w') as fd_out:
         for line in fd_in:
-            ll=len(line)
-            if ll>9:
+            #ll=len(line)
+            if no_error(line):
                 line_out = replace_last(line, " .", replace_with)
                 fd_out.write(line_out)
                 fd_out.write('\n')
