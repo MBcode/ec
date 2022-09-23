@@ -2,6 +2,7 @@
 #mike b, take a triple file w/every line ending in " ." and use filename to make a quad, needed for gleaner/testing
 #potentially useful elsewhere; eg. if added repo: could use this in my workflow to make quads
 import os
+from os.path import exists
 #from ec.py ;below can go in utils as well, but as cli right now
 def file_ext(fn):
     st=os.path.splitext(fn)
@@ -65,6 +66,8 @@ def fn2nq(fn):
     "read in .nt put out .nq"
     fnb = file_base(fn)
     fn2 = fnb + ".nq"
+    if exists(fn2):
+        print(f'fn2nq:{fn2} already there')
     replace_with = f' <urn:{fnb}> .'
     with open(fn2,'w') as fd_out:
         with open(fn,'r') as fd_in:
@@ -81,6 +84,8 @@ def riot2nq(fn):
     "process .jsonld put out .nq"
     fnb = file_base(fn)
     fn2 = fnb + ".nq"
+    if exists(fn2):
+        print(f'riot2nq:{fn2} already there')
     replace_with = f' <urn:{fnb}> .'
     nts = os_system_(f'riot --stream=nt {fn}')
     fd_in = nts.split("\n") 
