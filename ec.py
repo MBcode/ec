@@ -134,6 +134,12 @@ def put_txtfile(fn,s,wa="w"):
     with open(fn, "a") as f:
         return f.write(s)
 
+def list2txtfile(fn,l,wa="w"):
+    with open(fn, "a") as f:
+        for elt in l:
+            f.write(f'{elt}\n')
+    return len(l)
+
 def date2log(): #could use now to put on same line, but this breaks it apart
     cs="date>>log"
     os.system(cs)
@@ -1751,9 +1757,12 @@ def get_graphs_list(endpoint=None,dump_file=None):
         dfg.to_csv(dump_file)
     return dfg['g'].tolist()
 
-def get_graphs_cache(endpoint="http://ideational.ddns.net:9999/bigdata/namespace/nabu/sparql"):
+def get_graphs_cache(endpoint="http://ideational.ddns.net:9999/bigdata/namespace/nabu/sparql",dumpfile=None):
     print(f'get_graphs_cache:{endpoint}')
-    return get_graphs_list(endpoint)
+    l= get_graphs_list(endpoint)
+    if dumpfile:
+        list2txtfile(dumpfile,l)
+    return l
 
 def get_graphs_lon(repo=None,endpoint="http://ideational.ddns.net:3040/all/sparql"): 
     "for when I host a repo w/fuseki testing"
