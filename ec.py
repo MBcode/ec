@@ -15,7 +15,13 @@ bucket_url=f'https://oss.geocodes-dev.earthcube.org/{testing_bucket}' #use in os
 #testing_endpoint="http://ideational.ddns.net:3030/geocodes_demo_datasets/sparql"
 testing_endpoint=f'http://ideational.ddns.net:3030/{repo_name}/sparql'
 #testing_endpoint="https://graph.geocodes-dev.earthcube.org/blazegraph/namespace/{besting_bucket}/sparql"
-dflt_endpoint = "https://graph.geocodes.earthcube.org/blazegraph/namespace/earthcube/sparql"
+first_endpoint = "https://graph.geodex.org/blazegraph/namespace/nabu/sparql"
+prod_endpoint = "https://graph.geocodes.earthcube.org/blazegraph/namespace/earthcube/sparql"
+#dflt_endpoint = "https://graph.geocodes.earthcube.org/blazegraph/namespace/earthcube/sparql"
+dflt_endpoint_old = "https://graph.geocodes.earthcube.org/blazegraph/namespace/earthcube/sparql"
+mb_endpoint = "http://24.13.90.91:9999/bigdata/namespace/nabu/sparql"
+dflt_endpoint = "http://24.13.90.91:9999/bigdata/namespace/nabu/sparql"
+dflt_endpoint = "https://graph.geodex.org/blazegraph/namespace/nabu/sparql"
 #from 'sources' gSheet: can use for repo:file_leaf naming/printing
 base_url2repo ={"https://raw.githubusercontent.com/earthcube/GeoCODES-Metadata/main/metadata/Dataset/json": "geocodes_demo_datasets",
         "https://raw.githubusercontent.com/earthcube/GeoCODES-Metadata/main/metadata/Dataset/allgood": "geocodes_demo_datasets",
@@ -1717,6 +1723,19 @@ def get_graphs():
     "return all the g URNs"
     return v4qry("","graphs")
 
+def txt_query_(q,endpoint=None):
+    "or can just reset dflt_endpoint"
+    global dflt_endpoint
+    if not endpoint:
+        df=txt_query(q)
+    else:
+        save = dflt_endpoint
+        dflt_endpoint = endpoint
+        print(f'txt_query,w/:{dflt_endpoint}')
+        df=txt_query(q)
+        dflt_endpoint = save
+    return df
+
 #def get_graphs_list(endpoint=None):
 def get_graphs_list(endpoint=None,dump_file=None):
     "get URNs as list, can send in alt endpoint"
@@ -1732,7 +1751,12 @@ def get_graphs_list(endpoint=None,dump_file=None):
         dfg.to_csv(dump_file)
     return dfg['g'].tolist()
 
+def get_graphs_cache(endpoint="http://ideational.ddns.net:9999/bigdata/namespace/nabu/sparql"):
+    print(f'get_graphs_cache:{endpoint}')
+    return get_graphs_list(endpoint)
+
 def get_graphs_lon(repo=None,endpoint="http://ideational.ddns.net:3040/all/sparql"): 
+    "for when I host a repo w/fuseki testing"
     endpnt= endpoint if repo==None else endpoint.replace("all",repo)
     print(f'get_graphs_lon:{endpnt}')
     return get_graphs_list(endpnt)
