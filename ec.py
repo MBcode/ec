@@ -1732,6 +1732,11 @@ def get_graphs_list(endpoint=None,dump_file=None):
         dfg.to_csv(dump_file)
     return dfg['g'].tolist()
 
+def get_graphs_lon(repo=None,endpoint="http://ideational.ddns.net:3040/all/sparql"): 
+    endpnt= endpoint if repo==None else endpoint.replace("all",repo)
+    print(f'get_graphs_lon:{endpnt}')
+    return get_graphs_list(endpnt)
+
 #def get_graph_per_repo(grep="milled",endpoint=None,dump_file="graphs.csv"):
 def get_graph_per_repo(grep="milled",endpoint="https://graph.geodex.org/blazegraph/namespace/earthcube/sparql",dump_file="graphs.csv"):
     "dump a file and sort|uniq -c out the repo counts"
@@ -2361,13 +2366,24 @@ def get_bucket_files(base_type):
   #not replacing yet, bc get error, even though doesn't get drowned out
 #repo_name="geocodes_demo_datasets" #for testing
 #testing_bucket="test3" #or bucket_name
-def get_oss_files_(path=None, base_type=None, minio_endpoint_url="https://oss.geodex.org/" ,full_path=True,):
+#def get_oss_files_(path=None, base_type=None, bucket=None, minio_endpoint_url="https://oss.geodex.org/" ,full_path=True,):
+def get_oss_files_(repo=None, base_type=None, bucket="gleaner", path=None, minio_endpoint_url="https://oss.geodex.org/" ,full_path=True,):
+    if not bucket:
+        global testing_bucket
+        bucket= testing_bucket
     if not base_type:
         base_type="summonded"
+    if not repo:
+        global repo_name
+        repo= repo_name
     if not path:
-        global testing_bucket,repo_name
-        path=f'{testing_bucket}/{base_type}/{repo_name}'
+        #path=f'{testing_bucket}/{base_type}/{repo_name}'
+        path=f'{bucket}/{base_type}/{repo}'
+    print(f'get_oss_files_:{path}') #dbg
+    #oss_ls("gleaner/summoned", True, "https://oss.geodex.org/")
     return oss_ls(path, full_path, minio_endpoint_url)
+#default getting access-denied, though get xml, and from:, but was for mbci2
+#oss_ls("gleaner/summoned", True, "https://oss.geodex.org/")
 
 def get_oss_files(base_type):
     path=f'{testing_bucket}/{base_type}/{repo_name}'
