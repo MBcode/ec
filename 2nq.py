@@ -46,6 +46,25 @@ def wget(fn):
     os_system(cs)
     return path_leaf(fn) #new
 
+#was xml2nt, but can call w/"json-ld" or "ntriples",but could just use fn2nq still
+#def 2nt_str(fn,frmt="xml"):  #could also use rapper here, see: rdfxml2nt
+def to_nt_str(fn,frmt="json-ld"):  
+    "turn .xml(rdf) to .nt"
+    fnb=file_base(fn)
+    from rdflib import Graph
+    g = Graph()
+    #g.parse(fn, format="xml")
+    g.parse(fn, format=frmt) #allow for "json-ld"..
+    #UnicodeDecodeError: 'utf-8' codec can't decode byte 0x8b in position 1: invalid start byte ;fix
+    #s=g.serialize(format="ntriples").decode("u8") #works via cli,nb had ntserializer prob
+    s=g.serialize(format="ntriples") #try w/o ;no, but works in NB w/just a warning
+   #fnt=fnb+".nt" #condsider returning this
+   #put_txtfile(fnt,s)
+   #add2log(f'xml2nt:{fnt},len:{s}')
+    #return len(s)
+   #return fnt
+    return s
+
 #DF's gleaner uses the shah of the jsonld to name the .rdf files which are actually .nt files
 # but then there are lots of .nq files that are actually .nt files, but should be able to get them w/this
 #maybe someplace in nabu this is done, but by then I can't have the files to load them
@@ -102,6 +121,27 @@ def riot2nq(fn):
         print(f'riot2nq:{fn2} already there')
     replace_with = f' <urn:{fnb}> .'
     nts = os_system_(f'riot --stream=nt {fn}')
+    fd_in = nts.split("\n") 
+    lin=len(fd_in)
+    print(f'got {lin} lines')
+    with open(fn2,'w') as fd_out:
+        for line in fd_in:
+            #ll=len(line)
+            if no_error(line):
+                line_out = replace_last(line, " .", replace_with)
+                fd_out.write(line_out)
+                fd_out.write('\n')
+    return fn2
+
+def to_nq(fn):
+    "process .jsonld put out .nq"
+    fnb = file_base(fn)
+    fn2 = fnb + ".nq"
+    if exists(fn2):
+        print(f'riot2nq:{fn2} already there')
+    replace_with = f' <urn:{fnb}> .'
+   #nts = os_system_(f'riot --stream=nt {fn}')
+    nts=to_nt_str(fn)
     fd_in = nts.split("\n") 
     lin=len(fd_in)
     print(f'got {lin} lines')
