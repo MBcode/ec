@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<style>
+
+</style>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://fonts.googleapis.com/css?family=Noto+Sans&display=swap" rel="stylesheet"/>
+
+    <title>Search | GeoCODES</title>
+
+    <link rel="stylesheet" href="./css/bootstrap.css"/>
+<!--    <link rel="stylesheet" href="./css/bootstrap.css"/>-->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+		  <link rel="icon" sizes="192x192" href="https://static.wixstatic.com/media/a8b87d_e49be51963cb4e7eb47641ec7eee5f2d%7Emv2.png/v1/fill/w_32%2Ch_32%2Clg_1%2Cusm_0.66_1.00_0.01/a8b87d_e49be51963cb4e7eb47641ec7eee5f2d%7Emv2.png">
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+            integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+            crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx"
+            crossorigin="anonymous"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/underscore@1.12.0/underscore-min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/js-yaml/4.0.0/js-yaml.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mocha/1.0.2/package/lib/browser/fs.js"></script>
+    <script src="js/facetedsearch.js"></script>
+    <link rel="stylesheet" href="css/main.css"/>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+		<!-- <script async src="https://www.googletagmanager.com/gtag/js?id=G-JPGL40HD5M"></script> -->
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'G-JPGL40HD5M');
+    </script>
+</head>
+
+<body>
+<div class="container-fluid">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <a class="navbar-brand" href="https://www.earthcube.org/">
+            <img src="images/EarthCube-White-Long-Tagline.png" height="60"
+                 class="d-inline-block align-top" alt="EarthCube" loading="lazy"> </a>
+        <a class="navbar-brand" href="https://www.earthcube.org/geocodes">
+            <img src="images/GeoCODES.png" height="30"
+                 class="d-inline-block align-top" alt="EarthCube" loading="lazy"> </a>
+        <!-- -->
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <form class="input-group form-inline  w-50 " >
+            <input id="q" class="form-control w-25 ml-sm-2" type="search" placeholder="Search" aria-label="Search">
+            <div class="input-group-append">
+                <a href="#" class="btn btn-default" id="searchBtn">
+                    <img src="./images/icons/search.svg" alt="" width="32" height="32" title="Search">
+                </a>
+            </div>
+            <input style="visibility: hidden" id="resourceType"  value=""/>
+            <input style="visibility: hidden" id="nn" type="number" min="5" max="200" step="5" value="20"/>
+        </form>
+        <div class="navbar-text font-weight-bold">
+             <span class="font-weight-normal font-italic"> Find and use geosciences data and tools</span>
+        </div>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+
+						<!-- <a class="nav-link" href="https://graph.geodex.org/blazegraph/#query"  target="_blank">SPARQL Endpoint</a> -->
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+<a class="nav-link"  id="sparql-link"
+		href="http://mbobak.ncsa.illinois.edu/nabu.htm#query=PREFIX%20rdf%3A%20%3Chttp%3A%2F%2Fwww.w3.org%2F1999%2F02%2F22-rdf-syntax-ns%23%3E%0APREFIX%20rdfs%3A%20%3Chttp%3A%2F%2Fwww.w3.org%2F2000%2F01%2Frdf-schema%23%3E%0Aprefix%20schema%3A%20%3Chttp%3A%2F%2Fschema.org%2F%3E%0Aprefix%20sschema%3A%20%3Chttps%3A%2F%2Fschema.org%2F%3E%0APREFIX%20bds%3A%20%3Chttp%3A%2F%2Fwww.bigdata.com%2Frdf%2Fsearch%23%3E%0ASELECT%20distinct%20%3Fsubj%20%3Fpubname%20%20%20%3Fdatep%20%20%20%3Fscore%20%20%3Fname%20%3Fdescription%20%3FresourceType%20%20%0A%20%20%20%20%20%20%20%20WHERE%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Flit%20bds%3Asearch%20%22norway%22%20.%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Flit%20bds%3AmatchAllTerms%20%22false%22%20.%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Flit%20bds%3Arelevance%20%3Fscore%20.%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Fsubj%20%3Fp%20%3Flit%20.%0A%20%20%20%20%20%20%20%20%20%20%20%20BIND%20(IF%20(exists%20%7B%3Fsubj%20a%20schema%3ADataset%20.%7D%20%7C%7Cexists%7B%3Fsubj%20a%20sschema%3ADataset%20.%7D%20%2C%20%22data%22%2C%20%22tool%22)%20AS%20%3FresourceType).%0A%20%20%20%20%20%20%20%20%20%20%20%20filter(%20%3Fscore%20%3E%200.14).%0A%20%20%20%20%20%20%20%20%20%20%20%20FILTER%20(%20!%20isBlank(%3Fsubj)%20)%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Fsubj%20schema%3Aname%7Csschema%3Aname%20%3Fname%20.%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Fsubj%20schema%3Adescription%7Csschema%3Adescription%20%3Fdescription%20.%20%0A%20%20%20%20%20%20%20%20%20%20%20%20OPTIONAL%20%7B%3Fsubj%20schema%3AdatePublished%7Csschema%3AdatePublished%20%3Fdate_p%20.%7D%0A%20%20%20%20%20%20%20%20%20%20%20%20OPTIONAL%20%7B%3Fsubj%20schema%3Apublisher%2Fschema%3Aname%7Csschema%3Apublisher%2Fsschema%3Aname%20%3Fpub_name%20.%7D%0A%20%20%20%20%20%20%20%20%20%20%20%20BIND%20(%20IF%20(%20BOUND(%3Fdate_p)%2C%20%3Fdate_p%2C%20%22no%3AdatePublished%22)%20as%20%3Fdatep%20)%20.%0A%20%20%20%20%20%20%20%20%20%20%20%20BIND%20(%20IF%20(%20BOUND(%3Fpub_name)%2C%20%3Fpub_name%2C%20%22no%3Apublisher.name%22)%20as%20%3Fpubname%20)%20.%0A%20%20%20%20%20%20%20%20%20%20%20%20BIND%20(%20IF%20(%20BOUND(%3Fplace_name)%2C%20%3Fplace_name%2C%20%22no%3AspatialCoverage.name%22)%20as%20%3Fplacename%20)%20.%0A%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20GROUP%20BY%20%3Fsubj%20%3Fdatep%20%3Fpubname%20%3Fname%20%3Fdescription%20%3Fscore%20%3FresourceType%20%0A%20%20%20%20%20%20%20%20ORDER%20BY%20DESC(%3Fscore)&endpoint=https%3A%2F%2Fgraph.geodex.org%2Fblazegraph%2Fnamespace%2Fnabu%2Fsparql&requestMethod=POST&tabTitle=Query&headers=%7B%7D&contentTypeConstruct=application%2Fn-triples%2C*%2F*%3Bq%3D0.9&contentTypeSelect=application%2Fsparql-results%2Bjson%2C*%2F*%3Bq%3D0.9&outputFormat=table"
+                                                                                               target="_blank">SPARQL Endpoint</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="about.html"  target="_blank">Help</a>
+                </li>
+            </ul>
+
+<script type="text/javascript">
+		//need to re-eval when searchBtn hit, too
+		const queryString = window.location.search;
+		console.log(queryString);
+    const urlParams = new URLSearchParams(queryString);
+		console.log(urlParams);
+    const q = urlParams.get('q')
+		console.log(q);
+
+		var url = "http://mbobak.ncsa.illinois.edu/nabu.htm#query=PREFIX%20rdf%3A%20%3Chttp%3A%2F%2Fwww.w3.org%2F1999%2F02%2F22-rdf-syntax-ns%23%3E%0APREFIX%20rdfs%3A%20%3Chttp%3A%2F%2Fwww.w3.org%2F2000%2F01%2Frdf-schema%23%3E%0Aprefix%20schema%3A%20%3Chttp%3A%2F%2Fschema.org%2F%3E%0Aprefix%20sschema%3A%20%3Chttps%3A%2F%2Fschema.org%2F%3E%0APREFIX%20bds%3A%20%3Chttp%3A%2F%2Fwww.bigdata.com%2Frdf%2Fsearch%23%3E%0ASELECT%20distinct%20%3Fsubj%20%3Fpubname%20%20%20%3Fdatep%20%20%20%3Fscore%20%20%3Fname%20%3Fdescription%20%3FresourceType%20%20%0A%20%20%20%20%20%20%20%20WHERE%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Flit%20bds%3Asearch%20%22" + q + "%22%20.%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Flit%20bds%3AmatchAllTerms%20%22false%22%20.%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Flit%20bds%3Arelevance%20%3Fscore%20.%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Fsubj%20%3Fp%20%3Flit%20.%0A%20%20%20%20%20%20%20%20%20%20%20%20BIND%20(IF%20(exists%20%7B%3Fsubj%20a%20schema%3ADataset%20.%7D%20%7C%7Cexists%7B%3Fsubj%20a%20sschema%3ADataset%20.%7D%20%2C%20%22data%22%2C%20%22tool%22)%20AS%20%3FresourceType).%0A%20%20%20%20%20%20%20%20%20%20%20%20filter(%20%3Fscore%20%3E%200.14).%0A%20%20%20%20%20%20%20%20%20%20%20%20FILTER%20(%20!%20isBlank(%3Fsubj)%20)%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Fsubj%20schema%3Aname%7Csschema%3Aname%20%3Fname%20.%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Fsubj%20schema%3Adescription%7Csschema%3Adescription%20%3Fdescription%20.%20%0A%20%20%20%20%20%20%20%20%20%20%20%20OPTIONAL%20%7B%3Fsubj%20schema%3AdatePublished%7Csschema%3AdatePublished%20%3Fdate_p%20.%7D%0A%20%20%20%20%20%20%20%20%20%20%20%20OPTIONAL%20%7B%3Fsubj%20schema%3Apublisher%2Fschema%3Aname%7Csschema%3Apublisher%2Fsschema%3Aname%20%3Fpub_name%20.%7D%0A%20%20%20%20%20%20%20%20%20%20%20%20BIND%20(%20IF%20(%20BOUND(%3Fdate_p)%2C%20%3Fdate_p%2C%20%22no%3AdatePublished%22)%20as%20%3Fdatep%20)%20.%0A%20%20%20%20%20%20%20%20%20%20%20%20BIND%20(%20IF%20(%20BOUND(%3Fpub_name)%2C%20%3Fpub_name%2C%20%22no%3Apublisher.name%22)%20as%20%3Fpubname%20)%20.%0A%20%20%20%20%20%20%20%20%20%20%20%20BIND%20(%20IF%20(%20BOUND(%3Fplace_name)%2C%20%3Fplace_name%2C%20%22no%3AspatialCoverage.name%22)%20as%20%3Fplacename%20)%20.%0A%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20GROUP%20BY%20%3Fsubj%20%3Fdatep%20%3Fpubname%20%3Fname%20%3Fdescription%20%3Fscore%20%3FresourceType%20%0A%20%20%20%20%20%20%20%20ORDER%20BY%20DESC(%3Fscore)&endpoint=https%3A%2F%2Fgraph.geodex.org%2Fblazegraph%2Fnamespace%2Fnabu%2Fsparql&requestMethod=POST&tabTitle=Query&headers=%7B%7D&contentTypeConstruct=application%2Fn-triples%2C*%2F*%3Bq%3D0.9&contentTypeSelect=application%2Fsparql-results%2Bjson%2C*%2F*%3Bq%3D0.9&outputFormat=table"
+		document.getElementById("sparql-link").href = url;
+		console.log(url);
+</script>
+
+
+
+        </div>
+    </nav>
+
+
+<!--    <div id="wrapper row">-->
+<!--        <div id="description">-->
+<!--            <h6>Faceted Search of EarthCube resources</h6>-->
+
+<!--        </div>-->
+<!--    </div>-->
+    <!-- Here comes the demo, if you want to copy and paste, start here -->
+    <div class="row col-12 mt-3 pt-2" id="filterDiv"> <!-- filters -->
+        <div class="row col-3 align-items-start">
+            <div id="facets" class="row col-12">
+
+            </div>
+
+
+        </div>
+        <div class="row col-8 align-self-start ">
+            <div id="heading" class="row col-12" style="height: 2em;"></div>
+            <div id="results" class="row col-12"></div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    async function getItemsFromSparql(q, n = 1000, o = 0) {
+        console.log("Get Blaze full text");
+        console.log(n);
+
+
+      //  var url = new URL("https://graph.geodex.org/blazegraph/namespace/cdf/sparql"),
+        var url = new URL("https://graph.geodex.org/blazegraph/namespace/nabu/sparql"),
+      //var url = new URL("http://mbobak.ncsa.illinois.edu:9999/blazegraph/namespace/nabu/sparql"),
+            // var url = new URL("http://192.168.2.89:8080/blazegraph/sparql"),
+            // params = { query: "SELECT * { ?s ?p ?o  } LIMIT 11" }
+
+// 			params = {
+// 				query: ` prefix schema: <http://schema.org/> \
+// SELECT ?total ?subj ?disurl ?score  ?name ?description \
+//  WHERE {\
+//   { \
+//    ?lit bds:search \"${q}\" . \
+//    ?lit bds:matchAllTerms "false" . \
+//    ?lit bds:relevance ?score . \
+//    ?subj ?p ?lit . \
+//    BIND (?subj as ?s) \
+//       {  \
+//    		SELECT  ?s (MIN(?url) as ?disurl) { \
+//              ?s a schema:Dataset . \
+//              ?s schema:distribution ?dis . \
+//    			?dis schema:url ?url . \
+//    	  	} GROUP BY ?s \
+//    } \
+//    ?s schema:name ?name . \
+//    ?s schema:description ?description .  \
+//  } \
+//  { SELECT  (COUNT(?s) AS ?total) \
+//       WHERE { \
+//          SERVICE <http://www.bigdata.com/rdf/search#search> { \
+//               ?matchedValue \
+//                         bds:search        \"${q}\" ; \
+//                         bds:relevance     ?score ; \
+//                         bds:rank          ?rank . \
+//           } \
+//           ?s        ?matchedProperty  ?matchedValue \
+//           FILTER ( ! isBlank(?s) ) \
+//         } \
+// } \
+//  }\
+// ORDER BY DESC(?score)
+// LIMIT ${n}
+// OFFSET ${o}
+// ` }
+//const sparqlqueryData=
+            params = {
+                query: `PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+prefix schema: <http://schema.org/>
+prefix sschema: <https://schema.org/>
+SELECT distinct ?subj ?g ?resourceType ?name ?description  ?pubname (GROUP_CONCAT(DISTINCT ?placename; SEPARATOR=", ") AS ?placenames)
+        (GROUP_CONCAT(DISTINCT ?kwu; SEPARATOR=", ") AS ?kw)
+        ?datep  (GROUP_CONCAT(DISTINCT ?url; SEPARATOR=", ") AS ?disurl) (MAX(?score1) as ?score)
+	(MAX(?lat) as ?maxlat) (Min(?lat) as ?minlat) (MAX(?lon) as ?maxlon) (Min(?lon) as ?minlon) 
+        WHERE {
+            ?lit bds:search "${q}" .
+            ?lit bds:matchAllTerms false .
+            ?lit bds:relevance ?score1 .
+            ?subj ?p ?lit .
+            #BIND (IF (exists {?subj a schema:Dataset .} ||exists{?subj a sschema:Dataset .} , "data", "tool") AS ?resourceType).
+            filter( ?score1 > 0.14).
+          graph ?g {
+            Minus {?subj a sschema:ResearchProject } .
+            Minus {?subj a schema:ResearchProject } .
+
+            Minus {?subj a schema:Person } .
+            Minus {?subj a sschema:Person } .
+             ?subj schema:name|sschema:name ?name .
+                       ?subj schema:description|sschema:description ?description .
+             }
+						 values (?type ?resourceType) {
+            (schema:ResearchProject "Research Project") #BCODMO- project
+            (sschema:ResearchProject  "Research Project")
+             (schema:SoftwareApplication  "tool")
+             (sschema:SoftwareApplication  "tool")
+             (schema:Person  "Person") #BCODMO- Person
+             (sschema:Person  "Person")
+              (schema:Event  "Event") #BCODMO- deployment
+              (sschema:Event  "Event")
+               (schema:Award  "Award") #BCODMO- Award
+               (sschema:Award  "Award")
+              (schema:DataCatalog  "DataCatalog")
+              (sschema:DataCatalog  "DataCatalog")
+            (schema:Dataset "data")
+            (sschema:Dataset "data")
+            #(UNDEF "other")  # assume it's data. At least we should get  name.
+          } ?subj a ?type .
+            optional {?subj schema:distribution/schema:url|schema:subjectOf/schema:url ?url .}
+            OPTIONAL {?subj schema:datePublished|sschema:datePublished ?date_p .}
+            OPTIONAL {?subj schema:publisher/schema:name|sschema:publisher/sschema:name|sschema:sdPublisher|schema:provider/schema:name ?pub_name .}
+            OPTIONAL {?subj schema:spatialCoverage/schema:name|sschema:spatialCoverage/sschema:name ?place_name .}
+            OPTIONAL {?subj schema:keywords|sschema:keywords ?kwu .}
+            BIND ( IF ( BOUND(?date_p), ?date_p, "No datePublished") as ?datep ) .
+            BIND ( IF ( BOUND(?pub_name), ?pub_name, "No Publisher") as ?pubname ) .
+            BIND ( IF ( BOUND(?place_name), ?place_name, "No spatialCoverage") as ?placename ) .
+        }
+        GROUP BY ?subj ?pubname ?placenames ?kw ?datep ?disurl ?score ?name ?description  ?resourceType ?g ?minlat ?maxlat ?minlon ?maxlon
+        ORDER BY DESC(?score)
+LIMIT ${ n }
+OFFSET ${ o }`
+            }
+        Object.keys(params).forEach(key => url.searchParams.append(key, params[key]))
+
+        console.log(params["query"]);
+
+        const rawResponse = await fetch(url, {
+            method: 'GET',
+            //mode: 'no-cors', // no-cors, *cors, same-origin
+            // cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+            //credentials: 'omit', // include, *same-origin, omit
+            headers: {
+                'Accept': 'application/sparql-results+json',
+                'Content-Type': 'application/json'
+            } // ,
+            // body: JSON.stringify({ query: 'SELECT * { ?s ?p ?o  } LIMIT 1', format: 'json' })
+        });
+
+        const content = await rawResponse.json();
+        //console.log(content);
+        var items = _.map(content.results.bindings, function (item) {
+
+            var flattened = _.mapObject(item, function (value, key) {
+                var regex = /,(?![^(]*\)) /
+                if (key === 'kw') {
+                    var elements = value.value.split(regex)
+                    // if elements is zero, what happens if I return null?
+                    if (elements.length == 1  ){ if (elements[0].trim() === ''){
+                        elements = null;
+                    }}
+                    return elements;
+                } if (key === 'placenames') {
+                    var elements = value.value.split(regex)
+                    return elements;
+                } if (key === 'description')
+                {
+                    let maxlen = 500
+                    let d = value.value;
+                    if (d.length > maxlen)  {
+                        let spaceAt = d.indexOf(" ", maxlen) ? d.indexOf(" ", maxlen) : maxlen
+                            d = d.substring(0, spaceAt) + " ...";
+                    }
+                    return d;
+                }
+                else {
+                    // if (_.isEmpty(value.value)) {
+                    //     return null;
+                    // }
+                    return value.value;
+
+                }
+
+            })
+            flattened['s3endpoint'] = flattened['g'].replace('urn:gleaner:milled','').replaceAll(':','/')
+            if ( _.isEqual("http///www.bigdata.com/rdf#nullGraph", flattened['s3endpoint'].toString() ) ) {
+                flattened['s3endpoint'] = null;
+            }
+            //  if g is http://www.bigdata.com/rdf#nullGraph then empty value, use empty value if empty, don't show
+            return flattened;
+        })
+        items = _.uniq(items, false, function(item, key, subj){
+            return item.subj
+        })
+        return items; //content.results.bindings;
+        // const el = document.querySelector('#resultsRecords');
+        // const s1 = document.querySelector('#filters');
+        // render(showresults(content), el);
+        // // render(projresults(content), s1);
+
+
+    };
+    $.urlParam = function (name) {
+        var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
+        if (results == null) {
+            return null;
+        } else {
+            return results[1] || 0;
+        }
+    }
+
+    $(function () {
+        let queryTextBox = $('#q');
+        let q = queryTextBox.val();
+        let qurl = $.urlParam('q');
+        if (q === "") {
+            if (qurl !== null) {
+                q = qurl;
+                queryTextBox.val(q);
+            }
+        }
+//resourceType
+        let resourceTypeInput = $('#resourceType');
+        let resourceType = resourceTypeInput.val();
+        let resTypeurl = $.urlParam('resourceType');
+        if (resourceType === "") {
+            if (resTypeurl !== null) {
+                resourceType = resTypeurl;
+                resourceTypeInput.val(resourceType);
+            }
+        }
+        const item_template = `<div class="item card rounded mt-2 w-100">
+                <div class="card-header">
+                  <div class="card-title" ><%= obj.name %></div>
+
+                    <% if (obj.pubname.startsWith('No ') ) {  %>
+                        <div class="card-subtitle mb-2 text-muted visible='false'">  </div>
+                          <% }  else { %>
+                             <div class="card-subtitle mb-2 text-muted"><%= obj.pubname %></div>
+                              <% } %>
+                </div>
+                <div class="tags card-body overflow-auto">
+                    <div class="card-text">
+                     <% if (obj.description) {  %><%= obj.description %><% } %>
+                    </div>
+                    <div class="card-text pt-2">
+                        <% if (obj.kw) {  %> <b>Keywords:</b> <%= obj.kw %><% } %>
+                    </div>
+                </div>
+                <div class="card-footer">
+                <div class="row">
+                <span class="col-auto mr-auto">
+                <% if (obj.resourceType ==='data') {  %>
+                <span class="badge badge-secondary"><%= obj.resourceType %></span>
+                  <% }  else { %>
+                     <span class="badge badge-warning"><%= obj.resourceType %></span>
+                      <% } %>
+                     <span class="tool " hidden="true"  ><%= obj.g %></span>
+                  </span>
+                  <span class="col-auto ">
+                       <% if (obj.disurl) {  %>
+                      <% _.each(obj.disurl.split(','), function(value, key) { %>
+                        <a class="card-link " target="_blank" href="<%= value %>"><%= value %></a>
+                        <% }); %>
+                        <% } %>
+<span class="col-auto">
+                        <% if (obj.s3endpoint) {  %>
+                        <a class="card-link " target="_blank" href="dataset.html?o=<%=  obj.s3endpoint%>.jsonld" >Details</a>
+                       <% } %>
+</span></div>
+                 </div>
+            </div> `;
+
+        // const facetContainer = `<div class=facetsearch id=<%= id %> ></div>`
+        const facetContainer = `<div class="accordion col-12 border  p-0 mt-1" id="<%= id %>accordian">
+               <div class="card " id='<%= id %>'>
+
+                </div>
+            </div>`;
+        const facetTitleTemplate = `<div class="card-header" id="heading<%= id %>">
+            <h2 class="mb-0">
+                <button class="btn btn-link btn-block text-left " type="button" data-toggle="collapse"
+                        data-target="#collapse<%= id %>" aria-expanded="true" aria-controls="collapse<%= id %>">
+                    <%= title %><i class="fa fa-plus  float-right"></i>
+                </button>
+
+            </h2>
+            </div>`;
+
+        const facetListContainer = `<div id="collapse<%= id %>" class="collapse " aria-labelledby="heading<%= id %>" data-parent="#<%= id %>accordian">
+            <div class="card-body">
+                <div class="list-group pl-3 facetlist " >
+            </div>
+
+            </div>
+       </div>`;
+        const listItemTemplate = `<div class="list-group-item  facetitem">
+                        <input type="radio" id="item<%= id %>" name="customRadioInline1"
+                               aria-label="Checkbox for following text input" />
+                        <label class="p-2" for="item<%= id %>"> <%= name %>  </label>
+                        <span  class="badge badge-secondary float-right"><%= count %></span>
+                    </div>`;
+
+        const listItemTemplateSimple = `<div class="facetitem " id="<%= id %>"><%= name %> <span class="facetitemcount badge badge-light float-right">(<%= count %>)</span></div>`;
+        const countTemplate = `<div class="facettotalcount col order-12"><%= count %> selected of <%= totalcount  %> Results</div>`;
+        const deselectTemplate = `<div class='btn btn-sm btn-info col order-6'>Clear all filters</div>`;
+
+        const orderByTemplate = `<div class="dropdown col order-1"><button class=' btn btn-sm btn-info dropdown-toggle' id="orderbyMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <span class="orderby-title">Sort by: </span> </button>
+            <div class="dropdown-menu" aria-labelledby="orderbyMenuButton"><% _.each(options, function(value, key) { %>
+                       <a class="orderbyitem dropdown-item" id="orderby_<%= key %>">
+                       <%= value %> </a> <% }); %></div></button>
+</div>`
+        ;
+
+        getItemsFromSparql(q)
+            .then(function (results) {
+                // first run
+                var state =  {
+                    orderBy : false,
+                    filters : {}
+                }
+                var restype = $('#resourceType').val();
+                if (restype !== 'all' && restype !==''){
+                     var filters = { 'resourceType': [restype]}
+                      state = {
+                         orderBy : false,
+													filters : {}
+                     }
+                }
+
+                    $.facetsettings = {
+                        items: results,
+                        facets: {
+                            // 'subj': 'Science Domain',
+                            'resourceType': 'Resource Type',
+                            //'kw': 'Science Domain',
+                            'kw': 'Keywords',
+                            // 'name': 'Place',
+                            'placenames': 'Place',
+                            'pubname': 'Publisher/Repo',
+														 "maxlat": "maxlat",
+															"maxlon": "maxlon", 
+                            'datep': 'Year Published'
+                        },
+                        resultSelector: '#results',
+                        facetSelector: '#facets',
+                        facetContainer: facetContainer,
+                        facetTitleTemplate: facetTitleTemplate,
+                        facetListContainer: facetListContainer,
+                        listItemTemplate: listItemTemplateSimple,
+                        resultTemplate: item_template,
+
+                        deselectTemplate: deselectTemplate,
+                        orderByTemplate: orderByTemplate,
+                        countTemplate: countTemplate,
+                        paginationCount: 50,
+                         state: state,
+                        orderByOptions: {
+                            'name': 'Name',
+                            'pubname': 'Publisher',
+                            'date': 'Date',
+                            // 'subj': 'Subject',
+                            //'RANDOM': 'Score'
+                            'score': 'Score'
+                        },
+                        orderByOptionsSort: {
+                            'name': 'acs',
+                            'pubname': 'acs',
+                            'date': 'acs',
+                            // 'subj': 'Subject',
+                            //'RANDOM': 'Score'
+                            'score': 'desc'
+                        },
+                        facetSortOption: {'continent': ["North America", "South America"]}
+                    };
+
+
+                $( $.facetsettings.resultSelector).on('facetedsearchresultupdate', updateTools);
+
+                    $.facetelize($.facetsettings);
+
+                $('.facetsearch').on('show.bs.collapse', _handleCollapse);
+                $('.facetsearch').on('hide.bs.collapse', _handleExpand);
+                //$('#filterDiv').show();
+                //updateTools();
+
+                }
+            )
+    });
+
+    function updateTools(){
+        $('.tool').on('render', rrtoolask );
+
+
+        $( ".tool" ).trigger({
+            type:"render"
+        });
+    }
+</script>
+
+<script>
+    async function rrtoolask(g) {
+        console.log(g);
+        var urn = g.target.innerText;
+
+
+            var url = new URL("https://graph.geodex.org/blazegraph/namespace/nabu/sparql"),
+
+                // var url = new URL("http://192.168.2.89:8080/blazegraph/sparql"),
+                // params = { query: "SELECT * { ?s ?p ?o  } LIMIT 11" }
+
+// 			params = {
+// 				query: `
+// 				PREFIX schema:  <https://schema.org/> \
+// 				PREFIX schemaold:  <http://schema.org/> \
+// ASK \
+// WHERE \
+// { \
+//   graph <${g}> { \
+//      \
+//    ?s   schema:encodingFormat|schemaold:encodingFormat ?type . \
+//     } \
+//       BIND (str(?type) as ?label) \
+//    SERVICE <http://132.249.238.169:8080/fuseki/ecrr/query> { \
+//        GRAPH <http://earthcube.org/gleaner-summoned>  \
+//        {                \
+// 		?rrs schemaold:supportingData|schemaold:encodingFormat  ?label . \
+// 		?rrs schemaold:name ?rrname. \
+// 		FILTER isURI(?rrs) . \
+//         } \
+//     }     \
+//  } \
+// ` }
+
+
+                params = {
+                    query: `PREFIX schema:  <https://schema.org/>
+	PREFIX schemaold:  <http://schema.org/>
+	ASK
+	WHERE                    {
+	  graph  <${urn}>
+		  {
+			{
+			  ?s schemaold:distribution|schema:distribution ?dist .
+			  ?dist  schemaold:encodingFormat|schema:encodingFormat ?type .
+              ?dist schemaold:contentUrl|schema:contentUrl|schema:url|schemaold:url ?curl
+			}
+			UNION {
+			  VALUES (?dataset) { ( schema:Dataset ) ( schemaold:Dataset ) }
+			  ?s a ?dataset .
+			  ?s  schemaold:encodingFormat|schema:encodingFormat ?type .
+			  }
+		 }
+		 BIND (str(?type) as ?label)
+		 SERVICE <http://132.249.238.169:8080/fuseki/ecrr/query> {
+		  GRAPH <http://earthcube.org/gleaner-summoned>
+		   {
+			  ?rrs schema:supportingData ?df.
+				  ?df schema:encodingFormat  ?label ;
+					  schema:position "input".
+				  ?rrs schema:name ?name.
+		   }
+	   }
+	}`
+                };
+
+
+            Object.keys(params).forEach(key => url.searchParams.append(key, params[key]))
+
+            const rawResponse = await fetch(url, {
+                method: 'GET',
+                //mode: 'no-cors', // no-cors, *cors, same-origin
+                // cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+                //credentials: 'omit', // include, *same-origin, omit
+                headers: {
+                    'Accept': 'application/sparql-results+json',
+                    'Content-Type': 'application/json'
+                } // ,
+                // body: JSON.stringify({ query: 'SELECT * { ?s ?p ?o  } LIMIT 1', format: 'json' })
+            });
+
+            const askresp = await rawResponse.json();
+
+            // TODO  try to return content here back to main
+            console.log("-- end of RR tool ask --");
+            console.log(askresp);
+
+            if (askresp.boolean) {
+                console.log(params["query"]);
+
+              //  const t = document.getElementById(g);
+                var t = g.target;
+                //render(rrshowresults(g), t);
+                var newHtml = rrshowresults(urn);
+                $(newHtml).insertAfter(t);
+               // t.innerHtml = newHtml;
+                //t.hidden = false;
+            }
+
+            return askresp;
+
+
+    }
+
+    const rrshowresults = (content) => {
+        console.log("-----------------------------------------------");
+        console.log(content);
+
+        var gar = String(content).split(":");
+        console.log(gar);
+
+        var x = `./dataset.html?o=/${gar[gar.length -2]}/${gar[gar.length -1]}.jsonld`;
+
+        var sptxt = _.template(
+        //    `<a  target="_blank" href="<%= x %>"> <span class="badge badge-info">Connected Tools</span></a>`
+                `<span class="badge badge-info">Connected Tools</span>`
+        );
+
+        return sptxt({x: x});
+    };
+</script>
+
+<script>
+    //$.facetelize($.facetsettings);
+    //var yaml = require('js-yaml');
+    //     jQuery.getJSON('./settings.yaml',
+    // function(data ){
+    //     var settings = jsyaml.load(data);
+    // }
+    //     );
+    // $(function () {
+    //     "use strict";
+    //     $(document).ready(function () {
+    //         $.get('./settings.yaml')
+    //             .done(function (data) {
+    //                 console.log('File load complete');
+    //                 console.log(jsyaml.load(data));
+    //                 var jsonString = JSON.stringify(data);
+    //                 console.log(jsonString);
+    //                 console.log($.parseJSON(jsonString));
+    //             });
+    //     }() );
+    // });
+    document.querySelector('#searchBtn').addEventListener('click', search);
+    $( "#q" ).keypress (function( event ) {
+        if ( event.which == 13 ) {
+            search(event);
+        }
+    });
+                function search(e) {
+                    // (async () => {
+                    let q = $('#q').val();
+
+										//update sparql-query link w/new search-txt
+		var url = "http://mbobak.ncsa.illinois.edu/nabu.htm#query=PREFIX%20rdf%3A%20%3Chttp%3A%2F%2Fwww.w3.org%2F1999%2F02%2F22-rdf-syntax-ns%23%3E%0APREFIX%20rdfs%3A%20%3Chttp%3A%2F%2Fwww.w3.org%2F2000%2F01%2Frdf-schema%23%3E%0Aprefix%20schema%3A%20%3Chttp%3A%2F%2Fschema.org%2F%3E%0Aprefix%20sschema%3A%20%3Chttps%3A%2F%2Fschema.org%2F%3E%0APREFIX%20bds%3A%20%3Chttp%3A%2F%2Fwww.bigdata.com%2Frdf%2Fsearch%23%3E%0ASELECT%20distinct%20%3Fsubj%20%3Fpubname%20%20%20%3Fdatep%20%20%20%3Fscore%20%20%3Fname%20%3Fdescription%20%3FresourceType%20%20%0A%20%20%20%20%20%20%20%20WHERE%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Flit%20bds%3Asearch%20%22" + q + "%22%20.%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Flit%20bds%3AmatchAllTerms%20%22false%22%20.%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Flit%20bds%3Arelevance%20%3Fscore%20.%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Fsubj%20%3Fp%20%3Flit%20.%0A%20%20%20%20%20%20%20%20%20%20%20%20BIND%20(IF%20(exists%20%7B%3Fsubj%20a%20schema%3ADataset%20.%7D%20%7C%7Cexists%7B%3Fsubj%20a%20sschema%3ADataset%20.%7D%20%2C%20%22data%22%2C%20%22tool%22)%20AS%20%3FresourceType).%0A%20%20%20%20%20%20%20%20%20%20%20%20filter(%20%3Fscore%20%3E%200.14).%0A%20%20%20%20%20%20%20%20%20%20%20%20FILTER%20(%20!%20isBlank(%3Fsubj)%20)%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Fsubj%20schema%3Aname%7Csschema%3Aname%20%3Fname%20.%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Fsubj%20schema%3Adescription%7Csschema%3Adescription%20%3Fdescription%20.%20%0A%20%20%20%20%20%20%20%20%20%20%20%20OPTIONAL%20%7B%3Fsubj%20schema%3AdatePublished%7Csschema%3AdatePublished%20%3Fdate_p%20.%7D%0A%20%20%20%20%20%20%20%20%20%20%20%20OPTIONAL%20%7B%3Fsubj%20schema%3Apublisher%2Fschema%3Aname%7Csschema%3Apublisher%2Fsschema%3Aname%20%3Fpub_name%20.%7D%0A%20%20%20%20%20%20%20%20%20%20%20%20BIND%20(%20IF%20(%20BOUND(%3Fdate_p)%2C%20%3Fdate_p%2C%20%22no%3AdatePublished%22)%20as%20%3Fdatep%20)%20.%0A%20%20%20%20%20%20%20%20%20%20%20%20BIND%20(%20IF%20(%20BOUND(%3Fpub_name)%2C%20%3Fpub_name%2C%20%22no%3Apublisher.name%22)%20as%20%3Fpubname%20)%20.%0A%20%20%20%20%20%20%20%20%20%20%20%20BIND%20(%20IF%20(%20BOUND(%3Fplace_name)%2C%20%3Fplace_name%2C%20%22no%3AspatialCoverage.name%22)%20as%20%3Fplacename%20)%20.%0A%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20GROUP%20BY%20%3Fsubj%20%3Fdatep%20%3Fpubname%20%3Fname%20%3Fdescription%20%3Fscore%20%3FresourceType%20%0A%20%20%20%20%20%20%20%20ORDER%20BY%20DESC(%3Fscore)&endpoint=https%3A%2F%2Fgraph.geodex.org%2Fblazegraph%2Fnamespace%2Fnabu%2Fsparql&requestMethod=POST&tabTitle=Query&headers=%7B%7D&contentTypeConstruct=application%2Fn-triples%2C*%2F*%3Bq%3D0.9&contentTypeSelect=application%2Fsparql-results%2Bjson%2C*%2F*%3Bq%3D0.9&outputFormat=table"
+		document.getElementById("sparql-link").href = url;
+		console.log(url);
+
+                    getItemsFromSparql(q).then(function (results) {
+                        $.facetsettings.items = results;
+                        var restype = $('#resourceType').val();
+                        if (restype !== 'all' && restype !==''){
+                          if ( $.facetsettings.state.filters.resourceType ){
+                              $.facetsettings.state.filters.resourceType = [ restype] // hack single type
+                          } else {
+                              $.facetsettings.state.filters['resourceType'] =[restype]
+                          }
+
+                        }
+                        //$.facetsettings.state.filters =
+                        //$.facetUpdate();
+                        $.facetelize($.facetsettings);
+                    });
+                    updateURL(q,"all", true);
+                    // });
+                };
+                // document.querySelector('.collapse').addEventListener('show.bs.collapse', _handleCollapse);
+                // document.querySelector('.collapse').addEventListener('hide.bs.collapse', _handleExpand);
+
+                function _handleCollapse(e) {
+                    console.log("collapse");
+
+                    // Toggle plus minus icon on show hide of collapse element
+                    $(this).find(".fa").removeClass("fa-plus").addClass("fa-minus")
+
+
+                };
+
+                function _handleExpand(e) {
+                    console.log("expand");
+
+                    // Toggle plus minus icon on show hide of collapse element
+                    $(this).find(".fa").removeClass("fa-minus").addClass("fa-plus");
+                };
+
+    function updateURL(q, s,  push) {
+        console.log("UpdateURL Called");
+
+        let params = new URLSearchParams(location.search.slice(1));
+        params.set('q', q);
+        params.set('resourceType', s);
+
+
+        // Issues with current browsers and titles
+        //document.title = `Search:${q}&n=${n}&o=${o}`;
+
+        //window.history.replaceState({}, '', location.pathname + '?' + params);
+        const state = {
+            q: q,
+            searchTypes: s,
+
+        }
+        if (push) {
+            window.history.pushState(state, 'GeoDex Search', location.pathname + '?' + params);
+        }
+
+    }
+</script>
+</div>
+<!--
+<a href="http://github.com/eikes/facetedsearch"><img style="position: absolute; top: 0; right: 0; border: 0;"
+                                                     src="https://a248.e.akamai.net/assets.github.com/img/7afbc8b248c68eb468279e8c17986ad46549fb71/687474703a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6461726b626c75655f3132313632312e706e67"
+                                                     alt="Fork me on GitHub"></a>
+-->
+</body>
+</html>
