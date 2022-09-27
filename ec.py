@@ -20,6 +20,7 @@ prod_endpoint = "https://graph.geocodes.earthcube.org/blazegraph/namespace/earth
 #dflt_endpoint = "https://graph.geocodes.earthcube.org/blazegraph/namespace/earthcube/sparql"
 dflt_endpoint_old = "https://graph.geocodes.earthcube.org/blazegraph/namespace/earthcube/sparql"
 mb_endpoint = "http://24.13.90.91:9999/bigdata/namespace/nabu/sparql"
+ncsa_endpoint= "http://mbobak.ncsa.illinois.edu:9999/blazegraph/namespace/nabu/sparql"
 dflt_endpoint = "http://24.13.90.91:9999/bigdata/namespace/nabu/sparql"
 dflt_endpoint = "https://graph.geodex.org/blazegraph/namespace/nabu/sparql"
 #from 'sources' gSheet: can use for repo:file_leaf naming/printing
@@ -806,6 +807,15 @@ def xml2nt(fn,frmt="xml"):  #could also use rapper here, see: rdfxml2nt
     #return len(s) 
     return fnt 
 
+def to_nt_str(fn,frmt="json-ld"):  
+    "turn .xml(rdf) to .nt"
+    fnb=file_base(fn)
+    from rdflib import Graph
+    g = Graph()
+    g.parse(fn, format=frmt) #allow for other formats
+    s=g.serialize(format="ntriples") 
+    return s
+
 def jsonld2nt(fn,frmt="json-ld"):
     "turn .jsonld to .nt"
     add2log(f'jsonld2nt:{fn},{frmt}')
@@ -1031,6 +1041,7 @@ f_nt=None
 #could load .nt as a tsv file, to look at if interested
 def read_rdf(fn,ext=".tsv"):  #too bad no tabs though../fix?
     return read_file(fn,ext)
+#consider using https://pypi.org/project/rdfpandas/
 
 #if I ever get a chance, I'm going to go back to my more understandable /ld/repo/name format
 #def urn2uri_(urn):  #looking for a more stable indicator
@@ -2054,6 +2065,27 @@ def riot2nq(fn):
                 fd_out.write('\n')
     return fn2
 
+def to_nq(fn):
+    "process .jsonld put out .nq"
+    fnb = file_base(fn)
+    fn2 = fnb + ".nq"
+    if exists(fn2):
+        print(f'riot2nq:{fn2} already there')
+    replace_with = f' <urn:{fnb}> .'
+   #nts = os_system_(f'riot --stream=nt {fn}')
+    nts=to_nt_str(fn)
+    fd_in = nts.split("\n") 
+    lin=len(fd_in)
+    print(f'got {lin} lines')
+    with open(fn2,'w') as fd_out:
+        for line in fd_in:
+            #ll=len(line)
+            if no_error(line):
+                line_out = replace_last(line, " .", replace_with)
+                fd_out.write(line_out)
+                fd_out.write('\n')
+    return fn2
+
 def fn2nq(fn): #if is_http wget and call self again/tranfrom input
     "output fn as .nq"
     if is_http(fn):
@@ -2065,7 +2097,8 @@ def fn2nq(fn): #if is_http wget and call self again/tranfrom input
     if ext==".nt":
         fn2=fn2nq(fn)
     if ext==".jsonld":
-        fn2=riot2nq(fn)
+        #fn2=riot2nq(fn)
+        fn2=to_nq(fn)
     else: #it might still work:
         fn2=riot2nq(fn)
     print(f'gives:{fn2}')

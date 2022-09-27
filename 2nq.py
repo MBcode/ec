@@ -138,7 +138,7 @@ def to_nq(fn):
     fnb = file_base(fn)
     fn2 = fnb + ".nq"
     if exists(fn2):
-        print(f'riot2nq:{fn2} already there')
+        print(f'to_2nq:{fn2} already there')
     replace_with = f' <urn:{fnb}> .'
    #nts = os_system_(f'riot --stream=nt {fn}')
     nts=to_nt_str(fn)
@@ -168,5 +168,6 @@ if __name__ == '__main__':
         if ext==".nt":
             fn2=fn2nq(fn)
         if ext==".jsonld":
-            fn2=riot2nq(fn)
+            #fn2=riot2nq(fn)
+            fn2=to_nq(fn)
         print(f'gives:{fn2}')
