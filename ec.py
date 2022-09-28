@@ -30,19 +30,20 @@ base_url2repo ={"https://raw.githubusercontent.com/earthcube/GeoCODES-Metadata/m
                 "http://mbobak.ncsa.illinois.edu/ec/minio/test3/summoned/geocodes_demo_datasets": "test3"
         } #won't match if '/' at end of key
 #can load sitemaps from gSheet, or even better github, here are a few now, in the order the get_graph_per_repo puts them out
-named_sitemaps={
-"amgeo": "https://amgeo-dev.colorado.edu/sitemap.xml",
-"xdomes": "https://xdomes.tamucc.edu/srr/sensorML/sitemap.xml",
+ # https://raw.githubusercontent.com/MBcode/ec/master/test/sitemaps.csv #had to take bad ones out again
+named_sitemaps={ #putting version of this in my ec/test as sitemaps.csv
+"ssdb.iodp": "https://ssdb.iodp.org/dataset/sitemap.xml",
+"usap-dc": "https://www.usap-dc.org/view/dataset/sitemap.xml",
+#"xdomes": "https://xdomes.tamucc.edu/srr/sensorML/sitemap.xml",
 "iris": "http://ds.iris.edu/files/sitemap.xml",
-"balto": "http://balto.opendap.org/opendap/site_map.txt ",
+#"balto": "http://balto.opendap.org/opendap/site_map.txt ",
 "designsafe": "https://www.designsafe-ci.org/sitemap.xml ",
-"neon": "https://geodex.org/neon_prodcodes_sm.xml",
-"rr": "https://object.cloud.sdsc.edu/v1/AUTH_85f46aa78936477d8e71b186269414e8/gleaner-summoned",
+#"neon": "https://geodex.org/neon_prodcodes_sm.xml",
 "opentopography": "https://portal.opentopography.org/sitemap.xml",
 "earthchem": "https://ecl.earthchem.org/sitemap.xml",
 "lipdverse": "https://lipdverse.org/sitemap.xml",
 "magic": "https://www2.earthref.org/MagIC/contributions.sitemap.xml",
-"neotomadb": "http://data.neotomadb.org/sitemap.xml",
+#"neotomadb": "http://data.neotomadb.org/sitemap.xml",
 "cchodo": "https://cchdo.ucsd.edu/sitemap.xml",
 "unavco": "https://www.unavco.org/data/doi/sitemap.xml",
 "hydroshare": "https://www.hydroshare.org/sitemap-resources.xml",
@@ -53,12 +54,15 @@ named_sitemaps={
 "unidata": "https://www.unidata.ucar.edu/sitemap.xml",
 "linked.earth": "http://wiki.linked.earth/sitemap.xml",
 "r2r": "https://service-dev.rvdata.us/api/sitemap/",
-"ssdb.iodp": "https://ssdb.iodp.org/dataset/sitemap.xml",
-"usap-dc": "https://www.usap-dc.org/view/dataset/sitemap.xml",
-"geocodes_demo_dataset": "https://raw.githubusercontent.com/earthcube/GeoCODES-Metadata/gh-pages/metadata/Dataset/sitemap.xml"
+"geocodes_demo_dataset": "https://raw.githubusercontent.com/earthcube/GeoCODES-Metadata/gh-pages/metadata/Dataset/sitemap.xml",
+"amgeo": "https://amgeo-dev.colorado.edu/sitemap.xml",
+"rr": "https://object.cloud.sdsc.edu/v1/AUTH_85f46aa78936477d8e71b186269414e8/gleaner-summoned"
 }
-#sitemaps=list(named_sitemaps.values())
-#sc=sitemaps_count(sitemaps) #but needs to handle timeouts before running that full list
+def test_sitemaps(sitemaps=named_sitemaps):
+    sitemaps=list(named_sitemaps.values())
+    print(f'getting lengths for:{sitemaps}')
+    sc=sitemaps_count(sitemaps) #but needs to handle timeouts before running that full list
+    return sc  #this will work w/dflt list now
 
 local=None
 def laptop(): #could call: in_binder
@@ -2365,8 +2369,9 @@ def bucket_xml(url):
 
 def bucket_xml2dict(test_xml):
     "bucket url to list of dicts, w/file in key"
-    import xmltodict
-    d=xmltodict.parse(test_xml)
+    #import xmltodict
+    #d=xmltodict.parse(test_xml)
+    d=xmltodict_parse(test_xml)
     #print(d)
     lbr=d.get("ListBucketResult")
     if lbr:
@@ -2391,8 +2396,9 @@ def bucket_files(url): #need to get past: <MaxKeys>1000</MaxKeys>
 
 
 def endpoint_xml2dict(test_xml):
-    import xmltodict
-    d=xmltodict.parse(test_xml)
+    #import xmltodict
+    #d=xmltodict.parse(test_xml)
+    d=xmltodict_parse(test_xml)
     if(dbg):
         print(d)
     #lbr=d.get("rdf:Description")
