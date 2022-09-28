@@ -350,7 +350,8 @@ def df_diff(df1,df2): #doesn't work as well as I would like in all situations, w
     if not is_df(df2):
         print("df_diff:2nd arg:wrong type:{df2}")
         return pd.DataFrame() #False
-    print(f'df_diff:{df1},{df2}')
+    if dbg:
+        print(f'df_diff:{df1},{df2}')
     return pd.concat([df1,df2]).drop_duplicates(keep=False)
 
 def diff_sd(fn1,fn2):
@@ -2598,7 +2599,7 @@ csv_out=None
 def cmp_expected_results(df=None,df2="https://raw.githubusercontent.com/MBcode/ec/master/test/expected_results.csv"):
     "just show where not expected" #so bad things can still be ok
     global csv_out
-    if not df and csv_out:
+    if not is_df(df) and csv_out:
         df=csv_out
     if is_http(df2):
         import pandas as pd
@@ -2607,12 +2608,13 @@ def cmp_expected_results(df=None,df2="https://raw.githubusercontent.com/MBcode/e
     return df_diff(df,df2)
 #check/fix: ValueError: The truth value of a DataFrame is ambiguous. Use a.empty, a.bool(), a.item(), a.any() or a.all().
 
-def csv_dropoff(sitemap_url="https://earthcube.github.io/GeoCODES-Metadata/metadata/Dataset/allgood/sitemap.xml",
-        bucket_url=None, endpoint="https://graph.geocodes-dev.earthcube.org/blazegraph/namespace/citesting2/sparql"):
+#def csv_dropoff(sitemap_url="https://earthcube.github.io/GeoCODES-Metadata/metadata/Dataset/allgood/sitemap.xml",
+def csv_dropoff(sitemap_url="https://raw.githubusercontent.com/MBcode/ec/master/test/sitemap.xml", #start expecte bad cases
+        bucket_url=None, endpoint="https://graph.geocodes-dev.earthcube.org/blazegraph/namespace/citesting2/sparql",cmp=False):
     global csv_out
     print(f'==sitemap:{sitemap_url}')
     print(f'==graph_endpoint:{endpoint}')
-    if csv_out:
+    if is_df(csv_out):
         print("already have a csv_out")
         return csv_out
     if bucket_url:
@@ -2669,6 +2671,9 @@ def csv_dropoff(sitemap_url="https://earthcube.github.io/GeoCODES-Metadata/metad
     df = pd.DataFrame.from_dict(r)
     #csv_out=df #so we don't rerun uncessesarily
     csv_out=df.set_axis(["repo:file_name",  "summoned", "milled", "graph"], axis=1, inplace=False)
+    if cmp or dbg:
+        diff=cmp_expected_results(csv_out)
+        print(f'diff w/expected:{diff}')
     return csv_out
 #turn this into html-table &/or dataframe
   #see what is up w/graph's comparison/fix that; bad uuid2url: 
