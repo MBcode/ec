@@ -29,6 +29,37 @@ base_url2repo ={"https://raw.githubusercontent.com/earthcube/GeoCODES-Metadata/m
         "https://raw.githubusercontent.com/earthcube/GeoCODES-Metadata/main/metadata/Dataset/bad": "geocodes_demo_bad",
                 "http://mbobak.ncsa.illinois.edu/ec/minio/test3/summoned/geocodes_demo_datasets": "test3"
         } #won't match if '/' at end of key
+#can load sitemaps from gSheet, or even better github, here are a few now, in the order the get_graph_per_repo puts them out
+named_sitemaps={
+"amgeo": "https://amgeo-dev.colorado.edu/sitemap.xml",
+"xdomes": "https://xdomes.tamucc.edu/srr/sensorML/sitemap.xml",
+"iris": "http://ds.iris.edu/files/sitemap.xml",
+"balto": "http://balto.opendap.org/opendap/site_map.txt ",
+"designsafe": "https://www.designsafe-ci.org/sitemap.xml ",
+"neon": "https://geodex.org/neon_prodcodes_sm.xml",
+"rr": "https://object.cloud.sdsc.edu/v1/AUTH_85f46aa78936477d8e71b186269414e8/gleaner-summoned",
+"opentopography": "https://portal.opentopography.org/sitemap.xml",
+"earthchem": "https://ecl.earthchem.org/sitemap.xml",
+"lipdverse": "https://lipdverse.org/sitemap.xml",
+"magic": "https://www2.earthref.org/MagIC/contributions.sitemap.xml",
+"neotomadb": "http://data.neotomadb.org/sitemap.xml",
+"cchodo": "https://cchdo.ucsd.edu/sitemap.xml",
+"unavco": "https://www.unavco.org/data/doi/sitemap.xml",
+"hydroshare": "https://www.hydroshare.org/sitemap-resources.xml",
+"bco-dmo": "https://www.bco-dmo.org/sitemap.xml",
+"opencoredata": "http://opencoredata.org/sitemap.xml",
+"iedadata": "http://get.iedadata.org/doi/xml-sitemap.php",
+"ucar": "https://data.ucar.edu/sitemap.xml",
+"unidata": "https://www.unidata.ucar.edu/sitemap.xml",
+"linked.earth": "http://wiki.linked.earth/sitemap.xml",
+"r2r": "https://service-dev.rvdata.us/api/sitemap/",
+"ssdb.iodp": "https://ssdb.iodp.org/dataset/sitemap.xml",
+"usap-dc": "https://www.usap-dc.org/view/dataset/sitemap.xml",
+"geocodes_demo_dataset": "https://raw.githubusercontent.com/earthcube/GeoCODES-Metadata/gh-pages/metadata/Dataset/sitemap.xml"
+}
+#sitemaps=list(named_sitemaps.values())
+#sc=sitemaps_count(sitemaps) #but needs to handle timeouts before running that full list
+
 local=None
 def laptop(): #could call: in_binder
     "already have libs installed"
@@ -973,9 +1004,21 @@ def sitemap_list_(url):
     return pl #get rid of need for these libs
 
 def sitemap_list(url):
+    "use fast xml lib"
     return sitemap_urls(url)
 
 def sitemap_len(url):
+    "try fast xml version"
+    ul=sitemap_urls(url)
+    return len(ul)
+#now using this over https://github.com/MBcode/ec/blob/master/test/counts.md named_sitemaps
+#sitemaps=list(named_sitemaps.values())
+#counts=list(map(sitemap_len_,sitemaps)) #now resistent to errors, get:
+#[25226, 18634, 704, 28, 5654, 17654, 0, 4263, 920, 0, 211, 45159, 0, 910, 2522, 0]
+#can also run: that prints them out as it goes along
+#sc=sitemaps_count(sitemaps)
+
+def sitemap_len_(url):
     "for counts" # maybe allow filtering types later
     pages=sitemap_all_pages(url)
     pl=list(pages)
@@ -1793,13 +1836,16 @@ def get_graphs_lon(repo=None,endpoint="http://ideational.ddns.net:3040/all/sparq
     print(f'get_graphs_lon:{endpnt}')
     return get_graphs_list(endpnt)
 
-#def get_graph_per_repo(grep="milled",endpoint=None,dump_file="graphs.csv"):
+#def get_graph_per_repo(grep="milled",endpoint=None,dump_file="graphs.csv"): #try w/(None, ncsa_endpoint)
 def get_graph_per_repo(grep="milled",endpoint="https://graph.geodex.org/blazegraph/namespace/earthcube/sparql",dump_file="graphs.csv"):
     "dump a file and sort|uniq -c out the repo counts"
     gl=get_graphs_list(endpoint,dump_file) #this needs full URN to get counts for the same 'repo:' s
     gn=len(gl)
     print(f'got:{gn} graphs')
-    cs=f"cut -d':' -f3,4 {dump_file} | grep milled | sort | uniq -c |sort -n"
+    if grep != "milled":
+        cs=f"cut -d':' -f2- {dump_file} |cut -d'/' -f1 | sort | uniq -c |sort -n" #this is for my ld-cache
+    else:
+        cs=f"cut -d':' -f3,4 {dump_file} | grep milled | sort | uniq -c |sort -n" #this is for gleaner milled..
     return os_system_(cs)
 
 def urn_tail(urn):
@@ -2258,14 +2304,39 @@ def url_xml(url): #could just be get_url
     import requests
     r=requests.get(url)
     test_xml=r.content
-    #print(test_xml)
-    return test_xml
+    #print(test_xml) #check if 200
+    status=r.status_code 
+    if(status == 200):
+        return test_xml
+    else:
+        print(f'url_xml,bad:{status}')
+        return None
+
+def is_bytes(bs):
+    return isinstance(bs, bytes)
+
+def xmltodict_parse(test_xml):
+    import xmltodict
+    if not is_bytes(test_xml):
+        print(f'xml_parse no str')
+        return None
+    try:
+        d=xmltodict.parse(test_xml)
+    except:
+        lx=len(test_xml)
+        print(f'xml_parse exception')
+        d=None
+    return d
 
 def sitemap_xml2dict(test_xml): #libs don't work in diff places
-    import xmltodict
-    d=xmltodict.parse(test_xml)
+    #import xmltodict
+    #d=xmltodict.parse(test_xml)
+    d=xmltodict_parse(test_xml)
     if(dbg):
         print(d)
+    if not d:
+        print(f'sitemap_xml2 not found')
+        return None
     lbr=d.get("urlset")
     if lbr:
         c=lbr.get("url")
@@ -2275,14 +2346,18 @@ def sitemap_xml2dict(test_xml): #libs don't work in diff places
         return None
 
 def sitemap_urls(url):
+    "faster way of getting urls w/just xml lib"
     test_xml=url_xml(url)
+    if not test_xml:
+        return []
     c=sitemap_xml2dict(test_xml)
     if c:
         urls=list(map(lambda kd: kd.get('loc'), c))
         return urls
     else:
         print(f'no sitemap_urls xml for urls:{url}')
-        return None
+        #return None
+        return [] #hope to still work
 
 
 def bucket_xml(url):
