@@ -21,7 +21,7 @@ prod_endpoint = "https://graph.geocodes.earthcube.org/blazegraph/namespace/earth
 dflt_endpoint_old = "https://graph.geocodes.earthcube.org/blazegraph/namespace/earthcube/sparql"
 mb_endpoint = "http://24.13.90.91:9999/bigdata/namespace/nabu/sparql"
 ncsa_endpoint= "http://mbobak.ncsa.illinois.edu:9999/blazegraph/namespace/nabu/sparql"
-dflt_endpoint = "http://24.13.90.91:9999/bigdata/namespace/nabu/sparql"
+dflt_endpoint = ncsa_endpoint
 dflt_endpoint = "https://graph.geodex.org/blazegraph/namespace/nabu/sparql"
 #from 'sources' gSheet: can use for repo:file_leaf naming/printing
 base_url2repo ={"https://raw.githubusercontent.com/earthcube/GeoCODES-Metadata/main/metadata/Dataset/json": "geocodes_demo_datasets",
@@ -337,9 +337,20 @@ def read_json(urn):
         else:
             return None
 
-#https://stackoverflow.com/questions/48647534/python-pandas-find-difference-between-two-data-frames
-def df_diff(df1,df2):
+def is_df(df):
     import pandas as pd
+    return isinstance(df, pd.DataFrame)
+
+#https://stackoverflow.com/questions/48647534/python-pandas-find-difference-between-two-data-frames
+def df_diff(df1,df2): #doesn't work as well as I would like in all situations, work on/fix/finish
+    import pandas as pd
+    if not is_df(df1):
+        print("df_diff:1st arg:wrong type:{df1}")
+        return pd.DataFrame() #False
+    if not is_df(df2):
+        print("df_diff:2nd arg:wrong type:{df2}")
+        return pd.DataFrame() #False
+    print(f'df_diff:{df1},{df2}')
     return pd.concat([df1,df2]).drop_duplicates(keep=False)
 
 def diff_sd(fn1,fn2):
