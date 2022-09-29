@@ -2333,7 +2333,12 @@ def get_htm_dir(url,ext=None):
 def url_xml(url): #could just be get_url
     "given bucket url ret raw xml listing"
     import requests
-    r=requests.get(url)
+    #r=requests.get(url)
+    try:
+        r=requests.get(url, timeout=(15, 45)) #used in check.py
+    except:
+        print(f'url_xml:req-execpt on:{url}')
+        return None
     test_xml=r.content
     #print(test_xml) #check if 200
     status=r.status_code 
