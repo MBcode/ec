@@ -37,14 +37,14 @@ named_sitemaps={ #putting version of this in my ec/test as sitemaps.csv
 #"xdomes": "https://xdomes.tamucc.edu/srr/sensorML/sitemap.xml",
 "iris": "http://ds.iris.edu/files/sitemap.xml",
 #"balto": "http://balto.opendap.org/opendap/site_map.txt ",
-"designsafe": "https://www.designsafe-ci.org/sitemap.xml ",
+"DesignSafe": "https://www.designsafe-ci.org/sitemap.xml ",
 #"neon": "https://geodex.org/neon_prodcodes_sm.xml",
 "opentopography": "https://portal.opentopography.org/sitemap.xml",
 "earthchem": "https://ecl.earthchem.org/sitemap.xml",
-"lipdverse": "https://lipdverse.org/sitemap.xml",
+"lipidverse": "https://lipdverse.org/sitemap.xml",
 "magic": "https://www2.earthref.org/MagIC/contributions.sitemap.xml",
 #"neotomadb": "http://data.neotomadb.org/sitemap.xml",
-"cchodo": "https://cchdo.ucsd.edu/sitemap.xml",
+"cchdo": "https://cchdo.ucsd.edu/sitemap.xml",
 "unavco": "https://www.unavco.org/data/doi/sitemap.xml",
 "hydroshare": "https://www.hydroshare.org/sitemap-resources.xml",
 "bco-dmo": "https://www.bco-dmo.org/sitemap.xml",
@@ -58,11 +58,28 @@ named_sitemaps={ #putting version of this in my ec/test as sitemaps.csv
 "amgeo": "https://amgeo-dev.colorado.edu/sitemap.xml",
 "rr": "https://object.cloud.sdsc.edu/v1/AUTH_85f46aa78936477d8e71b186269414e8/gleaner-summoned"
 }
+sitemaps=list(named_sitemaps.values())
+repos=list(named_sitemaps.keys())
+
 def test_sitemaps(sitemaps=named_sitemaps):
     sitemaps=list(named_sitemaps.values())
     print(f'getting lengths for:{sitemaps}')
     sc=sitemaps_count(sitemaps) #but needs to handle timeouts before running that full list
     return sc  #this will work w/dflt list now
+
+def ld_ls_jsonld(repo,base_path=None):
+    #if not base_path:
+    #    return "go to base ld-cache dir"
+    return ls_(f'{repo}/*.jsonld')
+
+def ld_jsonld_counts(repos=repos):
+    rd={}
+    for repo in repos:
+        l=ld_ls_jsonld(repo)
+        ln=len(l)
+        print(f'{repo} has {ln}')
+        rd[repo]=ln
+    return rd
 
 local=None
 def laptop(): #could call: in_binder
