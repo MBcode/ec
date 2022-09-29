@@ -83,6 +83,12 @@ def now():
     dt_string = now.strftime("%Y/%m/%d %H:%M:%S")
     return dt_string
 
+def head(l, n=5):
+    return l[:n]
+
+def tail(l, n=5):
+    return l[-n:]
+
 def is_str(v):
     return type(v) is str
 
@@ -910,6 +916,10 @@ def setup_s3fs(): #do this by hand for now
 def ls(dir): #there are other py commands to do this
     cs=f'ls {dir}'
     return os_system_(cs)
+
+def ls_(path):
+    lstr=ls(path)
+    return lstr.split("\n")
 
 #def mount_htm(ld_url=f'http://mbobak.ncsa.illinois.edu/ld/{repo_name}'):
 def mount_htm(ld_url="http://mbobak.ncsa.illinois.edu/ld",repo=None):
