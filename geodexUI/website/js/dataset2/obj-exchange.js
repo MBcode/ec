@@ -67,7 +67,8 @@ class ObjExchange extends LitElement {
 
         const urlParams = new URLSearchParams(queryString);
         const object = urlParams.get('o');
-        const fetchURL = `https://dx.geodex.org/id/summoned${object}`
+        //const fetchURL = `https://dx.geodex.org/id/summoned${object}`
+        const fetchURL = `http://mbobak.ncsa.illinois.edu/ld/${object}`
         console.log(fetchURL);
         var url = new URL(fetchURL);
         const rawResponse = await fetch(url);

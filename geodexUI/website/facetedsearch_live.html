@@ -151,7 +151,8 @@
 
 
       //  var url = new URL("https://graph.geodex.org/blazegraph/namespace/cdf/sparql"),
-        var url = new URL("https://graph.geodex.org/blazegraph/namespace/nabu/sparql"),
+      //var url = new URL("https://graph.geodex.org/blazegraph/namespace/nabu/sparql"),
+        var url = new URL("http://mbobak.ncsa.illinois.edu:9999/blazegraph/namespace/nabu/sparql"),
             // var url = new URL("http://192.168.2.89:8080/blazegraph/sparql"),
             // params = { query: "SELECT * { ?s ?p ?o  } LIMIT 11" }
 
@@ -206,9 +207,10 @@ SELECT distinct ?subj ?g ?resourceType ?name ?description  ?pubname (GROUP_CONCA
             ?lit bds:search "${q}" .
             ?lit bds:matchAllTerms false .
             ?lit bds:relevance ?score1 .
+						?lit bds:minRelevance 0.24 .
             ?subj ?p ?lit .
             BIND (IF (exists {?subj a schema:Dataset .} ||exists{?subj a sschema:Dataset .} , "data", "tool") AS ?resourceType).
-            filter( ?score1 > 0.04).
+          # filter( ?score1 > 0.04).
           graph ?g {
             Minus {?subj a sschema:ResearchProject } .
             Minus {?subj a schema:ResearchProject } .
@@ -283,7 +285,8 @@ OFFSET ${ o }`
                 }
 
             })
-            flattened['s3endpoint'] = flattened['g'].replace('urn:gleaner:milled','').replaceAll(':','/')
+            //flattened['s3endpoint'] = flattened['g'].replace('urn:gleaner:milled','').replaceAll(':','/')
+            flattened['s3endpoint'] = flattened['g'].replace('urn:gleaner:milled','http://mbobak.ncsa.illinois.edu/ld/').replaceAll(':','/')
             if ( _.isEqual("http///www.bigdata.com/rdf#nullGraph", flattened['s3endpoint'].toString() ) ) {
                 flattened['s3endpoint'] = null;
             }
@@ -504,7 +507,8 @@ OFFSET ${ o }`
         var urn = g.target.innerText;
 
 
-            var url = new URL("https://graph.geodex.org/blazegraph/namespace/nabu/sparql"),
+            //var url = new URL("https://graph.geodex.org/blazegraph/namespace/nabu/sparql"),
+            var url = new URL("http://mbobak.ncsa.illinois.edu:9999/blazegraph/namespace/nabu/sparql"),
 
                 // var url = new URL("http://192.168.2.89:8080/blazegraph/sparql"),
                 // params = { query: "SELECT * { ?s ?p ?o  } LIMIT 11" }

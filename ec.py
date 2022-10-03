@@ -21,6 +21,7 @@ prod_endpoint = "https://graph.geocodes.earthcube.org/blazegraph/namespace/earth
 dflt_endpoint_old = "https://graph.geocodes.earthcube.org/blazegraph/namespace/earthcube/sparql"
 mb_endpoint = "http://24.13.90.91:9999/bigdata/namespace/nabu/sparql"
 ncsa_endpoint= "http://mbobak.ncsa.illinois.edu:9999/blazegraph/namespace/nabu/sparql"
+dev_https_endpoint="https://graph.geocodes-dev.earthcube.org/blazegraph/namespace/https/sparql"
 dflt_endpoint = ncsa_endpoint
 dflt_endpoint = "https://graph.geodex.org/blazegraph/namespace/nabu/sparql"
 #from 'sources' gSheet: can use for repo:file_leaf naming/printing
@@ -961,12 +962,28 @@ def mount_ld(repo="ld",ld_url="http://mbobak.ncsa.illinois.edu"):
     "mount ld_cache for all repos"
     return mount_htm(ld_url,repo)
 
-def get_oss(minio_endpoint_url="https://oss.geocodes-dev.earthcube.org/"):
+def get_oss_(minio_endpoint_url="https://oss.geocodes-dev.earthcube.org/"): #old version
     import s3fs
+    oss = s3fs.S3FileSystem( anon=True, key="", secret="",
+          client_kwargs = {"endpoint_url": minio_endpoint_url})
+    return oss
+#def get_oss(minio_endpoint_url="https://oss.geocodes-dev.earthcube.org/"):
+#def get_oss(minio_endpoint_url="https://oss.geocodes-dev.earthcube.org/",login=False):
+def get_oss(minio_endpoint_url="https://oss.geocodes-dev.earthcube.org/",anon=True):
+    import s3fs
+    global S3KEY,S3SECRET
+    #if login:
+    if not anon:
+        s3key=S3KEY
+        s3secret=S3SECRET
+    else:
+        s3key=""
+        s3secret=""
     oss = s3fs.S3FileSystem(
-          anon=True,
-          key="",
-          secret="",
+            #anon=True,
+          anon=anon,
+          key=s3key,
+          secret=s3secret,
           #client_kwargs = {"endpoint_url":"https://oss.geodex.org"}
           #client_kwargs = {"endpoint_url":"https://oss.geocodes-dev.earthcube.org/"}
           client_kwargs = {"endpoint_url": minio_endpoint_url}
@@ -975,6 +992,12 @@ def get_oss(minio_endpoint_url="https://oss.geocodes-dev.earthcube.org/"):
 #in nb got: 
 #ImportError: cannot import name 'PROTOCOL_TLS' from 'urllib3.util.ssl_' (/usr/local/lib/python3.7/dist-packages/urllib3/util/ssl_.py)
 #but mostly run on machine where crawl/insert is done w/ spot_test.py for reports
+
+#if not: fs = s3fs.S3FileSystem(anon=True), anon=False:
+#def get_oss_login(minio_endpoint_url="https://oss.geodex.org", login=True):
+def get_oss_login(minio_endpoint_url="https://oss.geodex.org", anon=False):
+    #return get_oss(minio_endpoint_url,login)
+    return get_oss(minio_endpoint_url,anon)
 
 
 #def oss_ls(path='test3/summoned'):
@@ -2345,7 +2368,7 @@ def url_xml(url): #could just be get_url
     if(status == 200):
         return test_xml
     else:
-        print(f'url_xml,bad:{status}')
+        print(f'url_xml,bad:{status},for:{url}')
         return None
 
 def is_bytes(bs):
@@ -2553,12 +2576,19 @@ def get_bucket_files(base_type):
         ff=None
     return ff
 
+#if my cache has to go into a bucket it will be extruct/repo
+#also I want a put_oss_files, so get key/secret from env-vars
+# S3ADDRESS  S3KEY S3SECRET get.env
+S3ADDRESS=os.getenv("S3ADDRESS")
+S3KEY=os.getenv("S3KEY")
+S3SECRET=os.getenv("S3SECRET")
+
 #>>> oss_ls('test3/summoned/geocodes_demo_datasets') == get_bucket_files
   #not replacing yet, bc get error, even though doesn't get drowned out
 #repo_name="geocodes_demo_datasets" #for testing
 #testing_bucket="test3" #or bucket_name
 #def get_oss_files_(path=None, base_type=None, bucket=None, minio_endpoint_url="https://oss.geodex.org/" ,full_path=True,):
-def get_oss_files_(repo=None, base_type=None, bucket="gleaner", path=None, minio_endpoint_url="https://oss.geodex.org/" ,full_path=True,):
+def get_oss_files_(repo=None, base_type=None, bucket="gleaner", path=None, minio_endpoint_url="https://oss.geodex.org/" ,full_path=True,): #usually do not use version ending in _
     if not bucket:
         global testing_bucket
         bucket= testing_bucket
