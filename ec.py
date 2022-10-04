@@ -20,7 +20,8 @@ prod_endpoint = "https://graph.geocodes.earthcube.org/blazegraph/namespace/earth
 #dflt_endpoint = "https://graph.geocodes.earthcube.org/blazegraph/namespace/earthcube/sparql"
 dflt_endpoint_old = "https://graph.geocodes.earthcube.org/blazegraph/namespace/earthcube/sparql"
 mb_endpoint = "http://24.13.90.91:9999/bigdata/namespace/nabu/sparql"
-ncsa_endpoint= "http://mbobak.ncsa.illinois.edu:9999/blazegraph/namespace/nabu/sparql"
+ncsa_endpoint_= "http://mbobak.ncsa.illinois.edu:9999/blazegraph/namespace/nabu/sparql"
+ncsa_endpoint= "https://mbobak.ncsa.illinois.edu:9999/blazegraph/namespace/nabu/sparql"
 dev_https_endpoint="https://graph.geocodes-dev.earthcube.org/blazegraph/namespace/https/sparql"
 dflt_endpoint = ncsa_endpoint
 dflt_endpoint = "https://graph.geodex.org/blazegraph/namespace/nabu/sparql"
@@ -2651,6 +2652,7 @@ def is_http(u):
     if not is_str(u):
         print("might need to set LD_cache") #have this where predicate called
         return None
+    #might also check that the str has no spaces in it,&warn/die if it does
     return u.startswith("http")
 
 def is_urn(u):
