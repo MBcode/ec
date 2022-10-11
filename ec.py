@@ -20,8 +20,9 @@ prod_endpoint = "https://graph.geocodes.earthcube.org/blazegraph/namespace/earth
 #dflt_endpoint = "https://graph.geocodes.earthcube.org/blazegraph/namespace/earthcube/sparql"
 dflt_endpoint_old = "https://graph.geocodes.earthcube.org/blazegraph/namespace/earthcube/sparql"
 mb_endpoint = "http://24.13.90.91:9999/bigdata/namespace/nabu/sparql"
-ncsa_endpoint_= "http://mbobak.ncsa.illinois.edu:9999/blazegraph/namespace/nabu/sparql"
-ncsa_endpoint= "https://mbobak.ncsa.illinois.edu:9999/blazegraph/namespace/nabu/sparql"
+ncsa_endpoint_old = "http://mbobak.ncsa.illinois.edu:9999/blazegraph/namespace/nabu/sparql"
+ncsa_endpoint_ = "https://mbobak.ncsa.illinois.edu:9999/blazegraph/namespace/nabu/sparql"
+ncsa_endpoint = "https://mbobak.ncsa.illinois.edu:9999/bigdata/namespace/ld/sparql"
 dev_https_endpoint="https://graph.geocodes-dev.earthcube.org/blazegraph/namespace/https/sparql"
 dflt_endpoint = ncsa_endpoint
 dflt_endpoint = "https://graph.geodex.org/blazegraph/namespace/nabu/sparql"
@@ -723,6 +724,12 @@ def get_subj2urn_txt(url="http://geocodes.ddns.net/ec/nb/sparql_subj2urn.txt"):
 def get_graphs_txt(url="http://geocodes.ddns.net/ec/nb/sparql_graphs.txt"):
     #return get_ec_txt(url)
     return "SELECT distinct ?g  WHERE {GRAPH ?g {?s ?p ?o}}"
+
+def get_graph_txt(url="http://geocodes.ddns.net/ec/nb/get_graph.txt"):
+    #return get_ec_txt(url)
+    #return "SELECT distinct ?s ?p ?o  WHERE { graph ?g {?s ?p ?o} filter(?g = <${g}>)}"
+    return "SELECT distinct ?s ?p ?o  WHERE { graph ?g {?s ?p ?o} filter(?g = <${q}>)}"
+
 
 def add_ext(fn,ft):
     if ft==None or ft=='' or ft=='.' or len(ft)<2:
@@ -1849,6 +1856,11 @@ def subj2urn(doi):
 def get_graphs():
     "return all the g URNs"
     return v4qry("","graphs")
+
+def get_graph(g):
+    "return all triples from g w/URN"
+    return v4qry(g,"graph")
+
 
 def txt_query_(q,endpoint=None):
     "or can just reset dflt_endpoint"
