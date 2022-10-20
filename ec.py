@@ -698,7 +698,8 @@ def setup_j(jf=None):
     setup_blabel() #which also needs java
     return addpath
 
-#get_  _txt   fncs:
+##get_  _txt   fncs:
+# are composed from the middle/variable word, and called in: v4qry
 #def get_relateddatafilename_txt(url="https://raw.githubusercontent.com/earthcube/facetsearch/toolMatchNotebookQuery/client/src/sparql_blaze/sparql_relateddatafilename.txt"):
 def get_relateddatafilename_txt(url="https://raw.githubusercontent.com/MBcode/ec/master/NoteBook/sparql_relateddatafilename.txt"):
     return get_ec_txt(url)  #need var to be {?q} so dont have to write extra logic below
@@ -728,8 +729,10 @@ def get_graphs_txt(url="http://geocodes.ddns.net/ec/nb/sparql_graphs.txt"):
 def get_graph_txt(url="http://geocodes.ddns.net/ec/nb/get_graph.txt"):
     #return get_ec_txt(url)
     #return "SELECT distinct ?s ?p ?o  WHERE { graph ?g {?s ?p ?o} filter(?g = <${g}>)}"
-    return "SELECT distinct ?s ?p ?o  WHERE { graph ?g {?s ?p ?o} filter(?g = <${q}>)}"
+    return "SELECT distinct ?s ?p ?o  WHERE { graph ?g {?s ?p ?o} filter(?g = <${q}>)}" #there will be a better way
+    #return "describe <${q}>)}" #similar but can't do this    #also want where can ask for format as jsonld for ui
 
+## so/eg. this last one is where get_graph(g) calls v4qry(g,"graph")
 
 def add_ext(fn,ft):
     if ft==None or ft=='' or ft=='.' or len(ft)<2:
