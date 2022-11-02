@@ -731,6 +731,10 @@ def get_graph_txt(url="http://geocodes.ddns.net/ec/nb/get_graph.txt"):
     #return "SELECT distinct ?s ?p ?o  WHERE { graph ?g {?s ?p ?o} filter(?g = <${g}>)}"
     return "SELECT distinct ?s ?p ?o  WHERE { graph ?g {?s ?p ?o} filter(?g = <${q}>)}" #there will be a better way
     #return "describe <${q}>)}" #similar but can't do this    #also want where can ask for format as jsonld for ui
+    #consider ret CONSTRUCT from a direct match vs filter
+
+def get_summary_txt(url="http://geocodes.ddns.net/ec/nb/get_summary.txt"):
+    return get_ec_txt(url)
 
 ## so/eg. this last one is where get_graph(g) calls v4qry(g,"graph")
 
@@ -1863,6 +1867,10 @@ def get_graphs():
 def get_graph(g):
     "return all triples from g w/URN"
     return v4qry(g,"graph")
+
+def get_summary(g): #g not used but could make a version that gets it for only 1 graph
+    "return summary version of all the graphs quads"
+    return v4qry(g,"summary")
 
 
 def txt_query_(q,endpoint=None):
