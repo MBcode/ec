@@ -1,9 +1,15 @@
 #mbobak summarize a nq file, for quick queries, and quad now as subj to point to graph-url
  #this is almost like nq2ttl, but is sumarizing via the qry
 import pandas as pd
-df=pd.read_csv(fn, sep='\t',comment='#') #not filling out well yet
+fn="iris.csv" #"xdomes.csv"
+#df=pd.read_csv(fn, comment='#') #not filling out well yet
+#df=pd.read_csv("s.csv") #head of summary.csv, from ec.py's get_summary("")
+df=pd.read_csv("summary_urn.csv") #head of summary.csv, from ec.py's get_summary("")
+#df=pd.read_csv("s2.csv") #from similar summarizition but of my stoere, that uses URLs for graph
+ #after reading csv via qry, which could be done w/rdflib like in 2nq.py but w/ec like qry
 #subj g resourceType name description pubname placenames kw datep
-context = "@prefix : <http://schema.org/> ." #might get larger, eg.incl dcat
+#context = "@prefix : <http://schema.org/> ." #might get larger, eg.incl dcat
+context = "@prefix : <https://schema.org/> ." #https for now
 #started by tweaking fnq of fn.nq then dump to fn.csv which could read here
 # but can use ec.py utils, to just load summary.qry and get df right away
 # then iterate over it  ;load ec like I do w/check.py and use
@@ -11,6 +17,7 @@ context = "@prefix : <http://schema.org/> ." #might get larger, eg.incl dcat
 #after this get max lat/lon and put as latitude/longnitude, then get centriod
  #consider a version of the query where the vars are already the so:keywords
  #but after changinge ResourceType to 'a', .. oh, this doesn't have : so special case anyway
+#used this query on all of geodec using ec.py's get_summary and dumped to summary.csv
 qry="""
 prefix schema: <https://schema.org/>
 SELECT distinct ?subj ?g ?resourceType ?name ?description  ?pubname
@@ -42,22 +49,49 @@ SELECT distinct ?subj ?g ?resourceType ?name ?description  ?pubname
 #column names:
 # "subj" , "g" , "resourceType" , "name" , "description" , "pubname" , "placenames" , "kw" , "datep" ,
 #next time just get a mapping file/have qry w/so keywords as much a possilbe
+import json
+def is_str(v):
+    return type(v) is str
 print(f'{context}')
-for g in df.rows:
-    gu=g['g']
-    rt=g['resourceType']
-    name=g['name']
-    description=g['description']
-    kw=g['kw']
-    pubname=g['pubname']
-    datep=g['datep']
-    placename=g['placename']
+for index, row in df.iterrows():
+    gu=df["g"][index]
+    rt=row['resourceType']
+    name=json.dumps(row['name'])
+    description=row['description']
+    if is_str(description):
+        sdes=json.dumps(description)
+        #sdes=description.replace(' / ',' \/ ').replace('"','\"')
+        #sdes=sdes.replace(' / ',' \/ ').replace('"','\"')
+      # sdes=sdes.replace('"','\"')
+    else:
+        sdes=f'"{description}"'
+    kw_=row['kw']
+    if is_str(kw_):
+        kw=json.dumps(kw_)
+    else:
+        kw=f'"{kw_}"'
+    pubname=row['pubname']
+    datep=row['datep']
+    placename=row['placenames']
+    s=row['subj']
     print(" ")
-    print(f'{gu}')
-    print(f'        a {rt} ;')
+    print(f'<{gu}>')
+    #print(f'        a {rt} ;')
+    if rt == "tool":
+        print(f'        a :SoftwareApplication ;')
+    else:
+        print(f'        a :Dataset ;')
+   #print(f'        :name "{name}" ;')
     print(f'        :name {name} ;')
-    print(f'        :description {description} ;')
+   #print(f'        :description """{description}""" ;')
+   #print(f'        :description """{sdes}""" ;')
+    print(f'        :description ""{sdes}"" ;')
+   #print(f'        :keyword "{kw}" ;')
     print(f'        :keyword {kw} ;')
-    print(f'        :publisher {pubname} ;')
-    print(f'        :place {placename} ;')
-    print(f'        :date {datep} ;')
+    print(f'        :publisher "{pubname}" ;')
+    print(f'        :place "{placename}" ;')
+    print(f'        :date "{datep}" ;') #might be: "No datePublished"
+    print(f'        :subjectOf <{s}> .')
+#got a bad:         :subjectOf <metadata-doi:10.17882/42182> .
+#incl original subj, just in case for now
+#lat/lon not in present ui, but in earlier version
