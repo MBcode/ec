@@ -23,6 +23,7 @@ mb_endpoint = "http://24.13.90.91:9999/bigdata/namespace/nabu/sparql"
 ncsa_endpoint_old = "http://mbobak.ncsa.illinois.edu:9999/blazegraph/namespace/nabu/sparql"
 ncsa_endpoint_ = "https://mbobak.ncsa.illinois.edu:9999/blazegraph/namespace/nabu/sparql"
 ncsa_endpoint = "https://mbobak.ncsa.illinois.edu:9999/bigdata/namespace/ld/sparql"
+gc1_endpoint = "https://graph.geocodes-1.earthcube.org/blazegraph/namespace/earthcube/sparql"
 dev_https_endpoint="https://graph.geocodes-dev.earthcube.org/blazegraph/namespace/https/sparql"
 dflt_endpoint = ncsa_endpoint
 dflt_endpoint = "https://graph.geodex.org/blazegraph/namespace/nabu/sparql"
