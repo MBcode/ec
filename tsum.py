@@ -48,9 +48,9 @@ SELECT distinct ?g ?subj ?pubname (GROUP_CONCAT(DISTINCT ?placename; SEPARATOR="
        #    Minus {?subj a schema:Person } .
        #    Minus {?subj a sschema:Person } .
 #   ?subj a schema:Dataset|sschema:Dataset|schema:SoftwareApplication|sschema:SoftwareApplication .
-    { ?subj rdf:type schema:Dataset . } UNION { ?subj rdf:type sschema:Dataset . } UNION
-    { ?subj rdf:type schema:DataCatalog . } UNION { ?subj rdf:type sschema:DataCatalog . }
-            }
+ #  { ?subj rdf:type schema:Dataset . } UNION { ?subj rdf:type sschema:Dataset . } UNION
+ #  { ?subj rdf:type schema:DataCatalog . } UNION { ?subj rdf:type sschema:DataCatalog . }
+    #had a version where values constrained the graph-hits and set the RT at same time
             values (?type ?resource_Type) {
             (schema:Dataset "Dataset")
             (sschema:Dataset "Dataset")
@@ -59,6 +59,7 @@ SELECT distinct ?g ?subj ?pubname (GROUP_CONCAT(DISTINCT ?placename; SEPARATOR="
              (schema:SoftwareApplication  "tool")
              (sschema:SoftwareApplication  "tool")
               } ?subj a ?type .
+            }
         optional {?subj schema:distribution/schema:url|schema:subjectOf/schema:url ?url .}
         OPTIONAL {?subj schema:datePublished|sschema:datePublished ?date_p .}
         OPTIONAL {?subj schema:publisher/schema:name|sschema:publisher/sschema:name|schema:publisher/schema:legalName|sschema:publisher/sschema:legalName  ?pub_name .}
@@ -75,7 +76,7 @@ SELECT distinct ?g ?subj ?pubname (GROUP_CONCAT(DISTINCT ?placename; SEPARATOR="
     GROUP BY ?g ?subj ?pubname ?placenames ?kw ?datep ?disurl #?score 
         ?name ?description  ?resourceType 
         #?minlat ?maxlat ?minlon ?maxlon
-        ORDER BY DESC(?score) 
+ #      ORDER BY DESC(?score) 
         """
         #using more constrained qry now in get_summary.txt * now above
 df=pd.read_csv("summary-gc1.csv") #head of summary.csv, from ec.py's get_summary("")
@@ -93,10 +94,12 @@ print(f'{context}')
 for index, row in df.iterrows():
     gu=df["g"][index]
     #skip the small %of dups, that even new get_summary.txt * has
-    #if not urns.get(gu):
-    #   urns[gu]=1
-    #else: 
-    # break from loop
+    there = urns.get(gu)
+    if not there:
+        urns[gu]=1
+    elif there: 
+        print(f'already:{there},so would break loop')
+ #      break #from loop
     rt=row['resourceType']
     name=json.dumps(row['name'])
     description=row['description']
