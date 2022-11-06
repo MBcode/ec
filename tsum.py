@@ -99,7 +99,7 @@ for index, row in df.iterrows():
         urns[gu]=1
     elif there: 
         print(f'already:{there},so would break loop')
- #      break #from loop
+        continue #from loop
     rt=row['resourceType']
     name=json.dumps(row['name'])
     description=row['description']
@@ -137,6 +137,9 @@ for index, row in df.iterrows():
     print(f'        :place "{placename}" ;')
     print(f'        :date "{datep}" ;') #might be: "No datePublished"
     print(f'        :subjectOf <{s}> .')
+    du= row.get("disurl")
+    if is_str(du):
+        print(f'        :distribution <{du}> .')
 #got a bad:         :subjectOf <metadata-doi:10.17882/42182> .
 #incl original subj, just in case for now
 #lat/lon not in present ui, but in earlier version
