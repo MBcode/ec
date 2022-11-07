@@ -91,6 +91,12 @@ for index, row in df.iterrows():
         continue #from loop
     rt=row['resourceType']
     name=json.dumps(row['name']) #check for NaN/fix
+    if not name:
+        name=f'""'
+    if not is_str(name):
+        name=f'"{name}"'
+    if name=="NaN": #this works, but might use NA
+        name=f'"{name}"'
     description=row['description']
     if is_str(description):
         sdes=json.dumps(description)
@@ -126,9 +132,12 @@ for index, row in df.iterrows():
     print(f'        :place "{placename}" ;')
     print(f'        :date "{datep}" ;') #might be: "No datePublished"
     print(f'        :subjectOf <{s}> .')
-    du= row.get("disurl")
+    #du= row.get("disurl") #not seeing yet
+    du= row.get("url") # check now/not yet
     if is_str(du):
         print(f'        :distribution <{du}> .')
+#see abt defaults from qry or here, think dv needs date as NA or blank/check
+#old:
 #got a bad:         :subjectOf <metadata-doi:10.17882/42182> .
 #incl original subj, just in case for now
 #lat/lon not in present ui, but in earlier version
