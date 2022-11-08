@@ -1288,7 +1288,36 @@ def rdf2nt(urlroot_):
     os_system(cs)   #fix .nt so .dot is better ;eg. w/doi
     f_nt=fn2
     return fn2
+##
+def df2nt(df):
+    "print out df as .nt file"
+    import json
+    for index, row in df.iterrows():
+        #s=row['s']
+        s=df["s"][index]
+        p=df["p"][index]
+        o_=df["o"][index]
+        o=json.dumps(o)
+        if o=="NaN":
+            o=""
+        print(f'{s} {p} "{o}" .')
+        #need to finish up w/dumping to a file
+    return df
 
+def get_rdf(urn,viz=None):
+    "start of replacement for wget_rdf" #that doesn't need the ld cache
+    df=get_graph(urn)
+    df2nt(df)
+    if viz: #should fix this below 
+        fn2=urn_leaf(urn) #try tail
+        rdflib_viz(fn2) #find out if can viz later as well via hidden .nt file
+    return df #already returns the same as wget_rdf
+
+def get_rdf2nt(urn):
+    "get and rdf2nt" #rdf2nt was getting around df's naming, will be glad to get away from that cache
+    df=get_rdf(urn)
+    return df2nt(df)
+##
 #take urn2uri out of this, but have to return a few vars
 def wget_rdf(urn,viz=None):
     if urn==None:
@@ -1319,6 +1348,7 @@ def wget_rdf(urn,viz=None):
         #g = Graph()
         #g.parse(fn2)
         if viz: #can still get errors
+            fn2=urn_leaf(urn) #try new
             rdflib_viz(fn2) #.nt file #can work, but looks crowded now
         return read_rdf(f_nt)
     elif urn.startswith('/'):
@@ -3342,3 +3372,6 @@ def tgc1():
     df.to_csv("summary-gc1.csv")
     return df #assume pandas
 
+#might very well put tsum.py functionality here
+ #will also write a similar df row mapping as 1st quick dump of sparqldataframe df to .nt file
+  #though I'm sure there will be better/more build up ways
