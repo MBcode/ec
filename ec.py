@@ -1289,18 +1289,24 @@ def rdf2nt(urlroot_):
     f_nt=fn2
     return fn2
 ##
-def df2nt(df):
+def df2nt(df,fn=None):
     "print out df as .nt file"
     import json
+    if fn:
+        put_txtfile(fn,"")
     for index, row in df.iterrows():
         #s=row['s']
         s=df["s"][index]
         p=df["p"][index]
         o_=df["o"][index]
-        o=json.dumps(o)
+        o=json.dumps(o_)
         if o=="NaN":
             o=""
-        print(f'{s} {p} "{o}" .')
+        #print(f'{s} {p} "{o}" .')
+        str3=f'{s} {p} {o} .\n'
+        print(str3)
+        if fn:
+            put_txtfile(fn,str3,"a")
         #need to finish up w/dumping to a file
     return df
 
@@ -1309,14 +1315,16 @@ def get_rdf(urn,viz=None):
     df=get_graph(urn)
     df2nt(df)
     if viz: #should fix this below 
-        fn2=urn_leaf(urn) #try tail
+        fn2=urn_leaf(urn) + ".nt" #try tail
         rdflib_viz(fn2) #find out if can viz later as well via hidden .nt file
     return df #already returns the same as wget_rdf
 
 def get_rdf2nt(urn):
     "get and rdf2nt" #rdf2nt was getting around df's naming, will be glad to get away from that cache
     df=get_rdf(urn)
-    return df2nt(df)
+    fn2=urn_leaf(urn) + ".nt" #try tail
+    return df2nt(df,fn2) #seems to work w/a test urn
+    #return df2nt(df)
 ##
 #take urn2uri out of this, but have to return a few vars
 def wget_rdf(urn,viz=None):
