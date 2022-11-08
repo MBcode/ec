@@ -25,8 +25,10 @@ ncsa_endpoint_ = "https://mbobak.ncsa.illinois.edu:9999/blazegraph/namespace/nab
 ncsa_endpoint = "https://mbobak.ncsa.illinois.edu:9999/bigdata/namespace/ld/sparql"
 gc1_endpoint = "https://graph.geocodes-1.earthcube.org/blazegraph/namespace/earthcube/sparql"
 dev_https_endpoint="https://graph.geocodes-dev.earthcube.org/blazegraph/namespace/https/sparql"
-dflt_endpoint = ncsa_endpoint
-dflt_endpoint = "https://graph.geodex.org/blazegraph/namespace/nabu/sparql"
+#dflt_endpoint = ncsa_endpoint
+#dflt_endpoint = "https://graph.geodex.org/blazegraph/namespace/nabu/sparql"
+dflt_endpoint = gc1_endpoint
+summary_endpoint = dflt_endpoint.replace("earthcube","summary")
 #from 'sources' gSheet: can use for repo:file_leaf naming/printing
 base_url2repo ={"https://raw.githubusercontent.com/earthcube/GeoCODES-Metadata/main/metadata/Dataset/json": "geocodes_demo_datasets",
         "https://raw.githubusercontent.com/earthcube/GeoCODES-Metadata/main/metadata/Dataset/allgood": "geocodes_demo_datasets",
@@ -1874,11 +1876,19 @@ def get_summary(g): #g not used but could make a version that gets it for only 1
     return v4qry(g,"summary")
 
 
+#summary_endpoint = dflt_endpoint.replace("earthcube","summary")
+#def txt_query_(q,endpoint=None):
 def txt_query_(q,endpoint=None):
     "or can just reset dflt_endpoint"
     global dflt_endpoint
     if not endpoint:
         df=txt_query(q)
+    elif endpoint=="summary": #1st try for summary query
+        save = dflt_endpoint #but do not do till can switch the qry as well
+        dflt_endpoint = dflt_endpoint.replace("earthcube","summary")
+        print(f'summary:txt_query,w/:{dflt_endpoint}')
+        df=txt_query(q)
+        dflt_endpoint = save
     else:
         save = dflt_endpoint
         dflt_endpoint = endpoint
@@ -3303,3 +3313,32 @@ def test5(sitemap="https://earthcube.github.io/GeoCODES-Metadata/metadata/Datase
            bucket_url="https://oss.geocodes-dev.earthcube.org/test5"): 
     print(f'test5:{sitemap},{bucket_url},{endpoint}')
     return tsc(sitemap,bucket_url,endpoint)
+
+#extra around summary
+def rcsv(fn,d=","):
+    import pandas as pd
+    return pd.read_csv(fn,delimiter=d)
+
+def tgc1_(ep=None):
+    "tgc1 that can use other than dflt namespace"
+    if ep:
+        global dflt_endpoint
+        dflt_endpoint=ep
+    print(f'using:{dflt_endpoint}')
+    df=get_summary("")
+    ln=len(df)
+    print(f'got:{ln}')
+    df.to_csv("summary-gc1.csv")
+    return df #assume pandas
+
+def tgc1():
+    "summarize and endpoint to csv for tsum.py to turn to tll for loading into summary namespace"
+    global dflt_endpoint,gc1_endpoint
+    dflt_endpoint=gc1_endpoint
+    print(f'using:{dflt_endpoint}')
+    df=get_summary("")
+    ln=len(df)
+    print(f'got:{ln}')
+    df.to_csv("summary-gc1.csv")
+    return df #assume pandas
+
