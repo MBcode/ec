@@ -1289,6 +1289,55 @@ def rdf2nt(urlroot_):
     f_nt=fn2
     return fn2
 ##
+#def is_tn(url):
+def tn2bn(url):
+    "make blaze BNs proper for .nt"
+    if url.startswith("t1"):
+        return url.replace("t1","_:Bt1")
+    else:
+        return url
+
+def cap_http(url):
+    "<url>"
+    if is_http(url):
+        return f'<{url}>'
+    else:
+        return url
+
+def cap_doi(url):
+    "<doi>"
+    if url.startswith("doi:"):
+        return f'<{url}>'
+    elif url.startswith("DOI:"):
+        return f'<{url}>'
+    else:
+        return url
+
+def fix_url3(url):
+    "cap http/doi tn2bn"
+    url=tn2bn(url)
+    url=cap_http(url)
+    url=cap_doi(url)
+    return url
+
+#def fix_url_(url,obj=True): #should only get a chance to quote if the obj of the triple
+def fix_url(url):
+    "fix_url and quote otherwise"
+    if url.startswith("t1"):
+        return url.replace("t1","_:Bt1")
+    elif is_http(url):
+        return f'<{url}>'
+    elif url.startswith("doi:"):
+        return f'<{url}>'
+    elif url.startswith("DOI:"):
+        return f'<{url}>'
+    #elif obj:
+    else:
+        import json
+        return json.dumps(url)
+    #else:
+    #    return url
+
 def df2nt(df,fn=None):
     "print out df as .nt file"
     import json
@@ -1297,11 +1346,26 @@ def df2nt(df,fn=None):
     for index, row in df.iterrows():
         #s=row['s']
         s=df["s"][index]
+        s=fix_url(s)
+        #s=is_tn(s)
+        #if is_http(s):
+        #    s=f'<{s}>'
+        s=fix_url(s)
         p=df["p"][index]
-        o_=df["o"][index]
-        o=json.dumps(o_)
+        #if is_http(p):
+        #    p=f'<{p}>'
+        p=fix_url(p)
+        #p=fix_url_(p,True)
+        #o=json.dumps(o)
+        o=df["o"][index]
+        o=fix_url(o)
         if o=="NaN":
             o=""
+        #o=is_tn(o)
+        #if is_http(o):
+        #    o=f'<{o}>'
+        #else:
+        #    o=f'"{o}"'
         #print(f'{s} {p} "{o}" .')
         str3=f'{s} {p} {o} .\n'
         print(str3)
