@@ -1389,6 +1389,8 @@ def get_rdf2nt(urn):
 #take urn2uri out of this, but have to return a few vars
 def wget_rdf(urn,viz=None):
     if not viz:
+        if sparql_inited==None:
+            init_sparql()
         return get_rdf2nt(urn) #use get_graph version for now
     if urn==None:
         return f'no-urn:{urn}'
