@@ -1289,6 +1289,9 @@ def rdf2nt(urlroot_):
     f_nt=fn2
     return fn2
 ##
+def is_node(url): #not yet
+    return (url.startswith("<") or url.startswith("_:B"))
+
 #def is_tn(url):
 def tn2bn(url):
     "make blaze BNs proper for .nt"
@@ -1318,12 +1321,15 @@ def fix_url3(url):
     url=tn2bn(url)
     url=cap_http(url)
     url=cap_doi(url)
+    #could put is_node check here
     return url
 
 #def fix_url_(url,obj=True): #should only get a chance to quote if the obj of the triple
 def fix_url(url):
     "fix_url and quote otherwise"
-    if url.startswith("t1"):
+    if is_node(url):
+        return url
+    elif url.startswith("t1"):
         return url.replace("t1","_:Bt1")
     elif is_http(url):
         return f'<{url}>'
@@ -1367,6 +1373,8 @@ def df2nt(df,fn=None):
         #else:
         #    o=f'"{o}"'
         #print(f'{s} {p} "{o}" .')
+        #if not is_node(s):
+        #    s=f'"{s}"'
         str3=f'{s} {p} {o} .\n'
         print(str3)
         if fn:
