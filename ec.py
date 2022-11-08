@@ -1353,30 +1353,16 @@ def df2nt(df,fn=None):
         #s=row['s']
         s=df["s"][index]
         s=fix_url(s)
-        #s=is_tn(s)
-        #if is_http(s):
-        #    s=f'<{s}>'
         s=fix_url(s)
         p=df["p"][index]
-        #if is_http(p):
-        #    p=f'<{p}>'
         p=fix_url(p)
-        #p=fix_url_(p,True)
-        #o=json.dumps(o)
         o=df["o"][index]
         o=fix_url(o)
         if o=="NaN":
             o=""
-        #o=is_tn(o)
-        #if is_http(o):
-        #    o=f'<{o}>'
-        #else:
-        #    o=f'"{o}"'
-        #print(f'{s} {p} "{o}" .')
-        #if not is_node(s):
-        #    s=f'"{s}"'
         str3=f'{s} {p} {o} .\n'
-        print(str3)
+        if dbg:
+            print(str3)
         if fn:
             put_txtfile(fn,str3,"a")
         #need to finish up w/dumping to a file
@@ -1394,12 +1380,16 @@ def get_rdf(urn,viz=None):
 def get_rdf2nt(urn):
     "get and rdf2nt" #rdf2nt was getting around df's naming, will be glad to get away from that cache
     df=get_rdf(urn)
-    fn2=urn_leaf(urn) + ".nt" #try tail
+    fn2=urn_leaf(urn) # + ".nt" 
+    append2allnt(fn2)
+    fn2 = fn2 + ".nt"
     return df2nt(df,fn2) #seems to work w/a test urn
     #return df2nt(df)
 ##
 #take urn2uri out of this, but have to return a few vars
 def wget_rdf(urn,viz=None):
+    if not viz:
+        return get_rdf2nt(urn) #use get_graph version for now
     if urn==None:
         return f'no-urn:{urn}'
     #if(urn!=None and urn.startswith('urn:')):
