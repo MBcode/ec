@@ -1309,6 +1309,7 @@ def cap_http(url):
 
 def cap_doi(url):
     "<doi>"
+    #if url.lower().startswith("doi:"):
     if url.startswith("doi:"):
         return f'<{url}>'
     elif url.startswith("DOI:"):
@@ -1353,7 +1354,6 @@ def df2nt(df,fn=None):
         #s=row['s']
         s=df["s"][index]
         s=fix_url(s)
-        s=fix_url(s)
         p=df["p"][index]
         p=fix_url(p)
         o=df["o"][index]
@@ -1385,6 +1385,25 @@ def get_rdf2nt(urn):
     fn2 = fn2 + ".nt"
     return df2nt(df,fn2) #seems to work w/a test urn
     #return df2nt(df)
+##
+#have a version that returns jsonld, via file, then maybe more directly for a route
+ #I have versions that build something up in a str(2nq)for rdflib, can do that..
+ #for file version:
+  #nt2g then dump in diff version, there are a few from url/file to jsonld as well
+   #xml2nt &variants have use of serialize
+def nt2jld(fn):
+    g=nt2g(fn)
+    s=g.serialize(format="json-ld") 
+    fnb=file_base(fn)
+    fnt=fnb+".jsonld" 
+    put_txtfile(fnt,s)
+    return fnt
+
+def get_rdf2jld(urn):
+    df=get_rdf2nt(urn)
+    #fn2=urn_leaf(urn) # + ".nt" 
+    fn2=urn_leaf(urn)  + ".nt" 
+    return nt2jld(fn2)
 ##
 #take urn2uri out of this, but have to return a few vars
 def wget_rdf(urn,viz=None):
