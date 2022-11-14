@@ -68,7 +68,18 @@ e ?lon .}
      #  ORDER BY DESC(?score)
         """
         #using more constrained qry now in get_summary.txt * now above
-df=pd.read_csv("summary-gc1.csv") #head of summary.csv, from ec.py's get_summary("")
+#df=pd.read_csv("summary-gc1.csv") #head of summary.csv, from ec.py's get_summary("")
+#df=pd.read_csv(f'{repo}.csv') #head of summary.csv, from ec.py's get_summary("")
+#seeing error in csv, might be time to get it directly, as repo's are small enough, to try over
+repo="linked.earth"
+#testing_endpoint=f'http://ideational.ddns.net:3030/{repo_name}/sparql'
+tmp_endpoint=f'http://localhost:3030/{repo}/sparql' #fnq repo
+print(f'try:{tmp_endpoint}') #if >repo.ttl, till prints, will have to rm this line &next2:
+#< not IN_COLAB
+#< rdf_inited,rdflib_inited,sparql_inited=True,True,True
+import ec
+ec.dflt_endpoint = tmp_endpoint
+df=ec.get_summary("")
 #all are tabbed after context
 #a                       :Dataset ;
 # then :so-keyword ;   last w/.
