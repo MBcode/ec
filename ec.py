@@ -10,7 +10,9 @@ repo_name="geocodes_demo_datasets" #for testing
 #testing_bucket="citesting" #or bucket_name
 #testing_bucket="test3" #or bucket_name
 testing_bucket="mbci2" #using this vs what send in in places/fix this
-ci_url=f'https://oss.geocodes-dev.earthcube.org/{testing_bucket}'
+ci_minio="https://oss.geocodes-dev.earthcube.org"
+#ci_url=f'https://oss.geocodes-dev.earthcube.org/{testing_bucket}'
+ci_url=f'{ci_minio}/{testing_bucket}' #better to have a fnc set it
 bucket_url=f'https://oss.geocodes-dev.earthcube.org/{testing_bucket}' #use in oss
 #testing_endpoint="http://ideational.ddns.net:3030/geocodes_demo_datasets/sparql"
 testing_endpoint=f'http://ideational.ddns.net:3030/{repo_name}/sparql'
@@ -23,8 +25,9 @@ mb_endpoint = "http://24.13.90.91:9999/bigdata/namespace/nabu/sparql"
 ncsa_endpoint_old = "http://mbobak.ncsa.illinois.edu:9999/blazegraph/namespace/nabu/sparql"
 ncsa_endpoint_ = "https://mbobak.ncsa.illinois.edu:9999/blazegraph/namespace/nabu/sparql"
 ncsa_endpoint = "https://mbobak.ncsa.illinois.edu:9999/bigdata/namespace/ld/sparql"
-gc1_endpoint = "https://graph.geocodes-1.earthcube.org/blazegraph/namespace/earthcube/sparql"
 dev_https_endpoint="https://graph.geocodes-dev.earthcube.org/blazegraph/namespace/https/sparql"
+gc1_endpoint = "https://graph.geocodes-1.earthcube.org/blazegraph/namespace/earthcube/sparql"
+gc1_minio = "https://oss.geocodes-1.earthcube.org/"
 #dflt_endpoint = ncsa_endpoint
 #dflt_endpoint = "https://graph.geodex.org/blazegraph/namespace/nabu/sparql"
 dflt_endpoint = gc1_endpoint
@@ -1033,6 +1036,15 @@ def oss_ls(path='test3/summoned',full_path=True,minio_endpoint_url="https://oss.
 #['test3/summoned/geocodes_demo_datasets/257108e0760f96ef7a480e1d357bcf8720cd11e4.jsonld', 'test3/summoned/geocodes_demo_datasets/261c022db9edea9e4fc025987f1826ee7a704f06.jsonld', 'test3/summoned/geocodes_demo_datasets/7435cba44745748adfe80192c389f77d66d0e909.jsonld', 'test3/summoned/geocodes_demo_datasets/9cf121358068c7e7f997de84fafc988083b72877.jsonld', 'test3/summoned/geocodes_demo_datasets/b2fb074695be7e40d5ad5d524d92bba32325249b.jsonld', 'test3/summoned/geocodes_demo_datasets/c752617ea91a725643d337a117bd13386eae3203.jsonld', 'test3/summoned/geocodes_demo_datasets/ce020471830dc75cb1639eae403a883f9072bb60.jsonld', 'test3/summoned/geocodes_demo_datasets/fcc47ef4c3b1d0429d00f6fb4be5e506a7a3b699.jsonld', 'test3/summoned/geocodes_demo_datasets/fe3c7c4f7ca08495b8962e079920c06676d5a166.jsonld']
 #>>> 
 
+def wget_oss_repo(repo,path="gleaner/milled",bucket=gc1_minio):
+    "download all the rdf from a gleaner bucket"
+    files=oss_ls(f'{path}/{repo}',True,bucket)
+    #print(f'will wget:{files}')
+    for f in files:
+        print(f'will wget:{f}')
+        wget(f)
+    return files
+
 def setup_sitemap(): #do this by hand for now
     cs='pip install ultimate_sitemap_parser' #assume done rarely, once/session 
     os_system(cs) #get rid of top one soon
@@ -1392,6 +1404,7 @@ def get_rdf2nt(urn):
   #nt2g then dump in diff version, there are a few from url/file to jsonld as well
    #xml2nt &variants have use of serialize
 def nt2jld(fn):
+    "load .nt and convert2 jsonld"
     g=nt2g(fn)
     s=g.serialize(format="json-ld") 
     fnb=file_base(fn)
@@ -1400,6 +1413,7 @@ def nt2jld(fn):
     return fnt
 
 def get_rdf2jld(urn):
+    "get_graph 2 nt then 2 jsonld"
     df=get_rdf2nt(urn)
     #fn2=urn_leaf(urn) # + ".nt" 
     fn2=urn_leaf(urn)  + ".nt" 
