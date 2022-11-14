@@ -163,8 +163,10 @@ if __name__ == '__main__':
             fn=wget(fn)
         print(f'fn2nq on:{fn}')
         ext = file_ext(fn)
-        print(f'2nq file_ext:{ext}')
+        print(f'2nq file_EXT:{ext}')
         fn2="Not Found"
+        if ext==".rdf": #df's idea for .nt files
+            fn2=fn2nq(fn)
         if ext==".nt":
             fn2=fn2nq(fn)
         if ext==".jsonld":
