@@ -3,6 +3,14 @@
 #potentially useful elsewhere; eg. if added repo: could use this in my workflow to make quads
 import os
 from os.path import exists
+cwd = os.getcwd()
+
+def path_leaf(path):
+    "everything after the last /"
+    import ntpath
+    head, tail = ntpath.split(path)
+    return tail or ntpath.basename(head)
+
 #from ec.py ;below can go in utils as well, but as cli right now
 def file_ext(fn):
     st=os.path.splitext(fn)
@@ -95,13 +103,16 @@ def replace_last(source_string, replace_what, replace_with):
     head, _sep, tail = source_string.rpartition(replace_what)
     return head + replace_with + tail
 
-def fn2nq(fn):
+def fn2nq(fn,prefix=None):
     "read in .nt put out .nq"
     fnb = file_base(fn)
     fn2 = fnb + ".nq"
     if exists(fn2):
         print(f'fn2nq:{fn2} already there')
-    replace_with = f' <urn:{fnb}> .'
+    if prefix:
+        replace_with = f' <urn:{prefix}:{fnb}> .'
+    else:
+        replace_with = f' <urn:{fnb}> .'
     with open(fn2,'w') as fd_out:
         with open(fn,'r') as fd_in:
             for line in fd_in:
@@ -166,7 +177,12 @@ if __name__ == '__main__':
         print(f'2nq file_EXT:{ext}')
         fn2="Not Found"
         if ext==".rdf": #df's idea for .nt files
-            fn2=fn2nq(fn)
+            #print(f'cwd:{cwd}')
+            repo=path_leaf(cwd)
+            #print(f'repo:{repo}')
+            prefix=f'gleaner:summoned:{repo}'
+            print(f'prefix:{prefix}')
+            fn2=fn2nq(fn,prefix)
         if ext==".nt":
             fn2=fn2nq(fn)
         if ext==".jsonld":
