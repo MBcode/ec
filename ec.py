@@ -1401,6 +1401,9 @@ def get_rdf2nt(urn):
     df=get_rdf(urn)
     fn2=urn_leaf(urn) # + ".nt" 
     #append2allnt(fn2) #file not made yet, done during ec.viz() call
+    if not is_str(fn2):
+        print(f'get_rdf2nt,warning,fn2:{fn2}')
+        fn2=""
     fn2 = fn2 + ".nt"
     global f_nt
     f_nt = fn2
@@ -1434,6 +1437,7 @@ def wget_rdf(urn,viz=None):
         #if sparql_inited==None:
         if not sparql_inited:
             init_sparql()
+        print(f'get_rdf2nt({urn})')
         return get_rdf2nt(urn) #use get_graph version for now
     if urn==None:
         return f'no-urn:{urn}'
