@@ -1983,6 +1983,8 @@ def iqt2df(iqt,endpoint=None):
 
 def v4qry(var,qt):
     "var + query-type 2 df"
+    if not var:
+        var=""
     sqs = eval("get_" + qt + "_txt()") #get_  _txt   fncs, are above
     if not is_str(sqs):
         print('f4qry get_ {qt} _txt() gave; {sqs}, so aborting')
