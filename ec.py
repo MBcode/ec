@@ -1402,13 +1402,15 @@ def get_rdf2nt(urn):
     fn2=urn_leaf(urn) # + ".nt" 
     #append2allnt(fn2) #file not made yet, done during ec.viz() call
     if not is_str(fn2):
-        print(f'get_rdf2nt,warning,fn2:{fn2}')
+        print(f'get_rdf2nt,warning,fn2:{fn2}, make sure to run the Parameters cell to get the urn')
         fn2=""
     fn2 = fn2 + ".nt"
     global f_nt
     f_nt = fn2
     return df2nt(df,fn2) #seems to work w/a test urn
     #return df2nt(df)
+##
+#added warning bc saw eval'd params that still had urn as None, so re-ran it, and was ok
 ##
 #have a version that returns jsonld, via file, then maybe more directly for a route
  #I have versions that build something up in a str(2nq)for rdflib, can do that..
