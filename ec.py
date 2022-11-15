@@ -1740,7 +1740,8 @@ def display_svg(fn):
     display(SVG(fn))
 
 def append2allnt(fnb):
-    print(f'append2allnt,fnb:{fnb}')
+    if dbg: 
+        print(f'append2allnt,fnb:{fnb}')
     cs= f'cat {fnb}.nt >> .all.nt'
     os_system(cs) 
 
@@ -1777,7 +1778,8 @@ def viz(fn=".all.nt"): #might call this rdf_viz once we get some other type of v
 #should change os version of wget to request so can more easily log the return code
  #maybe, but this is easiest way to get the file locally to have to use
   #though if we use a kglab/sublib or other that puts right to graph, could dump from that too
-host = "http://141.142.218.86:3031"
+#host = "http://141.142.218.86:3031"
+host = "http://mbobak.ncsa.illinois.edu:3031"
 #import requests
 
 def alive():
@@ -1787,8 +1789,13 @@ def alive():
 
 def log_msg(url): #in mknb.py logbad routed expects 'url' but can encode things
     import requests
-    r = requests.get(f'{host}/logbad/?url={url}')
-    return r 
+    ##r = requests.get(f'{host}/logbad/?url={url}')
+    get=f'{host}/logbad/?url={url}'
+    #had old url, but should be in sync w/ui url, and don't really need this, so
+    #r = requests.get(get) #skip remote logging for now, &just do locally:
+    add2log(get)
+    #return r 
+    return "" 
 
 #add 'rty'/error handling, which will incl sending bad-download links back to mknp.py
  #log in the except sections, below
