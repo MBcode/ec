@@ -3,6 +3,7 @@
 #=this is also at gitlab now, but won't get autoloaded until in github or allow for gitlab_repo
  #but for cutting edge can just get the file from the test server, so can use: get_ec()
 dbg=None #can use w/logging as well soon, once there is more need&time
+f_nt=None #the .nt file last downloaded
 rdf_inited,rdflib_inited,sparql_inited=None,None,None
 endpoint=None
 #keep these more in sync ;could have a dict for each setup
@@ -1301,6 +1302,7 @@ def rdf2nt(urlroot_):
     fn1 = urlroot + ".rdf"
     fn2 = urlroot + ".nt" #more specificially, what is really in it
     #cs= f'mv {fn1} {fn2}' #makes easier to load into rdflib..eg: #&2 read into df
+    print(f'rdf2nt,fn1:{fn1}')
     cs= f'cat {fn1}|sed "/> /s//>\t/g"|sed "/ </s//\t</g"|sed "/doi:/s//DOI:/g"|cat>{fn2}'
     os_system(cs)   #fix .nt so .dot is better ;eg. w/doi
     f_nt=fn2
@@ -1398,8 +1400,10 @@ def get_rdf2nt(urn):
     "get and rdf2nt" #rdf2nt was getting around df's naming, will be glad to get away from that cache
     df=get_rdf(urn)
     fn2=urn_leaf(urn) # + ".nt" 
-    append2allnt(fn2)
+    #append2allnt(fn2) #file not made yet, done during ec.viz() call
     fn2 = fn2 + ".nt"
+    global f_nt
+    f_nt = fn2
     return df2nt(df,fn2) #seems to work w/a test urn
     #return df2nt(df)
 ##
@@ -1604,6 +1608,7 @@ def nt2dn(fn=f_nt,n=1):
     ".nt to d#.nt where n=#, w/http/s schema.org all as dcat" 
     fdn= f'd{n}.nt'
     #fnd=dfn(fn) #maybe gen fn from int
+    print(f'nt2nd,fn:{fn}')
     cs=f'cat {fn}|sed "/ht*[ps]:..schema.org./s//http:\/\/www.w3.org\/ns\/dcat#/g"|cat>{fdn}'  #FIX
     os_system(cs) #this makes queries a LOT easier
     return fdn
@@ -1729,6 +1734,7 @@ def display_svg(fn):
     display(SVG(fn))
 
 def append2allnt(fnb):
+    print(f'append2allnt,fnb:{fnb}')
     cs= f'cat {fnb}.nt >> .all.nt'
     os_system(cs) 
 
@@ -2015,7 +2021,7 @@ def get_graph(g):
     "return all triples from g w/URN"
     return v4qry(g,"graph")
 
-def get_summary(g): #g not used but could make a version that gets it for only 1 graph
+def get_summary(g=""): #g not used but could make a version that gets it for only 1 graph
     "return summary version of all the graphs quads"
     return v4qry(g,"summary")
 
@@ -2423,6 +2429,7 @@ def summoned2nq(s=None):
     os_system(f'echo ""> {fnout}')
     nql=list(map(fn2nq,s))
     for nq in nql:
+        print(f'summoned2nq,nq:{nq}')
         os_system(f'cat {nq}>>{fnout}')
     return fnout
 
