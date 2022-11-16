@@ -1047,8 +1047,13 @@ def wget_oss_repo(repo=None,path="gleaner/milled",bucket=gc1_minio):
     files=oss_ls(f'{path}/{repo}',True,bucket)
     #print(f'will wget:{files}')
     for f in files:
-        print(f'will wget:{f}')
-        wget(f)
+        fl=path_leaf(f)
+        from os.path import exists #can check if cached file there
+        if not exists(fl):
+            print(f'will wget:{f}')
+            wget(f)
+        else:
+            print(f'have:{fl} already')
     return files
 
 def setup_sitemap(): #do this by hand for now
