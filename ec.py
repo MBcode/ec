@@ -1435,12 +1435,28 @@ def nt2jld(fn):
     put_txtfile(fnt,s)
     return fnt
 
+def nt2ttl(fn):
+    "load .nt and convert2 .ttl"
+    g=nt2g(fn)
+    s=g.serialize(format="ttl") 
+    fnb=file_base(fn)
+    fnt=fnb+".ttl" 
+    put_txtfile(fnt,s)
+    return fnt
+
 def get_rdf2jld(urn):
     "get_graph 2 nt then 2 jsonld"
     df=get_rdf2nt(urn)
     #fn2=urn_leaf(urn) # + ".nt" 
     fn2=urn_leaf(urn)  + ".nt" 
     return nt2jld(fn2)
+
+def get_rdf2ttl(urn):
+    "get_graph 2 nt then 2 ttl"
+    df=get_rdf2nt(urn)
+    #fn2=urn_leaf(urn) # + ".nt" 
+    fn2=urn_leaf(urn)  + ".nt" 
+    return nt2ttl(fn2)
 ##
 #take urn2uri out of this, but have to return a few vars
 def wget_rdf(urn,viz=None):
