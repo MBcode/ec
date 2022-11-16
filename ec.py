@@ -1041,7 +1041,7 @@ def oss_ls(path='test3/summoned',full_path=True,minio_endpoint_url="https://oss.
 def wget_oss_repo(repo=None,path="gleaner/milled",bucket=gc1_minio):
     "download all the rdf from a gleaner bucket"
     if not repo:
-        global cwd
+        global cwd  #I like having it go from the dirname, so files don't get mixed up
         repo=path_leaf(cwd)
         print(f'using, repo:{repo}=path_leaf({cwd})') #as 2nq.py will use cwd for repo, if it runs .rdf files
     files=oss_ls(f'{path}/{repo}',True,bucket)
@@ -1054,6 +1054,8 @@ def wget_oss_repo(repo=None,path="gleaner/milled",bucket=gc1_minio):
             wget(f)
         else:
             print(f'have:{fl} already')
+    if dbg: #might dump this all time, or by arg
+        list2txtfile("l1h",files)
     return files
 
 def setup_sitemap(): #do this by hand for now
@@ -1315,7 +1317,8 @@ def rdf2nt(urlroot_):
     return fn2
 ##
 def is_node(url): #not yet
-    return (url.startswith("<") or url.startswith("_:B"))
+    #return (url.startswith("<") or url.startswith("_:B")) #a <p> slipped in
+    return (url.startswith("<ht") or url.startswith("_:B"))
 
 #def is_tn(url):
 def tn2bn(url):
