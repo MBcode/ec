@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 #mbobak summarize a nq file, for quick queries, and quad now as subj to point to graph-url
  #this is almost like nq2ttl, but is sumarizing via the qry
 import pandas as pd
@@ -19,6 +20,7 @@ context = "@prefix : <https://schema.org/> ." #https for now
  #but after changinge ResourceType to 'a', .. oh, this doesn't have : so special case anyway
 #used this query on all of geodec using ec.py's get_summary and dumped to summary.csv
 #Nov  5 17:24 get_summary.txt -> get_summary_good.txt
+#still using txt file on my server right now instead
 qry="""
 #PREFIX bds: <http://www.bigdata.com/rdf/search#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -71,84 +73,95 @@ e ?lon .}
 #df=pd.read_csv("summary-gc1.csv") #head of summary.csv, from ec.py's get_summary("")
 #df=pd.read_csv(f'{repo}.csv') #head of summary.csv, from ec.py's get_summary("")
 #seeing error in csv, might be time to get it directly, as repo's are small enough, to try over
-repo="linked.earth"
+#repo="linked.earth" #get from cli now
 #testing_endpoint=f'http://ideational.ddns.net:3030/{repo_name}/sparql'
-tmp_endpoint=f'http://localhost:3030/{repo}/sparql' #fnq repo
-print(f'try:{tmp_endpoint}') #if >repo.ttl, till prints, will have to rm this line &next2:
+#tmp_endpoint=f'http://localhost:3030/{repo}/sparql' #fnq repo
+#print(f'try:{tmp_endpoint}') #if >repo.ttl, till prints, will have to rm this line &next2:
 #< not IN_COLAB
 #< rdf_inited,rdflib_inited,sparql_inited=True,True,True
 import ec
-ec.dflt_endpoint = tmp_endpoint
-df=ec.get_summary("")
+#ec.dflt_endpoint = tmp_endpoint
+#df=ec.get_summary("")
 #all are tabbed after context
 #a                       :Dataset ;
 # then :so-keyword ;   last w/.
 #column names:
 # "subj" , "g" , "resourceType" , "name" , "description" , "pubname" , "placenames" , "kw" , "datep" ,
 #next time just get a mapping file/have qry w/so keywords as much a possilbe
-urns = {}
-import json
-def is_str(v):
-    return type(v) is str
-print(f'{context}')
-for index, row in df.iterrows():
-    gu=df["g"][index]
-    #skip the small %of dups, that even new get_summary.txt * has
-    there = urns.get(gu)
-    if not there:
-        urns[gu]=1
-    elif there: 
-        #print(f'already:{there},so would break loop')
-        continue #from loop
-    rt=row['resourceType']
-    name=json.dumps(row['name']) #check for NaN/fix
-    if not name:
-        name=f'""'
-    if not is_str(name):
-        name=f'"{name}"'
-    if name=="NaN": #this works, but might use NA
-        name=f'"{name}"'
-    description=row['description']
-    if is_str(description):
-        sdes=json.dumps(description)
-        #sdes=description.replace(' / ',' \/ ').replace('"','\"')
-        #sdes=sdes.replace(' / ',' \/ ').replace('"','\"')
-      # sdes=sdes.replace('"','\"')
-    else:
-        sdes=f'"{description}"'
-    kw_=row['kw']
-    if is_str(kw_):
-        kw=json.dumps(kw_)
-    else:
-        kw=f'"{kw_}"'
-    pubname=row['pubname']
-    datep=row['datep']
-    placename=row['placenames']
-    s=row['subj']
-    print(" ")
-    print(f'<{gu}>')
-    #print(f'        a {rt} ;')
-    if rt == "tool":
-        print(f'        a :SoftwareApplication ;')
-    else:
-        print(f'        a :Dataset ;')
-   #print(f'        :name "{name}" ;')
-    print(f'        :name {name} ;')
-   #print(f'        :description """{description}""" ;')
-   #print(f'        :description """{sdes}""" ;')
-    print(f'        :description ""{sdes}"" ;')
-   #print(f'        :keyword "{kw}" ;')
-    print(f'        :keyword {kw} ;')
-    print(f'        :publisher "{pubname}" ;')
-    print(f'        :place "{placename}" ;')
-    print(f'        :date "{datep}" ;') #might be: "No datePublished"
-    print(f'        :subjectOf <{s}> .')
-    #du= row.get("disurl") #not seeing yet
-    du= row.get("url") # check now/not yet
-    if is_str(du):
-        print(f'        :distribution <{du}> .')
-#see abt defaults from qry or here, think dv needs date as NA or blank/check
-#old:
-#got a bad:         :subjectOf <metadata-doi:10.17882/42182> .
-#incl original subj, just in case for now
-#lat/lon not in present ui, but in earlier version
+def summaryDF2ttl(df):
+    urns = {}
+    import json
+    def is_str(v):
+        return type(v) is str
+    print(f'{context}')
+    for index, row in df.iterrows():
+        gu=df["g"][index]
+        #skip the small %of dups, that even new get_summary.txt * has
+        there = urns.get(gu)
+        if not there:
+            urns[gu]=1
+        elif there: 
+            #print(f'already:{there},so would break loop')
+            continue #from loop
+        rt=row['resourceType']
+        name=json.dumps(row['name']) #check for NaN/fix
+        if not name:
+            name=f'""'
+        if not is_str(name):
+            name=f'"{name}"'
+        if name=="NaN": #this works, but might use NA
+            name=f'"{name}"'
+        description=row['description']
+        if is_str(description):
+            sdes=json.dumps(description)
+            #sdes=description.replace(' / ',' \/ ').replace('"','\"')
+            #sdes=sdes.replace(' / ',' \/ ').replace('"','\"')
+          # sdes=sdes.replace('"','\"')
+        else:
+            sdes=f'"{description}"'
+        kw_=row['kw']
+        if is_str(kw_):
+            kw=json.dumps(kw_)
+        else:
+            kw=f'"{kw_}"'
+        pubname=row['pubname']
+        datep=row['datep']
+        placename=row['placenames']
+        s=row['subj']
+        print(" ")
+        print(f'<{gu}>')
+        #print(f'        a {rt} ;')
+        if rt == "tool":
+            print(f'        a :SoftwareApplication ;')
+        else:
+            print(f'        a :Dataset ;')
+       #print(f'        :name "{name}" ;')
+        print(f'        :name {name} ;')
+       #print(f'        :description """{description}""" ;')
+       #print(f'        :description """{sdes}""" ;')
+        print(f'        :description ""{sdes}"" ;')
+       #print(f'        :keyword "{kw}" ;')
+        print(f'        :keyword {kw} ;')
+        print(f'        :publisher "{pubname}" ;')
+        print(f'        :place "{placename}" ;')
+        print(f'        :date "{datep}" ;') #might be: "No datePublished"
+        print(f'        :subjectOf <{s}> .')
+        #du= row.get("disurl") #not seeing yet
+        du= row.get("url") # check now/not yet
+        if is_str(du):
+            print(f'        :distribution <{du}> .')
+    #see abt defaults from qry or here, think dv needs date as NA or blank/check
+    #old:
+    #got a bad:         :subjectOf <metadata-doi:10.17882/42182> .
+    #incl original subj, just in case for now
+    #lat/lon not in present ui, but in earlier version
+
+if __name__ == '__main__':
+    import sys
+    if(len(sys.argv)>1):
+        repo = sys.argv[1]
+        tmp_endpoint=f'http://localhost:3030/{repo}/sparql' #fnq repo
+        print(f'try:{tmp_endpoint}') #if >repo.ttl, till prints, will have to rm this line &next2:
+        ec.dflt_endpoint = tmp_endpoint
+        df=ec.get_summary("")
+        summaryDF2ttl(df)
