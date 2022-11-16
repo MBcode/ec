@@ -1042,8 +1042,8 @@ def wget_oss_repo(repo=None,path="gleaner/milled",bucket=gc1_minio):
     "download all the rdf from a gleaner bucket"
     if not repo:
         global cwd
-        repo=cwd
-        print(f'using, repo:{repo}=cwd') #as 2nq.py will use cwd for repo, if it runs .rdf files
+        repo=path_leaf(cwd)
+        print(f'using, repo:{repo}=path_leaf({cwd})') #as 2nq.py will use cwd for repo, if it runs .rdf files
     files=oss_ls(f'{path}/{repo}',True,bucket)
     #print(f'will wget:{files}')
     for f in files:
@@ -1291,6 +1291,7 @@ def urn2urls(urn): #from wget_rdf, replace w/this call soon
 
 #only urls of rdf not downloadable yet
 def urn2fnt(urn):
+    "urn to end of rdf url as name for .nt file"
     rdf_urls=urn2urls(urn)
     fnt=file_base(path_leaf(rdf_urls[0])) + ".nt"
     return fnt
@@ -1387,8 +1388,8 @@ def df2nt(df,fn=None):
         #need to finish up w/dumping to a file
     return df
 
-def get_rdf(urn,viz=None):
-    "start of replacement for wget_rdf" #that doesn't need the ld cache
+def get_rdf(urn,viz=None): #get graph 
+    "get_graph as df, start of replacement for wget_rdf" #that doesn't need the ld cache
     df=get_graph(urn)
     df2nt(df)
     if viz: #should fix this below 
@@ -2042,6 +2043,8 @@ def get_summary(g=""): #g not used but could make a version that gets it for onl
 
 
 #summary_endpoint = dflt_endpoint.replace("earthcube","summary")
+ #for now, but will have to check, at times
+ #no 2nd change, all vars should be the same from the summary
 #def txt_query_(q,endpoint=None):
 def txt_query_(q,endpoint=None):
     "or can just reset dflt_endpoint"
