@@ -141,7 +141,8 @@ def summaryDF2ttl(df):
        #print(f'        :description """{sdes}""" ;')
         print(f'        :description ""{sdes}"" ;')
        #print(f'        :keyword "{kw}" ;')
-        print(f'        :keyword {kw} ;')
+       #print(f'        :keyword {kw} ;') #not what schema.org &the new query uses
+        print(f'        :keywords {kw} ;')
         print(f'        :publisher "{pubname}" ;')
         print(f'        :place "{placename}" ;')
         print(f'        :date "{datep}" ;') #might be: "No datePublished"

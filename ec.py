@@ -721,8 +721,13 @@ def get_download_txt(url="https://raw.githubusercontent.com/earthcube/facetsearc
 def get_notebook_txt(url="https://raw.githubusercontent.com/MBcode/ec/master/NoteBook/sparql_gettools_notebook.txt"):
     return get_ec_txt(url)
 
+#in feat_summary:
+#def get_query_txt(url="https://raw.githubusercontent.com/earthcube/facetsearch/master/client/src/sparql_blaze/sparql_query.txt"):
 def get_query_txt(url="https://raw.githubusercontent.com/MBcode/ec/master/NoteBook/sparql-query.txt"):
     return get_ec_txt(url)
+
+def get_summary_query_txt(url="https://raw.githubusercontent.com/earthcube/facetsearch/master/client/src/sparql_blaze/sparql_query.txt"):
+    return get_ec_txt(url)  #start to use this in the sparql-nb txt_query
 
 def get_subj2urn_txt(url="http://geocodes.ddns.net/ec/nb/sparql_subj2urn.txt"):
     #return get_ec_txt(url)
@@ -742,6 +747,7 @@ def get_graph_txt(url="http://geocodes.ddns.net/ec/nb/get_graph.txt"):
     #consider ret CONSTRUCT from a direct match vs filter
 
 def get_summary_txt(url="http://geocodes.ddns.net/ec/nb/get_summary.txt"):
+    "this is to make a summary, not to do a qry on the summary"
     return get_ec_txt(url)
 
 ## so/eg. this last one is where get_graph(g) calls v4qry(g,"graph")
@@ -1752,6 +1758,7 @@ def nt2svg(fnb):
     os_system(cs) 
     cs= f'dot -Tsvg {fnb}.dot |cat> {fnb}.svg'
     os_system(cs)
+    #could spit out nt2dot and dot2svg, and check if output file exists, so wouldn't have to make it again
 
 #re/consider running sed "/https/s//http/g" on the .nt file, as an option, 
  #for cases were it's use as part of the namespace is inconsistent
