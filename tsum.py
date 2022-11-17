@@ -125,6 +125,18 @@ def summaryDF2ttl(df):
         else:
             kw=f'"{kw_}"'
         pubname=row['pubname']
+        #if no publisher urn.split(':')
+        #to use:repo in: ['urn', 'gleaner', 'summoned', 'opentopography', '58048498c7c26c7ab253519efc16df237866e8fe']
+        #as of the last runs, this was being done per repo, which comes in on the CLI, so could just use that too*
+        if pubname=="No Publisher":
+            ul=gu.split(':')
+            if len(ul)>4: #could check, for changing urn more, but for now:
+                pub_repo=ul[3]
+                if is_str(pub_repo):
+                    pubname=pub_repo
+                else: #could just use cli repo
+                    global repo
+                    pubname=repo
         datep=row['datep']
         placename=row['placenames']
         s=row['subj']
