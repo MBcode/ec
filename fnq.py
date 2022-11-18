@@ -82,3 +82,12 @@ if __name__ == '__main__':
         else:
             run_fuseki(repo)
             os_system("sleep 9")
+
+#how it is run:
+#==> summarize_repo.sh <==
+#fnq.py $1
+#tsum.py $1 |egrep -v "not IN_COLAB|rdf_inited|try:http"|cat>$1.ttl
+
+#if you get an error, where the sleep above wasn't enough, the server is running, but you just need tsum.py part, run:
+#==> tsum.sh <==
+#tsum.py $1 |egrep -v "not IN_COLAB|rdf_inited|try:http"|cat>$1.ttl
