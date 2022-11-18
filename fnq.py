@@ -81,3 +81,4 @@ if __name__ == '__main__':
             print(f'no:{fn} to server')
         else:
             run_fuseki(repo)
+            os_system("sleep 9")
