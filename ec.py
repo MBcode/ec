@@ -144,6 +144,15 @@ if falsep(IN_COLAB):
     #local()
     laptop()
 
+def ndtq_(name=None,datasets=None,queries=None,tools=None):
+    "force colab version, best for cli"
+    n=json.loads(name)
+    d=json.loads(datasets)
+    t=json.loads(tools)
+    Q=json.loads(queries)
+    print(f'n={n},d={d},q={Q},t={t}')
+    return n,d,t,Q
+
 def ndtq(name=None,datasets=None,queries=None,tools=None):
   "get collection args for colab or binder"
   import json
@@ -1464,14 +1473,25 @@ def get_rdf2ttl(urn):
     fn2=urn_leaf(urn)  + ".nt" 
     return nt2ttl(fn2)
 ##
-#take urn2uri out of this, but have to return a few vars
 def wget_rdf(urn,viz=None):
+    "new version to get_rdf from the endpoint"
     if not viz:
         #if sparql_inited==None:
         if not sparql_inited:
             init_sparql()
         print(f'get_rdf2nt({urn})')
         return get_rdf2nt(urn) #use get_graph version for now
+    else:
+        return wget_rdf_(urn,viz)
+#take urn2uri out of this, but have to return a few vars
+def wget_rdf_(urn,viz=None):
+    "old version, still wget's from the urn" #as long as the mapping fnc does not change again
+    if not viz:
+        #if sparql_inited==None:
+        if not sparql_inited:
+            init_sparql()
+      # print(f'get_rdf2nt({urn})') #tried new version here 1st, but want option for old too
+      # return get_rdf2nt(urn) #use get_graph version for now
     if urn==None:
         return f'no-urn:{urn}'
     #if(urn!=None and urn.startswith('urn:')):
