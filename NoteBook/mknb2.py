@@ -28,6 +28,7 @@ def tpg(fn="https/darchive.mblwhoilibrary.org_bitstream_1912_26532_1_dataset-752
 #==will replace this w/tgy.py code, that includes finding a fn in the gitsts, vs remaking it
 import os
 import json
+import csv
 
 def first_str(s):
     r=s.split(' ', 1 )
@@ -357,7 +358,7 @@ def txt_query_csv():
     print(f'q={q}')
     r= ec.txt_query(q)
     print(r)
-    return r.to_csv(None,encoding='utf-8',line_terminator='\n',index=False)
+    return r.to_csv(None,encoding='utf-8',line_terminator='\n',index=False,quoting=csv.QUOTE_NONNUMERIC)
 
 @app.route('/get_graph_csv/') 
 def get_graph_csv():
@@ -365,7 +366,7 @@ def get_graph_csv():
     print(f'g={g}')
     r= ec.get_graph(g)
     print(r)
-    return r.to_csv(None,encoding='utf-8',line_terminator='\n',index=False)
+    return r.to_csv(None,encoding='utf-8',line_terminator='\n',index=False,quoting=csv.QUOTE_NONNUMERIC)
 
 @app.route('/txt_query_tsv/') 
 def txt_query_tsv():
@@ -373,7 +374,7 @@ def txt_query_tsv():
     print(f'q={q}')
     r= ec.txt_query(q)
     print(r)
-    return r.to_csv(None, sep='\t', encoding='utf-8',line_terminator='\n',index=False)
+    return r.to_csv(None, sep='\t', encoding='utf-8',line_terminator='\n',index=False,quoting=csv.QUOTE_NONNUMERIC)
 
 @app.route('/get_graph_tsv/') 
 def get_graph_tsv():
@@ -381,7 +382,7 @@ def get_graph_tsv():
     print(f'g={g}')
     r= ec.get_graph(g)
     print(r)
-    return r.to_csv(None, sep='\t', encoding='utf-8',line_terminator='\n',index=False)
+    return r.to_csv(None, sep='\t', encoding='utf-8',line_terminator='\n',index=False,quoting=csv.QUOTE_NONNUMERIC)
 
 #end-mknb2
 #open collection, of sparqlNB-query=q and an array of URNs for the datasets
