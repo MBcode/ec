@@ -351,6 +351,37 @@ def get_graph():
     print(r)
     return r.to_json()
 
+@app.route('/txt_query_csv/') 
+def txt_query_csv():
+    q = request.args.get('q',  type = str)
+    print(f'q={q}')
+    r= ec.txt_query(q)
+    print(r)
+    return r.to_csv()
+
+@app.route('/get_graph_csv/') 
+def get_graph_csv():
+    g = request.args.get('g',  type = str)
+    print(f'g={g}')
+    r= ec.get_graph(g)
+    print(r)
+    return r.to_csv()
+
+@app.route('/txt_query_tsv/') 
+def txt_query_tsv():
+    q = request.args.get('q',  type = str)
+    print(f'q={q}')
+    r= ec.txt_query(q)
+    print(r)
+    return r.to_csv(None, sep='\t', encoding='utf-8')
+
+@app.route('/get_graph_tsv/') 
+def get_graph_tsv():
+    g = request.args.get('g',  type = str)
+    print(f'g={g}')
+    r= ec.get_graph(g)
+    print(r)
+    return r.to_csv(None, sep='\t', encoding='utf-8')
 
 #end-mknb2
 #open collection, of sparqlNB-query=q and an array of URNs for the datasets
