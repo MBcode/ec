@@ -737,7 +737,28 @@ def get_query_txt(url="https://raw.githubusercontent.com/MBcode/ec/master/NoteBo
 
 #def get_summary_query_txt(url="https://raw.githubusercontent.com/earthcube/facetsearch/master/client/src/sparql_blaze/sparql_query.txt"): #had limit at end
 def get_summary_query_txt(url="http://mbobak.ncsa.illinois.edu/ec/nb/sparql_blaze.txt"):
-    return get_ec_txt(url)  #start to use this in the sparql-nb txt_query
+    #return get_ec_txt(url)  #start to use this in the sparql-nb txt_query
+    return """PREFIX bds: <http://www.bigdata.com/rdf/search#>
+ PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+ PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+ prefix schema: <https://schema.org/>
+ SELECT distinct ?g ?pubname ?placenames ?kw  ?datep
+        (MAX(?score1) as ?score)  ?name ?description ?resourceType
+          WHERE {
+            ?lit bds:search "${q}" .
+            ?lit bds:matchAllTerms false .
+            ?lit bds:relevance ?score1 .
+            ?lit bds:minRelevance 0.14 .
+            ?g ?p ?lit .
+        ?g schema:name ?name .
+        ?g schema:description ?description .
+ BIND (IF (exists {?g a schema:Dataset .}  , "data", "tool") AS ?resourceType).
+ OPTIONAL {?g schema:date ?datep .}
+ OPTIONAL {?g schema:publisher ?pubname .}
+ OPTIONAL {?g schema:place ?placenames .}
+ OPTIONAL {?g schema:keywords ?kw .} }
+ GROUP BY ?g ?pubname ?placenames ?kw ?datep ?disurl ?score ?name ?description  ?resourceType
+         ORDER BY DESC(?score)"""
 
 def get_subj2urn_txt(url="http://geocodes.ddns.net/ec/nb/sparql_subj2urn.txt"):
     #return get_ec_txt(url)
@@ -2103,7 +2124,7 @@ def get_summary(g=""): #g not used but could make a version that gets it for onl
 
 #def get_summary_query(g=""): #g not used but could make a version that gets it for only 1 graph
 #search_query above, should now use this
-def summary_query(g=""): #g not used but could make a version that gets it for only 1 graph
+def summary_query(g=""): #this is finally used in: txt_query_summary
     "replacement txt_query of new summary namespace" #or summary2/etc check
     return v4qry(g,"summary_query") #could call this the fast_query
 
