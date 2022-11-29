@@ -429,7 +429,27 @@ def log_bad():
 
 @app.route('/alive/') 
 def alive():
-    return "alive"
+    return """{"alive": "yes"}"""
+
+@app.route('/testj/') 
+def testj():
+    return """{"id":3098,"uid":"f574baca-6934-40c0-9baf-074c1c9f1336","name":"Sid Down","two_word_name":"Ima Klotz","four_word_name":"Maude L. T. Ford","name_with_initials":"Chris P. Wheatzenraisins","name_with_middle":"Debroah Barrows Upton","first_name":"Lemuel","middle_name":"Marvin","last_name":"Fahey","male_first_name":"Jay","female_first_name":"Veta","prefix":"Mrs.","initials":"PYQ"}"""
+
+@app.route('/txt_query_csv_q/') 
+def txt_query_csv_q():
+    q = request.args.get('q',  type = str)
+    print(f'q={q}')
+    fn = f'q/{q}.csv'
+    from os.path import exists #can check if cached file there
+    if exists(fn):
+        return fn
+    else:
+        r= ec.txt_query_summary(q)
+        print(r)
+        print(fn)
+        r.to_csv(fn,encoding='utf-8',line_terminator='\n',index=False,quoting=csv.QUOTE_NONNUMERIC)
+        return fn
+
 
 if __name__ == '__main__':
     import sys
