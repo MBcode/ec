@@ -340,7 +340,7 @@ def mk_C():
 def txt_query():
     q = request.args.get('q',  type = str)
     print(f'q={q}')
-    r= ec.txt_query(q)
+    r= ec.txt_query_summary(q)
     print(r)
     return r.to_json()
 
@@ -356,7 +356,7 @@ def get_graph():
 def txt_query_csv():
     q = request.args.get('q',  type = str)
     print(f'q={q}')
-    r= ec.txt_query(q)
+    r= ec.txt_query_summary(q)
     print(r)
     return r.to_csv(None,encoding='utf-8',line_terminator='\n',index=False,quoting=csv.QUOTE_NONNUMERIC)
 
@@ -372,7 +372,7 @@ def get_graph_csv():
 def txt_query_tsv():
     q = request.args.get('q',  type = str)
     print(f'q={q}')
-    r= ec.txt_query(q)
+    r= ec.txt_query_summary(q)
     print(r)
     return r.to_csv(None, sep='\t', encoding='utf-8',line_terminator='\n',index=False,quoting=csv.QUOTE_NONNUMERIC)
 
