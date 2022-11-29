@@ -450,6 +450,20 @@ def txt_query_csv_q():
         r.to_csv(fn,encoding='utf-8',line_terminator='\n',index=False,quoting=csv.QUOTE_NONNUMERIC)
         return fn
 
+@app.route('/get_graph_csv_g/') 
+def get_graph_csv_g():
+    g = request.args.get('g',  type = str)
+    print(f'g={g}')
+    fn = f'g/{g}.csv'
+    from os.path import exists #can check if cached file there
+    if exists(fn):
+        return fn
+    else:
+        r= ec.get_graph(g)
+        print(r)
+        r.to_csv(fn,encoding='utf-8',line_terminator='\n',index=False,quoting=csv.QUOTE_NONNUMERIC)
+        return fn
+
 
 if __name__ == '__main__':
     import sys
