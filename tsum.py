@@ -25,13 +25,13 @@ qry="""
 #PREFIX bds: <http://www.bigdata.com/rdf/search#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-prefix schema: <http://schema.org/>
-prefix sschema: <https://schema.org/>
+prefix schema: <https://schema.org/>
 SELECT distinct ?subj ?pubname (GROUP_CONCAT(DISTINCT ?placename; SEPARATOR=", ") AS ?placenames)
         (GROUP_CONCAT(DISTINCT ?kwu; SEPARATOR=", ") AS ?kw)
         ?datep  (GROUP_CONCAT(DISTINCT ?url; SEPARATOR=", ") AS ?disurl) #(MAX(?score1) as ?score)
         ?name ?description ?resourceType ?g
         #(MAX(?lat) as ?maxlat) (Min(?lat) as ?minlat) (MAX(?lon) as ?maxlon) (Min(?lon) as ?minlon)
+        (MAX(?lat) as ?maxlat) (MAX(?lon) as ?maxlon)
          WHERE {
 #           ?lit bds:search "${q}" .
 #           ?lit bds:matchAllTerms false .
@@ -39,27 +39,23 @@ SELECT distinct ?subj ?pubname (GROUP_CONCAT(DISTINCT ?placename; SEPARATOR=", "
 #           ?lit bds:minRelevance 0.24 .
 #           ?subj ?p ?lit .
 #           #filter( ?score1 > 0.14).
-BIND (IF (exists {?subj a schema:Dataset .} || exists{?subj a sschema:Dataset .} , "data",
-     (IF (exists {?subj a schema:SoftwareApplication .} || exists{?subj a sschema:SoftwareApplication .}   ,
-     "tool", "other")) ) AS ?resourceType).
+BIND (IF (exists {?subj a schema:Dataset .}  , "data",
+     (IF (exists {?subj a schema:SoftwareApplication .}    , "tool", "other")) ) AS ?resourceType).
           graph ?g {
-             ?subj schema:name|sschema:name ?name .
-             ?subj schema:description|sschema:description ?description .
-           Minus {?subj a sschema:ResearchProject } .
+             ?subj schema:name ?name .
+             ?subj schema:description ?description .
            Minus {?subj a schema:ResearchProject } .
            Minus {?subj a schema:Person } .
-           Minus {?subj a sschema:Person } .
             }
-        optional {?subj schema:distribution/schema:url|schema:subjectOf/schema:url ?url .}
-        OPTIONAL {?subj schema:datePublished|sschema:datePublished ?date_p .}
-        OPTIONAL {?subj schema:publisher/schema:name|sschema:publisher/sschema:name|schema:publisher/schema:legalName|s
-schema:publisher/sschema:legalName|schema:sdPublisher|sschema:sdPublisher  ?pub_name .}
-        OPTIONAL {?subj schema:spatialCoverage/schema:name|sschema:spatialCoverage/sschema:name ?place_name .}
-#OPTIONAL {?subj schema:spatialCoverage/schema:geo/schema:latitude|sschema:spatialCoverage/sschema:geo/schema:latitude
-?lat .}
-#OPTIONAL {?subj schema:spatialCoverage/schema:geo/schema:longitude|sschema:spatialCoverage/sschema:geo/schema:longitud
-e ?lon .}
-            OPTIONAL {?subj schema:keywords|sschema:keywords ?kwu .}
+#       optional {?subj schema:distribution/schema:url|schema:subjectOf/schema:url ?url .}
+optional {?subj schema:distribution/schema:url|schema:distribution/schema:contentUrl|schema:subjectOf/schema:url ?url .}
+        optional {?subj schema:distribution/schema:encodingFormat ?encodingFormat .}
+        OPTIONAL {?subj schema:datePublished ?date_p .}
+        OPTIONAL {?subj schema:publisher/schema:name|schema:publisher/schema:legalName|schema:sdPublisher  ?pub_name .}
+        OPTIONAL {?subj schema:spatialCoverage/schema:name ?place_name .}
+OPTIONAL {?subj schema:spatialCoverage/schema:geo/schema:latitude ?lat .}
+OPTIONAL {?subj schema:spatialCoverage/schema:geo/schema:longitude ?lon .}
+            OPTIONAL {?subj schema:keywords ?kwu .}
             BIND ( IF ( BOUND(?date_p), ?date_p, "No datePublished") as ?datep ) .
             BIND ( IF ( BOUND(?pub_name), ?pub_name, "No Publisher") as ?pubname ) .
             BIND ( IF ( BOUND(?place_name), ?place_name, "No spatialCoverage") as ?placename ) .
@@ -67,6 +63,7 @@ e ?lon .}
 #?subj ?pubname ?placename ?kwu ?datep ?url  ?name ?description  ?resourceType ?g  #was wrong
         GROUP BY ?subj ?g ?resourceType ?name ?description ?pubname ?placenames ?kw ?datep ?disurl #?score
         #?minlat ?maxlat ?minlon ?maxlon
+         ?maxlat ?maxlon
      #  ORDER BY DESC(?score)
         """
         #using more constrained qry now in get_summary.txt * now above
@@ -163,6 +160,12 @@ def summaryDF2ttl(df):
         du= row.get("url") # check now/not yet
         if is_str(du):
             print(f'        :distribution <{du}> .')
+        mlat= row.get("maxlat") # check now/not yet
+        if is_str(mlat):
+            print(f'        :latitude {mlat} .')
+        mlon= row.get("maxlon") # check now/not yet
+        if is_str(mlon):
+            print(f'        :longitude {mlon} .')
     #see abt defaults from qry or here, think dv needs date as NA or blank/check
     #old:
     #got a bad:         :subjectOf <metadata-doi:10.17882/42182> .
