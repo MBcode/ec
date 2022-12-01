@@ -31,7 +31,7 @@ SELECT distinct ?subj ?pubname (GROUP_CONCAT(DISTINCT ?placename; SEPARATOR=", "
         ?datep  (GROUP_CONCAT(DISTINCT ?url; SEPARATOR=", ") AS ?disurl) #(MAX(?score1) as ?score)
         ?name ?description ?resourceType ?g
         #(MAX(?lat) as ?maxlat) (Min(?lat) as ?minlat) (MAX(?lon) as ?maxlon) (Min(?lon) as ?minlon)
-        (MAX(?lat) as ?maxlat) (MAX(?lon) as ?maxlon)
+        (MAX(?lat) as ?maxlat) (MAX(?lon) as ?maxlon) ?encodingFormat
          WHERE {
 #           ?lit bds:search "${q}" .
 #           ?lit bds:matchAllTerms false .
@@ -63,7 +63,7 @@ OPTIONAL {?subj schema:spatialCoverage/schema:geo/schema:longitude ?lon .}
 #?subj ?pubname ?placename ?kwu ?datep ?url  ?name ?description  ?resourceType ?g  #was wrong
         GROUP BY ?subj ?g ?resourceType ?name ?description ?pubname ?placenames ?kw ?datep ?disurl #?score
         #?minlat ?maxlat ?minlon ?maxlon
-         ?maxlat ?maxlon
+         ?maxlat ?maxlon ?encodingFormat
      #  ORDER BY DESC(?score)
         """
         #using more constrained qry now in get_summary.txt * now above
@@ -85,6 +85,8 @@ import ec
 #column names:
 # "subj" , "g" , "resourceType" , "name" , "description" , "pubname" , "placenames" , "kw" , "datep" ,
 #next time just get a mapping file/have qry w/so keywords as much a possilbe
+dbg=True
+
 def summaryDF2ttl(df):
     urns = {}
     import json
@@ -92,6 +94,8 @@ def summaryDF2ttl(df):
         return type(v) is str
     print(f'{context}')
     for index, row in df.iterrows():
+        if dbg:
+            print(f'dbg:{row}')
         gu=df["g"][index]
         #skip the small %of dups, that even new get_summary.txt * has
         there = urns.get(gu)
@@ -154,18 +158,21 @@ def summaryDF2ttl(df):
         print(f'        :keywords {kw} ;')
         print(f'        :publisher "{pubname}" ;')
         print(f'        :place "{placename}" ;')
-        print(f'        :date "{datep}" ;') #might be: "No datePublished"
+        print(f'        :date "{datep}" ;') #might be: "No datePublished" ;should change in qry, for dv's lack of checking
         print(f'        :subjectOf <{s}> .')
         #du= row.get("disurl") #not seeing yet
-        du= row.get("url") # check now/not yet
+        du= row.get('url') # check now/not yet
         if is_str(du):
             print(f'        :distribution <{du}> .')
-        mlat= row.get("maxlat") # check now/not yet
+        mlat= row.get('maxlat') # check now/not yet
         if is_str(mlat):
             print(f'        :latitude {mlat} .')
-        mlon= row.get("maxlon") # check now/not yet
+        mlon= row.get('maxlon') # check now/not yet
         if is_str(mlon):
             print(f'        :longitude {mlon} .')
+        encodingFormat= row.get('encodingFormat') # check now/not yet
+        if is_str(encodingFormat):
+            print(f'        :encodingFormat {encodingFormat} .')
     #see abt defaults from qry or here, think dv needs date as NA or blank/check
     #old:
     #got a bad:         :subjectOf <metadata-doi:10.17882/42182> .
