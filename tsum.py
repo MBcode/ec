@@ -22,49 +22,30 @@ context = "@prefix : <https://schema.org/> ." #https for now
 #Nov  5 17:24 get_summary.txt -> get_summary_good.txt
 #still using txt file on my server right now instead
 qry="""
-#PREFIX bds: <http://www.bigdata.com/rdf/search#>
-PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 prefix schema: <https://schema.org/>
-SELECT distinct ?subj ?pubname (GROUP_CONCAT(DISTINCT ?placename; SEPARATOR=", ") AS ?placenames)
-        (GROUP_CONCAT(DISTINCT ?kwu; SEPARATOR=", ") AS ?kw)
-        ?datep  (GROUP_CONCAT(DISTINCT ?url; SEPARATOR=", ") AS ?disurl) #(MAX(?score1) as ?score)
-        ?name ?description ?resourceType ?g
-        #(MAX(?lat) as ?maxlat) (Min(?lat) as ?minlat) (MAX(?lon) as ?maxlon) (Min(?lon) as ?minlon)
-        (MAX(?lat) as ?maxlat) (MAX(?lon) as ?maxlon) ?encodingFormat
-         WHERE {
-#           ?lit bds:search "${q}" .
-#           ?lit bds:matchAllTerms false .
-#           ?lit bds:relevance ?score1 .
-#           ?lit bds:minRelevance 0.24 .
-#           ?subj ?p ?lit .
-#           #filter( ?score1 > 0.14).
-BIND (IF (exists {?subj a schema:Dataset .}  , "data",
-     (IF (exists {?subj a schema:SoftwareApplication .}    , "tool", "other")) ) AS ?resourceType).
+SELECT distinct ?subj ?g ?resourceType ?name ?description  ?pubname
+        (GROUP_CONCAT(DISTINCT ?placename; SEPARATOR=", ") AS ?placenames)
+        (GROUP_CONCAT(DISTINCT ?kwu; SEPARATOR=", ") AS ?kw) ?datep
+        #(GROUP_CONCAT(DISTINCT ?url; SEPARATOR=", ") AS ?disurl)
+        WHERE {
           graph ?g {
              ?subj schema:name ?name .
              ?subj schema:description ?description .
-           Minus {?subj a schema:ResearchProject } .
-           Minus {?subj a schema:Person } .
-            }
-#       optional {?subj schema:distribution/schema:url|schema:subjectOf/schema:url ?url .}
-optional {?subj schema:distribution/schema:url|schema:distribution/schema:contentUrl|schema:subjectOf/schema:url ?url .}
-        optional {?subj schema:distribution/schema:encodingFormat ?encodingFormat .}
-        OPTIONAL {?subj schema:datePublished ?date_p .}
-        OPTIONAL {?subj schema:publisher/schema:name|schema:publisher/schema:legalName|schema:sdPublisher  ?pub_name .}
-        OPTIONAL {?subj schema:spatialCoverage/schema:name ?place_name .}
-OPTIONAL {?subj schema:spatialCoverage/schema:geo/schema:latitude ?lat .}
-OPTIONAL {?subj schema:spatialCoverage/schema:geo/schema:longitude ?lon .}
+            Minus {?subj a schema:ResearchProject } .
+            Minus {?subj a schema:Person } .
+ BIND (IF (exists {?subj a schema:Dataset .} ||exists{?subj a schema:DataCatalog .} , "data", "tool")
+   AS ?resourceType).
+            optional {?subj schema:distribution/schema:url|schema:subjectOf/schema:url ?url .}
+            OPTIONAL {?subj schema:datePublished ?date_p .}
+            OPTIONAL {?subj schema:publisher/schema:name|schema:sdPublisher|schema:provider/schema:name ?pub_name .}
+            OPTIONAL {?subj schema:spatialCoverage/schema:name ?place_name .}
             OPTIONAL {?subj schema:keywords ?kwu .}
             BIND ( IF ( BOUND(?date_p), ?date_p, "No datePublished") as ?datep ) .
             BIND ( IF ( BOUND(?pub_name), ?pub_name, "No Publisher") as ?pubname ) .
             BIND ( IF ( BOUND(?place_name), ?place_name, "No spatialCoverage") as ?placename ) .
+             }
         }
-#?subj ?pubname ?placename ?kwu ?datep ?url  ?name ?description  ?resourceType ?g  #was wrong
-        GROUP BY ?subj ?g ?resourceType ?name ?description ?pubname ?placenames ?kw ?datep ?disurl #?score
-        #?minlat ?maxlat ?minlon ?maxlon
-         ?maxlat ?maxlon ?encodingFormat
-     #  ORDER BY DESC(?score)
+        GROUP BY ?subj ?pubname ?placenames ?kw ?datep   ?name ?description  ?resourceType ?g
         """
         #using more constrained qry now in get_summary.txt * now above
 #df=pd.read_csv("summary-gc1.csv") #head of summary.csv, from ec.py's get_summary("")
@@ -86,6 +67,7 @@ import ec
 # "subj" , "g" , "resourceType" , "name" , "description" , "pubname" , "placenames" , "kw" , "datep" ,
 #next time just get a mapping file/have qry w/so keywords as much a possilbe
 dbg=True
+#dbg=False
 
 def summaryDF2ttl(df):
     urns = {}
@@ -132,7 +114,8 @@ def summaryDF2ttl(df):
         if pubname=="No Publisher":
             ul=gu.split(':')
             if len(ul)>4: #could check, for changing urn more, but for now:
-                pub_repo=ul[3]
+                #pub_repo=ul[3]
+                pub_repo=ul[4]
                 if is_str(pub_repo):
                     pubname=pub_repo
                 else: #could just use cli repo
@@ -179,12 +162,21 @@ def summaryDF2ttl(df):
     #incl original subj, just in case for now
     #lat/lon not in present ui, but in earlier version
 
+def get_summary4repo(repo):
+    "so can call interactively to look at the df"
+    tmp_endpoint=f'http://localhost:3030/{repo}/sparql' #fnq repo
+    print(f'try:{tmp_endpoint}') #if >repo.ttl, till prints, will have to rm this line &next2:
+    ec.dflt_endpoint = tmp_endpoint
+    df=ec.get_summary("")
+    return df
+
 if __name__ == '__main__':
     import sys
     if(len(sys.argv)>1):
         repo = sys.argv[1]
-        tmp_endpoint=f'http://localhost:3030/{repo}/sparql' #fnq repo
-        print(f'try:{tmp_endpoint}') #if >repo.ttl, till prints, will have to rm this line &next2:
-        ec.dflt_endpoint = tmp_endpoint
-        df=ec.get_summary("")
+        #tmp_endpoint=f'http://localhost:3030/{repo}/sparql' #fnq repo
+        #print(f'try:{tmp_endpoint}') #if >repo.ttl, till prints, will have to rm this line &next2:
+        #ec.dflt_endpoint = tmp_endpoint
+        #df=ec.get_summary("")
+        df=get_summary4repo(repo)
         summaryDF2ttl(df)
