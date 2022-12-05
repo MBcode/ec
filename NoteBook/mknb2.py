@@ -358,7 +358,7 @@ def txt_query_csv():
     print(f'q={q}')
     r= ec.txt_query_summary(q)
     print(r)
-    return r.to_csv(None,encoding='utf-8',line_terminator='\n',index=False,quoting=csv.QUOTE_NONNUMERIC)
+    return r.to_csv(None,encoding='utf-8',lineterminator='\n',index=False,quoting=csv.QUOTE_NONNUMERIC)
 
 @app.route('/get_graph_csv/') 
 def get_graph_csv():
@@ -366,7 +366,7 @@ def get_graph_csv():
     print(f'g={g}')
     r= ec.get_graph(g)
     print(r)
-    return r.to_csv(None,encoding='utf-8',line_terminator='\n',index=False,quoting=csv.QUOTE_NONNUMERIC)
+    return r.to_csv(None,encoding='utf-8',lineterminator='\n',index=False,quoting=csv.QUOTE_NONNUMERIC)
 
 @app.route('/txt_query_tsv/') 
 def txt_query_tsv():
@@ -374,7 +374,7 @@ def txt_query_tsv():
     print(f'q={q}')
     r= ec.txt_query_summary(q)
     print(r)
-    return r.to_csv(None, sep='\t', encoding='utf-8',line_terminator='\n',index=False,quoting=csv.QUOTE_NONNUMERIC)
+    return r.to_csv(None, sep='\t', encoding='utf-8',lineterminator='\n',index=False,quoting=csv.QUOTE_NONNUMERIC)
 
 @app.route('/get_graph_tsv/') 
 def get_graph_tsv():
@@ -382,7 +382,7 @@ def get_graph_tsv():
     print(f'g={g}')
     r= ec.get_graph(g)
     print(r)
-    return r.to_csv(None, sep='\t', encoding='utf-8',line_terminator='\n',index=False,quoting=csv.QUOTE_NONNUMERIC)
+    return r.to_csv(None, sep='\t', encoding='utf-8',lineterminator='\n',index=False,quoting=csv.QUOTE_NONNUMERIC)
 
 #end-mknb2
 #open collection, of sparqlNB-query=q and an array of URNs for the datasets
@@ -447,7 +447,7 @@ def txt_query_csv_q():
         r= ec.txt_query_summary(q)
         print(r)
         print(fn)
-        r.to_csv(fn,encoding='utf-8',line_terminator='\n',index=False,quoting=csv.QUOTE_NONNUMERIC)
+        r.to_csv(fn,encoding='utf-8',lineterminator='\n',index=False,quoting=csv.QUOTE_NONNUMERIC)
         return fn
 
 @app.route('/get_graph_csv_g/') 
@@ -461,7 +461,7 @@ def get_graph_csv_g():
     else:
         r= ec.get_graph(g)
         print(r)
-        r.to_csv(fn,encoding='utf-8',line_terminator='\n',index=False,quoting=csv.QUOTE_NONNUMERIC)
+        r.to_csv(fn,encoding='utf-8',lineterminator='\n',index=False,quoting=csv.QUOTE_NONNUMERIC)
         return fn
 
 
