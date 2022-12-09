@@ -1914,12 +1914,20 @@ def nt2ft(url): #could also use rdflib, but will wait till doing other queries a
     else:
         return None
 
-def file_type(fn):
-    from os.path import exists 
+def file_type(fn): #w/unzip it can be a dir; so fix
+    from os.path import exists, isdir, isfile 
     import magic
+  # if exists(fn):
+  #     add2log(magic.from_file(fn))
+  #     mt=magic.from_file(fn, mime = True)
     if exists(fn):
-        add2log(magic.from_file(fn))
-        mt=magic.from_file(fn, mime = True)
+        if isfile(fn):
+            add2log(magic.from_file(fn))
+            mt=magic.from_file(fn, mime = True)
+        elif isdir(fn):
+            mt="is a dir"
+        else:
+            mt="exists, but not file or dir"
     else:
         mt="file not found"
     add2log(f'{fn},mime:{mt}')
