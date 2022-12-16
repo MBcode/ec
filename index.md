@@ -6,7 +6,7 @@ Much of this is page is on how to improve the MetaData for better:
 harmonization, discoverablity, and machine-useablity
 [![Image](http://mbobak.ncsa.illinois.edu/ec/m4m/m4m.png)](http://geocodes.ddns.net/ec/m4m/d10/)
 
-Much of what is below is about making the metadata we crawl better, but we could also consider having people author better metadata via [tools](https://www.researchobject.org/ro-crate/tools/) like [describo](https://arkisto-platform.github.io/describo-online/) who's shared-ID-lookup could someday be folded in to our [jsonLD_forms-editor](https://ecjsonforms.netlify.app/#/)
+Much of what is below is about making the metadata we crawl better, but we could also consider having people author better metadata via [tools](https://www.researchobject.org/ro-crate/tools/) like [describo](https://arkisto-platform.github.io/describo-online/) who's shared-ID-lookup could someday be folded in to our [jsonLD_forms-editor](https://ecjsonforms.netlify.app/#/). ([editors](http://earthcube.ddns.net/ec/ux/edit/note.htm) mentioned in other [proposed tasks](https://docs.google.com/document/d/1PSPPp3M3OJFUbLPr3zW1Xnt4uQuo-Oruwuh2LqN2yxE/edit#) for 2023)
 
 The early doc started with the main [ReadMe](https://github.com/MBcode/ec#readme) &then topical sub-dirs
 
