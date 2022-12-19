@@ -4,6 +4,7 @@
  #as a way to run itself over the repo/dirs
 import os
 from os.path import exists
+import rdf2nq
 
 def os_system(cs):
     "run w/o needing ret value"
@@ -46,8 +47,11 @@ def run2nq(repo):
         print(f'found:{lrl} rdf files')
         #2nq.py skips output file if it already exists
         for f in rdfl:
-            cs=f'2nq.py {repo}/{f}'
-            os_system(cs)
+            infn=f'{repo}/{f}'
+            rdf2nqo=rdf2nq.fn2nq(infn)
+            print(f'2nq,gives:{rdf2nqo}')
+            #cs=f'2nq.py {repo}/{f}'
+            #os_system(cs)
         # repo/*.nq > repo.nq
         outfn=f'{repo}.nq'
         print(f'out-filename={outfn}')
