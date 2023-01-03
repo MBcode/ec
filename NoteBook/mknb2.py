@@ -384,6 +384,14 @@ def get_graph_tsv():
     print(r)
     return r.to_csv(None, sep='\t', encoding='utf-8',lineterminator='\n',index=False,quoting=csv.QUOTE_NONNUMERIC)
 
+@app.route('/get_graph_jld/') 
+def get_graph_jld():
+    g = request.args.get('g',  type = str)
+    print(f'g={g}')
+    #r= ec.get_graph(g)
+    r= ec.get_rdf2jld_str(g)
+    return r
+
 #end-mknb2
 #open collection, of sparqlNB-query=q and an array of URNs for the datasets
 @app.route('/mkQ2/')  #qry&URN's come in an "[array,of,elts]"
