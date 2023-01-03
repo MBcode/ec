@@ -1454,10 +1454,20 @@ def get_rdf2nt_str(urn): #get graph
     return nt_str #use for get_rdf2jld _str
 
 def get_rdf2jld_str(urn):
-    nt_str= get_rdf2nt_str(urn)
+    "get jsonld from endpoint" #for get_graph_jld route
+    nt_str= get_rdf2nt_str(urn) #only strings no files
     g= nt_str2g(nt_str) #like nt2g
-    s=g.serialize(format="json-ld") #from nt2jld
-    return s
+    jld_str = g.serialize(format="json-ld") #from nt2jld
+    return compact_jld_str(jld_str)
+
+def compact_jld_str(jld_str):
+    from pyld import jsonld
+    import json
+    context = { "@vocab": "https://schema.org/"}
+    doc = json.loads(jld_str)
+    compacted = jsonld.compact(doc, context)
+    r = json.dumps(compacted, indent=2)
+    return r
 
 def get_rdf2nt(urn):
     "get and rdf2nt" #rdf2nt was getting around df's naming, will be glad to get away from that cache
