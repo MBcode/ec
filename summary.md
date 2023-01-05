@@ -29,5 +29,5 @@ U -- use_g_to_get_rdf --> B;
 
 
 
-## - ps. metadata from crawl/s, now easier to use
+## - ps. metadata from crawl/s, [now easier to use](https://github.com/MBcode/ec/blob/master/system.md)
 ### [runX](https://github.com/gleanerio/gleaner/issues/126) 'quads' could come from gleaner or extruct crawls, as they are not coupled to outside systems now
