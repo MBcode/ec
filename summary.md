@@ -28,3 +28,6 @@ U -- use_g_to_get_rdf --> B;
 ``` 
 
 
+
+## - ps. triples from a crawl/s
+### [runX](https://github.com/gleanerio/gleaner/issues/126) 'quads' could come from gleaner or extruct crawls, now
