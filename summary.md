@@ -15,8 +15,16 @@ tsum -- dump_ttl_triples --> T[repo_ttl];
 ## - 2:use for fast sparql on summary namespace
 ```mermaid
 flowchart TD;
-tsum -- dump_ttl_triples --> T[ttl per repo]  -- load --> B[blaze:summary namespace];;
+T[ttl per repo]  -- load --> B[blaze:summary namespace];
 search[ui/nb] -- 1:query --> B -- 2:return_same_facets --> search;
 ```
+  
+## - also: get RDF from endpoint
+### which gets rid of need for a duplicate cache
+```mermaid
+flowchart TD;
+B[blaze] -- query_ret_facets_incl_g --> U[ui/nb]; 
+U -- use_g_to_get_rdf --> B;
+``` 
 
 
