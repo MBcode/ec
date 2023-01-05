@@ -6,3 +6,4 @@ flowchart TD
 C[any_Crawler] -- outputs_quads/dataset --> S[search+match_system]
 ```
  
+### soon I will write about having the system that does the crawling, check it's (logs for) validation
