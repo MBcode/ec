@@ -79,6 +79,260 @@ def ld_jsonld_counts(repos=repos):
     return rd
 #_testing end
 
+#_testing: was@427
+#https://stackoverflow.com/questions/48647534/python-pandas-find-difference-between-two-data-frames
+def df_diff(df1,df2): #doesn't work as well as I would like in all situations, work on/fix/finish
+    import pandas as pd
+    if not is_df(df1):
+        print("df_diff:1st arg:wrong type:{df1}")
+        return pd.DataFrame() #False
+    if not is_df(df2):
+        print("df_diff:2nd arg:wrong type:{df2}")
+        return pd.DataFrame() #False
+    if dbg:
+        print(f'df_diff:{df1},{df2}')
+    return pd.concat([df1,df2]).drop_duplicates(keep=False)
+
+def diff_sd(fn1,fn2):
+    "df_diff 2 space delimited files"
+    df1=read_sd(fn1)
+    df2=read_sd(fn2)
+    dfdiff=df_diff(df1,df2)
+    if dfdiff.empty:
+        return True
+    else:
+        return dfdiff
+
+def diff_flat_json(fn1,fn2):
+    "df_diff 2 space delimited files"
+    df1=read_json(fn1)
+    df2=read_json(fn2)
+    return df_diff(df1,df2) #or skip for:
+
+def get_json_eq(fn1,fn2):
+    print(f'get_json_eq:{fn1},{fn2}') #dbg
+    d1=read_json(fn1)
+    d2=read_json(fn2)
+    if not d1:
+        print("d1 missing")
+    if not d2:
+        print("d2 missing")
+    return d1 == d2
+
+def get_json_diff(fn1,fn2):
+    d1=read_json(fn1)
+    d2=read_json(fn2)
+    #(https://pypi.org/project/deepdiff/)  or (https://dictdiffer.readthedocs.io/en/latest/)
+    return d1 == d2 #finish, as will have to install in NBs too
+
+#def list_diff(li1,li2):
+def list_diff_not_in(li1,li2):
+    "those in l1 not in l2"
+    s = set(li2)
+    return [x for x in li1 if x not in s]
+#>>> list_diff_not_in(["a","b","c"],["a","b"])
+#['c']
+def list_diff_dropoff(li1,li2):
+    ldiff= list_diff_not_in(li1,li2)
+    #print(f'li1={li1}')
+    #print(f'li2={li2}')
+    #print(f'ldiff={ldiff}')
+    return ldiff
+    #return list_diff_not_in(li1,li2)
+
+#testing cmp w/gold-stnd should now comes from github 
+ #also can send alt bucket ..., now citesting, but be able to set: testing_bucket
+#now endpoint loaded from ld-cache to work out mechanics of these fncs, 
+ #will get from live workflow one we are sure it will be up during testing ;can be reset from script
+
+def find_urn_diffs(endpoint="http://ideational.ddns.net:3030/geocodes_demo_datasets/sparql", 
+        gold="https://raw.githubusercontent.com/earthcube/GeoCODES-Metadata/mb_sample/metadata/Dataset/standard/milled/geocodes_demo_datasets/URNs.txt"):
+       #gold="https://raw.githubusercontent.com/MBcode/ec/master/test/standard/milled/geocodes_demo_datasets/URNs.txt"):
+    "get_graphs_list and saved gold-list, and diff" #~do a set diff
+    print("in find_urn_diffs,read_sd gold")
+    #df_gold=read_sd(gold)
+    df_gold=read_file(gold,".txt")
+    print(f'gold:{df_gold}')
+    #get_graphs w/convience gives list
+    #return df_diff(df_gold, )
+    global testing_endpoint
+    if endpoint == testing_endpoint:
+        test_endpoint=endpoint
+    else: #use global so can set by script
+        test_endpoint=testing_endpoint
+    #test_list=get_graphs_list(test_endpoint)
+    test_list=get_graphs_tails(test_endpoint)
+    print(f'test:{test_list}')
+    gold_list=df_gold['g'].tolist()
+    print(f'gold:{gold_list}')
+    tl=len(test_list)
+    tg=len(gold_list)
+    print(f'got:{tl},expected:{tg}') #consider also listing sitmap counts
+    #return list_diff(test_list,gold_list)
+    return list_diff_not_in(gold_list,test_list)
+
+#if have url for gold-stnd bucket, and have missing urn
+#milled_bucket="" #either the test milled, or from production then from diff buckets, ;still missing URNs from end2end start it off
+
+#check_urn_ rdf|jsonld look up from LD-cache of latest run, and compare w/gold-stnd in github
+  #tested separately, &ok on 1st pass;  ret True if ok=the same as gold-stnd
+  #if the file was not there, might send whole file back as diff, or fail/check, but would like it2say not there/finish
+   #might also call from spot_crawl_dropoff, which would already know that the file was there for sure
+
+def check_urn_rdf(urn,
+        test_bucket="https://oss.geocodes-dev.earthcube.org/citesting/milled/geocodes_demo_datasets/",
+        gold="https://raw.githubusercontent.com/earthcube/GeoCODES-Metadata/mb_sample/metadata/Dataset/standard/milled/geocodes_demo_datasets/"):
+       #gold="https://raw.githubusercontent.com/MBcode/ec/master/test/standard/milled/geocodes_demo_datasets/"):
+    "check a URNs milled-rdf diff btw urls for current+gold-stnd buckets"
+    import pandas as pd
+    #gold_rdf=f'{test_bucket}{urn}.rdf' #test_rdf=f'{milled_bucket}{urn}.rdf'
+    gold_rdf=f'{gold}{urn}.rdf'
+    test_rdf=f'{test_bucket}{urn}.rdf'
+    #could blabel_l them both if need be
+    #df_gold=pd.read_csv(gold_rdf)
+    #df_test=pd.read_csv(test_rdf)
+    #return df_diff(df_gold,df_test)
+    return diff_sd(gold_rdf,test_rdf) #the read should skip the header
+
+def check_urn_jsonld(urn,
+     #test_bucket="https://oss.geocodes-dev.earthcube.org/citesting/summoned/geocodes_demo_datasets/", ;use testing_bucket fix
+                     #test_bucket="https://oss.geocodes-dev.earthcube.org/test3/summoned/geocodes_demo_datasets/",
+        test_bucket=f'https://oss.geocodes-dev.earthcube.org/{testing_bucket}/summoned/geocodes_demo_datasets/',
+        gold="https://raw.githubusercontent.com/earthcube/GeoCODES-Metadata/mb_sample/metadata/Dataset/standard/summoned/geocodes_demo_datasets/"):
+       #gold="https://raw.githubusercontent.com/MBcode/ec/master/test/standard/summoned/geocodes_demo_datasets/"):
+    "check a URNs summonded-jsonld diff btw urls for current+gold-stnd buckets"
+    #rm urn: if necessary
+    gold_rdf=f'{gold}{urn}.jsonld'
+    test_rdf=f'{test_bucket}{urn}.jsonld'
+    print(f'check_urn_jsonld:{urn}')
+    #return diff_sd(gold_rdf,test_rdf)
+    #return diff_flat_json(gold_rdf,test_rdf)
+    return get_json_eq(gold_rdf,test_rdf) #if not= then use dict-diff lib to show the diffs
+
+#might make a check_urn_ld_cache(urn,bucket=,test_set=,test_base=): #and it knows summoned .jsonld, milled .rdf
+def check_urn_ld_cache(urn,bucket="citesting",test_set="geocodes_demo_datasets",test_base="https://oss.geocodes-dev.earthcube.org/"):
+    "given URN, compare latest run LD_cache with gold-std" #check_urn_ fncs hold default gold url
+    global testing_bucket
+    if(testing_bucket != "citesting"): #to change test_bucket ...
+        test_bucket=test_bucket.replace("citesting",testing_bucket)
+    else:
+        test_bucket=bucket
+    test_rdf=f'{test_base}{test_bucket}/milled/{test_set}/' #{urn}.rdf added later
+    print(f'new rdf:{test_rdf}')
+    #rdf_check= list(check_urn_rdf(urn,test_rdf)) #bool not iterable
+    rdf_check= check_urn_rdf(urn,test_rdf)
+    test_jsonld=f'{test_base}{test_bucket}/summoned/{test_set}/' #{urn}.jsonld added later
+    print(f'new jsonld:{test_jsonld}')
+    jsonld_check= check_urn_jsonld(urn,test_jsonld) 
+    #return rdf_check.append(jsonld_check) #mapping over these, they would come back in pairs
+    return rdf_check, jsonld_check 
+
+#endpoint loaded like nabu, to work on all this functionality, then can make sure it keeps it up like the ld-cache
+def get_urn_diffs(endpoint="http://ideational.ddns.net:3030/geocodes_demo_datasets/sparql", 
+        gold="https://raw.githubusercontent.com/earthcube/GeoCODES-Metadata/mb_sample/metadata/Dataset/standard/milled/geocodes_demo_datasets/"):
+       #gold="https://raw.githubusercontent.com/MBcode/ec/master/test/standard/milled/geocodes_demo_datasets/"):
+    "see which URN/graphs are in endpoint, and compare with expected"
+    gold_URNs= gold + "URNs.txt"
+    print(f'find_urn_diffs:{endpoint},{gold_URNs}')
+    dfu=find_urn_diffs(endpoint,gold_URNs)
+    return dfu
+
+#spot_ crawl_dropoff below, will use new LD_cache_ .. files and call these helper functions in the end
+ #non spot will still need integrity checks like in original ingestTesting.md &some shacl
+
+#'validation'  ;check consituent fncs before switch over to this one
+def check_urn_diffs(endpoint="http://ideational.ddns.net:3030/geocodes_demo_datasets/sparql", 
+        test_bucket="https://oss.geocodes-dev.earthcube.org/citesting/milled/geocodes_demo_datasets/",
+        gold="https://raw.githubusercontent.com/earthcube/GeoCODES-Metadata/mb_sample/metadata/Dataset/standard/milled/geocodes_demo_datasets/"):
+       #gold="https://raw.githubusercontent.com/MBcode/ec/master/test/standard/milled/geocodes_demo_datasets/"):
+       "looks at endpoint for missing URNs, then check LD-cache for each"
+       dfu=get_urn_diffs(endpoint,gold)
+       #ld_checks= list(map(lambda urn: check_urn_ld_cache(urn,test_bucket),dfu)) #could send more or less:
+       ld_checks= list(map(check_urn_ld_cache,dfu))
+       return ld_checks
+#vs
+#'validation'
+def check_urn_diffs_(endpoint="http://ideational.ddns.net:3030/geocodes_demo_datasets/sparql", 
+        test_bucket="https://oss.geocodes-dev.earthcube.org/citesting/milled/geocodes_demo_datasets/",
+        gold="https://raw.githubusercontent.com/earthcube/GeoCODES-Metadata/mb_sample/metadata/Dataset/standard/milled/geocodes_demo_datasets/"):
+       #gold="https://raw.githubusercontent.com/MBcode/ec/master/test/standard/milled/geocodes_demo_datasets/"):
+    "find_urn_diffs and for each missing check_urn_rdf|jsonld" #get_graphs diff w/expected URNs, then check each missing
+    gold_URNs= gold + "URNs.txt"
+    print(f'find_urn_diffs:{endpoint},{gold_URNs}')
+    dfu=find_urn_diffs(endpoint,gold_URNs)
+    #dfu=find_urn_diffs(endpoint) #use it's default for a bit, bc read_sd prob w/github raw right now ;change2 read_file
+    global testing_bucket
+    if(testing_bucket != "citesting"): #to change test_bucket ...
+        use_test_bucket=test_bucket.replace("citesting",testing_bucket)
+        print(f'need2setup2pass changed test_bucket:{use_test_bucket}')
+        #maybe have test_ url made of test_base + bucket + (summonde4.jsonld,milled4.rdf) + test_set
+        test_base="https://oss.geocodes-dev.earthcube.org/"
+        test_set="geocodes_demo_datasets" #could set this as a global as well
+        test_rdf=f'{test_base}{use_test_bucket}/milled/{test_set}/'
+        print(f'new rdf:{test_rdf}')
+        test_jsonld=f'{test_base}{use_test_bucket}/summoned/{test_set}/'
+        print(f'new jsonld:{test_jsonld}')
+        #rdf_checks= list(map(lambda urn: check_urn_rdf(urn,endpoint,rdf_checks),dfu))
+        rdf_checks= list(map(lambda urn: check_urn_rdf(urn,test_rdf),dfu))
+        #jsonld_checks= list(map(lambda urn: check_urn_jsonld(urn,endpoint,jsonld_checks),dfu)) 
+        jsonld_checks= list(map(lambda urn: check_urn_jsonld(urn,test_jsonld),dfu)) 
+    else: # the other way   #got similar output w/missing bucket,so needs more test situations/closer look
+        #will need lambdas if want to pass any change to the defaults on
+        print(f'check_urn_rdf of:{dfu}')
+        rdf_checks= list(map(check_urn_rdf,dfu))
+        jsonld_checks= list(map(check_urn_jsonld,dfu)) #could do after, only if a problem, or just check them all now
+        print(f'get:{rdf_checks}')
+    return rdf_checks.append(jsonld_checks) 
+    #return rdf_checks #test the check fncs w/any (array of) URNs that exist
+
+#=merge using:
+def merge_dict_list(d1,d2):
+    from collections import defaultdict
+    dd = defaultdict(list)
+    for d in (d1, d2): # you can list as many input dicts as you want here
+        for key, value in d.items():
+            dd[key].append(value)
+    return dd
+
+def repos2counts(repos):
+    "from cached sitemaps,etc"
+    repo_df_loc={}
+    for repo in repos:
+        repo_df_loc[repo]=repo2site_loc_df(repo)
+    repo_counts={}
+    #for repo in repos:
+    for repo in repo_df_loc:
+        repo_counts[repo]=len(repo_df_loc[repo])
+    #for now on ld-cache-counts:
+    repo_ld_counts={}
+    repo_fnum=wget2("http://geocodes.ddns.net/ec/test/repo_fnum.txt","summoned.txt")
+    repo_fnum_list=repo_fnum.split('\n')
+    for repo_num in repo_fnum_list:
+        repo_num_list=repo_num.split(' ')
+        if len(repo_num_list)>1:
+            #print(repo_num_list)
+            repo_=repo_num_list[0]
+            fnum=repo_num_list[1]
+            rl=repo_.split('/')
+            if len(rl)>2:
+                #print(rl)
+                rn=rl[2]
+                repo_ld_counts[rn]=fnum
+    #for now on final-counts: #next from graph.csv and run system cmd on it,then strip extra spaces
+    repoCounts=wget2("http://geocodes.ddns.net/ec/test/graph_counts.txt","graph.txt")
+    final_counts={}
+    rl2_list=repoCounts.split('\n')
+    for  rl2 in rl2_list:
+        num_repo=rl2.split(' ')
+        if len(num_repo)>1:
+            #print(num_repo)
+            count=num_repo[0]
+            repo=num_repo[1].lstrip('milled:').lstrip('summoned:') #in case either
+            final_counts[repo]=count
+    return repo_counts,repo_ld_counts,final_counts,      repo_df_loc 
+#_testing end
+
+
 #_testing was@994
 def setup_s3fs(): #do this by hand for now
     #cs='pip install s3fs' #assume done rarely, once/session 
