@@ -1,3 +1,5 @@
+As soon as we clean up the [[system][https://github.com/MBcode/ec/blob/master/system.md]] connetions, we can use this below again as well
+
 crawlLD extruct js/onLD, then checkSite on sitemap updates and ld2nt conversion
 [[flow.svg]]
 More on ETL for annotaions soon
