@@ -1,6 +1,6 @@
 ** metadata-search of Dataset/resources
 *** moving from geocodes to [[https://github.com/MBcode/dc][decoder]] soon
-**** Flow is: [[https://github.com/MBcode/ec/blob/master/crawl/get.md][get]] quads/repo from [[https://github.com/MBcode/ec/tree/master/crawl][crawl]] then [[https://github.com/MBcode/ec/blob/master/summary.md][summarize]] for fast search and more
+**** Flow is: [[https://github.com/MBcode/ec/blob/master/crawl/get.md][get]] quads/repo from [[https://github.com/MBcode/ec/tree/master/crawl][crawl]] then [[https://github.com/MBcode/ec/tree/master/summary][summarize]] for fast search and more
 *** New: [[https://mbcode.github.io/ec/][github-pages]]
 *** started with:
 crawl of embedded metadata for each of their landing pages, and search in a triplestore
@@ -14,9 +14,11 @@ use of the search-API adaptor is being expanded in ./search
 SPARQL/etc as we transition back to triplestore and what we can do w/it
 *** Prep
 Parts will soon be put in: https://github.com/earthcube/earthcube-utilities
-*** [[http://mbobak-ofc.ncsa.illinois.edu/about.htm][diagram]]:
+*** [[http://mbobak-ofc.ncsa.illinois.edu/about.htm][diagram]]: from the 1st system/s
 w/[[links.txt][links]] embedded in it
 [[ec.svg]]w/[[https://github.com/MBcode/ec/blob/master/crawl/readme.org][update]]
 *** work going right into [[https://alpha.geocodes.earthcube.org/][α]] [[https://beta.geocodes.earthcube.org/][β]] and [[https://geocodes.earthcube.org/][production]]
 https://github.com/earthcube/geodexui now also here in geodexUI, test ./NoteBook launching
+*** 2yrs on, we have a node based [[https://github.com/earthcube/facetsearch]] w/similar ability
+though with upcoming [[system][https://github.com/MBcode/ec/blob/master/system.md]] changes that should allow reuse of some of this work, and let us get back to https://github.com/MBcode/ec/blob/master/crawl/etl.svg fixes and much more
 *** Recent [[http://isda.ncsa.uiuc.edu/~mbobak/sd/][talk]] about the work
