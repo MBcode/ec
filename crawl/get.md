@@ -2,4 +2,4 @@
 #### so it can get loaded in a triplestore for search and matching
 
 Once we can get the ui to use the LD from the store, 
-then we can use crawls from anyplace, eg. from here again
+[then](https://github.com/MBcode/ec/blob/master/system.md) we can use crawls from anyplace, eg. from here again
