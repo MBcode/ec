@@ -1,4 +1,4 @@
-As soon as we clean up the [[system][https://github.com/MBcode/ec/blob/master/system.md]] connetions, we can use this below again as well
+As soon as we clean up the [[https://github.com/MBcode/ec/blob/master/system.md][system]] connetions, we can use this below again as well, to [[get.md][get]] the output of a crawl and use it
 
 crawlLD extruct js/onLD, then checkSite on sitemap updates and ld2nt conversion
 [[flow.svg]]
