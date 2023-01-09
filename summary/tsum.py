@@ -66,8 +66,8 @@ import ec
 #column names:
 # "subj" , "g" , "resourceType" , "name" , "description" , "pubname" , "placenames" , "kw" , "datep" ,
 #next time just get a mapping file/have qry w/so keywords as much a possilbe
-dbg=True
-#dbg=False
+#dbg=True
+dbg=False
 
 def summaryDF2ttl(df):
     urns = {}
