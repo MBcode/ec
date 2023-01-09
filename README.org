@@ -1,4 +1,6 @@
 ** metadata-search of Dataset/resources
+*** moving from geocodes to [[https://github.com/MBcode/dc][decoder]] soon
+**** Flow is: [[https://github.com/MBcode/ec/blob/master/crawl/get.md][get]] quads/repo from [[https://github.com/MBcode/ec/tree/master/crawl][crawl]] then [[https://github.com/MBcode/ec/blob/master/summary.md][summarize]] for fast search and more
 *** New: [[https://mbcode.github.io/ec/][github-pages]]
 *** started with:
 crawl of embedded metadata for each of their landing pages, and search in a triplestore
