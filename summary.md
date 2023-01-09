@@ -1,6 +1,6 @@
 ## - 1:make summary triples
 
-#### prereq: [get](https://github.com/MBcode/ec/blob/master/crawl/get.md)/have quads/repo to
+#### prereq: [get](https://github.com/MBcode/ec/blob/master/crawl/get.md)/(& [soon](system.md) also [have](https://github.com/MBcode/ec/tree/master/crawl)) quads/repo to
 ### [summarize_repo.sh](https://github.com/MBcode/ec/blob/master/summarize_repo.sh) runs:
 #### [fnq.py](https://github.com/MBcode/ec/blob/master/fnq.py) on a repo, to load the quads into repo namespace in fuseki
 #### [tsum.py](https://github.com/MBcode/ec/blob/master/tsum.py) for repo, to read that namespace and dump summary ttl triples
