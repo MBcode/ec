@@ -1,5 +1,6 @@
 ## - 1:make summary triples
 
+### getting crawl quads/repo and sumarizing to endpoint, in [one callgraph *here*](call.md)
 #### prereq: [get](https://github.com/MBcode/ec/blob/master/crawl/get.md)/(& [soon](https://github.com/MBcode/ec/blob/master/summary.md) also [have](https://github.com/MBcode/ec/tree/master/crawl)) quads/repo to
 ### [summarize_repo.sh](https://github.com/MBcode/ec/blob/master/summary/summarize_repo.sh) runs:
 #### [fnq.py](https://github.com/MBcode/ec/blob/master/summary/fnq.py) on a repo, to load the quads into repo namespace in fuseki
