@@ -2,6 +2,7 @@
 #mbobak summarize a nq file, for quick queries, and quad now as subj to point to graph-url
  #this is almost like nq2ttl, but is sumarizing via the qry
 import pandas as pd
+import os
 fn="iris.csv" #"xdomes.csv"
 #df=pd.read_csv(fn, comment='#') #not filling out well yet
 #df=pd.read_csv("s.csv") #head of summary.csv, from ec.py's get_summary("")
@@ -21,6 +22,11 @@ context = "@prefix : <https://schema.org/> ." #https for now
 #used this query on all of geodec using ec.py's get_summary and dumped to summary.csv
 #Nov  5 17:24 get_summary.txt -> get_summary_good.txt
 #still using txt file on my server right now instead
+port=3030
+ftsp=os.getenv('fuseki_tmp_summary_port')
+if ftsp:
+    print(f'changing port from {port} to {ftsp}')
+    port=ftsp
 qry="""
 prefix schema: <https://schema.org/>
 SELECT distinct ?subj ?g ?resourceType ?name ?description  ?pubname
@@ -164,7 +170,8 @@ def summaryDF2ttl(df):
 
 def get_summary4repo(repo):
     "so can call interactively to look at the df"
-    tmp_endpoint=f'http://localhost:3030/{repo}/sparql' #fnq repo
+    #tmp_endpoint=f'http://localhost:3030/{repo}/sparql' #fnq repo
+    tmp_endpoint=f'http://localhost:{port}/{repo}/sparql' #fnq repo
     print(f'try:{tmp_endpoint}') #if >repo.ttl, till prints, will have to rm this line &next2:
     ec.dflt_endpoint = tmp_endpoint
     df=ec.get_summary("")

@@ -10,6 +10,7 @@
 # _if do one repo at a time, and want to re-use the port, then, kill-all fuseki-server before running it
 #try a py fnc, to add to tsum.py, that would do above, or w/just the os call, could be in it's own fnq.py 
 import os
+port=3030
 #from ec.py
 def os_system(cs):
     "run w/o needing ret value"
@@ -62,13 +63,23 @@ def kill_fuseki():
 def run_fuseki(repo):
     kill_fuseki() #vs a new port
     print(f'will start fuseki-server, for:{repo}') #no nohup as it's temporary
-    os_system(f'fuseki-server --file {repo}.nq /{repo} &')
+    if port==3030:
+        os_system(f'fuseki-server --file {repo}.nq /{repo} &')
+    else:
+        print(f'running with port={port}')
+        os_system(f'fuseki-server --port {port} --file {repo}.nq /{repo} &')
+
 
 if __name__ == '__main__':
     import sys
     if(len(sys.argv)>1):
         repo = sys.argv[1]
-        tmp_endpoint=f'http://localhost:3030/{repo}/sparql' #fnq repo
+        ftsp=os.getenv('fuseki_tmp_summary_port')
+        if ftsp:
+            print(f'changing port from {port} to {ftsp}')
+            port=ftsp
+        #tmp_endpoint=f'http://localhost:3030/{repo}/sparql' #fnq repo
+        tmp_endpoint=f'http://localhost:{port}/{repo}/sparql' #fnq repo
         print(f'try:{tmp_endpoint}') #if >repo.ttl, till prints, will have to rm this line &next2:
         #next3lines from tsum.py, _but_
         #ec.dflt_endpoint = tmp_endpoint
