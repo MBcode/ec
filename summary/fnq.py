@@ -29,6 +29,13 @@ def is_str(v):
 def is_list(v):
     return type(v) is list
 
+# start adding more utils, can use to: fn=read_file.path_leaf(url) then: !head fn
+def path_leaf(path):
+    "everything after the last /"
+    import ntpath
+
+    head, tail = ntpath.split(path)
+    return tail or ntpath.basename(head)
 #=
 
 def ps_fuseki():
@@ -73,7 +80,8 @@ def run_fuseki(repo):
 if __name__ == '__main__':
     import sys
     if(len(sys.argv)>1):
-        repo = sys.argv[1]
+        repo_ = sys.argv[1] #start of if repo was the end of a path
+        repo=path_leaf(repo_) #but for now expect repo.nq around so it can make the repo.ttl summary
         ftsp=os.getenv('fuseki_tmp_summary_port')
         if ftsp:
             print(f'changing port from {port} to {ftsp}')
