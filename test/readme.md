@@ -1,3 +1,6 @@
+## [decoder](https://github.com/MBcode/dc) update: 
+#### testing utils broken out from main, but hopefully as we generalize where we get our search metadata from, and how we use it[*.](https://github.com/earthcube/ec/blob/master/system.md) Then the testing can be done closer to whichever process is providing the metadata (even from internal tests/system logs/..)
+
 # From [ingestTesting.md](https://github.com/MBcode/ec/blob/master/test/ingestTesting.md) now split out and focusing on [testing.md](testing.md) 
 ### These .md version derived from [.ipynb](ingesttesting.ipynb) version, with a focus on documentation only, and adding diagrams
 
