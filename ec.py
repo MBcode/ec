@@ -3,6 +3,7 @@
 #=this is also at gitlab now, but won't get autoloaded until in github or allow for gitlab_repo
  #but for cutting edge can just get the file from the test server, so can use: get_ec()
 dbg=None #can use w/logging as well soon, once there is more need&time
+#mbobak.ncsa.illinois.edu links should go to github soon
 f_nt=None #the .nt file last downloaded
 rdf_inited,rdflib_inited,sparql_inited=None,None,None
 endpoint=None
@@ -353,7 +354,7 @@ def pre_rm(url):
     os_system(cs)
     return fnb
 
-def get_ec(url="http://geocodes.ddns.net/ec/nb/ec.py"):
+def get_ec(url="http://mbobak.ncsa.illinois.edu/ec/nb/ec.py"):
     pre_rm(url)
     wget(url)
     return "import ec"
@@ -650,7 +651,7 @@ def repos2counts(repos):
         repo_counts[repo]=len(repo_df_loc[repo])
     #for now on ld-cache-counts:
     repo_ld_counts={}
-    repo_fnum=wget2("http://geocodes.ddns.net/ec/test/repo_fnum.txt","summoned.txt")
+    repo_fnum=wget2("http://mbobak.ncsa.illinois.edu/ec/test/repo_fnum.txt","summoned.txt")
     repo_fnum_list=repo_fnum.split('\n')
     for repo_num in repo_fnum_list:
         repo_num_list=repo_num.split(' ')
@@ -664,7 +665,7 @@ def repos2counts(repos):
                 rn=rl[2]
                 repo_ld_counts[rn]=fnum
     #for now on final-counts: #next from graph.csv and run system cmd on it,then strip extra spaces
-    repoCounts=wget2("http://geocodes.ddns.net/ec/test/graph_counts.txt","graph.txt")
+    repoCounts=wget2("http://mbobak.ncsa.illinois.edu/ec/test/graph_counts.txt","graph.txt")
     final_counts={}
     rl2_list=repoCounts.split('\n')
     for  rl2 in rl2_list:
@@ -704,7 +705,7 @@ def install_fuseki(url="https://dlcdn.apache.org/jena/binaries/apache-jena-fusek
 def install_any23(url="https://dlcdn.apache.org/any23/2.7/apache-any23-cli-2.7.tar.gz"):
     return install_url(url)
 
-def setup_blabel(url="http://geocodes.ddns.net/ld/bn/blabel.jar"):
+def setup_blabel(url="http://mbobak.ncsa.illinois.edu/ld/bn/blabel.jar"):
     wget(url)
 
 def setup_j(jf=None):
@@ -766,17 +767,17 @@ def get_summary_query_txt(url="http://mbobak.ncsa.illinois.edu/ec/nb/sparql_blaz
  GROUP BY ?g ?pubname ?placenames ?kw ?datep ?disurl ?score ?name ?description  ?resourceType
          ORDER BY DESC(?score)"""
 
-def get_subj2urn_txt(url="http://geocodes.ddns.net/ec/nb/sparql_subj2urn.txt"):
+def get_subj2urn_txt(url="http://mbobak.ncsa.illinois.edu/ec/nb/sparql_subj2urn.txt"):
     #return get_ec_txt(url)
     return """prefix sschema: <https://schema.org/>
             SELECT distinct    ?g WHERE {
             graph ?g { <${g}> a schema:Dataset }}"""
 
-def get_graphs_txt(url="http://geocodes.ddns.net/ec/nb/sparql_graphs.txt"):
+def get_graphs_txt(url="http://mbobak.ncsa.illinois.edu/ec/nb/sparql_graphs.txt"):
     #return get_ec_txt(url)
     return "SELECT distinct ?g  WHERE {GRAPH ?g {?s ?p ?o}}"
 
-def get_graph_txt(url="http://geocodes.ddns.net/ec/nb/get_graph.txt"):
+def get_graph_txt(url="http://mbobak.ncsa.illinois.edu/ec/nb/get_graph.txt"):
     #return get_ec_txt(url)
     #return "SELECT distinct ?s ?p ?o  WHERE { graph ?g {?s ?p ?o} filter(?g = <${g}>)}"
     return "SELECT distinct ?s ?p ?o  WHERE { graph ?g {?s ?p ?o} filter(?g = <${q}>)}" #there will be a better way
@@ -784,7 +785,7 @@ def get_graph_txt(url="http://geocodes.ddns.net/ec/nb/get_graph.txt"):
     #consider ret CONSTRUCT from a direct match vs filter
     #I'm ok w/filter given the changing URNs taking a subset should still return something
 
-def get_summary_txt(url="http://geocodes.ddns.net/ec/nb/get_summary.txt"):
+def get_summary_txt(url="http://mbobak.ncsa.illinois.edu/ec/nb/get_summary.txt"):
     "this is to make a summary, not to do a qry on the summary"
     return get_ec_txt(url)
 
@@ -1132,7 +1133,7 @@ def sitemap_all_pages(url):
 
 def repo2site_loc_df(repo):
     "get df[loc] from repos sitemap" #use cached sitemap
-    base_url="http://geocodes.ddns.net/ec/crawl/sitemaps/"
+    base_url="http://mbobak.ncsa.illinois.edu/ec/crawl/sitemaps/"
     url=f'{base_url}{repo}.xml'
     return sitemap_all_pages(url)
 
@@ -1582,7 +1583,7 @@ def wget_rdf_(urn,viz=None):
             rdflib_viz(fn2) #.nt file #can work, but looks crowded now
         return read_rdf(f_nt)
     elif urn.startswith('/'):
-        url=urn.replace("/","http://geocodes.ddns.net/ld/",1).replace(".jsonld",".nt",1)
+        url=urn.replace("/","http://mbobak.ncsa.illinois.edu/ld/",1).replace(".jsonld",".nt",1)
         urlroot=path_leaf(url) #file w/o path
         #url += ".nt"
         cs= f'wget -a log {url}' 
@@ -3577,11 +3578,11 @@ def tsc(sitemap=None,bucket_url=None,endpoint="https://graph.geocodes-dev.earthc
         sitemap=sitemap_l
     if not sitemap:
         print("did not get sitemap from prov so go w/deflt")
-        sitemap="http://geocodes.ddns.net/ec/test/sep/sitemap.xml"
+        sitemap="http://mbobak.ncsa.illinois.edu/ec/test/sep/sitemap.xml"
     print(f'=sitemap:{sitemap}')
     return spot_crawl_dropoff(sitemap,bucket_url,endpoint)
 
-def tsc2__(sitemap2="http://geocodes.ddns.net/ec/test/sitemap.xml",bucket_url2=None,endpoint2=None):
+def tsc2__(sitemap2="http://mbobak.ncsa.illinois.edu/ec/test/sitemap.xml",bucket_url2=None,endpoint2=None):
     "same test but send in sitemap vs get it from prov"
     tsc(sitemap=sitemap2,bucket_url=bucket_url2,endpoint=endpoint2)
 #old get rid of

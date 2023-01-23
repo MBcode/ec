@@ -39,8 +39,8 @@ SELECT distinct ?subj ?g ?resourceType ?name ?description  ?pubname
              ?subj schema:description ?description .
             Minus {?subj a schema:ResearchProject } .
             Minus {?subj a schema:Person } .
- BIND (IF (exists {?subj a schema:Dataset .} ||exists{?subj a schema:DataCatalog .} , "data", "tool")
-   AS ?resourceType).
+ #BIND (IF (exists {?subj a schema:Dataset .} ||exists{?subj a schema:DataCatalog .} , "data", "tool") AS ?resourceType).
+                   ?subj a ?resourceType .
             optional {?subj schema:distribution/schema:url|schema:subjectOf/schema:url ?url .}
             OPTIONAL {?subj schema:datePublished ?date_p .}
             OPTIONAL {?subj schema:publisher/schema:name|schema:sdPublisher|schema:provider/schema:name ?pub_name .}
@@ -92,7 +92,11 @@ def summaryDF2ttl(df):
         elif there: 
             #print(f'already:{there},so would break loop')
             continue #from loop
-        rt=row['resourceType']
+        #rt=row['resourceType']
+        rt_=row['resourceType']
+        rt=rt_.replace("https://schema.org/","")
+        if dbg:
+            print(f'rt:{rt}')
         name=json.dumps(row['name']) #check for NaN/fix
         if not name:
             name=f'""'
@@ -128,6 +132,8 @@ def summaryDF2ttl(df):
                     global repo
                     pubname=repo
         datep=row['datep']
+        if datep == "No datePublished":
+            datep=None
         placename=row['placenames']
         s=row['subj']
         print(" ")
@@ -147,7 +153,8 @@ def summaryDF2ttl(df):
         print(f'        :keywords {kw} ;')
         print(f'        :publisher "{pubname}" ;')
         print(f'        :place "{placename}" ;')
-        print(f'        :date "{datep}" ;') #might be: "No datePublished" ;should change in qry, for dv's lack of checking
+        if datep:
+            print(f'        :date "{datep}" ;') #might be: "No datePublished" ;should change in qry, for dv's lack of checking
         print(f'        :subjectOf <{s}> .')
         #du= row.get("disurl") #not seeing yet
         du= row.get('url') # check now/not yet
