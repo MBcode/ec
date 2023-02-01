@@ -22,8 +22,10 @@ context = "@prefix : <https://schema.org/> ." #https for now
 #used this query on all of geodec using ec.py's get_summary and dumped to summary.csv
 #Nov  5 17:24 get_summary.txt -> get_summary_good.txt
 #still using txt file on my server right now instead
+#=port setup for fuseki, but might now also do 1st one shot from blaze on 9999; ~as above
 port=3030
-ftsp=os.getenv('fuseki_tmp_summary_port')
+#ftsp=os.getenv('fuseki_tmp_summary_port')
+ftsp=os.getenv('tmp_summary_port') #if 9999 will use blaze
 if ftsp:
     print(f'changing port from {port} to {ftsp}')
     port=ftsp
@@ -76,6 +78,7 @@ import ec
 dbg=False
 
 def summaryDF2ttl(df):
+    "summarize sparql qry (or main quad store)s ret DataFrame, as triples in ttl format w/g as the new subj"
     urns = {}
     import json
     def is_str(v):
@@ -184,6 +187,16 @@ def get_summary4repo(repo):
     df=ec.get_summary("")
     return df
 
+def get_summary_from_namespace(namespace):
+    "so can call interactively to look at the df"
+    #if not run on local machine: 
+    #tmp_endpoint=f'https://graph.geocodes.ncsa.illinois.edu/{namespace}/sparql'
+    tmp_endpoint=f'http://localhost:9999/{namespace}/sparql' 
+    print(f'try:{tmp_endpoint}') 
+    ec.dflt_endpoint = tmp_endpoint
+    df=ec.get_summary("")
+
+
 if __name__ == '__main__':
     import sys
     if(len(sys.argv)>1):
@@ -192,5 +205,10 @@ if __name__ == '__main__':
         #print(f'try:{tmp_endpoint}') #if >repo.ttl, till prints, will have to rm this line &next2:
         #ec.dflt_endpoint = tmp_endpoint
         #df=ec.get_summary("")
-        df=get_summary4repo(repo)
+        if port==9999: #when: os.getenv('tmp_summary_port') #if 9999 will use blaze
+            df=get_summary_from_namespace(repo)
+        else:
+            df=get_summary4repo(repo)
         summaryDF2ttl(df)
+    else:
+        print("need to give repo to run, or if:tmp_summary_port=9999 a namespace for initial bulk load")
