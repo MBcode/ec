@@ -191,10 +191,13 @@ def get_summary_from_namespace(namespace):
     "so can call interactively to look at the df"
     #if not run on local(for now:ncsa)machine: 
     host=os.getenv('HOST') #checking against new store, for now
-    if host != "geocodes.ncsa.illinois.edu":
-        tmp_endpoint=f'https://graph.geocodes.ncsa.illinois.edu/{namespace}/sparql'
-    else: #even internally can have connection problems
-        tmp_endpoint=f'http://localhost:9999/{namespace}/sparql' 
+    print(f'host={host}')
+    tmp_endpoint=f'https://graph.geocodes.ncsa.illinois.edu/{namespace}/sparql'
+    #if host != "geocodes.ncsa.illinois.edu":
+    #    print("using external call") #but could do this locally as well
+    #    tmp_endpoint=f'https://graph.geocodes.ncsa.illinois.edu/{namespace}/sparql'
+    #else: #even internally can have connection problems
+    #    tmp_endpoint=f'http://localhost:9999/{namespace}/sparql' 
     print(f'try:{tmp_endpoint}') 
     ec.dflt_endpoint = tmp_endpoint
     df=ec.get_summary("")
@@ -208,9 +211,12 @@ if __name__ == '__main__':
         #print(f'try:{tmp_endpoint}') #if >repo.ttl, till prints, will have to rm this line &next2:
         #ec.dflt_endpoint = tmp_endpoint
         #df=ec.get_summary("")
-        if port==9999: #when: os.getenv('tmp_summary_port') #if 9999 will use blaze
+        print(f'port={port},arg1={repo}')
+        if port=="9999": #when: os.getenv('tmp_summary_port') #if 9999 will use blaze
+            print("bulk 1st load from blaze")
             df=get_summary_from_namespace(repo)
         else:
+            print("per repo through fuseki")
             df=get_summary4repo(repo)
         summaryDF2ttl(df)
     else:
