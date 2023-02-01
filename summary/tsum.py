@@ -189,9 +189,12 @@ def get_summary4repo(repo):
 
 def get_summary_from_namespace(namespace):
     "so can call interactively to look at the df"
-    #if not run on local machine: 
-    #tmp_endpoint=f'https://graph.geocodes.ncsa.illinois.edu/{namespace}/sparql'
-    tmp_endpoint=f'http://localhost:9999/{namespace}/sparql' 
+    #if not run on local(for now:ncsa)machine: 
+    host=os.getenv('HOST') #checking against new store, for now
+    if host != "geocodes.ncsa.illinois.edu":
+        tmp_endpoint=f'https://graph.geocodes.ncsa.illinois.edu/{namespace}/sparql'
+    else: #even internally can have connection problems
+        tmp_endpoint=f'http://localhost:9999/{namespace}/sparql' 
     print(f'try:{tmp_endpoint}') 
     ec.dflt_endpoint = tmp_endpoint
     df=ec.get_summary("")
