@@ -12,4 +12,6 @@ SR -- calls --> F2[2: tsum.py] -- produces --> RT(repo.ttl) -- ttl2blaze.sh --> 
 r2n -- produces --> nq(repo.nq) -- into_fuseki --> F1;
 ```
 
+#### there is a simplification of this, that would skip a server and just query a file, [here](https://github.com/MBcode/dc/blob/main/call-summary.md)
+
 as soon as the [system](https://github.com/MBcode/ec/blob/master/system.md) is made more modular, the repo.nq can come from my [crawl](https://github.com/MBcode/ec/tree/master/crawl) as well
