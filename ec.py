@@ -21,6 +21,8 @@ bucket_url=f'https://oss.geocodes-dev.earthcube.org/{testing_bucket}' #use in os
 testing_endpoint=f'http://ideational.ddns.net:3030/{repo_name}/sparql'
 #testing_endpoint="https://graph.geocodes-dev.earthcube.org/blazegraph/namespace/{besting_bucket}/sparql"
 gc1_minio = "https://oss.geocodes-1.earthcube.org/"
+ncsa_minio = "https://oss.geocodes.ncsa.illinois.edu/"
+#will be cleaning all these globals soon
 #_testing end
 first_endpoint = "https://graph.geodex.org/blazegraph/namespace/nabu/sparql"
 prod_endpoint = "https://graph.geocodes.earthcube.org/blazegraph/namespace/earthcube/sparql"
@@ -1085,7 +1087,8 @@ def oss_ls(path='test3/summoned',full_path=True,minio_endpoint_url="https://oss.
 #['test3/summoned/geocodes_demo_datasets/257108e0760f96ef7a480e1d357bcf8720cd11e4.jsonld', 'test3/summoned/geocodes_demo_datasets/261c022db9edea9e4fc025987f1826ee7a704f06.jsonld', 'test3/summoned/geocodes_demo_datasets/7435cba44745748adfe80192c389f77d66d0e909.jsonld', 'test3/summoned/geocodes_demo_datasets/9cf121358068c7e7f997de84fafc988083b72877.jsonld', 'test3/summoned/geocodes_demo_datasets/b2fb074695be7e40d5ad5d524d92bba32325249b.jsonld', 'test3/summoned/geocodes_demo_datasets/c752617ea91a725643d337a117bd13386eae3203.jsonld', 'test3/summoned/geocodes_demo_datasets/ce020471830dc75cb1639eae403a883f9072bb60.jsonld', 'test3/summoned/geocodes_demo_datasets/fcc47ef4c3b1d0429d00f6fb4be5e506a7a3b699.jsonld', 'test3/summoned/geocodes_demo_datasets/fe3c7c4f7ca08495b8962e079920c06676d5a166.jsonld']
 #>>> 
 
-def wget_oss_repo(repo=None,path="gleaner/milled",bucket=gc1_minio):
+#def wget_oss_repo(repo=None,path="gleaner/milled",bucket=gc1_minio):
+def wget_oss_repo(repo=None,path="gleaner/milled",bucket=ncsa_minio):
     "download all the rdf from a gleaner bucket"
     if not repo:
         global cwd  #I like having it go from the dirname, so files don't get mixed up
