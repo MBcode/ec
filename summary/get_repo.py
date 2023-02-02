@@ -21,7 +21,7 @@ def get_repo(repo):
         os.chdir(repo)
         cwd=os.getcwd()
         print(f'cd to: cwd={cwd} to get the repo={repo} to downloads files into')
-    ec.wget_oss_repo(repo) #test w/old bucket before getting a way to change it
+    ec.wget_oss_repo(repo) #defaults to bucket=ncsa_minio =https://oss.geocodes.ncsa.illinois.edu/
 
 
 if __name__ == '__main__':
