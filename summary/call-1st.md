@@ -5,8 +5,8 @@
 ```mermaid
 flowchart TD;
 SR[summarize_namespace.sh];
-SR -- calls --> F2[2: tsum.py] -- 2:produces --> RT(namespace.ttl) -- ttl2blaze.sh --> B[blaze's summary];
-F2 -- 1:queries --> BMN[blaze's big namespace];
+SR -- calls --> F2[2: tsum.py] -- 1:queries --> BMN[blaze's big namespace];
+F2 -- 2:produces --> RT(namespace.ttl) -- ttl2blaze.sh --> B[blaze's summary];
 ```
 
 ### after that we would go back to adding on a per repo basis, as see [here](call.md)
