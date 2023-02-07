@@ -2249,12 +2249,13 @@ def get_graphs_lon(repo=None,endpoint="http://ideational.ddns.net:3040/all/sparq
     return get_graphs_list(endpnt)
 
 #def get_graph_per_repo(grep="milled",endpoint=None,dump_file="graphs.csv"): #try w/(None, ncsa_endpoint)
-def get_graph_per_repo(grep="milled",endpoint="https://graph.geodex.org/blazegraph/namespace/earthcube/sparql",dump_file="graphs.csv"):
+#def get_graph_per_repo(grep="milled",endpoint="https://graph.geodex.org/blazegraph/namespace/earthcube/sparql",dump_file="graphs.csv"):
+def get_graph_per_repo(grep="milled",endpoint="https://graph.geocodes.ncsa.illinois.edu/blazegraph/namespace/earthcube/sparql",dump_file="graphs.csv"):
     "dump a file and sort|uniq -c out the repo counts"
     gl=get_graphs_list(endpoint,dump_file) #this needs full URN to get counts for the same 'repo:' s
     gn=len(gl)
     print(f'got:{gn} graphs')
-    if grep != "milled":
+    if grep != "milled": #used -f5- on latest&a few still off; shows the mess of dep on URN syntax
         cs=f"cut -d':' -f2- {dump_file} |cut -d'/' -f1 | sort | uniq -c |sort -n" #this is for my ld-cache
     else:
         cs=f"cut -d':' -f3,4 {dump_file} | grep milled | sort | uniq -c |sort -n" #this is for gleaner milled..
