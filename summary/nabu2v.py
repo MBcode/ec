@@ -1,12 +1,14 @@
-#!/bin/env python3
+#!/usr/bin/env python3
 #started as sh file, now  python ;M Bobak ;was going to call present sh files, but could do it all here
 #Expect namespaces have been made, and are empty, if not making an addition
 #this uploads the .ttl and .nq that we have from the summarization process, to https://graph.{$HOST}
 #can just give the version to upload that will be appended to the default namespaces 'summary'&'earthcube'
-#call: nabu-v.sh ""  ;the 1st time , and can use: nabu-v.sh 2  ;etc after as long as summary{$V} & earthcube{$V} exist
+#call: nabu-v.sh ""  ;the 1st time , and can use: nabu-v.sh 2  
+ #2 etc after/as long as summary{namespace_version} & earthcube{namespace_version} exist
 import sys
 import os
 dbg=False
+#dbg=True
 #import click #1st day, I'd like it just to call and fill them, so I can say search works/waiting2long4automation/s
 GRAPH_HOST = "https://geocodes.ncsa.illinois.edu"
 SUMMARY_V = "summary"
