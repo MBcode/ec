@@ -14,7 +14,8 @@ nabu2v -- uses --> nq2[nq2blaze.sh] -- loads --> nq;
 ttl2 -- into --> B[blaze_summary];
 nq2 -- into --> B[blaze_main];
 ```
+#### Since the runX fix has to make the main repo.nq files to create the repo.ttl summary, they are both available to upload in a sync'd manner
 
-#### there is a simplification of this, that would skip a server and just query a file, [here](https://github.com/MBcode/dc/blob/main/call-summary.md)
+##### there is a simplification of this, that would skip a server and just query a file, [here](https://github.com/MBcode/dc/blob/main/call-summary.md)
 
 as soon as the [system](https://github.com/MBcode/ec/blob/master/system.md) is made more modular, the repo.nq can come from my [crawl](https://github.com/MBcode/ec/tree/master/crawl) as well
