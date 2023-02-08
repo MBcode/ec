@@ -36,7 +36,8 @@ dev_https_endpoint="https://graph.geocodes-dev.earthcube.org/blazegraph/namespac
 gc1_endpoint = "https://graph.geocodes-1.earthcube.org/blazegraph/namespace/earthcube/sparql"
 #dflt_endpoint = ncsa_endpoint
 #dflt_endpoint = "https://graph.geodex.org/blazegraph/namespace/nabu/sparql"
-dflt_endpoint = gc1_endpoint
+#dflt_endpoint = gc1_endpoint #check for use w/summary namespace, get changes in clean dc.py 
+dflt_endpoint = "https://graph.geocodes.ncsa.illinois.edu/blazegraph/namespace/earthcube/sparql" #and summary
 summary_endpoint = dflt_endpoint.replace("earthcube","summary") #can't always just switch
 
 
