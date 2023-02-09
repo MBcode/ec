@@ -11,8 +11,8 @@ SR -- calls --> F2[2: tsum.py] -- produces --> RT(repo.ttl);
 r2n -- produces --> nq(repo.nq);
 nabu2v[nabu2v.py] -- uses --> ttl2[ttl2blaze.sh] -- loads --> RT;
 nabu2v -- uses --> nq2[nq2blaze.sh] -- loads --> nq; 
-ttl2 -- into --> B[blaze_summary];
-nq2 -- into --> B[blaze_main];
+ttl2 -- into --> Bs[blaze_summary];
+nq2 -- into --> Bm[blaze_main];
 ```
 #### Since the runX fix has to make the main repo.nq files to create the repo.ttl summary, they are both available to upload in a sync'd manner
 
