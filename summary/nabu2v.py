@@ -10,7 +10,7 @@ import os
 dbg=False
 #dbg=True
 #import click #1st day, I'd like it just to call and fill them, so I can say search works/waiting2long4automation/s
-GRAPH_HOST = "https://geocodes.ncsa.illinois.edu"
+GRAPH_HOST = "https://graph.geocodes.ncsa.illinois.edu"
 SUMMARY_V = "summary"
 BIG_V = "earthcube"
 print(f'default GRAPH_HOST= {GRAPH_HOST}, summary={SUMMARY_V}, main={BIG_V}')
@@ -36,16 +36,20 @@ def os_system_(cs):
 #get util fncs to get dir listings filtered by file type, and then do a requsts version of what shell file was doing
  #though for 1st shot could just call the upload shell files we have been using
 
+#tmp_endpoint=f'https://graph.geocodes.ncsa.illinois.edu/{namespace}/sparql'
+
 def ttl2blaze(endpoint=GRAPH_HOST, summary_namespace=SUMMARY_V):
     "end of summarization upload the triples"
-    cs=f'ttl2blaze.sh {endpoint}/blazegraph/namespace/{summary_namespace}/sparql'
+    #cs=f'ttl2blaze.sh {endpoint}/blazegraph/namespace/{summary_namespace}/sparql'
+    cs=f'ttl2blaze.sh {endpoint}/{summary_namespace}/sparql'
     print(f'will run: {cs}')
     if not dbg:
         os_system_(cs)
 
 def nq2blaze(endpoint=GRAPH_HOST, big_namespace=BIG_V):
     "also have quads from this, so can upload here too"
-    cs=f'nq2blaze.sh {endpoint}/blazegraph/namespace/{big_namespace}/sparql'
+    #cs=f'nq2blaze.sh {endpoint}/blazegraph/namespace/{big_namespace}/sparql'
+    cs=f'nq2blaze.sh {endpoint}/{big_namespace}/sparql'
     print(f'will run: {cs}')
     if not dbg:
         os_system_(cs)
