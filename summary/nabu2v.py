@@ -5,6 +5,7 @@
 #can just give the version to upload that will be appended to the default namespaces 'summary'&'earthcube'
 #call: nabu-v.sh ""  ;the 1st time , and can use: nabu-v.sh 2  
  #2 etc after/as long as summary{namespace_version} & earthcube{namespace_version} exist
+import logging
 import sys
 import os
 dbg=False
@@ -35,6 +36,8 @@ def os_system_(cs):
 
 #get util fncs to get dir listings filtered by file type, and then do a requsts version of what shell file was doing
  #though for 1st shot could just call the upload shell files we have been using
+ #will do this now, incl click agrparse, and py-logging ;will update nabu2v.md to show use of requests
+ #_could still allow upload of repo.nq to make sure sync'd w/summary.ttl, but go nabu can do that as well
 
 #tmp_endpoint=f'https://graph.geocodes.ncsa.illinois.edu/{namespace}/sparql'
 
