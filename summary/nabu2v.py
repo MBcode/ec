@@ -36,28 +36,76 @@ def os_system_(cs):
  #will do this now, incl click agrparse, and py-logging ;will update nabu2v.md to show use of requests
  #_could still allow upload of repo.nq to make sure sync'd w/summary.ttl, but go nabu can do that as well
 
+#get util fncs to get dir listings filtered by file type, and then do a requsts version of what shell file was doing
+#from ec.py
+def flatten(xss): #stackoverflow
+    "make list of lists into 1 flat list"
+    return [x for xs in xss for x in xs]
+
+def file_ext(fn):
+    "the ._part of the filename"
+    st=os.path.splitext(fn)
+    #log.info(f'fe:st={st}')
+    return st[-1]
+
+def collect_ext(l,ext):
+  return list(filter(lambda x: file_ext(x)==ext,l))
+  #return list(filter(lambda x: file_ext(x)==ext,flatten(l)))
+#>>> l=ls_()  ;dbg
+#>>> collect_ext(l,".ttl")
+#['earthchem.ttl', 'hydroshare.ttl', 'iedadata.ttl', 'iris.ttl', 'magic.ttl', 'opentopography.ttl', 'usap-dc.ttl']
+
+def ls(dir): #there are other py commands to do this
+    cs=f'ls {dir}'
+    return os_system_(cs)
+    
+def ls_(path="."):
+    lstr=ls(path)
+    return lstr.split("\n")
+
+#and some new/different from in utils
+#https://stackoverflow.com/questions/3207219/how-do-i-list-all-files-of-a-directory
+def ls_b(mypath="."):
+    "list files"
+    from os import listdir
+    from os.path import isfile, join
+    onlyfiles = [f for f in listdir(mypath) if isfile(join(mypath, f))]
+    return onlyfiles
+
+def ls_ext(dir=None,ext=None):
+    "file in . w/ext"
+    l=ls_()
+    log.debug(f'ls={len(l)}')
+    ret = collect_ext(l,ext)
+    log.debug(f'ls_ext={ret}')
+    return ret
+
 #tmp_endpoint=f'https://graph.geocodes.ncsa.illinois.edu/{namespace}/sparql'
+
+#other than getting rid of the scripts we used to use, want to:
+#https://github.com/blazegraph/database/wiki/REST_API#create-data-set
+#https://github.com/blazegraph/database/wiki/REST_API#destroy-data-set
+#maybe some from: https://github.com/blazegraph/blazegraph-python vs all by hand
 
 def ttl2blaze(endpoint=GRAPH_HOST, summary_namespace=SUMMARY_V):
     "end of summarization upload the triples"
-    #cs=f'ttl2blaze.sh {endpoint}/blazegraph/namespace/{summary_namespace}/sparql'
-    cs=f'ttl2blaze.sh {endpoint}/{summary_namespace}/sparql'
-    if not dbg:
-        os_system_(cs)
+    log.info(f'ttl2blaze using endpoint={endpoint}, summary_ns={summary_namespace}')
+    #cs=f'ttl2blaze.sh {endpoint}/{summary_namespace}/sparql'
+    #os_system_(cs)
+    cs=f'{endpoint}/{summary_namespace}/sparql'
+    l=ls_ext(".ttl")
+    log.debug(f'would upload {l} to summary namespace at {cs}')
 
 def nq2blaze(endpoint=GRAPH_HOST, big_namespace=BIG_V):
     "also have quads from this, so can upload here too"
-    #cs=f'nq2blaze.sh {endpoint}/blazegraph/namespace/{big_namespace}/sparql'
-    cs=f'nq2blaze.sh {endpoint}/{big_namespace}/sparql'
-    if not dbg:
-        os_system_(cs)
+    log.info(f'nq2blaze using endpoint={endpoint}, big_ns={big_namespace}')
+    #cs=f'nq2blaze.sh {endpoint}/{big_namespace}/sparql'
+    #os_system_(cs)
+    cs=f'{endpoint}/{big_namespace}/sparql'
+    l=ls_ext(".nq")
+    log.debug(f'would upload {l} as an option, to {cs}')
 
 #like kglab might: from icecream import ic 
-#@click.option('--endpoint',  help='url of triplestore we load to.')
-#@click.option('--endpoint', default=GRAPH_HOST, help='url of triplestore we load to.')
-#def nabu2v(endpoint=GRAPH_HOST, summary_namespace=SUMMARY_V, big_namespace=BIG_V):
-    #print(f'using GRAPH_HOST= {endpoint}, summary={summary_namespace}, main={big_namespace}')
-    #log.info(f'using GRAPH_HOST= {GRAPH_HOST}, summary={SUMMARY_V}, main={BIG_V}')
 @click.command()
 @click.option('--endpoint', default="https://graph.geocodes.ncsa.illinois.edu", help='url of triplestore we load to.')
 @click.option('--summary_namespace', default="summary", help='namespace repo.ttl is uploaded to')
@@ -72,14 +120,9 @@ def nabu2v(endpoint, summary_namespace, big_namespace, namespace_version):
     log.info(f'using endpoint={endpoint}, summary_ns={summary_namespace}, big_ns={big_namespace},v={namespace_version}')
     ttl2blaze(endpoint, summary_namespace) #rework/fix these
     nq2blaze(endpoint, big_namespace)
+    log.info(f'check {endpoint} to see if loaded')
     #ttl2blaze(endpoint, SUMMARY_V)
     #nq2blaze(endpoint, BIG_V)
 
 if __name__ == '__main__':
-#   #if(len(sys.argv)>1): #will go back to click once I see it work
-#   #    namespace_version= sys.argv[1]
-#   #    log.info(f'got {namespace_version} to append to namespaces')
-#   #    #global SUMMARY_V, BIG_V
-#   #    SUMMARY_V += namespace_version
-#   #    BIG_V += namespace_version
     nabu2v()
