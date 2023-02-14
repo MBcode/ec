@@ -12,6 +12,7 @@ R2S -- calls --> SR[2: summarize_repo.sh];
 SR -- calls --> F2[tsum.py] -- loads2tmp_blaze --> nq;
 F2 -- produces --> RT(2: repo.ttl) -- ttl2blaze.sh --> B[blazegraph];
 ```
+### more will drop away from this, but should probably still qa/check before upload
 
 #### there is a simplification of this, that would skip a server and just query a file, [here](https://github.com/MBcode/dc/blob/main/call-summary.md)
 
