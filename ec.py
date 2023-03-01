@@ -1335,6 +1335,9 @@ def urn2urls(urn): #from wget_rdf, replace w/this call soon
     if urn==None:
         return f'no-urn:{urn}'
     #if(urn!=None and urn.startswith('urn:')):
+    elif is_http(urn):
+        urlj=url.replace(".nt",".jsonld")
+        return urn, urlj
     elif urn.startswith('urn:'):
         #global f_nt
        #url=urn.replace(":","/").replace("urn","https://oss.geodex.org",1) #minio
@@ -1537,8 +1540,8 @@ def get_rdf2ttl(urn):
     #fn2=urn_leaf(urn) # + ".nt" 
     fn2=urn_leaf(urn)  + ".nt" 
     return nt2ttl(fn2)
-##
-def wget_rdf(urn,viz=None):
+##can only do this once mknb2 is running
+def wget_rdf_(urn,viz=None):
     "new version to get_rdf from the endpoint"
     if not viz:
         #if sparql_inited==None:
@@ -1549,7 +1552,7 @@ def wget_rdf(urn,viz=None):
     else:
         return wget_rdf_(urn,viz)
 #take urn2uri out of this, but have to return a few vars
-def wget_rdf_(urn,viz=None):
+def wget_rdf(urn,viz=None):
     "old version, still wget's from the urn" #as long as the mapping fnc does not change again
     if not viz:
         #if sparql_inited==None:
@@ -1560,6 +1563,14 @@ def wget_rdf_(urn,viz=None):
     if urn==None:
         return f'no-urn:{urn}'
     #if(urn!=None and urn.startswith('urn:')):
+    elif is_http(urn): #as it really should be, the URNs have been a mess
+        #global f_nt
+        cs= f'wget -a log {urn}' 
+        os_system(cs)
+        urlroot=path_leaf(urn) #file w/o path
+        rdf2nt(urlroot)
+        #return read_rdf(f_nt)
+        return read_rdf(urn)
     elif urn.startswith('urn:'):
         global f_nt
  #      url=urn.replace(":","/").replace("urn","https://oss.geodex.org",1)
