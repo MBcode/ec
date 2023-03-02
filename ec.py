@@ -3,6 +3,7 @@
 #=this is also at gitlab now, but won't get autoloaded until in github or allow for gitlab_repo
  #but for cutting edge can just get the file from the test server, so can use: get_ec()
 dbg=None #can use w/logging as well soon, once there is more need&time
+dbg=True
 #mbobak.ncsa.illinois.edu links should go to github soon
 f_nt=None #the .nt file last downloaded
 rdf_inited,rdflib_inited,sparql_inited=None,None,None
@@ -131,6 +132,9 @@ def is_str(v):
 
 def is_list(v):
     return type(v) is list
+
+def is_tuple(v):
+    return type(v) is tuple
 
 #pagemil parameterized colab/gist can get this code via:
 #with httpimport.github_repo('MBcode', 'ec'):   
@@ -1430,12 +1434,57 @@ def fix_url(url):
     #else:
     #    return url
 
-def df2nt(df,fn=None):
-    "print out df as .nt file"
+def spo_df2nt(df_,fn=None):
+    "print out spo df as .nt file"
+    if is_tuple(df_):
+        print("use df_ 0")
+        df=df_[0]
+    else:
+        df=df_
     import json
     nt_str=""
     if fn:
         put_txtfile(fn,"")
+    if dbg:
+        dft=type(df)
+        print(f'spo_df2nt:{df}')
+        print(f'dft={dft}')
+    #for row in df.rows():
+    for row in df:
+        #s=row['s']
+        s=row["s"]
+        s=fix_url(s)
+        p=row["p"]
+        p=fix_url(p)
+        o=row["o"]
+        o=fix_url(o)
+        if o=="NaN":
+            o=""
+        str3=f'{s} {p} {o} .\n'
+        if dbg:
+            print(str3)
+        #else:
+        nt_str += str3
+        if fn:
+            put_txtfile(fn,str3,"a")
+        #need to finish up w/dumping to a file
+    return df, nt_str
+
+#make name more specific, &fix above
+
+def df2nt(df_,fn=None):
+    "print out df as .nt file"
+    import json
+    if is_tuple(df_):
+        print("use df_ 0")
+        df=df_[0]
+    else:
+        df=df_
+    nt_str=""
+    if fn:
+        put_txtfile(fn,"")
+    if dbg:
+        print(f'df2nt:{df}')
     for index, row in df.iterrows():
         #s=row['s']
         s=df["s"][index]
@@ -1500,6 +1549,7 @@ def get_rdf2nt(urn):
     global f_nt
     f_nt = fn2
     return df2nt(df,fn2) #seems to work w/a test urn
+  # return spo_df2nt(df,fn2) #seems to work w/a test urn
     #return df2nt(df)
 ##
 #added warning bc saw eval'd params that still had urn as None, so re-ran it, and was ok
