@@ -1546,6 +1546,7 @@ def get_rdf2nt(urn):
         print(f'get_rdf2nt,warning,fn2:{fn2}, make sure to run the Parameters cell to get the urn')
         fn2=""
     fn2 = fn2 + ".nt"
+    fn2 = path_leaf(fn2) #was getting repo/file.nt
     global f_nt
     f_nt = fn2
     return df2nt(df,fn2) #seems to work w/a test urn
