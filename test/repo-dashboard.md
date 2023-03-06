@@ -23,3 +23,23 @@ Which is mostly in the utils that can be called by [spot_test.py](https://github
 
 ## want to reuse this for reporting
 ![oih dashboard](oih-dashboard.png)
+
+
+### can get sparklines in info [page](https://geocodes.ncsa.illinois.edu/#/about)
+
+#### count-droppoff numbers should go into the org info, so can be presented easily in the info-page
+
+[sitemap, summonded, graph]
+
+[13]
+import pygal
+chart = pygal.Line()
+chart.add('', [13221, 12902, 12484])
+chart.render_sparktext(relative_to=12484)
+█▄▁
+#### the info page could have this right next to the number that made it in the graph
+
+[14]
+chart.render_sparktext(relative_to=0)
+█▇▇
+#### workflow counts could be done in thirds, toptop=green, middle=yellow, bottom=red
