@@ -43,3 +43,6 @@ chart.render_sparktext(relative_to=12484)
 chart.render_sparktext(relative_to=0)
 █▇▇
 #### workflow counts could be done in thirds, toptop=green, middle=yellow, bottom=red
+
+
+##### numbers for example come from original [counts.md](https://github.com/earthcube/ec/blob/master/test/counts.md)
