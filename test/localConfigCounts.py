@@ -67,16 +67,22 @@ def parse_nabu(fn='nabu'):
     print(f'endpoint={endpoint}')
     return repos, endpoint
 
+
 def crawl_cfg2counts():
     "use crawl cfg to pull out counts: sitemaps+graph"
+    import ec
     repo2url = parse_localConfig()
     repos, endpoint = parse_nabu()
     #then map repo2url on repos -> sitemaps
-    for repo in repos:
-        url=repo2url[repo]
-        print(f'url={url}')
+    urls=list(map(lambda r: repo2url[r], repos))
+    print(f'urls={urls}')
     #map ec sitemap_counts over that -> output1 
+    sitemaps_count = ec.sitemaps_count(urls)
+    print(f'sitemaps_count={sitemaps_count}')
+    #sitemaps_count={'https://opentopography.org/sitemap.xml': 780, 'http://ds.iris.edu/files/sitemap.xml': 28, 'https://www.hydroshare.org/sitemap-resources.xml': 13932, 'http://get.iedadata.org/doi/xml-sitemap.php': 10099, 'https://www2.earthref.org/MagIC/contributions.sitemap.xml': 4332, 'https://ecl.earthchem.org/sitemap.xml': 650, 'https://www.usap-dc.org/view/dataset/sitemap.xml': 963}
     #ec graph_counts as 2nd part of final jina2/streamlit template
+    gpr=ec.get_graph_per_repo("milled",endpoint) #setting off/so fix
+    #next jina2/streamlit
 
 def t1():
     "test:could pass through lc&nabu file names if they change"
