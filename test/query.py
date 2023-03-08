@@ -11,6 +11,7 @@ def os_system_(cs):
    #add2log(cs)
     return s
 
+#everything below needs cleaning up, just using to get starting dashboarding going, then will clean
 
 ##get_  _txt   fncs:
 # are composed from the middle/variable word, and called in: v4qry
@@ -179,24 +180,20 @@ def get_graphs_list(endpoint=None,dump_file=None):
 #def get_graph_per_repo(grep="",endpoint="https://graph.geocodes.ncsa.illinois.edu/blazegraph/namespace/earthcube/sparql",dump_file="graphs.csv"):
 def get_graph_per_repo(grep="",endpoint="https://graph.geocodes.ncsa.illinois.edu/blazegraph/namespace/summary/sparql",dump_file="graphs.csv"):
     "dump a file and sort|uniq -c out the repo counts"
+    import pandas as pd
     gl=get_graphs_list(endpoint,dump_file) #this needs full URN to get counts for the same 'repo:' s
     #gl=summary_graphs()  #see if have2set the endpoint otherwise
     #gl.to_csv(dump_file) #from get_graphs_list
     gn=len(gl)
     print(f'got:{gn} graphs')
-    if grep != "milled": #used -f5- on latest&a few still off; shows the mess of dep on URN syntax
-      # cs=f"cut -d':' -f2- {dump_file} |cut -d'/' -f1 | sort | uniq -c |sort -n" #this is for my ld-cache
-        cs=f"cut -d',' -f2- {dump_file} | sed '/:LD:/s//:/' | cut -d':' -f4 | cut -d'/' -f1 | sort | uniq -c |sort -n" #for now
-        print(f'graph using:{cs}')
-    else:
-       #cs=f"cut -d':' -f3,4 {dump_file} | grep milled | sort | uniq -c |sort -n" #this is for gleaner milled..
-       #cs=f"cut -d',' -f2- graphs.csv | cut -d':' -f5 | cut -d'/' -f1 | sortucn|gred -v ' 1 '"
-       #cs=f"cut -d',' -f2- {dump_file} | cut -d':' -f5 | cut -d'/' -f1 | sortucn|gred -v '1 '"
-       #cs=f"cut -d',' -f2- {dump_file} | sed '/:LD:/s//:/' | cut -d':' -f4 | cut -d'/' -f1 | sortucn" #no aliases 
-        cs=f"cut -d',' -f2- {dump_file} | sed '/:LD:/s//:/' | cut -d':' -f4 | cut -d'/' -f1 | sort | uniq -c |sort -n" #for now
-        print(f'no graph using:{cs}')
-    return os_system_(cs)
-#===
+    #the milled/etc URN silliness should go away so have only one way to process here/for now
+   #cs=f"cut -d',' -f2- {dump_file} | sed '/:LD:/s//:/' | cut -d':' -f4 | cut -d'/' -f1 | sort | uniq -c |sort -n" #for now
+    cs=f"cut -d',' -f2- {dump_file}|sed '/:LD:/s//:/'|cut -d':' -f4|cut -d'/' -f1|sort|uniq -c|sort -n>counts.csv" #for now
+    #   print(f'no graph using:{cs}')
+    #return os_system_(cs)
+    cr_df=pd.read_csv("counts.csv",delimiter=" ", skipinitialspace=True)
+    return cr_df
+#===if I put above output to a counts.csv, I could just read_csv and use: df_cols2dict
 
 def search_query(q): #same as txt_query below
     return v4qry(q,"query")

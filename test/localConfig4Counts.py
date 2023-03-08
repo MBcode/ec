@@ -11,6 +11,15 @@ def path_leaf(path):
     head, tail = ntpath.split(path)
     return tail or ntpath.basename(head)
 
+#=merge using:
+def merge_dict_list(d1,d2):
+    from collections import defaultdict
+    dd = defaultdict(list)
+    for d in (d1, d2): # you can list as many input dicts as you want here
+        for key, value in d.items():
+            dd[key].append(value)
+    return dd
+
 # https://www.golinuxcloud.com/python-convert-yaml-file-to-dictionary/
 def yml2d(fn):
     "yml file to dict"
@@ -69,7 +78,6 @@ def parse_nabu(fn='nabu'):
     print(f'endpoint={endpoint}')
     return repos, endpoint
 
-
 def crawl_cfg2counts():
     "use crawl cfg to pull out counts: sitemaps+graph"
     import ec
@@ -80,17 +88,19 @@ def crawl_cfg2counts():
     urls=list(map(lambda r: repo2url[r], repos))
     print(f'urls={urls}')
     #map ec sitemap_counts over that -> output1 
-    if not cache:
+    if not cache: #need a version of this that is repo-name: num,  so can merge w/graph_per_repo dict
         sitemaps_count = ec.sitemaps_count(urls) #only ec fnc used, so will pull out
     else: #so don't have to pull each time we test
         sitemaps_count={'https://opentopography.org/sitemap.xml': 780, 'http://ds.iris.edu/files/sitemap.xml': 28, 'https://www.hydroshare.org/sitemap-resources.xml': 13932, 'http://get.iedadata.org/doi/xml-sitemap.php': 10099, 'https://www2.earthref.org/MagIC/contributions.sitemap.xml': 4332, 'https://ecl.earthchem.org/sitemap.xml': 650, 'https://www.usap-dc.org/view/dataset/sitemap.xml': 963}
-    print(f'sitemaps_count={sitemaps_count}')
+    print(f'sitemaps_count={sitemaps_count}') #need to get this usable by merge_dict_list
     #ec graph_counts as 2nd part of final jina2/streamlit template
     #gpr=ec.get_graph_per_repo("milled",endpoint) #setting off/so fix
-    #gpr=ec.get_graph_per_repo("",endpoint) #setting off/so fix
     print(f'q.get_graph_per_repo {endpoint}') 
     gpr=q.get_graph_per_repo("",endpoint) #setting off/so fix
-    print(f'gpr={gpr}')
+    print(f'gpr={gpr}') #get this into a dict, in rev order, now: 6084 hydroshare ...
+    rc_d=df_cols2dict(gpr,"g","1")
+    print(f'rc_d={rc_d}') #so this is useable w/merge_dict_list
+    #def repos2counts(repos): does some of this splitting the lines/etc
     #next jina2/streamlit
 
 def t1():
