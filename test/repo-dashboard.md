@@ -24,6 +24,8 @@ Which is mostly in the utils that can be called by [spot_test.py](https://github
 ## want to reuse this for reporting
 ![oih dashboard](oih-dashboard.png)
 
+#### should start with simple count drop off that is [in sync with crawl's cfg](localConfigCounts.py)
+
 
 ### can get sparklines in info [page](https://geocodes.ncsa.illinois.edu/#/about)
 
