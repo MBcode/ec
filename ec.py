@@ -1179,13 +1179,25 @@ def sitemap_len_(url):
     return len(pl)
 
 def sitemaps_count(sitemaps):
+    "send in urls, get url: count"
     sitemap_count = {}
     for sitemap in sitemaps:
         count=sitemap_len(sitemap)
         print(f'{sitemap} has {count} records')
         sitemap_count[sitemap]=count
     return sitemap_count
-
+#---
+def sitemaps_d_count(sitemaps_d):
+    "send in repo:url get back repo:count"
+    sitemap_count = {}
+    #for sitemap in sitemaps:
+    for repo,sitemap in sitemaps_d.items():
+        count=sitemap_len(sitemap)
+        print(f'{sitemap} has {count} records')
+        #sitemap_count[sitemap]=count
+        sitemap_count[repo]=count
+    return sitemap_count
+#---
 def crawl_sitemap(url):
     "url w/o sitemap.xml, might try other lib"
     #tree=sitemap_tree(url)
@@ -2323,7 +2335,8 @@ def get_graph_per_repo(grep="milled",endpoint="https://graph.geocodes.ncsa.illin
     if grep != "milled": #used -f5- on latest&a few still off; shows the mess of dep on URN syntax
         cs=f"cut -d':' -f2- {dump_file} |cut -d'/' -f1 | sort | uniq -c |sort -n" #this is for my ld-cache
     else:
-        cs=f"cut -d':' -f3,4 {dump_file} | grep milled | sort | uniq -c |sort -n" #this is for gleaner milled..
+       #cs=f"cut -d':' -f3,4 {dump_file} | grep milled | sort | uniq -c |sort -n" #this is for gleaner milled..
+        cs=f"cut -d',' -f2- graphs.csv | cut -d':' -f5 | cut -d'/' -f1 | sortucn|gred -v ' 1 '"
     return os_system_(cs)
 
 def urn_tail(urn):

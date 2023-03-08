@@ -3,6 +3,7 @@
 import pandas as pd
 dbg=True
 cache=True
+#cache=False
 
 #from mb.py part of utils, for now
 def path_leaf(path):
@@ -82,16 +83,21 @@ def crawl_cfg2counts():
     "use crawl cfg to pull out counts: sitemaps+graph"
     import ec
     import query as q
+    print("====crawl_cfg2counts===")
     repo2url = parse_localConfig()
+    print(f'repo2url={repo2url}')
     repos, endpoint = parse_nabu()
     #then map repo2url on repos -> sitemaps
-    urls=list(map(lambda r: repo2url[r], repos))
-    print(f'urls={urls}')
+    urls=list(map(lambda r: repo2url[r], repos)) #or just use values/no
+    print(f'urls={urls}') #might need to make repo:url dict
     #map ec sitemap_counts over that -> output1 
     if not cache: #need a version of this that is repo-name: num,  so can merge w/graph_per_repo dict
-        sitemaps_count = ec.sitemaps_count(urls) #only ec fnc used, so will pull out
+        #sitemaps_count = ec.sitemaps_count(urls) #only ec fnc used, so will pull out
+        sitemaps_count = ec.sitemaps_d_count(repo2url) #only ec fnc used, so will pull out
     else: #so don't have to pull each time we test
-        sitemaps_count={'https://opentopography.org/sitemap.xml': 780, 'http://ds.iris.edu/files/sitemap.xml': 28, 'https://www.hydroshare.org/sitemap-resources.xml': 13932, 'http://get.iedadata.org/doi/xml-sitemap.php': 10099, 'https://www2.earthref.org/MagIC/contributions.sitemap.xml': 4332, 'https://ecl.earthchem.org/sitemap.xml': 650, 'https://www.usap-dc.org/view/dataset/sitemap.xml': 963}
+       #sitemaps_count={'https://opentopography.org/sitemap.xml': 780, 'http://ds.iris.edu/files/sitemap.xml': 28, 'https://www.hydroshare.org/sitemap-resources.xml': 13932, 'http://get.iedadata.org/doi/xml-sitemap.php': 10099, 'https://www2.earthref.org/MagIC/contributions.sitemap.xml': 4332, 'https://ecl.earthchem.org/sitemap.xml': 650, 'https://www.usap-dc.org/view/dataset/sitemap.xml': 963}
+        sitemaps_count={'balto': 0, 'neotomadb': 45936, 'decade': 0, 'renci': 0, 'c4rsois': 0, 'resource_registry': 0, 'datadiscoverystudio': 0, 'unidata': 211, 'aquadocs': 0, 'opentopography': 780, 'iris': 28, 'edi': 0, 'bco-dmo': 0, 'hydroshare': 13935, 'iedadata': 10099, 'unavco': 5693, 'ssdb.iodp': 26156, 'linked.earth': 18634, 'lipdverse': 27, 'ucar': 17696, 'opencoredata': 0, 'magic': 4332, 'earthchem': 650, 'xdomes': 0, 'neon': 0, 'designsafe': 0, 'r2r': 47462, 'geocodes_demo_datasets': 9, 'usap-dc': 962, 'cchdo': 2523, 'amgeo': 0, 'wifire': 0, 'cresis': 0}
+
     print(f'sitemaps_count={sitemaps_count}') #need to get this usable by merge_dict_list
     #ec graph_counts as 2nd part of final jina2/streamlit template
     #gpr=ec.get_graph_per_repo("milled",endpoint) #setting off/so fix
@@ -101,6 +107,11 @@ def crawl_cfg2counts():
     rc_d=df_cols2dict(gpr,"g","1")
     print(f'rc_d={rc_d}') #so this is useable w/merge_dict_list
     #def repos2counts(repos): does some of this splitting the lines/etc
+    count_dropoff=merge_dict_list(sitemaps_count,rc_d)
+    print(f'count_dropoff={count_dropoff}')
+    import pprint
+    pretty_dict_str = pprint.pformat(count_dropoff)
+    print(pretty_dict_str)
     #next jina2/streamlit
 
 def t1():
