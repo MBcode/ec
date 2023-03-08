@@ -1,9 +1,14 @@
+#!/usr/bin/env python3
 #mbobak, parse crawl cfg, to get sitemap+graph to get counts from them
- #can be done from cli, dagster wf-elt, or notebook
+#can be done from cli, dagster wf-elt, or notebook
 import pandas as pd
-dbg=True
+#dbg=True
+dbg=False
 cache=True
 #cache=False
+import logging as log   #can switch print's to log.info's but Readme expects it to the stdout
+log.basicConfig(filename='parseConfig.log', encoding='utf-8', level=log.DEBUG,
+                format='%(asctime)s.%(msecs)03d %(levelname)s %(module)s - %(funcName)s: %(message)s', datefmt='%Y-%m-%d %H:%M:%S')
 
 #from mb.py part of utils, for now
 def path_leaf(path):
@@ -46,15 +51,16 @@ def yml2d(fn):
             if dbg:
                 for key, val in d.items():
                     print(key, " : ", val,"\n")       
-                return d
+            return d
         except yaml.YAMLError as e:
-            print(e)
+            print(e) 
+            log.warning(e) 
             return None
 
 def df_cols2dict(df,c1,c2):
     "make a dict from 2 df cols"
     #d={}
-    print(f'will pull out, c1={c1},c2={c2}')
+    log.info(f'will pull out, c1={c1},c2={c2}')
     d=df.set_index(c1).to_dict()[c2]
     if dbg:
         print(f'd={d}')
@@ -80,28 +86,28 @@ def parse_nabu(fn='nabu'):
     d=yml2d(fn)
     obD=d['objects']
     reposP=obD['prefix']
-    print(f'reposP={reposP}')
+    log.info(f'reposP={reposP}')
     #reposP=['summoned/opentopography', 'summoned/iris', 'summoned/hydroshare', 'summoned/iedadata', 'summoned/opentopography', 'summoned/iris', 'summoned/magic', 'summoned/earthchem', 'summoned/usap-dc']
     repos=list(map(path_leaf,reposP))
-    print(f'repos={repos}')
+    log.info(f'repos={repos}')
     #could use this Path version for intermediate summoned counts next; see ec testing file
     sD=d['sparql']
     endpoint=sD['endpoint']
     #endpoint=https://graph.geocodes.ncsa.illinois.edu/blazegraph/namespace/earthcube2/sparql
-    print(f'endpoint={endpoint}')
+    log.info(f'endpoint={endpoint}')
     return repos, endpoint
 
-def crawl_cfg2counts():
+def crawl_cfg2counts(lc_fn="localConfig.yaml",nabu_fn="nabu"):
     "use crawl cfg to pull out counts: sitemaps+graph"
     import ec
     import query as q
-    print("====crawl_cfg2counts===")
-    repo2url = parse_localConfig()
-    print(f'repo2url={repo2url}')
-    repos, endpoint = parse_nabu()
+    log.info("====crawl_cfg2counts===")
+    repo2url = parse_localConfig(lc_fn)
+    log.info(f'repo2url={repo2url}')
+    repos, endpoint = parse_nabu(nabu_fn)
     #then map repo2url on repos -> sitemaps
     urls=list(map(lambda r: repo2url[r], repos)) #or just use values/no
-    print(f'urls={urls}') #might need to make repo:url dict
+    log.info(f'urls={urls}') #might need to make repo:url dict
     #map ec sitemap_counts over that -> output1 
     if not cache: #need a version of this that is repo-name: num,  so can merge w/graph_per_repo dict
         #sitemaps_count = ec.sitemaps_count(urls) #only ec fnc used, so will pull out
@@ -110,20 +116,20 @@ def crawl_cfg2counts():
        #sitemaps_count={'https://opentopography.org/sitemap.xml': 780, 'http://ds.iris.edu/files/sitemap.xml': 28, 'https://www.hydroshare.org/sitemap-resources.xml': 13932, 'http://get.iedadata.org/doi/xml-sitemap.php': 10099, 'https://www2.earthref.org/MagIC/contributions.sitemap.xml': 4332, 'https://ecl.earthchem.org/sitemap.xml': 650, 'https://www.usap-dc.org/view/dataset/sitemap.xml': 963}
         sitemaps_count={'balto': 0, 'neotomadb': 45936, 'decade': 0, 'renci': 0, 'c4rsois': 0, 'resource_registry': 0, 'datadiscoverystudio': 0, 'unidata': 211, 'aquadocs': 0, 'opentopography': 780, 'iris': 28, 'edi': 0, 'bco-dmo': 0, 'hydroshare': 13935, 'iedadata': 10099, 'unavco': 5693, 'ssdb.iodp': 26156, 'linked.earth': 18634, 'lipdverse': 27, 'ucar': 17696, 'opencoredata': 0, 'magic': 4332, 'earthchem': 650, 'xdomes': 0, 'neon': 0, 'designsafe': 0, 'r2r': 47462, 'geocodes_demo_datasets': 9, 'usap-dc': 962, 'cchdo': 2523, 'amgeo': 0, 'wifire': 0, 'cresis': 0}
 
-    print(f'sitemaps_count={sitemaps_count}') #need to get this usable by merge_dict_list
+    log.info(f'sitemaps_count={sitemaps_count}') #need to get this usable by merge_dict_list
     #ec graph_counts as 2nd part of final jina2/streamlit template
     #gpr=ec.get_graph_per_repo("milled",endpoint) #setting off/so fix
-    print(f'q.get_graph_per_repo {endpoint}')  #this is from summary, might also do from main
+    log.info(f'q.get_graph_per_repo {endpoint}')  #this is from summary, might also do from main
     gpr=q.get_graph_per_repo("",endpoint) #setting off/so fix
-    print(f'gpr={gpr}') #get this into a dict, in rev order, now: 6084 hydroshare ...
+    log.info(f'gpr={gpr}') #get this into a dict, in rev order, now: 6084 hydroshare ...
     rc_d=df_cols2dict(gpr,"g","1")
-    print(f'rc_d={rc_d}') #so this is useable w/merge_dict_list
+    log.info(f'rc_d={rc_d}') #so this is useable w/merge_dict_list
     #def repos2counts(repos): does some of this splitting the lines/etc
     count_dropoff=merge_dict_list(sitemaps_count,rc_d)
-    print(f'count_dropoff={count_dropoff}')
+    log.info(f'count_dropoff={count_dropoff}')
     import pprint
     pretty_dict_str = pprint.pformat(count_dropoff)
-    print(pretty_dict_str)
+    log.info(pretty_dict_str)
     #next jina2/streamlit #here we could even start a dynamic info page, 
     #even w/the pygal.sparktext, but for now only pull out repo-s w/a dropoff,eg.len(value)>1
     #        'cchdo': [2523, 2517],
@@ -141,38 +147,40 @@ def crawl_cfg2counts():
     #        'usap-dc': [962, 912],
     #should change the dicts or merge_dict_list, so a placeholder is put if not in one of them
     # though for sparkline/plotting can only show numeric, so set to 0 even if missing
-    result=count_dropoff
-    import jinja2
-    template= """<table>
-              <thead>
-                <tr>
-                  <th>Key</th>
-                  <th>Value</th>
-                </tr>
-              </thead>
-              <tbody>
-              {% for key, value in result.items() %}
-               <tr>
-                   <td> {{ key }} </td>
-                   <td> {{ value }} </td>
-               </tr>
-              {% endfor %}
-              </tbody>
-            </table>"""
-    #print(template.render(result))
-    print(template)
+  # result=count_dropoff
+  # import jinja2
+  # template= """<table> <thead> <tr> <th>Key</th> <th>Value</th> </tr> </thead>
+  #           <tbody>
+  #           {% for key, value in result.items() %}
+  #            <tr> <td> {{ key }} </td> <td> {{ value }} </td> </tr>
+  #           {% endfor %} </tbody> </table>"""
+  # #print(template.render(result))
+  # print(template)
     #probably easier w/pd: 
     #stackoverflow.com/questions/41671436/how-can-i-convert-a-python-dictionary-to-an-html-table
     #raise ValueError("All arrays must be of the same length") #just have to filter as above
     result=dict(filter(val_len_gt1,count_dropoff.items()))
-    print(f'result={result}')
+    log.info(f'result={result}')
     df = pd.DataFrame(data=result)
     df = df.fillna(' ').T
-    print(f'df={df}')
-    dfh=df.to_html() #easier than jinja right now
-    print(f'dfh={dfh}')
+    df_=df.rename(columns={'0': 'sitemap', '1': 'graph'}) #not there so:
+    df_.columns =['sitemap','graph']
+    #dfh=df.to_html() #easier than jinja right now
+    dfh=df_.to_html() 
+    if dbg:
+        print(f'df={df}')
+        print(f'dfh={dfh}')
+    ec.put_txtfile("count_dropoff.htm",dfh) #appending right now, can send in 3rd are to Replace
     return result
 
 def t1():
     "test:could pass through lc&nabu file names if they change"
     return crawl_cfg2counts()
+
+if __name__ == '__main__':
+    import argparse
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--localConfig",  help='localConfig.yaml is the default', default='localConfig.yaml')
+    parser.add_argument("--nabu",  help='nabu is the default', default='nabu')
+    args = parser.parse_args()
+    crawl_cfg2counts(args.localConfig,args.nabu)
