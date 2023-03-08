@@ -21,6 +21,18 @@ def merge_dict_list(d1,d2):
             dd[key].append(value)
     return dd
 
+def len_gt1(l):
+    "len >1 predicate"
+    b=(len(l) > 1)
+    if dbg:
+        print(f'l={l},b={b}')
+    return b
+
+def val_len_gt1(p):
+    "len_gt1 on value of a pair"
+    v=p[1]
+    return len_gt1(v)
+
 # https://www.golinuxcloud.com/python-convert-yaml-file-to-dictionary/
 def yml2d(fn):
     "yml file to dict"
@@ -101,7 +113,7 @@ def crawl_cfg2counts():
     print(f'sitemaps_count={sitemaps_count}') #need to get this usable by merge_dict_list
     #ec graph_counts as 2nd part of final jina2/streamlit template
     #gpr=ec.get_graph_per_repo("milled",endpoint) #setting off/so fix
-    print(f'q.get_graph_per_repo {endpoint}') 
+    print(f'q.get_graph_per_repo {endpoint}')  #this is from summary, might also do from main
     gpr=q.get_graph_per_repo("",endpoint) #setting off/so fix
     print(f'gpr={gpr}') #get this into a dict, in rev order, now: 6084 hydroshare ...
     rc_d=df_cols2dict(gpr,"g","1")
@@ -112,8 +124,55 @@ def crawl_cfg2counts():
     import pprint
     pretty_dict_str = pprint.pformat(count_dropoff)
     print(pretty_dict_str)
-    #next jina2/streamlit
+    #next jina2/streamlit #here we could even start a dynamic info page, 
+    #even w/the pygal.sparktext, but for now only pull out repo-s w/a dropoff,eg.len(value)>1
+    #        'cchdo': [2523, 2517],
+    #        'designsafe': [0, 458],
+    #        'earthchem': [650, 917],
+    #        'edi': [0, 8303],
+    #        'hydroshare': [13935, 6084],
+    #        'iedadata': [10099, 6455],
+    #        'iris': [28, 43],
+    #        'linked.earth': [18634, 698],
+    #        'opentopography': [780, 773],
+    #        'r2r': [47462, 1],
+    #        'ssdb.iodp': [26156, 25225],
+    #        'unavco': [5693, 7377],
+    #        'usap-dc': [962, 912],
+    #should change the dicts or merge_dict_list, so a placeholder is put if not in one of them
+    # though for sparkline/plotting can only show numeric, so set to 0 even if missing
+    result=count_dropoff
+    import jinja2
+    template= """<table>
+              <thead>
+                <tr>
+                  <th>Key</th>
+                  <th>Value</th>
+                </tr>
+              </thead>
+              <tbody>
+              {% for key, value in result.items() %}
+               <tr>
+                   <td> {{ key }} </td>
+                   <td> {{ value }} </td>
+               </tr>
+              {% endfor %}
+              </tbody>
+            </table>"""
+    #print(template.render(result))
+    print(template)
+    #probably easier w/pd: 
+    #stackoverflow.com/questions/41671436/how-can-i-convert-a-python-dictionary-to-an-html-table
+    #raise ValueError("All arrays must be of the same length") #just have to filter as above
+    result=dict(filter(val_len_gt1,count_dropoff.items()))
+    print(f'result={result}')
+    df = pd.DataFrame(data=result)
+    df = df.fillna(' ').T
+    print(f'df={df}')
+    dfh=df.to_html() #easier than jinja right now
+    print(f'dfh={dfh}')
+    return result
 
 def t1():
     "test:could pass through lc&nabu file names if they change"
-    crawl_cfg2counts()
+    return crawl_cfg2counts()
