@@ -163,10 +163,10 @@ def crawl_cfg2counts(lc_fn="localConfig.yaml",nabu_fn="nabu",outputHTM="count_dr
     log.info(f'result={result}')
     df = pd.DataFrame(data=result)
     df = df.fillna(' ').T
-    df_=df.rename(columns={'0': 'sitemap', '1': 'graph'}) #not there so:
-    df_.columns =['sitemap','graph']
+    #df_=df.rename(columns={'0': 'sitemap', '1': 'graph'}) #not there so:
+    df.columns =['sitemap','graph']
     #dfh=df.to_html() #easier than jinja right now
-    dfh=df_.to_html() 
+    dfh=df.to_html() 
     if dbg:
         print(f'df={df}')
         print(f'dfh={dfh}')
