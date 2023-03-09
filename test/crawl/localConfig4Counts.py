@@ -102,7 +102,7 @@ def parse_nabu(fn='nabu'):
     log.info(f'endpoint={endpoint}')
     return repos, endpoint
 
-def crawl_cfg2counts(lc_fn="localConfig.yaml",nabu_fn="nabu",outputHTM="count_dropoff.htm"):
+def crawl_cfg2counts(lc_fn="localConfig.yaml",nabu_fn="nabu",outputHTM="count_dropoff.htm",outputDIR=None):
     "use crawl cfg to pull out counts: sitemaps+graph"
     #import ec
     import sitemap as ec #need put txtfile
@@ -178,6 +178,8 @@ def crawl_cfg2counts(lc_fn="localConfig.yaml",nabu_fn="nabu",outputHTM="count_dr
         print(f'dfh={dfh}')
     #ec.put_txtfile("count_dropoff.htm",dfh) #appending right now, can send in 3rd are to Replace
     #ec.put_txtfile(outputHTM,dfh) #appending right now, can send in 3rd are to Replace
+    if outputDIR:
+        outputHTM= outputDIR + "/" + outputHTM
     put_txtfile(outputHTM,dfh) #appending right now, can send in 3rd are to Replace
     return result
 
@@ -191,5 +193,6 @@ if __name__ == '__main__':
     parser.add_argument("--localConfig",  help='localConfig.yaml is the default', default='localConfig.yaml')
     parser.add_argument("--nabu",  help='nabu is the default', default='nabu')
     parser.add_argument("--outputHTM",  help='output html table default is count_dropoff.htm', default='count_dropoff.htm')
+    parser.add_argument("--outputDIR",  help='output directory, default to none right now', default=None)
     args = parser.parse_args()
-    crawl_cfg2counts(args.localConfig,args.nabu)
+    crawl_cfg2counts(args.localConfig,args.nabu,args.outputHTM,args.outputDIR)
