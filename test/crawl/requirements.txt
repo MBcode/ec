@@ -1,0 +1,6 @@
+pandas
+advertools
+xmltodict
+yaml
+requests
+json
