@@ -1,4 +1,6 @@
 pandas
+sparqldataframe
+simplejson
 advertools
 xmltodict
 yaml
