@@ -17,6 +17,11 @@ def path_leaf(path):
     head, tail = ntpath.split(path)
     return tail or ntpath.basename(head)
 
+def put_txtfile(fn,s,wa="a"): #or w
+    "filename to dump string to"
+    with open(fn, wa) as f:
+        return f.write(s)
+
 #=merge using:
 def merge_dict_list(d1,d2):
     from collections import defaultdict
@@ -99,12 +104,13 @@ def parse_nabu(fn='nabu'):
 
 def crawl_cfg2counts(lc_fn="localConfig.yaml",nabu_fn="nabu",outputHTM="count_dropoff.htm"):
     "use crawl cfg to pull out counts: sitemaps+graph"
-    import ec
+    #import ec
+    import sitemap as ec #need put txtfile
     import query as q
     log.info("====crawl_cfg2counts===")
     repo2url = parse_localConfig(lc_fn)
     log.info(f'repo2url={repo2url}')
-    repos, endpoint = parse_nabu(nabu_fn)
+    repos, endpoint = parse_nabu(nabu_fn)  #want to get summary endpoint, right now using hard-coded;will make issue
     #then map repo2url on repos -> sitemaps
     urls=list(map(lambda r: repo2url[r], repos)) #or just use values/no
     log.info(f'urls={urls}') #might need to make repo:url dict
@@ -171,7 +177,8 @@ def crawl_cfg2counts(lc_fn="localConfig.yaml",nabu_fn="nabu",outputHTM="count_dr
         print(f'df={df}')
         print(f'dfh={dfh}')
     #ec.put_txtfile("count_dropoff.htm",dfh) #appending right now, can send in 3rd are to Replace
-    ec.put_txtfile(outputHTM,dfh) #appending right now, can send in 3rd are to Replace
+    #ec.put_txtfile(outputHTM,dfh) #appending right now, can send in 3rd are to Replace
+    put_txtfile(outputHTM,dfh) #appending right now, can send in 3rd are to Replace
     return result
 
 def t1():
