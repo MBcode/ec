@@ -109,7 +109,8 @@ def parse_nabu(fn='nabu'):
         print(f'this is where I could alter the main endpoint to look more like: {endpoint2}')
     return repos, endpoint, endpoint2
 
-def crawl_cfg2counts(lc_fn="localConfig.yaml",nabu_fn="nabu",outputHTM="count_dropoff.htm",outputDIR=None,sparkText=True,inclLogo=True):
+#def crawl_cfg2counts(lc_fn="localConfig.yaml",nabu_fn="nabu",outputHTM="count_dropoff.htm",outputDIR=None,sparkText=True,inclLogo=True):
+def crawl_cfg2counts(lc_fn="localConfig.yaml",nabu_fn="nabu",args=None): #could check args and .. but will send
     "use crawl cfg to pull out counts: sitemaps+graph"
     #import ec
     import sitemap as ec #need put txtfile
@@ -117,7 +118,7 @@ def crawl_cfg2counts(lc_fn="localConfig.yaml",nabu_fn="nabu",outputHTM="count_dr
     log.info("====crawl_cfg2counts===")
     repo2url, repo2logo = parse_localConfig(lc_fn)
     log.info(f'repo2url={repo2url}')
-    print(f'repo2logo={repo2logo}') #combine this differently than the #s, bc don't want nul to have it drop a row
+    log.info(f'repo2logo={repo2logo}') #combine this differently than the #s, bc don't want nul to have it drop a row
     repos, endpoint, endpoint2 = parse_nabu(nabu_fn)  #want to get summary endpoint, right now using hard-coded;will make issue
     #then map repo2url on repos -> sitemaps
     urls=list(map(lambda r: repo2url[r], repos)) #or just use values/no
@@ -181,19 +182,20 @@ def crawl_cfg2counts(lc_fn="localConfig.yaml",nabu_fn="nabu",outputHTM="count_dr
     #df_=df.rename(columns={'0': 'sitemap', '1': 'graph'}) #not there so:
     df.columns =['sitemap','graph']
     #df1 = df.assign(dropoff=lambda x: spark0([x.sitemap, x.graph])) #df1=df
-    if sparkText:
+    if args.sparkText:
         l1=list(map(spark2, df.sitemap, df.graph))
         df['dropoff']=l1
         if dbg:
             print(f'df={df}')
-    if inclLogo:
+    if args.inclLogo:
         #logos=list(map(lambda r: repo2logo[r], repos)) #careful w/the combine
         #print(f'logos={logos}') 
         repos2=list(result.keys()) #result has just the filtered keys
-        print(f'repos2={repos2}')
         l2=list(map(lambda r: f'<img src={repo2logo[r]} height=12>' , repos2))
-        df['logos']=l2
-        print(f'df={df}')
+        df['logo']=l2
+        if dbg:
+            print(f'repos2={repos2}')
+            print(f'df={df}')
     #dfh=df.to_html() #easier than jinja right now
     #dfh=df.to_html() 
     dfh=df.to_html(escape=False) #to keep <> go to lt gt 
@@ -202,8 +204,10 @@ def crawl_cfg2counts(lc_fn="localConfig.yaml",nabu_fn="nabu",outputHTM="count_dr
         print(f'dfh={dfh}')
     #ec.put_txtfile("count_dropoff.htm",dfh) #appending right now, can send in 3rd are to Replace
     #ec.put_txtfile(outputHTM,dfh) #appending right now, can send in 3rd are to Replace
-    if outputDIR:
-        outputHTM= outputDIR + "/" + outputHTM
+    if args.outputDIR:
+        outputHTM= outputDIR + "/" + args.outputHTM
+    else:
+        outputHTM= args.outputHTM
     put_txtfile(outputHTM,dfh) #appending right now, can send in 3rd are to Replace
     return result
 
@@ -234,4 +238,6 @@ if __name__ == '__main__':
     parser.add_argument("--sparkText",  help='add a sparkline text plot, default to True', default=True)
     parser.add_argument("--inclLogo",  help='incl col w/Logos, default to True', default=True)
     args = parser.parse_args() #could just send the args, then break out where needed above
-    crawl_cfg2counts(args.localConfig,args.nabu,args.outputHTM,args.outputDIR,args.sparkText,args.inclLogo)
+    #crawl_cfg2counts(args.localConfig,args.nabu,args.outputHTM,args.outputDIR,args.sparkText,args.inclLogo)
+    #crawl_cfg2counts(args.localConfig,args.nabu,args)
+    crawl_cfg2counts(args.localConfig,args.nabu,args=args)
