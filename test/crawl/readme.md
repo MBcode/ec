@@ -1,4 +1,4 @@
-## parse crawl cfg -> sitemaps+graph/s -> count drop 
+## parse crawl cfg, to get sitemap+graph to get counts from them
 
 ## use
 
@@ -27,3 +27,5 @@ options:
   --sparkText SPARKTEXT
 
                         add a sparkline text plot, default to True
+
+  --inclLogo INCLLOGO   incl col w/Logos, default to True
