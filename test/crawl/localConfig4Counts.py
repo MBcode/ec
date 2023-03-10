@@ -98,9 +98,15 @@ def parse_nabu(fn='nabu'):
     #could use this Path version for intermediate summoned counts next; see ec testing file
     sD=d['sparql']
     endpoint=sD['endpoint']
-    #endpoint=https://graph.geocodes.ncsa.illinois.edu/blazegraph/namespace/earthcube2/sparql
     log.info(f'endpoint={endpoint}')
-    return repos, endpoint
+    #endpoint=https://graph.geocodes.ncsa.illinois.edu/blazegraph/namespace/earthcube2/sparql
+    endpoint2=sD.get('summary')
+    if endpoint2:
+        print(f'got summary endpoint:{endpoint2}')
+    else:
+        endpoint2="https://graph.geocodes.ncsa.illinois.edu/blazegraph/namespace/earthcube2/sparql"
+        print(f'this is where I could alter the main endpoint to look more like: {endpoint2}')
+    return repos, endpoint, endpoint2
 
 def crawl_cfg2counts(lc_fn="localConfig.yaml",nabu_fn="nabu",outputHTM="count_dropoff.htm",outputDIR=None):
     "use crawl cfg to pull out counts: sitemaps+graph"
@@ -110,7 +116,7 @@ def crawl_cfg2counts(lc_fn="localConfig.yaml",nabu_fn="nabu",outputHTM="count_dr
     log.info("====crawl_cfg2counts===")
     repo2url = parse_localConfig(lc_fn)
     log.info(f'repo2url={repo2url}')
-    repos, endpoint = parse_nabu(nabu_fn)  #want to get summary endpoint, right now using hard-coded;will make issue
+    repos, endpoint, endpoint2 = parse_nabu(nabu_fn)  #want to get summary endpoint, right now using hard-coded;will make issue
     #then map repo2url on repos -> sitemaps
     urls=list(map(lambda r: repo2url[r], repos)) #or just use values/no
     log.info(f'urls={urls}') #might need to make repo:url dict
@@ -121,13 +127,14 @@ def crawl_cfg2counts(lc_fn="localConfig.yaml",nabu_fn="nabu",outputHTM="count_dr
     else: #so don't have to pull each time we test
        #sitemaps_count={'https://opentopography.org/sitemap.xml': 780, 'http://ds.iris.edu/files/sitemap.xml': 28, 'https://www.hydroshare.org/sitemap-resources.xml': 13932, 'http://get.iedadata.org/doi/xml-sitemap.php': 10099, 'https://www2.earthref.org/MagIC/contributions.sitemap.xml': 4332, 'https://ecl.earthchem.org/sitemap.xml': 650, 'https://www.usap-dc.org/view/dataset/sitemap.xml': 963}
         sitemaps_count={'balto': 0, 'neotomadb': 45936, 'decade': 0, 'renci': 0, 'c4rsois': 0, 'resource_registry': 0, 'datadiscoverystudio': 0, 'unidata': 211, 'aquadocs': 0, 'opentopography': 780, 'iris': 28, 'edi': 0, 'bco-dmo': 0, 'hydroshare': 13935, 'iedadata': 10099, 'unavco': 5693, 'ssdb.iodp': 26156, 'linked.earth': 18634, 'lipdverse': 27, 'ucar': 17696, 'opencoredata': 0, 'magic': 4332, 'earthchem': 650, 'xdomes': 0, 'neon': 0, 'designsafe': 0, 'r2r': 47462, 'geocodes_demo_datasets': 9, 'usap-dc': 962, 'cchdo': 2523, 'amgeo': 0, 'wifire': 0, 'cresis': 0}
-
     log.info(f'sitemaps_count={sitemaps_count}') #need to get this usable by merge_dict_list
     #ec graph_counts as 2nd part of final jina2/streamlit template
     #gpr=ec.get_graph_per_repo("milled",endpoint) #setting off/so fix
-    log.info(f'q.get_graph_per_repo {endpoint}')  #this is from summary, might also do from main
-    gpr=q.get_graph_per_repo("",endpoint) #setting off/so fix
+    log.info(f'q.get_graph_per_repo {endpoint2}')  #this is from summary, might also do from main
+    gpr=q.get_graph_per_repo("",endpoint2) #setting off/so fix
     log.info(f'gpr={gpr}') #get this into a dict, in rev order, now: 6084 hydroshare ...
+    #gt=type(gpr)
+    #print(f'gpr={gpr},type:{gt}') 
     rc_d=df_cols2dict(gpr,"g","1")
     log.info(f'rc_d={rc_d}') #so this is useable w/merge_dict_list
     #def repos2counts(repos): does some of this splitting the lines/etc

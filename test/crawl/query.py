@@ -110,7 +110,7 @@ def v2iqt(var,sqs):  #does the above fncs
 def iqt2df(iqt,endpoint=None):
     "instantiated-query-template/txt to df"
     if not iqt:
-        return "need isntantiated query text"
+        return "need instantiated query text"
     import sparqldataframe, simplejson
  #  if sparql_inited==None:
  #      si= init_sparql()  #still need to init
@@ -144,7 +144,8 @@ def v4query(query):
     adf = iqt2df(query)
     return adf
 #===like get_graphs but for summary namespace
-def summary_graphs(q="SELECT distinct ?s WHERE { ?s ?p ?o}"):
+#def summary_graphs(q="SELECT distinct ?s WHERE { ?s ?p ?o}"):
+def summary_graphs(q="SELECT distinct ?g WHERE { ?g ?p ?o}"):
     return v4query(q)
 #===
 def get_graphs2(endpoint):
@@ -160,8 +161,8 @@ def get_graphs2(endpoint):
 def get_graphs_list(endpoint=None,dump_file=None):
     "get URNs as list, can send in alt endpoint"
     global dflt_endpoint
-    #if not endpoint:
-    if endpoint: #feels like this should be fixed
+    #if endpoint: #feels like this should be fixed/was wrong
+    if not endpoint:
         #dfg=get_graphs()
         print(f'get_graphs_list {endpoint}')
         dfg=get_graphs2(endpoint)
@@ -185,13 +186,14 @@ def get_graph_per_repo(grep="",endpoint="https://graph.geocodes.ncsa.illinois.ed
     #gl=summary_graphs()  #see if have2set the endpoint otherwise
     #gl.to_csv(dump_file) #from get_graphs_list
     gn=len(gl)
-    print(f'got:{gn} graphs')
+    print(f'q.got:{gn} graphs')
     #the milled/etc URN silliness should go away so have only one way to process here/for now
    #cs=f"cut -d',' -f2- {dump_file} | sed '/:LD:/s//:/' | cut -d':' -f4 | cut -d'/' -f1 | sort | uniq -c |sort -n" #for now
     cs=f"cut -d',' -f2- {dump_file}|sed '/:LD:/s//:/'|cut -d':' -f4|cut -d'/' -f1|sort|uniq -c|sort -n>counts.csv" #for now
     #   print(f'no graph using:{cs}')
-    #return os_system_(cs)
+    os_system_(cs)
     cr_df=pd.read_csv("counts.csv",delimiter=" ", skipinitialspace=True)
+    #print(f'ret:{cr_df}')
     return cr_df
 #===if I put above output to a counts.csv, I could just read_csv and use: df_cols2dict
 
