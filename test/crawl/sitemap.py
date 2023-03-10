@@ -1,4 +1,5 @@
 #mbobak sitemap parts of the utils that where orginally more notebook focused
+dbg=False
 
 def setup_sitemap(): #do this by hand for now
     cs='pip install ultimate_sitemap_parser' #assume done rarely, once/session 
