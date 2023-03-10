@@ -23,3 +23,7 @@ options:
   --outputDIR OUTPUTDIR
 
                         output directory, default to none right now 
+
+  --sparkText SPARKTEXT
+
+                        add a sparkline text plot, default to True

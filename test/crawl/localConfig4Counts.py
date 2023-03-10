@@ -108,7 +108,7 @@ def parse_nabu(fn='nabu'):
         print(f'this is where I could alter the main endpoint to look more like: {endpoint2}')
     return repos, endpoint, endpoint2
 
-def crawl_cfg2counts(lc_fn="localConfig.yaml",nabu_fn="nabu",outputHTM="count_dropoff.htm",outputDIR=None):
+def crawl_cfg2counts(lc_fn="localConfig.yaml",nabu_fn="nabu",outputHTM="count_dropoff.htm",outputDIR=None,sparkText=True):
     "use crawl cfg to pull out counts: sitemaps+graph"
     #import ec
     import sitemap as ec #need put txtfile
@@ -178,6 +178,11 @@ def crawl_cfg2counts(lc_fn="localConfig.yaml",nabu_fn="nabu",outputHTM="count_dr
     df = df.fillna(' ').T
     #df_=df.rename(columns={'0': 'sitemap', '1': 'graph'}) #not there so:
     df.columns =['sitemap','graph']
+    #df1 = df.assign(dropoff=lambda x: spark0([x.sitemap, x.graph])) #df1=df
+    if sparkText:
+        l1=list(map(spark2, df.sitemap, df.graph))
+        #df['dropoff']=l1
+        print(f'df={df}')
     #dfh=df.to_html() #easier than jinja right now
     dfh=df.to_html() 
     if dbg:
@@ -190,6 +195,19 @@ def crawl_cfg2counts(lc_fn="localConfig.yaml",nabu_fn="nabu",outputHTM="count_dr
     put_txtfile(outputHTM,dfh) #appending right now, can send in 3rd are to Replace
     return result
 
+def spark0(nums):
+    "list of nums as txt sparkline"
+    import pygal
+    chart = pygal.Line()
+    chart.add('',nums)
+    return chart.render_sparktext(relative_to=0)
+
+def spark2(n1,n2):
+    l=[n1,n2]
+    print(f's2:{l}')
+    return spark0(l)
+   #return spark0([n1,n2])
+
 def t1():
     "test:could pass through lc&nabu file names if they change"
     return crawl_cfg2counts()
@@ -201,5 +219,6 @@ if __name__ == '__main__':
     parser.add_argument("--nabu",  help='nabu is the default', default='nabu')
     parser.add_argument("--outputHTM",  help='output html table default is count_dropoff.htm', default='count_dropoff.htm')
     parser.add_argument("--outputDIR",  help='output directory, default to none right now', default=None)
+    parser.add_argument("--sparkText",  help='add a sparkline text plot, default to True', default=True)
     args = parser.parse_args()
-    crawl_cfg2counts(args.localConfig,args.nabu,args.outputHTM,args.outputDIR)
+    crawl_cfg2counts(args.localConfig,args.nabu,args.outputHTM,args.outputDIR,args.sparkText)
