@@ -1,4 +1,4 @@
-## parse crawl cfg, to get sitemap+graph to get counts from them
+## parse crawl cfg -> sitemaps+graph/s -> count drop 
 
 ## use
 
