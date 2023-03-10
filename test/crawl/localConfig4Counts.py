@@ -4,8 +4,8 @@
 import pandas as pd
 #dbg=True
 dbg=False
-cache=True
-#cache=False
+#cache=True
+cache=False
 import logging as log   #can switch print's to log.info's but Readme expects it to the stdout
 log.basicConfig(filename='parseConfig.log', encoding='utf-8', level=log.DEBUG,
                 format='%(asctime)s.%(msecs)03d %(levelname)s %(module)s - %(funcName)s: %(message)s', datefmt='%Y-%m-%d %H:%M:%S')
@@ -181,8 +181,9 @@ def crawl_cfg2counts(lc_fn="localConfig.yaml",nabu_fn="nabu",outputHTM="count_dr
     #df1 = df.assign(dropoff=lambda x: spark0([x.sitemap, x.graph])) #df1=df
     if sparkText:
         l1=list(map(spark2, df.sitemap, df.graph))
-        #df['dropoff']=l1
-        print(f'df={df}')
+        df['dropoff']=l1
+        if dbg:
+            print(f'df={df}')
     #dfh=df.to_html() #easier than jinja right now
     dfh=df.to_html() 
     if dbg:
@@ -204,7 +205,7 @@ def spark0(nums):
 
 def spark2(n1,n2):
     l=[n1,n2]
-    print(f's2:{l}')
+    #print(f's2:{l}')
     return spark0(l)
    #return spark0([n1,n2])
 
