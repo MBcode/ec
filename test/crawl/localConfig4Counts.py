@@ -84,8 +84,9 @@ def parse_localConfig(fn='localConfig.yaml'):
     #really want to pull out repo-name&sitemap cols, to make a mapping dict
     d=df_cols2dict(df,"Name","URL")
     d2=df_cols2dict(df,"Name","Logo")
+    d3=df_cols2dict(df,"Name","Domain")
     #d={'balto': 'http://balto.opendap.org/opendap/site_map.txt ' ...
-    return d, d2
+    return d, d2, d3
 
 def parse_nabu(fn='nabu'):
     "get prefix=sites crawled,&endpoint"
@@ -116,7 +117,7 @@ def crawl_cfg2counts(lc_fn="localConfig.yaml",nabu_fn="nabu",args=None): #could 
     import sitemap as ec #need put txtfile
     import query as q
     log.info("====crawl_cfg2counts===")
-    repo2url, repo2logo = parse_localConfig(lc_fn)
+    repo2url, repo2logo, repo2domain = parse_localConfig(lc_fn)
     log.info(f'repo2url={repo2url}')
     log.info(f'repo2logo={repo2logo}') #combine this differently than the #s, bc don't want nul to have it drop a row
     repos, endpoint, endpoint2 = parse_nabu(nabu_fn)  #want to get summary endpoint, right now using hard-coded;will make issue
@@ -188,10 +189,9 @@ def crawl_cfg2counts(lc_fn="localConfig.yaml",nabu_fn="nabu",args=None): #could 
         if dbg:
             print(f'df={df}')
     if args.inclLogo:
-        #logos=list(map(lambda r: repo2logo[r], repos)) #careful w/the combine
-        #print(f'logos={logos}') 
         repos2=list(result.keys()) #result has just the filtered keys
-        l2=list(map(lambda r: f'<img src={repo2logo[r]} height=12>' , repos2))
+        #l2=list(map(lambda r: f'<img src={repo2logo[r]} height=12>' , repos2))
+        l2=list(map(lambda r: f'<a href={repo2domain[r]}><img src={repo2logo[r]} height=12></a>' , repos2))
         df['logo']=l2
         if dbg:
             print(f'repos2={repos2}')
