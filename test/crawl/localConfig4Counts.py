@@ -191,7 +191,8 @@ def crawl_cfg2counts(lc_fn="localConfig.yaml",nabu_fn="nabu",args=None): #could 
     if args.inclLogo:
         repos2=list(result.keys()) #result has just the filtered keys
         #l2=list(map(lambda r: f'<img src={repo2logo[r]} height=12>' , repos2))
-        l2=list(map(lambda r: f'<a href={repo2domain[r]}><img src={repo2logo[r]} height=12></a>' , repos2))
+        #l2=list(map(lambda r: f'<a href={repo2domain[r]}><img src={repo2logo[r]} height=12></a>' , repos2))
+        l2=list(map(lambda r: f'<a href={repo2domain[r]} target="_blank"><img src={repo2logo[r]} height=12></a>' , repos2))
         df['logo']=l2
         if dbg:
             print(f'repos2={repos2}')
