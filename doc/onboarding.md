@@ -18,7 +18,7 @@ jld -- no --> esipfed[see links on how to create this metadata] -- then --> good
 * ror.org/[request](https://docs.google.com/forms/d/e/1FAIpQLSdJYaMTCwS7muuTa-B_CnAtCSkKzt19lkirAKG4u7umH9Nosg/viewform)
 ##### as this ID can be reused much more easily than all the text
 
-### likely- will need your repositories sitemap url, do you have one?
+### We will need your repository's sitemap URL, do you have one?
 #### yes: please provide so we can crawl your metadata
 #### no: more on that [here](https://github.com/ESIPFed/science-on-schema.org/blob/master/guides/GETTING-STARTED.md#sitemaps)
 #### you can also provide a robots.txt to limit scraping of your metadata
