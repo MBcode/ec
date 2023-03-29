@@ -2,11 +2,11 @@
 ## decision-tree:
 ```mermaid
 flowchart TD;
-ror[do you have an org id?] -- yes --> process[we will process/use];
+ror[Do you have an org id?] -- yes --> process[we will process/use];
 ror -- no --> create[please create one] -- then --> process;
-process -- next --> sitemap[do you have a sitemap] -- yes --> crawl[we can start crawling];
+process -- next --> sitemap[Do you have a sitemap?] -- yes --> crawl[we can start crawling];
 sitemap -- no --> mksm[please create a sitemap] -- then --> crawl;
-crawl -- also --> jld[do all of it's pages have embedded metadata?];
+crawl -- also --> jld[Do all of it's pages have embedded metadata?];
 jld -- yes --> good[done for now];
 jld -- no --> esipfed[see links on how to create this metadata] -- then --> good;
 ```
