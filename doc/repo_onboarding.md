@@ -12,7 +12,6 @@ jld -- no --> esipfed[see links on how to create this metadata] -- then --> good
 ```
 
 ### Do you have a ROR or re3data or other organizational ID?
-Identifiers look like [these](https://github.com/earthcube/ec/blob/master/crawl/CDF_Sites1.tsv), and are utilized for:  both jump starting getting your org info without having to ask several times, and to unambiguously ID your org, which will help with citation and much more
 
 Identifiers look like: e.g. for IEDA
    
@@ -21,12 +20,16 @@ re3
 
 ror:
 :  `https://ror.org/02fjjnc15`
+
+They are utilized for:  both jump starting getting your org info without having to ask several times, and to unambiguously ID your org, which will help with citation and much more.
+
+A complete list of identifiers for our partners is [here](https://github.com/earthcube/ec/blob/master/crawl/CDF_Sites1.tsv)
   
   
 - [ ] yes: please supply and we will parse it, then just ask for the fields it did not contain
     * enter here ________________
 - [ ] no: please create one: with one or both of these:  
-   * Please create an ID at:
+   * The guidance on how to create an identifier is here:
        * re3data.org/[suggest](https://www.re3data.org/suggest)
        * ror.org/[request](https://docs.google.com/forms/d/e/1FAIpQLSdJYaMTCwS7muuTa-B_CnAtCSkKzt19lkirAKG4u7umH9Nosg/viewform)
 
