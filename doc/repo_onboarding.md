@@ -12,7 +12,7 @@ jld -- no --> esipfed[see links on how to create this metadata] -- then --> good
 ```
 
 ### Do you have a ROR or re3data or other organizational ID?
-Identifiers look like, and are utilized for:  (NOTE: add link to actual earthcube identifier)
+Identifiers look like [these](https://github.com/earthcube/ec/blob/master/crawl/CDF_Sites1.tsv), and are utilized for:  both jump starting getting your org info without having to ask several times, and to unambiguously ID your org, which will help with citation and much more
 
 re3
 : `re3data.org/suggest`
