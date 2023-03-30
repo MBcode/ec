@@ -14,11 +14,13 @@ jld -- no --> esipfed[see links on how to create this metadata] -- then --> good
 ### Do you have a ROR or re3data or other organizational ID?
 Identifiers look like [these](https://github.com/earthcube/ec/blob/master/crawl/CDF_Sites1.tsv), and are utilized for:  both jump starting getting your org info without having to ask several times, and to unambiguously ID your org, which will help with citation and much more
 
+Identifiers look like: e.g. for IEDA
+   
 re3
-: `re3data.org/suggest`
+: `https://www.re3data.org/repository/r3d100010578`
 
 ror:
-:  `ror.org/request`
+:  `https://ror.org/02fjjnc15`
   
   
 - [ ] yes: please supply and we will parse it, then just ask for the fields it did not contain
