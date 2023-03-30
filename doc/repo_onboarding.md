@@ -34,10 +34,17 @@ A complete list of identifiers for our partners is [here](https://github.com/ear
        * ror.org/[request](https://docs.google.com/forms/d/e/1FAIpQLSdJYaMTCwS7muuTa-B_CnAtCSkKzt19lkirAKG4u7umH9Nosg/viewform)
 
 
-### likely- will need your repositories sitemap url, do you have one?
+### We will need your repository's sitemap URL, do you have one?
 #### yes: please provide so we can crawl your metadata
 #### no: more on that [here](https://github.com/ESIPFed/science-on-schema.org/blob/master/guides/GETTING-STARTED.md#sitemaps)
+
 #### you can also provide a robots.txt to limit scraping of your metadata
 
 ### Do you provide dataset landing pages, with metadata as suggested in the ESIPFed Sci on schema.org site?
 #### no: here are some [examples](https://github.com/ESIPFed/science-on-schema.org/tree/master/examples/dataset) to start with
+
+If you do not yet have schema.org Dataset metadata on your site, here is the Science On Schema [Getting Started](https://github.com/ESIPFed/science-on-schema.org/blob/master/guides/GETTING-STARTED.md) guidance. Even if you do have landing page, review the guidance.
+
+Now, if you have  schema.org Dataset data on your site, we are going to ask you to test the information in some tools,  and provide the links in the onboarding document.
+
+If you have not developed schema.org Dataset metadata, it can look complex, but it can be minimal, initially. But we would hope that Science On Schema can be used to more fully describe your data. If you are a partner, we can work with you on developing this information.
