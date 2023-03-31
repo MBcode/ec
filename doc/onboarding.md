@@ -19,9 +19,9 @@ jld -- no --> esipfed[see links on how to create this metadata] -- then --> good
 ##### as this ID can be reused much more easily than all the text
 
 ### We will need your repository's sitemap URL, do you have one?
-#### yes: please provide so we can crawl your metadata
+#### yes: please provide the URL so we can crawl your metadata
 #### no: more on that [here](https://github.com/ESIPFed/science-on-schema.org/blob/master/guides/GETTING-STARTED.md#sitemaps)
 #### you can also provide a robots.txt to limit scraping of your metadata
 
 ### Do you provide dataset landing pages, with metadata as suggested in the ESIPFed Sci on schema.org site?
-#### no: here are some [examples](https://github.com/ESIPFed/science-on-schema.org/tree/master/examples/dataset) to start with
+#### no: Here is a [Getting Started](https://github.com/ESIPFed/science-on-schema.org/blob/master/guides/GETTING-STARTED.md) and some [example json-LD](https://github.com/ESIPFed/science-on-schema.org/tree/master/examples/dataset) to start with
