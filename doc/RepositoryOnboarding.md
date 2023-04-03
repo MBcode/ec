@@ -23,11 +23,11 @@ What does [GeoCODES](https://www.earthcube.org/geocodes)/[DeCODER](https://www.e
 
 Section 2:
 
-What we need from you to start
+What we need from your to start
 
-What do we need to help assess you data
+What do we need to help assess your data
 
-What do we need to help assess you Schema.org Dataset Metadata
+What do we need to help assess your Schema.org Dataset Metadata
 
 What we expect once we start
 
@@ -50,10 +50,39 @@ We need some editable location to store the information. A google sheet with a f
 
 Section 1:
 
-WHAT THE HELL DOES GEOCODES DO!!!! IN SIMPLE LANGUAGE.SIMPLE. Non Techy. One or two paragraphs. Why would anyone work with us? Wordsmithing this will be a kenton/luigi/christina task. But initially this is a tech team member task. 
+Non Techy. One or two paragraphs. Why would anyone work with us? Wordsmithing this will be a kenton/luigi/christina task. But initially this is a tech team member task. 
+
+  
 
 
-### Section 2:
+Link above: <https://www.earthcube.org/geocodes> starts with:
+
+**What is GeoCODES?**
+
+**​**
+
+[GeoCODES](https://geocodes.earthcube.org/) is an NSF Earthcube program effort to better enable cross-domain discovery of and access to geoscience data and research tools. GeoCODES is made up of three components respectively:
+
+- An evolving standard for exposing data called[ science on schema](https://github.com/ESIPFed/science-on-schema.org)
+- A set of tools to index relevant data from partners within the Council of Data Facilities who have adopted science on schema, plus a [prototype portal](https://geocodes.earthcube.org/) to query that data
+- A Resource Registry by which to [register](https://addto.earthcube.org/) and [discover](http://www.earthcube.org/resourceregistry/) relevant tools
+
+And: <https://www.earthcube.org/decoder> starts with: DeCODER
+
+
+##### Democratized Cyberinfrastructure for Open Discovery to Enable Research
+
+**Standardize how scientific data is described**
+
+- Allow search engines for scientific data to support discoverability AND
+- Facilitate the usage of the data
+
+​The new NSF CSSI Democratized Cyberinfrastructure for Open Discovery to Enable Research (DeCODER) project will expand and extend the successful [**EarthCube GeoCODES**](https://geocodes.earthcube.org/) framework and community to unify data and tool description and reuse across geoscience domains.  ([See announcement](https://www.ncsa.illinois.edu/ncsa-leading-3-2-million-project-to-make-scientific-data-more-discoverable/).)
+
+
+
+
+### Section 2: as a [form](https://docs.google.com/forms/d/19-ZpdlJughMPiqSNU_BN5b11qB30SZsQB-bta56jl5c/prefill)
 
 
 #### What we need from the start,
@@ -72,7 +101,7 @@ If they have an identifier, then in future we can pull _some_ information from t
   - Datamanager/Technical
   - Others
 
-- Description
+- Description[:](https://dataoneorg.github.io/Education/bp_step/describe/)
 
   - What do you do
 
@@ -80,20 +109,27 @@ If they have an identifier, then in future we can pull _some_ information from t
 
   - Data
 
+    - Does your data have metadata?
     - How many files
-    - How many megabytes
+    - How many megabytes/gigabytes
     - what are the data types/formats
     - How frequently are is data updated/refreshed/added
     - API’s or methods (api, s3, ftp, http, etc).
 
-  - How does your community use and access your data, presently? Do the download to laptop, use from cloud, use in Community Infrastructure
 
-  - Links to how people are using your data (undergrad lab tutorials, notebooks, papers, etc)
+- How does your community use and access your data, presently? Do the download to laptop, use from cloud, use in Community Infrastructure
+- Links to how people are using your data (undergrad lab tutorials, notebooks, papers, etc)
+
 
 - Web Presence
 
   - Website
+
+    - Base Application (CKAN, DKAN, Geoportal)
+    - Or base framework, if custom.
+
   - Sitemap
+
   - API’s, and api documentation.
 
 
@@ -130,7 +166,7 @@ We need to assess your data, so we can understand the complexity of data used in
   - If you were looking for your data, how might you search for it?
 
 
-#### What do we need to help assess you Schema.org Dataset Metadata
+#### What do we need to help assess your Schema.org Dataset Metadata
 
 
 #### .
@@ -168,7 +204,7 @@ Steps for Evaluating:
 
 - Test a page in validator.schema.org,
 
-  - (insert) Links to several types of data
+  - (insert in onboarding) Links to several types of data
 
 - Grab XML sitemap
 
@@ -180,11 +216,32 @@ Steps for Evaluating:
 
 - Communicate with team that you think you are ready. 
 
-  - Provide links to sitemap and validator.schema.org
+  - The onboarding form should have sitemap and validator.schema.org
 
-- We will attempt to load and build a tenant.
+- We will check the data, possibly make suggestions
 
-- When tenant is built, 
+- We will attempt to load information from the sitemap into an instance,
+
+  - Validate that data loaded, provide basic report on the data loading (Decoder puts basic info in onboarding doc)
+
+    - Counts of information at each stage of loading
+
+    - What we think got lost along the way (issues with loading)
+
+    - Summaries of what made it into the graphstore
+
+      - Schema Types
+      - Keywords
+      - Variables
+
+    - Overall quality using SHACL tool and heatmap (Future)
+
+-   We will build a tenant user interface
+
+  - Test UI with the test terms
+  - See that dataset pages load
+
+- When tenant is ready, 
 
   - We provide links to datasets, tools in the tennant ui
   - Test with keywords.
@@ -192,6 +249,9 @@ Steps for Evaluating:
   - …. 
 
 
+#### Associating Data with Tools and Applications.
+
+This is under development. Basically, we need to create tool descriptions, and load them, and get them to link to your data, as appropriate.
 
 
 #### * * *
@@ -240,4 +300,4 @@ Once things are running, what we plan to provide:
 - Monthly Reports (under Development)
 
 - Yearly Reports  (under Development)
-
+ 
