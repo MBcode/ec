@@ -19,7 +19,7 @@ Early sketch of a decision-tree: [github.com/earthcube/ec/doc/onboarding.md](htt
 
 Section 1:
 
-What does geocodes do?
+What does [GeoCODES](https://www.earthcube.org/geocodes)/[DeCODER](https://www.earthcube.org/decoder) do?
 
 Section 2:
 
