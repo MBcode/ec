@@ -172,7 +172,7 @@ We need to assess your data, so we can understand the complexity of data used in
 #### .
 
 - We want to evaluate your implementation of  Science on schema
-- We want to review your implementation of an XML  sitemap, or a ‘sitegraph’
+- We want to review your implementation of an XML  sitemap, or a ‘[sitegraph](https://github.com/gleanerio/scheduler/blob/3455c4c00d7f83b3ddbe659c7096c860ae38ab3d/dagster/README.md?plain=1#L192)’
 - We need to have some high bandwidth conversations when we ask for revisions on the Schema or Sitemap
 - We need Input on search terms that can be used to access you data
 
@@ -192,7 +192,7 @@ There are tools assess your data:
 
 - If you have JSONLD on your pages: Link to validator.schema.org
 
-- Detailed Evaluation using SHACL
+- Detailed [Evaluation](https://github.com/ESIPFed/science-on-schema.org/tree/1d5f684cd5c65c6b528c386686090e2f2af7adb6/validation) using SHACL
 
   - Do we have a way to do a single SHACL?
 
@@ -202,7 +202,7 @@ Steps for Evaluating:
 
 - From your site, go to a dataset HTML page
 
-- Test a page in validator.schema.org,
+- Test a page in [validator.schema.org](https://validator.schema.org/),
 
   - (insert in onboarding) Links to several types of data
 
@@ -210,7 +210,7 @@ Steps for Evaluating:
 
   - Test a loc attribute  in validator.schema.org,
 
-- Run sitemap checker
+- Run sitemap [checker](https://www.xml-sitemaps.com/validate-xml-sitemap.html)
 
 - (future) Evaluate in SHACL
 
