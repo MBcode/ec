@@ -23,7 +23,7 @@ What does [GeoCODES](https://www.earthcube.org/geocodes)/[DeCODER](https://www.e
 
 Section 2:
 
-What we need from your to start
+What we need from you to start
 
 What do we need to help assess your data
 
