@@ -3,8 +3,8 @@
 ## decision-tree:
 ```mermaid
 flowchart TD;
-ror[do you have an org id?] -- yes --> process[we will process/use];
-ror -- no --> create[please create one] -- then --> process;
+ror[do you have an org id?] -- yes --> process[answer some more questions];
+ror -- no --> create[useful to create one] -- then --> process;
 process -- next --> sitemap[do you have a sitemap] -- yes --> crawl[we can start crawling];
 sitemap -- no --> mksm[please create a sitemap] -- then --> crawl;
 crawl -- also --> jld[do all of it's pages have embedded metadata?];
