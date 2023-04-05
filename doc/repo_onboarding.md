@@ -12,7 +12,8 @@ jld -- yes --> good[done for now];
 jld -- no --> esipfed[see links on how to create this metadata] -- then --> good;
 ```
 
-### Do you have a ROR or re3data or other organizational ID?
+## [Describing a Repository](https://github.com/ESIPFed/science-on-schema.org/blob/master/guides/DataRepository.md)
+#### Do you have a ROR or re3data or other organizational ID?
 
 Identifiers look like: e.g. for IEDA
    
