@@ -29,10 +29,12 @@ A complete list of identifiers for our partners is [here](https://github.com/ear
   
 - [ ] yes: please supply and we will parse it, then just ask for the fields it did not contain
     * enter here ________________
-- [ ] no: please create one: with one or both of these:  
+- [ ] no: It is good practice create one: with one or both of these:  
    * The guidance on how to create an identifier is here:
        * re3data.org/[suggest](https://www.re3data.org/suggest)
        * ror.org/[request](https://docs.google.com/forms/d/e/1FAIpQLSdJYaMTCwS7muuTa-B_CnAtCSkKzt19lkirAKG4u7umH9Nosg/viewform)
+       
+Either way, we still have a few more questions in this [form](https://docs.google.com/forms/d/19-ZpdlJughMPiqSNU_BN5b11qB30SZsQB-bta56jl5c/prefill), that go to the extent of getting use-case examples for your repo
 
 
 ### We will need your repository's sitemap URL, do you have one?
