@@ -37,10 +37,12 @@ A complete list of identifiers for our partners is [here](https://github.com/ear
        
 Either way, we still have a few more questions in this [form](https://docs.google.com/forms/d/19-ZpdlJughMPiqSNU_BN5b11qB30SZsQB-bta56jl5c/prefill), that go to the extent of getting use-case examples for your repo
 
+In the end we should have most of the information needed to make a Science-on-schema.org [DataRepository](https://github.com/ESIPFed/science-on-schema.org/blob/master/guides/DataRepository.md) record for you, if you don't already have, that should look like one of [these](https://github.com/MBcode/ec/tree/master/crawl/org)
+
 
 ### We will need your repository's sitemap URL, do you have one?
 #### yes: please provide so we can crawl your metadata
-#### no: more on that [here](https://github.com/ESIPFed/science-on-schema.org/blob/master/guides/GETTING-STARTED.md#sitemaps)
+#### no: more on that [sitemaps here](https://github.com/ESIPFed/science-on-schema.org/blob/master/guides/GETTING-STARTED.md#sitemaps)
 
 #### you can also provide a robots.txt to limit scraping of your metadata
 
