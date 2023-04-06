@@ -1,0 +1,147 @@
+Failed to extract rdfa, raises 'str' object has no attribute 'decode'
+Traceback (most recent call last):
+  File "/home/ubuntu/.local/lib/python3.8/site-packages/extruct/_extruct.py", line 108, in extract
+    output[syntax] = list(extract(document, base_url=base_url))
+  File "/home/ubuntu/.local/lib/python3.8/site-packages/extruct/rdfa.py", line 154, in extract_items
+    jsonld_string = g.serialize(format='json-ld', auto_compact=not expanded).decode('utf-8')
+AttributeError: 'str' object has no attribute 'decode'
+{
+  "dublincore": [
+    {
+      "elements": [
+        {
+          "URI": "http://purl.org/dc/elements/1.1/description",
+          "content": "United States Antarctic Program Data Center (USAP-DC)",
+          "name": "Description"
+        }
+      ],
+      "namespaces": {},
+      "terms": []
+    }
+  ],
+  "json-ld": [
+    {
+      "@context": {
+        "@vocab": "https://schema.org/",
+        "gdx": "https://geodex.org/voc/"
+      },
+      "@id": "https://doi.org/10.17616/R31898",
+      "@type": [
+        "Service",
+        "Organization"
+      ],
+      "additionalType": "gdx:ResearchRepositoryService",
+      "category": [
+        "Earth Science, Polar Science"
+      ],
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "contactType": "technical support",
+        "email": "info@usap-dc.org",
+        "name": "USAP-DC Manager",
+        "url": "https://www.usap-dc.org/contact"
+      },
+      "description": "The U.S. Antarctic Program Data Center (USAP-DC) supports investigators funded by the National Science Foundation in documenting, preserving, and disseminating their research results. We provide a central USAP Project Catalog for all projects funded by the NSF Antarctic program and a Data Repository for research datasets derived from these projects. Data managed include the NSF research related glaciology data collection formerly managed  through NSIDC. We register datasets in the Antarctic Metadata Directory (AMD) to comply with the Antarctic Treaty and represent the U.S. in Scientific Committee on Antarctic Research (SCAR) activities.",
+      "funder": {
+        "@id": "https://dx.doi.org/10.13039/100000087",
+        "@type": "Organization",
+        "alternateName": "NSF-OPP",
+        "legalName": "Division Of Polar Programs",
+        "parentOrganization": {
+          "@id": "https://dx.doi.org/10.13039/100000001",
+          "@type": "Organization",
+          "alternateName": "NSF",
+          "legalName": "National Science Foundation",
+          "url": "https://www.nsf.gov"
+        },
+        "url": "https://www.nsf.gov"
+      },
+      "hasOfferCatalog": {
+        "@type": "OfferCatalog",
+        "itemListElement": [
+          {
+            "@id": "https://www.usap-dc.org/search",
+            "@type": "DataCatalog",
+            "audience": {
+              "@type": "Audience",
+              "audienceType": "public",
+              "name": "General Public"
+            },
+            "name": "US Antarctic Program Data Center Catlog"
+          }
+        ],
+        "name": "USAP-DC Catalog"
+      },
+      "identifier": {
+        "@type": "PropertyValue",
+        "propertyID": "https://purl.org/spar/datacite/doi",
+        "url": "https://doi.org/10.17616/R31898",
+        "value": "10.17616/R31898"
+      },
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://www.usap-dc.org/static/imgs/header/usap_dc_logo.png"
+      },
+      "name": "U.S. Antarctic Program Data Center",
+      "parentOrganization": {
+        "@id": "https://viaf.org/viaf/142992181/",
+        "@type": "Organization",
+        "address": {
+          "@type": "PostalAddress",
+          "addressCountry": "USA",
+          "addressLocality": "Palisades",
+          "addressRegion": "NY",
+          "postalCode": "10964-1000",
+          "streetAddress": "61 Route 9W"
+        },
+        "name": "Lamont-Doherty Earth Observatory",
+        "parentOrganization": {
+          "@id": "https://viaf.org/viaf/156836332/",
+          "@type": "Organization",
+          "legalName": "Columbia University",
+          "url": "https://www.columbia.edu/"
+        },
+        "url": "https://www.ldeo.columbia.edu/"
+      },
+      "potentialAction": [
+        {
+          "@id": "https://www.earthchem.org/data-access/",
+          "@type": "SearchAction",
+          "additionalType": "gdx:SearchService",
+          "description": "Search for datasets in the EarthChem Library repository",
+          "name": "EarthChem Library Search",
+          "target": {
+            "@type": "EntryPoint",
+            "url": "https://www.earthchem.org/data-access/"
+          }
+        },
+        {
+          "@id": "https://www.usap-dc.org/submit",
+          "@type": "CreateAction",
+          "additionalType": "gdx:SubmissionService",
+          "description": "Web application to support submitting a dataset to USAP-DC or Registering a project with the Antarctic Metadata Directory. Requires a sign in using Google or ORCID (free registration). Datasets will be registered with a DOI after acceptance for accession to repository.",
+          "name": "Submit Data to US Antarctic Program Data Center",
+          "target": {
+            "@type": "EntryPoint",
+            "url": "https://www.usap-dc.org/submit"
+          }
+        }
+      ],
+      "publishingPrinciples": {
+        "@id": "https://www.iedadata.org/help/data-publication/",
+        "@type": "DigitalDocument",
+        "additionalType": "gdx:Protocol-TermsOfUse",
+        "fileFormat": "text/html",
+        "name": "Data Publication Policy",
+        "url": "https://www.iedadata.org/help/data-publication/"
+      },
+      "sameAs": "https://www.re3data.org/repository/r3d100010660",
+      "url": "https://www.usap-dc.org/home"
+    }
+  ],
+  "microdata": [],
+  "microformat": [],
+  "opengraph": [],
+  "status": "200 OK",
+  "url": "https://www.usap-dc.org"
+}

@@ -1,0 +1,56 @@
+Failed to extract rdfa, raises 'str' object has no attribute 'decode'
+Traceback (most recent call last):
+  File "/home/ubuntu/.local/lib/python3.8/site-packages/extruct/_extruct.py", line 108, in extract
+    output[syntax] = list(extract(document, base_url=base_url))
+  File "/home/ubuntu/.local/lib/python3.8/site-packages/extruct/rdfa.py", line 154, in extract_items
+    jsonld_string = g.serialize(format='json-ld', auto_compact=not expanded).decode('utf-8')
+AttributeError: 'str' object has no attribute 'decode'
+{
+  "dublincore": [
+    {
+      "elements": [
+        {
+          "URI": "http://purl.org/dc/elements/1.1/description",
+          "content": "Online hub for data, research, education, and discussion about paleoenvironments.",
+          "name": "description"
+        }
+      ],
+      "namespaces": {},
+      "terms": []
+    }
+  ],
+  "json-ld": [],
+  "microdata": [],
+  "microformat": [],
+  "opengraph": [
+    {
+      "namespace": {
+        "og": "http://ogp.me/ns#"
+      },
+      "properties": [
+        [
+          "og:url",
+          "https://www.neotomadb.org/"
+        ],
+        [
+          "og:type",
+          "website"
+        ],
+        [
+          "og:title",
+          "NeotomaDB - Home Page"
+        ],
+        [
+          "og:description",
+          "Online hub for data, research, education, and discussion about paleoenvironments."
+        ],
+        [
+          "og:image",
+          "https://www.neotomadb.org/assets/uploads/images/neotoma-og-04-2022.jpg"
+        ]
+      ]
+    }
+  ],
+  "status": "200 OK",
+  "url": "https://neotomadb.org"
+}

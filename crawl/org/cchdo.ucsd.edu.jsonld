@@ -1,0 +1,33 @@
+Failed to extract rdfa, raises 'str' object has no attribute 'decode'
+Traceback (most recent call last):
+  File "/home/ubuntu/.local/lib/python3.8/site-packages/extruct/_extruct.py", line 108, in extract
+    output[syntax] = list(extract(document, base_url=base_url))
+  File "/home/ubuntu/.local/lib/python3.8/site-packages/extruct/rdfa.py", line 154, in extract_items
+    jsonld_string = g.serialize(format='json-ld', auto_compact=not expanded).decode('utf-8')
+AttributeError: 'str' object has no attribute 'decode'
+{
+  "dublincore": [
+    {
+      "elements": [],
+      "namespaces": {},
+      "terms": []
+    }
+  ],
+  "json-ld": [
+    {
+      "@context": "http://schema.org",
+      "@type": "WebSite",
+      "potentialAction": {
+        "@type": "SearchAction",
+        "query-input": "required name=search_term_string",
+        "target": "https://cchdo.ucsd.edu/search?q={search_term_string}"
+      },
+      "url": "https://cchdo.ucsd.edu/"
+    }
+  ],
+  "microdata": [],
+  "microformat": [],
+  "opengraph": [],
+  "status": "200 OK",
+  "url": "https://cchdo.ucsd.edu"
+}

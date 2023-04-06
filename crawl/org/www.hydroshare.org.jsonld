@@ -1,0 +1,195 @@
+Failed to extract rdfa, raises 'str' object has no attribute 'decode'
+Traceback (most recent call last):
+  File "/home/ubuntu/.local/lib/python3.8/site-packages/extruct/_extruct.py", line 108, in extract
+    output[syntax] = list(extract(document, base_url=base_url))
+  File "/home/ubuntu/.local/lib/python3.8/site-packages/extruct/rdfa.py", line 154, in extract_items
+    jsonld_string = g.serialize(format='json-ld', auto_compact=not expanded).decode('utf-8')
+AttributeError: 'str' object has no attribute 'decode'
+{
+  "dublincore": [
+    {
+      "elements": [
+        {
+          "URI": "http://purl.org/dc/elements/1.1/description",
+          "content": "",
+          "name": "description"
+        }
+      ],
+      "namespaces": {},
+      "terms": []
+    }
+  ],
+  "json-ld": [
+    {
+      "@context": {
+        "@vocab": "http://schema.org/",
+        "datacite": "http://purl.org/spar/datacite/",
+        "gdx": "http://geodex.org/voc/",
+        "geolink": "http://schema.geolink.org/1.0/base/main#",
+        "schema": "http://schema.org/"
+      },
+      "@id": "https://www.hydroshare.org",
+      "@type": [
+        "Service",
+        "Organization",
+        "DataCatalog"
+      ],
+      "additionalType": "https://geodex.org/voc/ResearchRepositoryService",
+      "availableChannel": [
+        {
+          "@type": "ServiceChannel",
+          "providesService": {
+            "@type": "Service",
+            "additionalType": "https://geodex.org/voc/SearchService",
+            "description": "Search hydrologic resources shared with the community.",
+            "name": "HydroShare Discovery",
+            "potentialAction": {
+              "@type": "SearchAction",
+              "query-input": {
+                "@type": "PropertyValueSpecification",
+                "valueName": "query_string",
+                "valueRequired": true
+              },
+              "target": "https://www.hydroshare.org/search/?q={query_string}"
+            }
+          },
+          "serviceUrl": "http://www.hydroshare.org/search"
+        },
+        {
+          "@type": "ServiceChannel",
+          "providesService": {
+            "@type": "Service",
+            "additionalType": "https://geodex.org/voc/SyndicationService",
+            "description": "A Sitemap XML providing access to all of the resources for harvesting",
+            "name": "Sitemap XML",
+            "potentialAction": {
+              "@type": "ConsumeAction",
+              "object": {
+                "@type": "DigitalDocument",
+                "fileFormat": "application/xml",
+                "url": "https://www.hydroshare.org/sitemap.xml"
+              },
+              "target": {
+                "@type": "EntryPoint",
+                "additionalType": "https://geodex.org/voc/SitemapXML",
+                "urlTemplate": "https://www.hydroshare.org/sitemap.xml?page={page}"
+              }
+            }
+          },
+          "serviceUrl": "https://www.hydroshare.org/sitemap.xml"
+        },
+        {
+          "@type": "ServiceChannel",
+          "providesService": {
+            "@type": "Service",
+            "description": "Programmatically search and filter HydroShare datasets via a JSON REST API",
+            "name": "HydroShare Resources REST API",
+            "potentialAction": {
+              "@type": "SearchAction",
+              "target": {
+                "@type": "EntryPoint",
+                "contentType": [
+                  "application/json"
+                ],
+                "description": "Programmatically search and filter HydroShare datasets via a JSON REST API",
+                "httpMethod": [
+                  "GET",
+                  "POST"
+                ],
+                "urlTemplate": "https://hydroshare.org/hsapi/resource"
+              }
+            }
+          },
+          "serviceUrl": "https://hydroshare.org/hsapi/resource"
+        }
+      ],
+      "category": [
+        "Hydrology",
+        "Hydrologic Modeling",
+        "GIS"
+      ],
+      "description": "CUAHSI HydroShare is an online collaboration environment for sharing data, models, and code.",
+      "funder": {
+        "@id": "https://dx.doi.org/10.13039/100000141",
+        "@type": "Organization",
+        "alternateName": "OCE",
+        "identifier": {
+          "@type": "PropertyValue",
+          "propertyID": "http://purl.org/spar/datacite/doi",
+          "url": "http://doi.org/10.13039/100000160",
+          "value": "10.13039/100000160"
+        },
+        "legalName": "Division of Earth Sciences",
+        "parentOrganization": {
+          "@id": "http://dx.doi.org/10.13039/100000085",
+          "@type": "Organization",
+          "alternateName": "NSF-GEO",
+          "identifier": {
+            "@type": "PropertyValue",
+            "propertyID": "http://purl.org/spar/datacite/doi",
+            "url": "https://doi.org/10.13039/100000085",
+            "value": "10.13039/100000085"
+          },
+          "legalName": "Directorate for Geosciences",
+          "parentOrganization": {
+            "@id": "http://dx.doi.org/10.13039/100000001",
+            "@type": "Organization",
+            "alternateName": "NSF",
+            "identifier": {
+              "@type": "PropertyValue",
+              "propertyID": "http://purl.org/spar/datacite/doi",
+              "url": "https://doi.org/10.13039/100000001",
+              "value": "10.13039/100000001"
+            },
+            "legalName": "National Science Foundation",
+            "url": "http://www.nsf.gov"
+          },
+          "url": "http://www.nsf.gov"
+        },
+        "url": "https://www.nsf.gov/div/index.jsp?div=EAR"
+      },
+      "legalName": "CUAHSI HydroShare",
+      "name": "CUAHSI HydroShare",
+      "parentOrganization": {
+        "@id": "http://www.cuahsi.org",
+        "@type": "Organization",
+        "address": {
+          "@type": "PostalAddress",
+          "addressCountry": "USA",
+          "addressLocality": "Cambridge",
+          "addressRegion": "MA",
+          "postalCode": "02140",
+          "streetAddress": "150 CambridgePark Drive, Suite 203"
+        },
+        "legalName": "Consortium of Universities for the Advancement of Hydrologic Science, Inc",
+        "name": "CUAHSI",
+        "url": "http://www.cuahsi.org"
+      },
+      "provider": {
+        "@id": "https://www.hydroshare.org"
+      },
+      "publishingPrinciples": [
+        {
+          "@type": "DigitalDocument",
+          "additionalType": "https://geodex.org/voc/Protocol-TermsOfUse",
+          "fileFormat": "text/html",
+          "name": "Terms of Use",
+          "url": "https://help.hydroshare.org/about-hydroshare/policies/terms-of-use/"
+        },
+        {
+          "@type": "DigitalDocument",
+          "additionalType": "https://geodex.org/voc/Protocol-ResourceSubmissionPolicy",
+          "fileFormat": "text/html",
+          "name": "HydroShare Publication Agreement",
+          "url": "https://help.hydroshare.org/about-hydroshare/policies/hydroshare-publication-agreement/"
+        }
+      ],
+      "url": "https://www.hydroshare.org"
+    }
+  ],
+  "microdata": [],
+  "microformat": [],
+  "opengraph": [],
+  "status": "200 OK",
+  "url": "https://www.hydroshare.org"
+}

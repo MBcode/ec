@@ -1,0 +1,146 @@
+Failed to extract rdfa, raises 'str' object has no attribute 'decode'
+Traceback (most recent call last):
+  File "/home/ubuntu/.local/lib/python3.8/site-packages/extruct/_extruct.py", line 108, in extract
+    output[syntax] = list(extract(document, base_url=base_url))
+  File "/home/ubuntu/.local/lib/python3.8/site-packages/extruct/rdfa.py", line 154, in extract_items
+    jsonld_string = g.serialize(format='json-ld', auto_compact=not expanded).decode('utf-8')
+AttributeError: 'str' object has no attribute 'decode'
+{
+  "dublincore": [
+    {
+      "elements": [
+        {
+          "URI": "http://purl.org/dc/elements/1.1/description",
+          "content": "Unidata provides data services, tools, and cyberinfrastructure leadership that advance earth-system science, and enhance educational opportunities. ",
+          "name": "description"
+        }
+      ],
+      "namespaces": {},
+      "terms": []
+    }
+  ],
+  "json-ld": [
+    {
+      "@context": "http://schema.org/",
+      "@type": "Organization",
+      "alternateName": "UCAR Unidata",
+      "contactPoint": [
+        {
+          "@type": "ContactPoint",
+          "contactType": "technical support",
+          "email": "support@unidata.ucar.edu",
+          "name": "Unidata Support",
+          "url": "http://www.unidata.ucar.edu/support/"
+        },
+        {
+          "@type": "ContactPoint",
+          "areaServed": "US",
+          "contactOption": "TollFree",
+          "contactType": "technical support",
+          "telephone": "+1-303-497-8643"
+        }
+      ],
+      "description": "Unidata is a diverse community of education and research institutions with the common goal of sharing geoscience data and the tools to access and visualize that data. For more than 30 years, Unidata has been providing data, software tools, and support to enhance Earth-system education and research. Funded primarily by the National Science Foundation (NSF), Unidata is one of the University Corporation for Atmospheric Research (UCAR)'s Community Programs (UCP).",
+      "funder": {
+        "@type": "Organization",
+        "name": "NSF",
+        "url": "http://www.nsf.gov"
+      },
+      "logo": "http://www.unidata.ucar.edu/images/logos/uniLogo.png",
+      "mainEntityOfPage": {
+        "@type": "DataCatalog",
+        "description": "A THREDDS catalog of the data currently available from the Unidata hosted THREDDS Data Server (TDS). Most of the real-time data available over the Unidata Internet Data Distribution (IDD) is held on, and served by, this TDS for a limited time (generally a few weeks) before it is removed to make room for the latest data.",
+        "fileformat": "XML",
+        "url": "http://thredds.ucar.edu/thredds/catalog.xml"
+      },
+      "makesOffer": [
+        {
+          "@type": "Offer",
+          "itemOffered": {
+            "@type": "Product",
+            "alternateName": "network Common Data Form",
+            "description": "NetCDF is a set of interfaces for array-oriented data access and a freely distributed collection of data access libraries for C, Fortran, C++, Java, and other languages. The netCDF libraries support a machine-independent format for representing scientific data. Together, the interfaces, libraries, and format support the creation, access, and sharing of scientific data.",
+            "name": "netCDF",
+            "offers": {
+              "@type": "Offer",
+              "price": "0"
+            },
+            "url": "https://doi.org/10.5065/D6H70CW6"
+          }
+        },
+        {
+          "@type": "Offer",
+          "itemOffered": {
+            "@type": "Product",
+            "description": "The Unidata Local Data Manager (LDM) includes network client and server programs designed for event-driven data distribution. It is a fundamental component of the Unidata Internet Data Distribution (IDD) system for distributing and processing near-real-time data products.",
+            "name": "LDM",
+            "offers": {
+              "@type": "Offer",
+              "price": "0"
+            },
+            "url": "https://doi.org/10.5065/D64J0CT0"
+          }
+        },
+        {
+          "@type": "Offer",
+          "itemOffered": {
+            "@type": "Product",
+            "description": "The THREDDS Data Server (TDS) is a web server that provides metadata and data access for scientific datasets, using a variety of remote data access protocols.\tIt is built on the netCDF-Java library which implements the Common Data Model (CDM)\tand provides an interface to data stored in netCDF files and other types of\tscientific data formats.",
+            "name": "THREDDS Data Server (TDS)",
+            "offers": {
+              "@type": "Offer",
+              "price": "0"
+            },
+            "url": "https://doi.org/10.5065/D6N014KG"
+          }
+        },
+        {
+          "@type": "Offer",
+          "itemOffered": {
+            "@type": "Product",
+            "description": "The Unidata Integrated\tData Viewer (IDV) is a software application for analyzing and\tdisplaying geoscience data. The IDV emphasizes interactive\tthree-dimensional visualization and integration of diverse data\ttypes.",
+            "name": "Integrated Data Viewer (IDV)",
+            "offers": {
+              "@type": "Offer",
+              "price": "0"
+            },
+            "url": "https://doi.org/10.5065/D6RN35XM"
+          }
+        }
+      ],
+      "memberOf": {
+        "@type": "ProgramMembership",
+        "hostingOrganization": {
+          "@type": "Organization",
+          "name": "RE3Data",
+          "url": "http://www.re3data.org"
+        },
+        "programName": "EarthCube CDF Registry"
+      },
+      "name": "Unidata",
+      "parentOrganization": {
+        "@type": "Organization",
+        "alternateName": "UCAR",
+        "name": "University Corporation for Atmospheric Research",
+        "url": "http://www.ucar.edu"
+      },
+      "potentialAction": {
+        "@type": "SearchAction",
+        "query-input": "required name=search_term_string",
+        "target": "https://www.unidata.ucar.edu/search?q={search_term_string}"
+      },
+      "sameAs": [
+        "https://twitter.com/unidata",
+        "https://plus.google.com/105982992127916444326",
+        "https://www.facebook.com/Unidata",
+        "https://www.youtube.com/user/unidatanews"
+      ],
+      "url": "http://www.unidata.ucar.edu"
+    }
+  ],
+  "microdata": [],
+  "microformat": [],
+  "opengraph": [],
+  "status": "200 200",
+  "url": "https://www.unidata.ucar.edu"
+}

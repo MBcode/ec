@@ -1,0 +1,169 @@
+Failed to extract rdfa, raises 'str' object has no attribute 'decode'
+Traceback (most recent call last):
+  File "/home/ubuntu/.local/lib/python3.8/site-packages/extruct/_extruct.py", line 108, in extract
+    output[syntax] = list(extract(document, base_url=base_url))
+  File "/home/ubuntu/.local/lib/python3.8/site-packages/extruct/rdfa.py", line 154, in extract_items
+    jsonld_string = g.serialize(format='json-ld', auto_compact=not expanded).decode('utf-8')
+AttributeError: 'str' object has no attribute 'decode'
+{
+  "dublincore": [
+    {
+      "elements": [
+        {
+          "URI": "http://purl.org/dc/elements/1.1/description",
+          "content": "The EarthChem Library is a data repository that archives publishes and provides access to data pertaining to geoscience research.",
+          "name": "description"
+        }
+      ],
+      "namespaces": {},
+      "terms": []
+    }
+  ],
+  "json-ld": [
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@id": "https://www.earthchem.org/ecl/#breadcrumblist",
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            {
+              "@id": "https://www.earthchem.org/#listItem",
+              "@type": "ListItem",
+              "item": {
+                "@id": "https://www.earthchem.org/",
+                "@type": "WebPage",
+                "description": "Search. Synthesize. Contribute - Community-driven services to preserve, access, visualize and search geochemical data. Contribute your own data today!",
+                "name": "Home",
+                "url": "https://www.earthchem.org/"
+              },
+              "nextItem": "https://www.earthchem.org/ecl/#listItem",
+              "position": 1
+            },
+            {
+              "@id": "https://www.earthchem.org/ecl/#listItem",
+              "@type": "ListItem",
+              "item": {
+                "@id": "https://www.earthchem.org/ecl/",
+                "@type": "WebPage",
+                "description": "The EarthChem Library is a data repository that archives publishes and provides access to data pertaining to geoscience research.",
+                "name": "EarthChem Library",
+                "url": "https://www.earthchem.org/ecl/"
+              },
+              "position": 2,
+              "previousItem": "https://www.earthchem.org/#listItem"
+            }
+          ]
+        },
+        {
+          "@id": "https://www.earthchem.org/#organization",
+          "@type": "Organization",
+          "image": {
+            "@id": "https://www.earthchem.org/#organizationLogo"
+          },
+          "logo": {
+            "@id": "https://www.earthchem.org/#organizationLogo",
+            "@type": "ImageObject",
+            "url": "http://earthchem.org/wp-content/uploads/2020/12/favicon-halo-ed.png"
+          },
+          "name": "EarthChem",
+          "sameAs": [
+            "https://twitter.com/EarthChem",
+            "https://www.youtube.com/channel/UCdjKE9YppwGAbpsfGDhVvIA"
+          ],
+          "url": "https://www.earthchem.org/"
+        },
+        {
+          "@id": "https://www.earthchem.org/ecl/#webpage",
+          "@type": "WebPage",
+          "breadcrumb": {
+            "@id": "https://www.earthchem.org/ecl/#breadcrumblist"
+          },
+          "dateModified": "2022-06-18T01:43:26+00:00",
+          "datePublished": "2020-08-25T14:55:48+00:00",
+          "description": "The EarthChem Library is a data repository that archives publishes and provides access to data pertaining to geoscience research.",
+          "image": {
+            "@id": "https://www.earthchem.org/#mainImage",
+            "@type": "ImageObject",
+            "caption": "Lamont Doherty Earth Observatory Geochemistry Laboratory Mass Spectrometer",
+            "height": 160,
+            "url": "https://www.earthchem.org/wp-content/uploads/2021/01/LDEO-MassSpec-e1610132118473.png",
+            "width": 640
+          },
+          "inLanguage": "en-US",
+          "isPartOf": {
+            "@id": "https://www.earthchem.org/#website"
+          },
+          "name": "EarthChem- EarthChem Library",
+          "primaryImageOfPage": {
+            "@id": "https://www.earthchem.org/ecl/#mainImage"
+          },
+          "url": "https://www.earthchem.org/ecl/"
+        },
+        {
+          "@id": "https://www.earthchem.org/#website",
+          "@type": "WebSite",
+          "description": "Open Data for Geochemistry",
+          "inLanguage": "en-US",
+          "name": "EarthChem",
+          "publisher": {
+            "@id": "https://www.earthchem.org/#organization"
+          },
+          "url": "https://www.earthchem.org/"
+        }
+      ]
+    }
+  ],
+  "microdata": [],
+  "microformat": [
+    {
+      "properties": {},
+      "type": [
+        "h-entry"
+      ]
+    }
+  ],
+  "opengraph": [
+    {
+      "namespace": {
+        "og": "http://ogp.me/ns#"
+      },
+      "properties": [
+        [
+          "og:locale",
+          "en_US"
+        ],
+        [
+          "og:site_name",
+          "EarthChem - Open Data for Geochemistry"
+        ],
+        [
+          "og:type",
+          "website"
+        ],
+        [
+          "og:title",
+          "EarthChem- EarthChem Library"
+        ],
+        [
+          "og:description",
+          "The EarthChem Library is a data repository that archives publishes and provides access to data pertaining to geoscience research."
+        ],
+        [
+          "og:url",
+          "https://www.earthchem.org/ecl/"
+        ],
+        [
+          "og:image",
+          "https://earthchem.org/wp-content/uploads/2020/12/favicon-halo-ed.png"
+        ],
+        [
+          "og:image:secure_url",
+          "https://earthchem.org/wp-content/uploads/2020/12/favicon-halo-ed.png"
+        ]
+      ]
+    }
+  ],
+  "status": "200 OK",
+  "url": "https://ecl.earthchem.org"
+}

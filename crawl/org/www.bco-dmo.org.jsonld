@@ -1,0 +1,181 @@
+Failed to extract rdfa, raises 'str' object has no attribute 'decode'
+Traceback (most recent call last):
+  File "/home/ubuntu/.local/lib/python3.8/site-packages/extruct/_extruct.py", line 108, in extract
+    output[syntax] = list(extract(document, base_url=base_url))
+  File "/home/ubuntu/.local/lib/python3.8/site-packages/extruct/rdfa.py", line 154, in extract_items
+    jsonld_string = g.serialize(format='json-ld', auto_compact=not expanded).decode('utf-8')
+AttributeError: 'str' object has no attribute 'decode'
+{
+  "dublincore": [
+    {
+      "elements": [],
+      "namespaces": {},
+      "terms": []
+    }
+  ],
+  "json-ld": [
+    {
+      "@context": "https://schema.org/",
+      "@id": "https://www.bco-dmo.org",
+      "@type": [
+        "ResearchProject",
+        "DataCatalog"
+      ],
+      "address": {
+        "@type": "PostalAddress",
+        "addressCountry": "USA",
+        "addressLocality": "Woods Hole",
+        "addressRegion": "MA",
+        "postalCode": "02543",
+        "streetAddress": "WHOI, MS#36, Shiverick House 11 School St."
+      },
+      "alternateName": "BCO-DMO",
+      "contactPoint": {
+        "@id": "https://www.bco-dmo.org/about-us",
+        "@type": "ContactPoint",
+        "contactType": "customer support",
+        "email": "info@bco-dmo.org",
+        "name": "Support",
+        "url": "https:/www.bco-dmo.org/about-us"
+      },
+      "description": "The BCO-DMO resource catalog offers free and open access to publicly funded research products whose field of study are biological and chemical oceanography.",
+      "foundingDate": "2006-09-01",
+      "funder": {
+        "@id": "https://dx.doi.org/10.13039/100000141",
+        "@type": "Organization",
+        "alternateName": "OCE",
+        "identifier": {
+          "@type": "PropertyValue",
+          "propertyID": "https://registry.identifiers.org/registry/doi",
+          "url": "https://doi.org/10.13039/100000141",
+          "value": "doi:10.13039/100000141"
+        },
+        "legalName": "Division of Ocean Sciences",
+        "parentOrganization": {
+          "@id": "http://dx.doi.org/10.13039/100000085",
+          "@type": "Organization",
+          "alternateName": "NSF-GEO",
+          "identifier": {
+            "@type": "PropertyValue",
+            "propertyID": "https://registry.identifiers.org/registry/doi",
+            "url": "https://doi.org/10.13039/100000085",
+            "value": "doi:10.13039/100000085"
+          },
+          "legalName": "Directorate for Geosciences",
+          "parentOrganization": {
+            "@id": "http://dx.doi.org/10.13039/100000001",
+            "@type": "Organization",
+            "alternateName": "NSF",
+            "identifier": {
+              "@type": "PropertyValue",
+              "propertyID": "https://registry.identifiers.org/registry/doi",
+              "url": "https://doi.org/10.13039/100000001",
+              "value": "doi:10.13039/100000001"
+            },
+            "legalName": "National Science Foundation",
+            "url": "http://www.nsf.gov"
+          },
+          "url": "http://www.nsf.gov"
+        },
+        "url": "https://www.nsf.gov/div/index.jsp?div=OCE"
+      },
+      "hasOfferCatalog": [
+        {
+          "@type": "OfferCatalog",
+          "itemListElement": [
+            {
+              "@id": "https://www.bco-dmo.org/search/dataset",
+              "@type": [
+                "DataCatalog",
+                "Service"
+              ],
+              "audience": {
+                "@type": "Audience",
+                "audienceType": "public",
+                "name": "General Public"
+              },
+              "name": "BCO-DMO Dataset Search",
+              "potentialAction": {
+                "@type": "SearchAction",
+                "query": "required",
+                "target": "https://www.bco-dmo.org/search/dataset/{query}"
+              },
+              "url": "https://www.bco-dmo.org/search/dataset"
+            },
+            {
+              "@id": "https://www.bco-dmo.org/search",
+              "@type": "Service",
+              "name": "BCO-DMO Website Search",
+              "potentialAction": {
+                "@type": "SearchAction",
+                "query": "required",
+                "target": "https://www.bco-dmo.org/search?&keywords={query}"
+              },
+              "url": "https://www.bco-dmo.org/search"
+            }
+          ],
+          "name": "BCO-DMO Resource Catalog"
+        }
+      ],
+      "identifier": {
+        "@type": "PropertyValue",
+        "propertyID": "https://registry.identifiers.org/registry/doi",
+        "url": "https://doi.org/10.17616/R37P4C",
+        "value": "doi:10.17616/R37P4C"
+      },
+      "knowsAbout": [
+        {
+          "@id": "http://www.wikidata.org/entity/Q18378619",
+          "@type": "DefinedTerm",
+          "name": "Biological Oceanography"
+        },
+        {
+          "@id": "http://www.wikidata.org/entity/Q528130",
+          "@type": "DefinedTerm",
+          "name": "Chemical Oceanography"
+        }
+      ],
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://www.bco-dmo.org/files/bcodmo/images/bco-dmo-words-BLUE.jpg"
+      },
+      "name": "Biological and Chemical Data Management Office",
+      "parentOrganization": {
+        "@id": "http://www.whoi.edu",
+        "@type": "Organization",
+        "address": {
+          "@type": "PostalAddress",
+          "addressCountry": "USA",
+          "addressLocality": "Woods Hole",
+          "addressRegion": "MA",
+          "postalCode": "02543",
+          "streetAddress": "266 Woods Hole Road"
+        },
+        "name": "Woods Hole Oceanographic Institution",
+        "url": "http://www.whoi.edu"
+      },
+      "publishingPrinciples": [
+        {
+          "@type": "DigitalDocument",
+          "name": "Terms of Use",
+          "url": "https://www.bco-dmo.org/terms-use"
+        }
+      ],
+      "sameAs": [
+        "https://doi.org/10.17616/R37P4C",
+        "http://www.re3data.org/repository/r3d100000012",
+        "https://twitter.com/BCODMO",
+        "https://www.linkedin.com/company/6378439/",
+        "https://doi.org/10.25504/fairsharing.pjj4gd",
+        "https://www.grid.ac/institutes/grid.507746.7",
+        "https://ror.org/00vcb3m70"
+      ],
+      "url": "https://www.bco-dmo.org"
+    }
+  ],
+  "microdata": [],
+  "microformat": [],
+  "opengraph": [],
+  "status": "200 OK",
+  "url": "https://www.bco-dmo.org"
+}
