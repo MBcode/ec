@@ -1,3 +1,57 @@
-{"@id": "ISNI JSON-LD", "@context": { "schema": "http:\/\/schema.org\/", "rdf": "http:\/\/www.w3.org\/1999\/02\/22-rdf-syntax-ns#", "rdfs": "http:\/\/www.w3.org\/2000\/01\/rdf-schema#", "madsrdf": "http:\/\/www.loc.gov\/mads\/rdf\/v1#", "dcterms": "http:\/\/purl.org\/dc\/terms\/", "isni": "https:\/\/isni.org\/ontology#", "owl": "http:\/\/www.w3.org\/2002\/07\/owl#", "xsd": "http:\/\/www.w3.org\/2001\/XMLSchema#", "foaf": "http:\/\/xmlns.com\/foaf\/0.1\/", "void": "http:\/\/rdfs.org\/ns\/void#"}, "@graph": [ {"@id": "https:\/\/isni.org\/isni\/0000000464831479","@type": "schema:Organization","rdfs:label": "ISNI 0000 0004 6483 1479","schema:identifier": {"@type": "schema:PropertyValue","schema:propertyID": {"@id": "http:\/\/www.wikidata.org\/entity\/Q423048"},"schema:value": "0000000464831479"},"schema:alternateName": ["National Ecological Observatory Network","NEON"]},{"@id": "https:\/\/isni.org\/isni\/0000000464831479\/about","foaf:primaryTopic": {"@id": "https:\/\/isni.org\/isni\/0000000464831479"},"void:inDataset": {"@id": "https:\/\/isni.org\/isni\/data"},"dcterms:license": {"@id": "http:\/\/creativecommons.org\/publicdomain\/zero\/1.0\/"}},{"@id": "https:\/\/isni.org\/isni\/0000000464831479\/about.jsonld","foaf:primaryTopic": {"@id": "https:\/\/isni.org\/isni\/0000000464831479"},"void:inDataset": {"@id": "https:\/\/isni.org\/isni\/data"},"dcterms:license": {"@id": "http:\/\/creativecommons.org\/publicdomain\/zero\/1.0\/"}}]} 
-
-
+{
+  "@id": "ISNI JSON-LD",
+  "@context": {
+    "schema": "http://schema.org/",
+    "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+    "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
+    "madsrdf": "http://www.loc.gov/mads/rdf/v1#",
+    "dcterms": "http://purl.org/dc/terms/",
+    "isni": "https://isni.org/ontology#",
+    "owl": "http://www.w3.org/2002/07/owl#",
+    "xsd": "http://www.w3.org/2001/XMLSchema#",
+    "foaf": "http://xmlns.com/foaf/0.1/",
+    "void": "http://rdfs.org/ns/void#"
+  },
+  "@graph": [
+    {
+      "@id": "https://isni.org/isni/0000000464831479",
+      "@type": "schema:Organization",
+      "rdfs:label": "ISNI 0000 0004 6483 1479",
+      "schema:identifier": {
+        "@type": "schema:PropertyValue",
+        "schema:propertyID": {
+          "@id": "http://www.wikidata.org/entity/Q423048"
+        },
+        "schema:value": "0000000464831479"
+      },
+      "schema:alternateName": [
+        "National Ecological Observatory Network",
+        "NEON"
+      ]
+    },
+    {
+      "@id": "https://isni.org/isni/0000000464831479/about",
+      "foaf:primaryTopic": {
+        "@id": "https://isni.org/isni/0000000464831479"
+      },
+      "void:inDataset": {
+        "@id": "https://isni.org/isni/data"
+      },
+      "dcterms:license": {
+        "@id": "http://creativecommons.org/publicdomain/zero/1.0/"
+      }
+    },
+    {
+      "@id": "https://isni.org/isni/0000000464831479/about.jsonld",
+      "foaf:primaryTopic": {
+        "@id": "https://isni.org/isni/0000000464831479"
+      },
+      "void:inDataset": {
+        "@id": "https://isni.org/isni/data"
+      },
+      "dcterms:license": {
+        "@id": "http://creativecommons.org/publicdomain/zero/1.0/"
+      }
+    }
+  ]
+} 
