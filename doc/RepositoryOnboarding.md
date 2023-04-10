@@ -17,7 +17,7 @@ Instead of getting org info in parts, make sure they have a [re3data.org](https:
 Early sketch of a decision-tree: [github.com/earthcube/ec/doc/repo_onboarding.md](https://github.com/earthcube/ec/blob/master/doc/repo_onboarding.md) 
 
 
-## Thoughts:
+## [TableOfContents](https://docs.google.com/document/d/1SSeh6deu5WYhTo526ZeSyZ4Mg_XpJyrvgLG7phO9YFU/edit#):
 
 Section 1:
 
@@ -50,7 +50,7 @@ Some thoughts on how this might work
 
 We need some editable location to store the information. A google sheet with a few tabs \[Who are we, Our data, Our Science on schema, Your Data in Geocodes], Template document, 
 
-Section 1:
+### Section 1:
 
 Non Techy. One or two paragraphs. Why would anyone work with us? Wordsmithing this will be a kenton/luigi/christina task. But initially this is a tech team member task. 
 
@@ -69,7 +69,9 @@ Link above: <https://www.earthcube.org/geocodes> starts with:
 - A set of tools to index relevant data from partners within the Council of Data Facilities who have adopted science on schema, plus a [prototype portal](https://geocodes.earthcube.org/) to query that data
 - A Resource Registry by which to [register](https://addto.earthcube.org/) and [discover](http://www.earthcube.org/resourceregistry/) relevant tools
 
-And: <https://www.earthcube.org/decoder> starts with: DeCODER
+And: <https://www.earthcube.org/decoder> starts with: 
+
+[DeCODER](ttps://www.earthcube.org/decoder)
 
 
 ##### Democratized Cyberinfrastructure for Open Discovery to Enable Research
