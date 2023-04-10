@@ -50,9 +50,9 @@ Some thoughts on how this might work
 
 We need some editable location to store the information. A google sheet with a few tabs \[Who are we, Our data, Our Science on schema, Your Data in Geocodes], Template document, 
 
-### Section 1:
+### Section 1: What is GeoCODES/DeCODER
 
-Non Techy. One or two paragraphs. Why would anyone work with us? Wordsmithing this will be a kenton/luigi/christina task. But initially this is a tech team member task. 
+Reasons to work with us: Making your work more [FAIR](https://www.go-fair.org/fair-principles/)
 
   
 
@@ -71,7 +71,7 @@ Link above: <https://www.earthcube.org/geocodes> starts with:
 
 And: <https://www.earthcube.org/decoder> starts with: 
 
-[DeCODER](ttps://www.earthcube.org/decoder)
+[DeCODER](https://www.earthcube.org/decoder)
 
 
 ##### Democratized Cyberinfrastructure for Open Discovery to Enable Research
