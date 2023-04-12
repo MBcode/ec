@@ -4,8 +4,8 @@
 import pandas as pd
 #dbg=True
 dbg=False
-#cache=True
-cache=False
+cache=True
+#cache=False
 import logging as log   #can switch print's to log.info's but Readme expects it to the stdout
 log.basicConfig(filename='parseConfig.log', encoding='utf-8', level=log.DEBUG,
                 format='%(asctime)s.%(msecs)03d %(levelname)s %(module)s - %(funcName)s: %(message)s', datefmt='%Y-%m-%d %H:%M:%S')
@@ -130,7 +130,12 @@ def crawl_cfg2counts(lc_fn="localConfig.yaml",nabu_fn="nabu",args=None): #could 
         sitemaps_count = ec.sitemaps_d_count(repo2url) #only ec fnc used, so will pull out
     else: #so don't have to pull each time we test
        #sitemaps_count={'https://opentopography.org/sitemap.xml': 780, 'http://ds.iris.edu/files/sitemap.xml': 28, 'https://www.hydroshare.org/sitemap-resources.xml': 13932, 'http://get.iedadata.org/doi/xml-sitemap.php': 10099, 'https://www2.earthref.org/MagIC/contributions.sitemap.xml': 4332, 'https://ecl.earthchem.org/sitemap.xml': 650, 'https://www.usap-dc.org/view/dataset/sitemap.xml': 963}
-        sitemaps_count={'balto': 0, 'neotomadb': 45936, 'decade': 0, 'renci': 0, 'c4rsois': 0, 'resource_registry': 0, 'datadiscoverystudio': 0, 'unidata': 211, 'aquadocs': 0, 'opentopography': 780, 'iris': 28, 'edi': 0, 'bco-dmo': 0, 'hydroshare': 13935, 'iedadata': 10099, 'unavco': 5693, 'ssdb.iodp': 26156, 'linked.earth': 18634, 'lipdverse': 27, 'ucar': 17696, 'opencoredata': 0, 'magic': 4332, 'earthchem': 650, 'xdomes': 0, 'neon': 0, 'designsafe': 0, 'r2r': 47462, 'geocodes_demo_datasets': 9, 'usap-dc': 962, 'cchdo': 2523, 'amgeo': 0, 'wifire': 0, 'cresis': 0}
+        #sitemaps_count={'balto': 0, 'neotomadb': 45936, 'decade': 0, 'renci': 0, 'c4rsois': 0, 'resource_registry': 0, 'datadiscoverystudio': 0, 'unidata': 211, 'aquadocs': 0, 'opentopography': 780, 'iris': 28, 'edi': 0, 'bco-dmo': 0, 'hydroshare': 13935, 'iedadata': 10099, 'unavco': 5693, 'ssdb.iodp': 26156, 'linked.earth': 18634, 'lipdverse': 27, 'ucar': 17696, 'opencoredata': 0, 'magic': 4332, 'earthchem': 650, 'xdomes': 0, 'neon': 0, 'designsafe': 0, 'r2r': 47462, 'geocodes_demo_datasets': 9, 'usap-dc': 962, 'cchdo': 2523, 'amgeo': 0, 'wifire': 0, 'cresis': 0}
+#sum(list(map(lambda x: sitemap_len(f'https://portal.edirepository.org/sitemap{x}.xml'), range(10))))
+#/org/bco-dmo> grep loc *site*page* | wc -l 14835 #not showing up in final
+#could check why only getting 11 of these so far:opentopo iris edi hydroshare ieda unavco ssdb 
+#linked.earch r2r usap-dc cchdo ;there are others below that should have sitemap+graph numbers/?
+        sitemaps_count={'balto': 0, 'neotomadb': 45936, 'decade': 0, 'renci': 0, 'c4rsois': 0, 'resource_registry': 0, 'datadiscoverystudio': 0, 'unidata': 211, 'aquadocs': 0, 'opentopography': 780, 'iris': 28, 'edi': 45574, 'bco-dmo': 14835, 'hydroshare': 13935, 'iedadata': 10099, 'unavco': 5693, 'ssdb.iodp': 26156, 'linked.earth': 18634, 'lipdverse': 27, 'ucar': 17696, 'opencoredata': 0, 'magic': 4332, 'earthchem': 650, 'xdomes': 0, 'neon': 0, 'designsafe': 0, 'r2r': 47462, 'geocodes_demo_datasets': 9, 'usap-dc': 962, 'cchdo': 2523, 'amgeo': 0, 'wifire': 0, 'cresis': 0}
     log.info(f'sitemaps_count={sitemaps_count}') #need to get this usable by merge_dict_list
     #ec graph_counts as 2nd part of final jina2/streamlit template
     #gpr=ec.get_graph_per_repo("milled",endpoint) #setting off/so fix
