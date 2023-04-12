@@ -12,7 +12,9 @@ Ocean Sciences Best Practice: <https://github.com/adamml/ocean-best-practices-on
 
 [github.com/ESIPFed/science-on-schema.org/.../guides/GETTING-STARTED.md](https://github.com/ESIPFed/science-on-schema.org/blob/master/guides/GETTING-STARTED.md)
 
-Instead of getting org info in parts, make sure they have a [re3data.org](https://www.re3data.org/)/[suggest](https://www.re3data.org/suggest) ror.org/[request](https://docs.google.com/forms/d/e/1FAIpQLSdJYaMTCwS7muuTa-B_CnAtCSkKzt19lkirAKG4u7umH9Nosg/viewform) .. 
+[github.com/gleanerio/scienceonschemaexamples](https://github.com/gleanerio/scienceonschemaexamples)
+
+Good practice to get an org-id: [re3data.org](https://www.re3data.org/)/[suggest](https://www.re3data.org/suggest) ror.org/[request](https://docs.google.com/forms/d/e/1FAIpQLSdJYaMTCwS7muuTa-B_CnAtCSkKzt19lkirAKG4u7umH9Nosg/viewform) 
 
 Early sketch of a decision-tree: [github.com/earthcube/ec/doc/repo_onboarding.md](https://github.com/earthcube/ec/blob/master/doc/repo_onboarding.md) 
 
