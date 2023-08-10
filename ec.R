@@ -327,3 +327,217 @@ repos2counts <- function(repos) {
   }
   return(list(repo_counts, repo_ld_counts, final_counts, repo_df_loc))
 }
+
+post_untar <- function(url, uncompress = "tar -zxvf ") {
+  fnb <- tools::file_path_sans_ext(basename(url))
+  cs <- paste0(uncompress, " ", fnb)
+  system(cs)
+  return(fnb)
+}
+
+install_url <- function(url) {
+  pre_rm(url)
+  wget(url)
+  fnb <- post_untar(url)
+  return(gsub(".tar.gz|.zip", "", fnb))
+}
+
+install_java <- function() {
+  ca <- "apt-get install -y openjdk-8-jdk-headless -qq > /dev/null"
+  system(ca)
+  Sys.setenv(JAVA_HOME = "/usr/lib/jvm/java-8-openjdk-amd64")
+}
+
+install_jena <- function(url = "https://dlcdn.apache.org/jena/binaries/apache-jena-4.5.0.tar.gz") {
+  return(install_url(url))
+}
+
+install_fuseki <- function(url = "https://dlcdn.apache.org/jena/binaries/apache-jena-fuseki-4.5.0.tar.gz") {
+  return(install_url(url))
+}
+
+install_any23 <- function(url = "https://dlcdn.apache.org/any23/2.7/apache-any23-cli-2.7.tar.gz") {
+  return(install_url(url))
+}
+
+setup_blabel <- function(url = "http://mbobak.ncsa.illinois.edu/ld/bn/blabel.jar") {
+  wget(url)
+}
+
+setup_j <- function(jf = NULL) {
+  install_java()
+  path <- Sys.getenv("PATH")
+  jena_dir <- install_jena()
+  any23_dir <- install_any23()
+  if (!is.null(jf)) {
+    fuseki_dir <- install_jena()
+    addpath <- paste0(":", jena_dir, "/bin:", fuseki_dir, "/bin:", any23_dir, "/bin")
+  } else {
+    addpath <- paste0(":", jena_dir, "/bin:", any23_dir, "/bin")
+  }
+  Sys.setenv(PATH = paste0(path, addpath))
+  setup_blabel()
+  return(addpath)
+}
+
+get_relateddatafilename_txt <- function(url = "https://raw.githubusercontent.com/MBcode/ec/master/NoteBook/sparql_relateddatafilename.txt") {
+  return(get_ec_txt(url))
+}
+
+get_webservice_txt <- function(url = "https://raw.githubusercontent.com/earthcube/facetsearch/master/client/src/sparql_blaze/sparql_gettools_webservice.txt") {
+  return(get_ec_txt(url))
+}
+
+get_download_txt <- function(url = "https://raw.githubusercontent.com/earthcube/facetsearch/master/client/src/sparql_blaze/sparql_gettools_download.txt") {
+  return(get_ec_txt(url))
+}
+
+get_notebook_txt <- function(url = "https://raw.githubusercontent.com/MBcode/ec/master/NoteBook/sparql_gettools_notebook.txt") {
+  return(get_ec_txt(url))
+}
+
+get_query_txt <- function(url = "https://raw.githubusercontent.com/MBcode/ec/master/NoteBook/sparql-query.txt") {
+  return(get_ec_txt(url))
+}
+
+get_subj2urn_txt <- function(url = "http://mbobak.ncsa.illinois.edu/ec/nb/sparql_subj2urn.txt") {
+  # Add code here
+}
+
+get_graphs_txt <- function(url = "http://mbobak.ncsa.illinois.edu/ec/nb/sparql_graphs.txt") {
+  return("SELECT distinct ?g  WHERE {GRAPH ?g {?s ?p ?o}}")
+}
+
+get_graphs_txt <- function(url = "http://mbobak.ncsa.illinois.edu/ec/nb/sparql_graphs.txt") {
+  return("SELECT distinct ?g  WHERE {GRAPH ?g {?s ?p ?o}}")
+}
+
+get_graph_txt <- function(url = "http://mbobak.ncsa.illinois.edu/ec/nb/get_graph.txt") {
+    return("SELECT distinct ?s ?p ?o  WHERE { graph ?g {?s ?p ?o} filter(?g = <${q}>)}")
+}
+
+get_summary_query_txt <- function(url = "http://mbobak.ncsa.illinois.edu/ec/nb/sparql_blaze.txt") {
+    return()
+}
+
+get_summary_txt <- function(url = "https://raw.githubusercontent.com/earthcube/ec/master/summary/get_summary.txt") {
+    "this is to make a summary, not to do a qry on the summary"
+    return(get_ec_txt(url))
+}
+
+add_ext <- function(fn, ft) {
+  if (is.null(ft) || ft == '' || ft == '.' || nchar(ft) < 2) {
+    return(NULL)
+  }
+  fn1 <- path_leaf(fn)
+  fext <- file_ext(fn1)
+  r <- fn1
+  if (is.null(fext) || fext == '') {
+    fnt <- paste0(fn1, ft)
+    cs <- paste0('sleep 2;mv ', fn1, ' ', fnt)
+    system(cs)
+    r <- fnt
+  }
+  return(r)
+}
+
+wget_ft <- function(fn, ft) {
+  wget(fn)
+  fnl <- fn
+  if (ft != '.' && ft != '' && !is.null(ft) && nchar(ft) > 2) {
+    fnl <- add_ext(fn, ft)
+  }
+  if (file.exists(fnl)) {
+    fs <- file.size(fnl)
+  } else {
+    fs <- NULL
+  }
+  if (ft == '.zip') {
+    cs <- paste0('unzip ', fnl)
+    system(cs)
+    fnb <- file_base(fnl)
+  }
+  return(fs)
+}
+
+init_rdflib <- function() {
+  cs <- 'pip install rdflib networkx extruct python-magic pyld'
+  system(cs)
+  rdflib_inited <- cs
+}
+
+url2jsonLD <- function(url) {
+  add2log(paste0('url2jsonLD(', url, ')'))
+  if (is.null(rdflib_inited)) {
+    init_rdflib()
+  }
+  library(extruct)
+  library(requests)
+  library(w3lib)
+  r <- requests::get(url)
+  base_url_ <- get_base_url(r$text, r$url)
+  md <- extruct::extract(r$text, base_url = base_url_, syntaxes = c('json-ld'))
+  if (!is.null(md)) {
+    lda <- md[['json-ld']]
+    ld <- lda[[1]]
+  } else {
+    ld <- ""
+  }
+  add2log(ld)
+  return(ld)
+}
+
+url2jsonLD_fn <- function(url, fn) {
+  ld <- url2jsonLD(url)
+  LD <- jsonlite::toJSON(ld, pretty = TRUE)
+  fnj <- paste0(fn, ".jsonld")
+  return(put_txtfile(fnj, LD))
+}
+
+url2jsonLD_file <- function(url) {
+  ld <- url2jsonLD(url)
+  fnb <- file_leaf_base(url)
+  LD <- jsonlite::toJSON(ld, pretty = TRUE)
+  put_txtfile(fnb, LD)
+  return(fnb)
+}
+
+fn2jsonld <- function(fn, base_url = NULL) {
+  url <- fn
+  md <- url2jsonLD(url)
+  if (!is.null(md)) {
+    ld <- md$json-ld
+  } else {
+    ld <- ""
+  }
+  cfn <- gsub("(\\n\\s*)+\\n+", "\\n", fn)
+  fn <- paste0(cfn, ".jsonld")
+  if (ld != "") {
+    write(jsonlite::toJSON(ld[1], pretty = TRUE), file = fn)
+  }
+  return(ld)
+}
+
+getjsonLD <- function(url) {
+  ld <- url2jsonLD(url)
+  fnb <- file_leaf_base(url)
+  cfn <- gsub("(\\n\\s*)+\\n+", "\\n", fnb)
+  fnj <- paste0(cfn, ".jsonld")
+  add2log(paste0("getjsonLD:", fnb, ",", fnj))
+  LD <- jsonlite::toJSON(ld, pretty = TRUE)
+  put_txtfile(fnj, LD)
+  return(fnj)
+}
+
+xml2nt <- function(fn, frmt = "xml") {
+  if (is.null(rdflib_inited)) {
+    init_rdflib()
+  }
+  fnb <- file_base(fn)
+  g <- rdflib::Graph()
+  g$parse(fn, format = frmt)
+  s <- g$serialize(format = "ntriples")
+  fnt <- paste0(fnb, ".nt")
+  put_txtfile(fnt, s)
+  return(fnt)
+}
